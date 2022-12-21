@@ -11,6 +11,12 @@
   "license": "MIT",
   "readmeFilename": "README.md",
   "devDependencies": {
+    "@rollup/plugin-node-resolve": "^15.0.1",
+    "rollup": "^3.7.5",
     "typescript": "^4.9.4"
+  },
+  "dependencies": {
+    "codemirror": "^6.0.1",
+    "xmldom": "^0.6.0"
   }
 }
