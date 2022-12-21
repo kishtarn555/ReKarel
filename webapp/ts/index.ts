@@ -3,6 +3,7 @@ import { responsiveHack } from "./responsive-load";
 import { createEditors } from "./editor";
 import { GetDesktopUIHelper } from "./desktop-ui";
 import { GetPhoneUIHelper } from "./phone-ui";
+import { HookUpCommonUI } from "./common-ui";
 
 splitPanels();
 
@@ -15,6 +16,17 @@ function showElement(element:string) {
     $(element).removeClass("d-none");    
 }
 
+HookUpCommonUI(
+    {
+        editor:destkopEditor,
+        downloadModal: {
+            modal: "#saveCodeModal",
+            confirm_btn: "#downloadCodeBtn",
+            inputField: "#codeName",
+            wrongCodeWarning:"#wrongCodeName",
+        },
+    }
+)
 let DesktopUI = GetDesktopUIHelper();
 let PhoneUI = GetPhoneUIHelper({
     editor: phoneEditor,

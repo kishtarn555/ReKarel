@@ -17419,6 +17419,25 @@
         return response;
     }
 
+    const fileRegex = /^[a-zA-Z0-9._]+$/;
+    function setFileNameLink(modal, editor) {
+        let newFilename = $(modal.inputField).val();
+        if (!fileRegex.test(newFilename)) {
+            $(modal.wrongCodeWarning).removeAttr("hidden");
+            newFilename = "code.txt";
+        }
+        else {
+            $(modal.wrongCodeWarning).attr("hidden", "");
+        }
+        let blob = new Blob([editor.state.doc.toString()], { type: 'text/plain' });
+        $(modal.confirm_btn).attr("href", window.URL.createObjectURL(blob));
+        $(modal.confirm_btn).attr("download", newFilename);
+    }
+    function HookUpCommonUI(uiData) {
+        $(uiData.downloadModal.modal).on('shown', () => setFileNameLink(uiData.downloadModal, uiData.editor));
+        $(uiData.downloadModal.inputField).change(() => setFileNameLink(uiData.downloadModal, uiData.editor));
+    }
+
     splitPanels();
     var [destkopEditor, phoneEditor] = createEditors();
     //TODO: ThisShouldnt be here
@@ -17428,6 +17447,15 @@
     function showElement(element) {
         $(element).removeClass("d-none");
     }
+    HookUpCommonUI({
+        editor: destkopEditor,
+        downloadModal: {
+            modal: "#saveCodeModal",
+            confirm_btn: "#downloadCodeBtn",
+            inputField: "#codeName",
+            wrongCodeWarning: "#wrongCodeName",
+        },
+    });
     let DesktopUI = GetDesktopUIHelper();
     let PhoneUI = GetPhoneUIHelper({
         editor: phoneEditor,
