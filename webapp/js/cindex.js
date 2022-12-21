@@ -17436,24 +17436,39 @@
         navToolbar: {
             "#codeTabBtn": () => "",
             "#worldTabBtn": () => "",
-            "#execTabBtn": () => ""
+            "#execTabBtn": () => "",
+            "#settingTabBtn": () => ""
         },
         codeTabToolbar: {
-            "#codeAction": () => {
-                showElement("#pascalAction");
+            "#codeEdit": () => {
+                hideElement("#editToolbar");
+                hideElement("#pascalAction");
                 hideElement("#pascalFlow");
                 hideElement("#pascalKeyword");
+                showElement("#editToolbar");
+                return "";
+            },
+            "#codeAction": () => {
+                hideElement("#editToolbar");
+                hideElement("#pascalAction");
+                hideElement("#pascalFlow");
+                hideElement("#pascalKeyword");
+                showElement("#pascalAction");
                 return "";
             },
             "#codeFlow": () => {
+                hideElement("#editToolbar");
                 hideElement("#pascalAction");
-                showElement("#pascalFlow");
+                hideElement("#pascalFlow");
                 hideElement("#pascalKeyword");
+                showElement("#pascalFlow");
                 return "";
             },
             "#codeKeyword": () => {
+                hideElement("#editToolbar");
                 hideElement("#pascalAction");
                 hideElement("#pascalFlow");
+                hideElement("#pascalKeyword");
                 showElement("#pascalKeyword");
                 return "";
             }

@@ -319,8 +319,12 @@
                 <div class="d-flex flex-column h-100 mh-100">
 
                     <div id="mainPanel" class="overflow-hidden flex-grow-1">
+                        <div class="d-flex"></div>
                         <div class="btn-toolbar d-flex justify-content-around border-bottom">
                                     
+                            <button id="codeEdit" class="btn">
+                                <i class="bi bi-pencil-fill"></i>
+                            </button>                                    
                             <button id="codeAction" class="btn text-primary">
                                 <i class="bi bi-lightning-charge-fill"></i>
                             </button>
@@ -329,11 +333,39 @@
                             </button>                                    
                             <button id="codeKeyword" class="btn">                                
                                 <i class="bi bi-key-fill"></i>
-                            </button>        
-                            <button id="codeSettings" class="btn">                                
-                                <i class="bi bi-gear-fill"></i>
-                            </button>
-                        </div>                                    
+                            </button> 
+                        </div>       
+                        <div id="editToolbar" class="btn-toolbar d-flex justify-content-around p-1" style="box-shadow: 0 30px 40px rgba(0,0,0,.1);">
+                            <div class="dropdown">
+                                <button class="btn btn-success dropdown-toggle"  type="button" id="phoneDropwDownFile" data-bs-toggle="dropdown" aria-expanded="false">
+                                    <i class="bi bi-archive "></i>
+                                </button>
+                                
+                                <ul class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+                                    <li><a class="dropdown-item" href="#"><i class="bi bi-file-earmark-plus"></i> Nuevo
+                                        Java</a>
+                                    </li>
+                                    <li><a class="dropdown-item" href="#"><i class="bi bi-file-earmark-plus"></i> Nuevo
+                                            Pascal</a></li>
+                                    <li><a class="dropdown-item" href="#"><i class="bi bi-file-earmark-plus"></i> Nuevo
+                                            Ruby</a>
+                                    </li>
+                                    <li>
+                                        <hr class="dropdown-divider">
+                                    </li>
+                                    <li><a class="dropdown-item" href="#"><i class="bi bi-folder2-open"></i> Abrir
+                                            código</a>
+                                    </li>
+                                    <li>
+                                        <button type="button" class="dropdown-item" data-bs-toggle="modal"
+                                            data-bs-target="#saveCodeModal">
+                                            <i class="bi bi-box-arrow-down"></i> Descargar
+                                            código
+                                        </button>
+                                    </li>                                
+                                  </ul>
+                            </div>
+                        </div>                             
                         <div id="pascalAction" class="btn-toolbar d-flex flex-nowrap p-1  overflow-auto w-100 " style="box-shadow: 0 30px 40px rgba(0,0,0,.1);">
                             <button id="pAvanza" class="btn btn-primary me-1 mb-1 ">Avanza</button>
                             <button id="pGira" class="btn btn-primary me-1 mb-1">Izquierda</button>
@@ -416,6 +448,10 @@
 
                             <button id="execTabBtn" class="btn"><span class="h3"><i
                                         class="bi bi-play-circle"></i></span></button>
+                                               
+                            <button id="settingTabBtn" class="btn">                                
+                                <span class="h3"><i class="bi bi-gear-fill"></i></span>
+                            </button>
                         </div>
                     </div>
 

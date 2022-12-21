@@ -23,24 +23,43 @@ let PhoneUI = GetPhoneUIHelper({
     navToolbar: {
         "#codeTabBtn": () => "",
         "#worldTabBtn": () => "",
-        "#execTabBtn": () => ""
+        "#execTabBtn": () => "",
+        "#settingTabBtn": () => ""
     },
     codeTabToolbar: {
-        "#codeAction": () => {
+        "#codeEdit": () => {                        
+            hideElement("#editToolbar");
+            hideElement("#pascalAction");
+            hideElement("#pascalFlow");
+            hideElement("#pascalKeyword");
+
+            showElement("#editToolbar");
+            return "";
+        },
+        "#codeAction": () => {                        
+            hideElement("#editToolbar");
+            hideElement("#pascalAction");
+            hideElement("#pascalFlow");
+            hideElement("#pascalKeyword");
+
             showElement("#pascalAction");
-            hideElement("#pascalFlow");
-            hideElement("#pascalKeyword");
             return "";
         },
-        "#codeFlow": () => {
+        "#codeFlow": () => {            
+            hideElement("#editToolbar");
             hideElement("#pascalAction");
+            hideElement("#pascalFlow");
+            hideElement("#pascalKeyword");
+            
             showElement("#pascalFlow");
-            hideElement("#pascalKeyword");
             return "";
         },
-        "#codeKeyword": () => {
+        "#codeKeyword": () => {            
+            hideElement("#editToolbar");
             hideElement("#pascalAction");
             hideElement("#pascalFlow");
+            hideElement("#pascalKeyword");
+
             showElement("#pascalKeyword");
             return "";
         }
