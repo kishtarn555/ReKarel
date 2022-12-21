@@ -1,0 +1,16 @@
+{
+  "name": "rekarel",
+  "version": "1.0.0",
+  "description": "Rework of omegaup's [Karel.js](https://github.com/omegaup/karel.js).",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "Hector Fernando Ricardez Lara",
+  "license": "MIT",
+  "readmeFilename": "README.md",
+  "devDependencies": {
+    "typescript": "^4.9.4"
+  }
+}
