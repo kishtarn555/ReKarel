@@ -101,14 +101,7 @@ function recalcDimensions() {
     //   editable: mundo_editable,
     // });
   }
-  Split(['#splitter-left-pane', '#splitter-right-pane'], {
-    sizes: [30, 70],
-    onDragEnd: recalcDimensions,
-  });
-  Split(['#splitter-left-top-pane', '#splitter-left-bottom-pane'], {
-    sizes: [70, 30],
-    direction: 'vertical',
-  });
+  
    recalcDimensions();
   $(window).resize(recalcDimensions);
 

@@ -1,0 +1,54 @@
+:root {
+    --action:#06c;
+    --flow: rgb(138, 75, 167);
+    --keyword: rgb(10, 140, 40);
+}
+
+html, body {
+    height: 100%;
+}
+
+#beeperBag, #toolbarRows, #toolbarCols, #delayPanel {
+    width: 9ch;
+}
+
+#pascalActions, #pascalFlow {
+    overflow-x: scroll;
+
+}
+
+.bg-darkgray {
+    background-color: #466aaf;
+}
+
+.bg-omega {
+    background-color: #678dd7;
+}
+
+.text-shadow {
+    text-shadow: 0px 0px 2px silver;
+
+}
+
+.fillPanel {
+    top: 0px;
+    bottom: 0px;
+    left: 0px;
+    right: 0px;
+}
+
+
+.bg-flow {
+    background-color: var(--flow);
+    color:white;
+}
+
+.bg-action {
+    background-color: var(--flow);
+    color:white;
+}
+
+.bg-keyword{
+    background-color: var(--keyword);
+    color: white;
+}

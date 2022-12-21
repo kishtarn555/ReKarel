@@ -4,7 +4,8 @@
   "description": "Rework of omegaup's [Karel.js](https://github.com/omegaup/karel.js).",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "npx tsc && rollup ./dist/index.js --file ./webapp/js/cindex.js --format iife -p @rollup/plugin-node-resolve"
   },
   "type": "module",
   "keywords": [],
@@ -13,6 +14,7 @@
   "readmeFilename": "README.md",
   "devDependencies": {
     "@rollup/plugin-node-resolve": "^15.0.1",
+    "@types/jquery": "^3.5.14",
     "rollup": "^3.7.5",
     "typescript": "^4.9.4"
   },
