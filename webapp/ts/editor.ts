@@ -1,6 +1,7 @@
 import {EditorState} from "@codemirror/state"
 import {defaultKeymap, historyKeymap, history} from "@codemirror/commands"
 import {drawSelection, keymap, lineNumbers, highlightActiveLine} from "@codemirror/view"
+import {indentWithTab} from "@codemirror/commands"
 import {undo, redo} from "@codemirror/commands"
 import {EditorView} from "@codemirror/view"
 import {Transaction, Annotation} from "@codemirror/state"
@@ -10,13 +11,14 @@ import {Transaction, Annotation} from "@codemirror/state"
 
 function createEditors() : Array<EditorView> {
   let startState = EditorState.create({
-    doc: "iniciar-programa\n  inicia-ejecucion\n      { TODO poner codigo aqui }\n      apagate;\n  termina-ejecucion\nfinalizar-programa",
+    doc: "iniciar-programa\n\tinicia-ejecucion\n\t\t{ TODO poner codigo aqui }\n\t\tapagate;\n\ttermina-ejecucion\nfinalizar-programa",
     extensions: [
       history(),
       drawSelection(),
       lineNumbers(),
       highlightActiveLine(),
       keymap.of([
+        indentWithTab,
         ...defaultKeymap,
         ...historyKeymap,
       ])
@@ -30,6 +32,7 @@ function createEditors() : Array<EditorView> {
       lineNumbers(),
       highlightActiveLine(),
       keymap.of([
+        indentWithTab,
         ...defaultKeymap,
         {key: "Mod-z", run: () => undo(mainView)},
         {key: "Mod-y", mac: "Mod-Shift-z", run: () => redo(mainView)}

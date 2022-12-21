@@ -1,22 +1,99 @@
-type Toolbar =  Record<string, ()=>void >
+import {EditorView} from "@codemirror/view"
 
+type Toolbar =  Record<string, ()=>string >
+interface UIElements {
+    codeTabToolbar: Toolbar,
+    navToolbar: Toolbar,
+    simpleCodeInputs: Toolbar
+    codeIndent: string,
+    codeUnindent: string,
+    editor:EditorView
+}
 function activateButton (toolbar: Toolbar, buttonPressed:string) {
     for (const element in toolbar) {
         $(element).removeClass("text-primary");
     }    
     $(buttonPressed).addClass("text-primary");
-    console.log(buttonPressed);
+    toolbar[buttonPressed]();
 }
 
-interface UIElements {
-    codeTabToolbar: Toolbar
+function indent (elements: UIElements) {
+    let editor= elements.editor;
+    let state = editor.state;
+    let head = state.selection.main.head
+    let transaction = state.update({
+        changes:{
+            from: state.doc.lineAt(head).from,
+            insert:"\t"
+        }
+    })
+    editor.dispatch(transaction);
+
 }
+function unindent (elements: UIElements) {
+    let state = elements.editor.state
+    let head = state.selection.main.head
+    let line = state.doc.lineAt(head)
+
+    let stringOutpt = line.text.replace(/^((\t)|( {0,4}))/, "")
+    let transaction = state.update({
+        changes:{
+            from: line.from,
+            to: line.to,
+            insert:stringOutpt
+        }
+    })
+    elements.editor.dispatch(transaction);
+}
+
+function replaceWithIndetation(elements: UIElements, txt: string) {
+    let state = elements.editor.state;
+    let head = state.selection.main.head;
+    let line = state.doc.lineAt(head);
+    let indentation = line.text.match(/\s*/g)[0];
+    let text = indentation + txt;
+    let transaction = state.update({
+        changes:{
+            from: line.from,
+            to: line.to,
+            insert:text
+        }
+    })
+    elements.editor.dispatch(transaction);
+}
+
 //TODO: Add support for states
 function GetPhoneUIHelper(elements: UIElements) {
-    return {
+    let response = {
         changeCodeToolbar: (button:string) => 
-            activateButton(elements.codeTabToolbar, button)
+            activateButton(elements.codeTabToolbar, button),
+        changeNavToolbar: (button:string) => 
+            activateButton(elements.navToolbar, button),
+        indent: ()=>indent(elements),
+        unindent: ()=>unindent(elements),
+        btnSimpleCodeInput:(btn:string) =>
+            replaceWithIndetation(elements, elements.simpleCodeInputs[btn]()),
+        replaceWithIndetation: (txt:string) =>
+            replaceWithIndetation(elements, txt),
+        
+
     };
+      
+    for (const btn in elements.navToolbar) {
+        $(btn).click(()=>response.changeNavToolbar(btn));
+    }
+    for (const btn in elements.codeTabToolbar) {
+        $(btn).click(()=>response.changeCodeToolbar(btn));
+    }
+    for (const btn in elements.simpleCodeInputs) {
+        $(btn).click(()=>response.btnSimpleCodeInput(btn));
+    }
+
+    $(elements.codeIndent).click(response.indent)
+    $(elements.codeUnindent).click(response.unindent)
+    
+
+    return response
 }
 
 export {GetPhoneUIHelper};

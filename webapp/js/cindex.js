@@ -17265,16 +17265,24 @@
         { key: "Mod-/", run: toggleComment },
         { key: "Alt-A", run: toggleBlockComment }
     ].concat(standardKeymap);
+    /**
+    A binding that binds Tab to [`indentMore`](https://codemirror.net/6/docs/ref/#commands.indentMore) and
+    Shift-Tab to [`indentLess`](https://codemirror.net/6/docs/ref/#commands.indentLess).
+    Please see the [Tab example](../../examples/tab/) before using
+    this.
+    */
+    const indentWithTab = { key: "Tab", run: indentMore, shift: indentLess };
 
     function createEditors() {
         let startState = EditorState.create({
-            doc: "iniciar-programa\n  inicia-ejecucion\n      { TODO poner codigo aqui }\n      apagate;\n  termina-ejecucion\nfinalizar-programa",
+            doc: "iniciar-programa\n\tinicia-ejecucion\n\t\t{ TODO poner codigo aqui }\n\t\tapagate;\n\ttermina-ejecucion\nfinalizar-programa",
             extensions: [
                 history(),
                 drawSelection(),
                 lineNumbers(),
                 highlightActiveLine(),
                 keymap.of([
+                    indentWithTab,
                     ...defaultKeymap,
                     ...historyKeymap,
                 ])
@@ -17287,6 +17295,7 @@
                 lineNumbers(),
                 highlightActiveLine(),
                 keymap.of([
+                    indentWithTab,
                     ...defaultKeymap,
                     { key: "Mod-z", run: () => undo(mainView) },
                     { key: "Mod-y", mac: "Mod-Shift-z", run: () => redo(mainView) }
@@ -17343,30 +17352,126 @@
             $(element).removeClass("text-primary");
         }
         $(buttonPressed).addClass("text-primary");
-        console.log(buttonPressed);
+        toolbar[buttonPressed]();
+    }
+    function indent(elements) {
+        let editor = elements.editor;
+        let state = editor.state;
+        let head = state.selection.main.head;
+        let transaction = state.update({
+            changes: {
+                from: state.doc.lineAt(head).from,
+                insert: "\t"
+            }
+        });
+        editor.dispatch(transaction);
+    }
+    function unindent(elements) {
+        let state = elements.editor.state;
+        let head = state.selection.main.head;
+        let line = state.doc.lineAt(head);
+        let stringOutpt = line.text.replace(/^((\t)|( {0,4}))/, "");
+        let transaction = state.update({
+            changes: {
+                from: line.from,
+                to: line.to,
+                insert: stringOutpt
+            }
+        });
+        elements.editor.dispatch(transaction);
+    }
+    function replaceWithIndetation(elements, txt) {
+        let state = elements.editor.state;
+        let head = state.selection.main.head;
+        let line = state.doc.lineAt(head);
+        let indentation = line.text.match(/\s*/g)[0];
+        let text = indentation + txt;
+        let transaction = state.update({
+            changes: {
+                from: line.from,
+                to: line.to,
+                insert: text
+            }
+        });
+        elements.editor.dispatch(transaction);
     }
     //TODO: Add support for states
     function GetPhoneUIHelper(elements) {
-        return {
-            changeCodeToolbar: (button) => activateButton(elements.codeTabToolbar, button)
+        let response = {
+            changeCodeToolbar: (button) => activateButton(elements.codeTabToolbar, button),
+            changeNavToolbar: (button) => activateButton(elements.navToolbar, button),
+            indent: () => indent(elements),
+            unindent: () => unindent(elements),
+            btnSimpleCodeInput: (btn) => replaceWithIndetation(elements, elements.simpleCodeInputs[btn]()),
+            replaceWithIndetation: (txt) => replaceWithIndetation(elements, txt),
         };
+        for (const btn in elements.navToolbar) {
+            $(btn).click(() => response.changeNavToolbar(btn));
+        }
+        for (const btn in elements.codeTabToolbar) {
+            $(btn).click(() => response.changeCodeToolbar(btn));
+        }
+        for (const btn in elements.simpleCodeInputs) {
+            $(btn).click(() => response.btnSimpleCodeInput(btn));
+        }
+        $(elements.codeIndent).click(response.indent);
+        $(elements.codeUnindent).click(response.unindent);
+        return response;
     }
 
     splitPanels();
-    createEditors();
+    var [destkopEditor, phoneEditor] = createEditors();
+    //TODO: ThisShouldnt be here
+    function hideElement(element) {
+        $(element).addClass("d-none");
+    }
+    function showElement(element) {
+        $(element).removeClass("d-none");
+    }
     let DesktopUI = GetDesktopUIHelper();
     let PhoneUI = GetPhoneUIHelper({
+        editor: phoneEditor,
+        codeIndent: "#codeIndent",
+        codeUnindent: "#codeUnindent",
+        navToolbar: {
+            "#codeTabBtn": () => "",
+            "#worldTabBtn": () => "",
+            "#execTabBtn": () => ""
+        },
         codeTabToolbar: {
-            "#codeTabBtn": () => { },
-            "#worldTabBtn": () => { },
-            "#execTabBtn": () => { }
+            "#codeAction": () => {
+                showElement("#pascalAction");
+                hideElement("#pascalFlow");
+                hideElement("#pascalKeyword");
+                return "";
+            },
+            "#codeFlow": () => {
+                hideElement("#pascalAction");
+                showElement("#pascalFlow");
+                hideElement("#pascalKeyword");
+                return "";
+            },
+            "#codeKeyword": () => {
+                hideElement("#pascalAction");
+                hideElement("#pascalFlow");
+                showElement("#pascalKeyword");
+                return "";
+            }
+        },
+        simpleCodeInputs: {
+            "#pAvanza": () => "avanza;",
+            "#pGira": () => "gira-izquierda;",
+            "#pCoge": () => "coge-zumbador;",
+            "#pDeja": () => "deja-zumbador;",
+            "#pApagate": () => "apagate;",
+            "#pSalir": () => "sal-de-instruccion;",
         }
     });
+    //Activate default states
+    PhoneUI.changeCodeToolbar("#codeAction");
+    PhoneUI.changeNavToolbar("#codeTabBtn");
     //Hoock all UI
     $("#infiniteBeepersBtn").click(DesktopUI.toggleInfinityBeepers);
-    $("#codeTabBtn").click(() => PhoneUI.changeCodeToolbar("#codeTabBtn"));
-    $("#worldTabBtn").click(() => PhoneUI.changeCodeToolbar("#worldTabBtn"));
-    $("#execTabBtn").click(() => PhoneUI.changeCodeToolbar("#execTabBtn"));
     $(document).ready(() => {
         responsiveHack();
     });
