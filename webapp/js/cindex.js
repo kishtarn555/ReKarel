@@ -17499,12 +17499,25 @@
             {
                 button: "#newJavaCodeNavBtn",
                 data: {
-                    accept: () => { SetText(destkopEditor, "class program {\n\tprogram () {\n\t\t// TODO poner codigo aqui\n\t\tturnoff();\n\t}\n}"); },
+                    accept: () => {
+                        SetText(destkopEditor, "class program {\n\tprogram () {\n\t\t// TODO poner codigo aqui\n\t\tturnoff();\n\t}\n}");
+                    },
                     message: "Perderás todo el código no guardado!",
                     title: "Nuevo código Java",
-                    reject: () => { console.log("nay!"); },
+                    reject: () => { },
                 }
-            }
+            },
+            {
+                button: "#newPascalCodeNavBtn",
+                data: {
+                    accept: () => {
+                        SetText(destkopEditor, "iniciar-programa\n\tinicia-ejecucion\n\t\t{ TODO poner codigo aqui }\n\t\tapagate;\n\ttermina-ejecucion\nfinalizar-programa");
+                    },
+                    message: "Perderás todo el código no guardado!",
+                    title: "Nuevo código Java",
+                    reject: () => { },
+                }
+            },
         ]
     });
     let DesktopUI = GetDesktopUIHelper();
