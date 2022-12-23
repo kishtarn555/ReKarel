@@ -79,6 +79,8 @@ let PhoneUI = GetPhoneUIHelper({
     codeTab: {
         indent: "#codeIndent",
         unindent: "#codeUnindent",
+        undo: "#codeUndo",
+        redo: "#codeRedo",
         toolbar: {
             "#codeEdit": () => {                        
                 hideElement("#editToolbar");
