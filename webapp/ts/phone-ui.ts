@@ -1,5 +1,5 @@
 import { EditorView } from "@codemirror/view"
-import { undo } from "@codemirror/commands"
+import { undo, redo } from "@codemirror/commands"
 
 
 type Toolbar = Record<string, () => string>
@@ -71,6 +71,7 @@ function replaceWithIndetation(elements: UIElements, txt: string) {
     elements.editor.dispatch(transaction);
 }
 
+
 //TODO: Add support for states
 function GetPhoneUIHelper(elements: UIElements) {
     let response = {
@@ -101,7 +102,14 @@ function GetPhoneUIHelper(elements: UIElements) {
     $(elements.codeTab.indent).click(response.indent)
     $(elements.codeTab.unindent).click(response.unindent)
 
-
+    $(elements.codeTab.undo).on(
+        "click", 
+        ()=> { undo(elements.editor);}
+    );
+    $(elements.codeTab.redo).on(
+        "click", 
+        ()=> { redo(elements.editor);}
+    );
     return response
 }
 
