@@ -17514,7 +17514,7 @@
                         SetText(destkopEditor, "iniciar-programa\n\tinicia-ejecucion\n\t\t{ TODO poner codigo aqui }\n\t\tapagate;\n\ttermina-ejecucion\nfinalizar-programa");
                     },
                     message: "Perderás todo el código no guardado!",
-                    title: "Nuevo código Java",
+                    title: "Nuevo código Pascal",
                     reject: () => { },
                 }
             },

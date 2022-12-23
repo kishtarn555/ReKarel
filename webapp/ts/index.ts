@@ -58,7 +58,7 @@ HookUpCommonUI(
                         ); 
                     },
                     message:"Perderás todo el código no guardado!",
-                    title: "Nuevo código Java",
+                    title: "Nuevo código Pascal",
                     reject: ()=>{ },
                 }
             },
