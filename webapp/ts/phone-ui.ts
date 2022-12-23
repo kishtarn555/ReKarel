@@ -1,12 +1,19 @@
 import {EditorView} from "@codemirror/view"
+import {undo} from "@codemirror/commands"
+
 
 type Toolbar =  Record<string, ()=>string >
+
+type CodeTab = {
+    toolbar: Toolbar,
+    simpleCodeInputs: Toolbar,
+    indent:string,
+    unindent: string
+
+};
 interface UIElements {
-    codeTabToolbar: Toolbar,
     navToolbar: Toolbar,
-    simpleCodeInputs: Toolbar
-    codeIndent: string,
-    codeUnindent: string,
+    codeTab: CodeTab
     editor:EditorView
 }
 function activateButton (toolbar: Toolbar, buttonPressed:string) {
@@ -66,13 +73,13 @@ function replaceWithIndetation(elements: UIElements, txt: string) {
 function GetPhoneUIHelper(elements: UIElements) {
     let response = {
         changeCodeToolbar: (button:string) => 
-            activateButton(elements.codeTabToolbar, button),
+            activateButton(elements.codeTab.toolbar, button),
         changeNavToolbar: (button:string) => 
             activateButton(elements.navToolbar, button),
         indent: ()=>indent(elements),
         unindent: ()=>unindent(elements),
         btnSimpleCodeInput:(btn:string) =>
-            replaceWithIndetation(elements, elements.simpleCodeInputs[btn]()),
+            replaceWithIndetation(elements, elements.codeTab.simpleCodeInputs[btn]()),
         replaceWithIndetation: (txt:string) =>
             replaceWithIndetation(elements, txt),
         
@@ -82,15 +89,15 @@ function GetPhoneUIHelper(elements: UIElements) {
     for (const btn in elements.navToolbar) {
         $(btn).click(()=>response.changeNavToolbar(btn));
     }
-    for (const btn in elements.codeTabToolbar) {
+    for (const btn in elements.codeTab.toolbar) {
         $(btn).click(()=>response.changeCodeToolbar(btn));
     }
-    for (const btn in elements.simpleCodeInputs) {
+    for (const btn in elements.codeTab.simpleCodeInputs) {
         $(btn).click(()=>response.btnSimpleCodeInput(btn));
     }
 
-    $(elements.codeIndent).click(response.indent)
-    $(elements.codeUnindent).click(response.unindent)
+    $(elements.codeTab.indent).click(response.indent)
+    $(elements.codeTab.unindent).click(response.unindent)
     
 
     return response

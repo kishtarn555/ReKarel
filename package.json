@@ -19,6 +19,7 @@
     "typescript": "^4.9.4"
   },
   "dependencies": {
+    "@codemirror/history": "^0.19.2",
     "@types/bootstrap": "^5.2.6",
     "codemirror": "^6.0.1",
     "split.js": "^1.6.5",

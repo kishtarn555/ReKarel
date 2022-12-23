@@ -76,60 +76,63 @@ HookUpCommonUI(
 let DesktopUI = GetDesktopUIHelper();
 let PhoneUI = GetPhoneUIHelper({
     editor: phoneEditor,
-    codeIndent: "#codeIndent",
-    codeUnindent: "#codeUnindent",
+    codeTab: {
+        indent: "#codeIndent",
+        unindent: "#codeUnindent",
+        toolbar: {
+            "#codeEdit": () => {                        
+                hideElement("#editToolbar");
+                hideElement("#pascalAction");
+                hideElement("#pascalFlow");
+                hideElement("#pascalKeyword");
+    
+                showElement("#editToolbar");
+                return "";
+            },
+            "#codeAction": () => {                        
+                hideElement("#editToolbar");
+                hideElement("#pascalAction");
+                hideElement("#pascalFlow");
+                hideElement("#pascalKeyword");
+    
+                showElement("#pascalAction");
+                return "";
+            },
+            "#codeFlow": () => {            
+                hideElement("#editToolbar");
+                hideElement("#pascalAction");
+                hideElement("#pascalFlow");
+                hideElement("#pascalKeyword");
+                
+                showElement("#pascalFlow");
+                return "";
+            },
+            "#codeKeyword": () => {            
+                hideElement("#editToolbar");
+                hideElement("#pascalAction");
+                hideElement("#pascalFlow");
+                hideElement("#pascalKeyword");
+    
+                showElement("#pascalKeyword");
+                return "";
+            }
+        },
+        simpleCodeInputs: {
+            "#pAvanza":()=>"avanza;",
+            "#pGira":()=>"gira-izquierda;",
+            "#pCoge":()=>"coge-zumbador;",
+            "#pDeja":()=>"deja-zumbador;",
+            "#pApagate":()=>"apagate;",
+            "#pSalir":()=>"sal-de-instruccion;",
+        }
+    },
     navToolbar: {
         "#codeTabBtn": () => "",
         "#worldTabBtn": () => "",
         "#execTabBtn": () => "",
         "#settingTabBtn": () => ""
     },
-    codeTabToolbar: {
-        "#codeEdit": () => {                        
-            hideElement("#editToolbar");
-            hideElement("#pascalAction");
-            hideElement("#pascalFlow");
-            hideElement("#pascalKeyword");
-
-            showElement("#editToolbar");
-            return "";
-        },
-        "#codeAction": () => {                        
-            hideElement("#editToolbar");
-            hideElement("#pascalAction");
-            hideElement("#pascalFlow");
-            hideElement("#pascalKeyword");
-
-            showElement("#pascalAction");
-            return "";
-        },
-        "#codeFlow": () => {            
-            hideElement("#editToolbar");
-            hideElement("#pascalAction");
-            hideElement("#pascalFlow");
-            hideElement("#pascalKeyword");
-            
-            showElement("#pascalFlow");
-            return "";
-        },
-        "#codeKeyword": () => {            
-            hideElement("#editToolbar");
-            hideElement("#pascalAction");
-            hideElement("#pascalFlow");
-            hideElement("#pascalKeyword");
-
-            showElement("#pascalKeyword");
-            return "";
-        }
-    },
-    simpleCodeInputs: {
-        "#pAvanza":()=>"avanza;",
-        "#pGira":()=>"gira-izquierda;",
-        "#pCoge":()=>"coge-zumbador;",
-        "#pDeja":()=>"deja-zumbador;",
-        "#pApagate":()=>"apagate;",
-        "#pSalir":()=>"sal-de-instruccion;",
-    }
+    
 })
 
 //Activate default states
