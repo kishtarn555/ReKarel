@@ -1,4 +1,4 @@
-(function () {
+(function (bootstrap) {
     'use strict';
 
     // The programming goals of Split.js are to deliver readable, understandable and
@@ -17419,6 +17419,20 @@
         return response;
     }
 
+    function confirmPrompt(evenet) {
+        let data = evenet.data;
+        $(data.uiData.confirmModal.titleField).html(data.modalData.title);
+        $(data.uiData.confirmModal.messageField).html(data.modalData.message);
+        $(data.uiData.confirmModal.confirmBtn).on("click", data.modalData.accept);
+        $(data.uiData.confirmModal.rejectBtn).on("click", data.modalData.reject);
+        let modal = new bootstrap.Modal($(data.uiData.confirmModal.modal).get(0));
+        modal.show();
+    }
+    function confirmPromptEnd(event) {
+        let data = event.data;
+        $(data.uiData.confirmModal.confirmBtn).off("click", data.modalData.accept);
+        $(data.uiData.confirmModal.rejectBtn).off("click", data.modalData.reject);
+    }
     const fileRegex = /^[a-zA-Z0-9._]+$/;
     function setFileNameLink(modal, editor) {
         let newFilename = $(modal.inputField).val();
@@ -17430,12 +17444,31 @@
             $(modal.wrongCodeWarning).attr("hidden", "");
         }
         let blob = new Blob([editor.state.doc.toString()], { type: 'text/plain' });
-        $(modal.confirm_btn).attr("href", window.URL.createObjectURL(blob));
-        $(modal.confirm_btn).attr("download", newFilename);
+        $(modal.confirmBtn).attr("href", window.URL.createObjectURL(blob));
+        $(modal.confirmBtn).attr("download", newFilename);
     }
     function HookUpCommonUI(uiData) {
         $(uiData.downloadModal.modal).on('shown', () => setFileNameLink(uiData.downloadModal, uiData.editor));
         $(uiData.downloadModal.inputField).change(() => setFileNameLink(uiData.downloadModal, uiData.editor));
+        //Hook ConfirmCallers
+        uiData.confirmCallers.forEach((confirmCaller) => {
+            let confirmArgs = {
+                uiData: uiData,
+                modalData: confirmCaller.data,
+            };
+            $(confirmCaller.button).on('click', null, confirmArgs, confirmPrompt);
+            $(uiData.confirmModal.modal).on('hidden.bs.modal', null, confirmArgs, confirmPromptEnd);
+        });
+    }
+    function SetText(editor, message) {
+        let transaction = editor.state.update({
+            changes: {
+                from: 0,
+                to: editor.state.doc.length,
+                insert: message
+            }
+        });
+        editor.dispatch(transaction);
     }
 
     splitPanels();
@@ -17451,10 +17484,28 @@
         editor: destkopEditor,
         downloadModal: {
             modal: "#saveCodeModal",
-            confirm_btn: "#downloadCodeBtn",
+            confirmBtn: "#downloadCodeBtn",
             inputField: "#codeName",
             wrongCodeWarning: "#wrongCodeName",
         },
+        confirmModal: {
+            modal: "#confirmModal",
+            titleField: "#confirmModalTitle",
+            messageField: "#confirmModalMessage",
+            confirmBtn: "#confirmModalYes",
+            rejectBtn: "#confirmModalNo",
+        },
+        confirmCallers: [
+            {
+                button: "#newJavaCodeNavBtn",
+                data: {
+                    accept: () => { SetText(destkopEditor, "class program {\n\tprogram () {\n\t\t// TODO poner codigo aqui\n\t\tturnoff();\n\t}\n}"); },
+                    message: "Perderás todo el código no guardado!",
+                    title: "Nuevo código Java",
+                    reject: () => { console.log("nay!"); },
+                }
+            }
+        ]
     });
     let DesktopUI = GetDesktopUIHelper();
     let PhoneUI = GetPhoneUIHelper({
@@ -17519,4 +17570,4 @@
         responsiveHack();
     });
 
-})();
+})(bootstrap);

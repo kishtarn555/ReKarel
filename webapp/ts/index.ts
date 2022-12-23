@@ -3,7 +3,7 @@ import { responsiveHack } from "./responsive-load";
 import { createEditors } from "./editor";
 import { GetDesktopUIHelper } from "./desktop-ui";
 import { GetPhoneUIHelper } from "./phone-ui";
-import { HookUpCommonUI } from "./common-ui";
+import { HookUpCommonUI, SetText } from "./common-ui";
 
 splitPanels();
 
@@ -21,10 +21,28 @@ HookUpCommonUI(
         editor:destkopEditor,
         downloadModal: {
             modal: "#saveCodeModal",
-            confirm_btn: "#downloadCodeBtn",
+            confirmBtn: "#downloadCodeBtn",
             inputField: "#codeName",
             wrongCodeWarning:"#wrongCodeName",
         },
+        confirmModal: {
+            modal: "#confirmModal",
+            titleField: "#confirmModalTitle",
+            messageField: "#confirmModalMessage",
+            confirmBtn: "#confirmModalYes",
+            rejectBtn: "#confirmModalNo",
+        },
+        confirmCallers: [
+            {
+                button: "#newJavaCodeNavBtn",
+                data: {
+                    accept: ()=>{SetText(destkopEditor, "class program {\n\tprogram () {\n\t\t// TODO poner codigo aqui\n\t\tturnoff();\n\t}\n}"); },
+                    message:"Perderás todo el código no guardado!",
+                    title: "Nuevo código Java",
+                    reject: ()=>{console.log("nay!"); },
+                }
+            }
+        ]
     }
 )
 let DesktopUI = GetDesktopUIHelper();
