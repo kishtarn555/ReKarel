@@ -9,4 +9,4 @@ It's main reason is so it works in mobile, currently it doesn't because
 This new version includes:
 
 * Now with bootstrap 5
-* Now with 
+* Now with CodeMirror 6
