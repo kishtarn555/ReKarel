@@ -17486,7 +17486,7 @@
         accept: () => {
             SetText(destkopEditor, "iniciar-programa\n\tinicia-ejecucion\n\t\t{ TODO poner codigo aqui }\n\t\tapagate;\n\ttermina-ejecucion\nfinalizar-programa");
         },
-        message: "Perderás todo el código no guardado!",
+        message: "¡Perderás todo el código no guardado!",
         title: "Nuevo código Pascal",
         reject: () => { },
     };
@@ -17494,7 +17494,7 @@
         accept: () => {
             SetText(destkopEditor, "class program {\n\tprogram () {\n\t\t// TODO poner codigo aqui \n\t\tturnoff();\n\t}\n}");
         },
-        message: "Perderás todo el código no guardado!",
+        message: "¡Perderás todo el código no guardado!",
         title: "Nuevo código Java",
         reject: () => { },
     };
