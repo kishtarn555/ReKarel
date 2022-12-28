@@ -17437,7 +17437,6 @@
     }
     const fileRegex = /^[a-zA-Z0-9._]+$/;
     function setFileNameLink(modal, editor) {
-        console.log("lol");
         let newFilename = $(modal.inputField).val();
         if (!fileRegex.test(newFilename)) {
             $(modal.wrongCodeWarning).removeAttr("hidden");
