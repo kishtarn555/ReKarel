@@ -2,6 +2,7 @@
     --action:#06c;
     --flow: rgb(138, 75, 167);
     --keyword: rgb(10, 140, 40);
+    --kw-gutter-size: 30px;
 }
 
 html, body {
@@ -176,6 +177,18 @@ pre.error-popup {
     height: 100%;
 }
 
+/* World Editor*/
+.kw-gutter-width {
+    width: var(--kw-gutter-size);
+    max-width: var(--kw-gutter-size);
+    min-width: var(--kw-gutter-size);
+}
+
+.kw-gutter-height {
+    height: var(--kw-gutter-size);    
+    max-height: var(--kw-gutter-size);
+    min-height: var(--kw-gutter-size);
+}
 
 @media (max-width: 1199px) {
     .visible-lg {

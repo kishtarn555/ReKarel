@@ -107,7 +107,7 @@
                                         </a>
                                         <ul class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
                                             <li>
-                                                <a class="dropdown-item" href="#"><i class="bi bi-palette"></i> Tema</a>
+                                                <button class="dropdown-item"><i class="bi bi-gear-fill"></i> Configuración</button>
                                             </li>
                                         </ul>
                                     </li>
@@ -264,7 +264,7 @@
                                                         aria-controls="pilaTab" aria-selected="false">Pila</button>
                                                 </li>
                                             </ul>
-                                            <div class="tab-content bg-danger flex-grow-1 overflow-auto"
+                                            <div class="tab-content flex-grow-1 overflow-auto"
                                                 id="ExecDataContent">
                                                 <div class="tab-pane fade show active" id="mensajesTab" role="tabpanel"
                                                     aria-labelledby="mensajesTab-tab">
@@ -272,14 +272,26 @@
                                                 </div>
                                                 <div class="tab-pane fade" id="pilaTab" role="tabpanel"
                                                     aria-labelledby="pilaTab-tab">
-
+                                                    
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
                                 <div class="split split-horizontal" id="splitter-right-pane">
-                                    <div class="w-100 h-100 d-flex flex-column-reverse overflow-scroll m-5"></div>
+                                    <div class="w-100 h-100 overflow-scroll d-flex flex-column-reverse">
+                                        <!-- World -->
+                                        <div class="d-flex flex-nowrap kw-gutter-height">
+                                            <div class="bg-secondary m-0 kw-gutter-width"></div>
+                                            <canvas style="width: 1200px !important; min-width: 1200px;" class="bg-success kw-gutter-height"></canvas>                                        
+                                        </div>                                    
+                                        <div class="d-flex flex-nowrap">
+                                            <canvas style="height:1000px"; class="kw-gutter-width"></canvas>
+                                            <canvas style="height:1000px;width:1200px;" class="bg-info ">
+                                            </canvas>
+                                        </div>    
+
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -498,7 +510,7 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    
+
                     <div class="d-flex justify-content-around">
                         
                         <button id="downloadWorldIn" class="btn btn-primary" data-bs-dismiss="modal" data-bs-dialog="none">
