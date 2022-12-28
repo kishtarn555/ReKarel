@@ -77,6 +77,7 @@ function confirmPromptEnd(event) {
 
 const fileRegex = /^[a-zA-Z0-9._]+$/;
 function setFileNameLink(modal: DownloadModal, editor:EditorView) {
+    console.log("lol");
     let newFilename: string = <string>$(modal.inputField).val();    
     if (!fileRegex.test(newFilename)) {
         $(modal.wrongCodeWarning).removeAttr("hidden");
@@ -91,7 +92,7 @@ function setFileNameLink(modal: DownloadModal, editor:EditorView) {
 
 function HookUpCommonUI(uiData: UiData) {
     
-    $(uiData.downloadModal.modal).on('shown', ()=>setFileNameLink(uiData.downloadModal, uiData.editor));
+    $(uiData.downloadModal.modal).on('show.bs.modal', ()=>setFileNameLink(uiData.downloadModal, uiData.editor));
     $(uiData.downloadModal.inputField).change(()=>setFileNameLink(uiData.downloadModal, uiData.editor));
 
     //Hook ConfirmCallers

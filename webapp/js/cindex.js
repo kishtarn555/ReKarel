@@ -17437,6 +17437,7 @@
     }
     const fileRegex = /^[a-zA-Z0-9._]+$/;
     function setFileNameLink(modal, editor) {
+        console.log("lol");
         let newFilename = $(modal.inputField).val();
         if (!fileRegex.test(newFilename)) {
             $(modal.wrongCodeWarning).removeAttr("hidden");
@@ -17450,7 +17451,7 @@
         $(modal.confirmBtn).attr("download", newFilename);
     }
     function HookUpCommonUI(uiData) {
-        $(uiData.downloadModal.modal).on('shown', () => setFileNameLink(uiData.downloadModal, uiData.editor));
+        $(uiData.downloadModal.modal).on('show.bs.modal', () => setFileNameLink(uiData.downloadModal, uiData.editor));
         $(uiData.downloadModal.inputField).change(() => setFileNameLink(uiData.downloadModal, uiData.editor));
         //Hook ConfirmCallers
         uiData.confirmCallers.forEach((confirmCaller) => {
