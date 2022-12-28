@@ -83,234 +83,236 @@
             
 
             <div id="desktopView" class="flex-grow-1 m-0 p-0">
-                <nav class="navbar navbar-expand-lg navbar-dark bg-omega p-0">
-                    <div class="container">
-                        <a class="navbar-brand" href="#">Karel.js</a>
-                        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
-                            aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-                            <span class="navbar-toggler-icon"></span>
-                        </button>
-                        <div class="collapse navbar-collapse" id="navbarNav">
-                            <ul class="navbar-nav">
-                                <li class="nav-item dropdown">
-                                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button"
-                                        data-bs-toggle="dropdown" aria-expanded="false">
-                                        Mundo
-                                    </a>
-                                    <ul class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
-                                        <li><a class="dropdown-item" href="#"><i class="bi bi-plus-square"></i> Nuevo</a>
-                                        </li>
-                                        <li><a class="dropdown-item" href="#"><i class="bi bi-file-earmark-image"></i> Abrir
-                                                mundo.in</a></li>
-                                        <li><a class="dropdown-item" href="#"><i class="bi bi-file-earmark-arrow-down"></i>
-                                                Importar
-                                                MDO/KEC</a></li>
-                                        <li>
-                                            <hr class="dropdown-divider">
-                                        </li>
-                                        <li>
-                                            <a class="dropdown-item" href="#">
-                                                <i class="bi bi-box-arrow-down"></i>
-                                                 Descargar mundo
-                                            </a>
-                                        </li>
-                                    </ul>
-                                </li>
-                                <li class="nav-item dropdown">
-                                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button"
-                                        data-bs-toggle="dropdown" aria-expanded="false">
-                                        Código
-                                    </a>
-                                    <ul class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
-                                        <li>
-                                            <button id="newJavaCodeNavBtn" class="dropdown-item">
-                                                <i class="bi bi-file-earmark-plus"></i> Nuevo Java
-                                            </button>
-                                        </li>
-                                        <li>
-                                            <button id="newPascalCodeNavBtn" class="dropdown-item">
-                                                <i class="bi bi-file-earmark-plus"></i> Nuevo Pascal
-                                            </button>
-                                        </li>
-                                        <li>
-                                            <hr class="dropdown-divider">
-                                        </li>
-                                        <li><a class="dropdown-item" href="#"><i class="bi bi-folder2-open"></i> Abrir
-                                                código</a>
-                                        </li>
-                                        <li>
-                                            <button type="button" class="dropdown-item" data-bs-toggle="modal"
-                                                data-bs-target="#saveCodeModal">
-                                                <i class="bi bi-box-arrow-down"></i> Descargar
-                                                código
-                                            </button>
-                                        </li>
-                                    </ul>
-                                </li>
-                                <li class="nav-item dropdown">
-                                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button"
-                                        data-bs-toggle="dropdown" aria-expanded="false">
-                                        Opciones
-                                    </a>
-                                    <ul class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
-                                        <li>
-                                            <a class="dropdown-item" href="#"><i class="bi bi-palette"></i> Tema</a>
-                                        </li>
-                                    </ul>
-                                </li>
-                                <li class="nav-item dropdown">
-                                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button"
-                                        data-bs-toggle="dropdown" aria-expanded="false">
-                                        Ayuda
-                                    </a>
-                                    <ul class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
-                                        <li>
-                                            <a class="dropdown-item" href="ayuda.html" target="_blank"><i
-                                                    class="bi bi-book"></i> Manual de trucos</a>
-                                        </li>
-                                        <li>
-                                            <a class="dropdown-item"
-                                                href="https://omegaup.com/course/IntroduccionaKarel/"><i
-                                                    class="bi bi-journal-text"></i> Curso Karel Java</a>
-                                        </li>
-                                        <li>
-                                            <a class="dropdown-item"
-                                                href="https://omegaup.com/course/omiags-curso-karel/"><i
-                                                    class="bi bi-journal-text"></i> Curso Karel Pascal</a>
-                                        </li>
-                                        <li>
-                                            <hr class="dropdown-divider">
-                                        </li>
-                                        <li>
-                                            <a class="dropdown-item" href="#"><i class="bi bi-info-circle"></i> Acerca
-                                                de</a>
-                                        </li>
-                                    </ul>
-                                </li>
-                            </ul>
-                        </div>
-                    </div>
-                </nav>
-                <div class="d-flex flex-column h-100 m-0 p-0">
-                    <div class="border-bottom bg-light p-1">
+                <div class="h-100 w-100 d-flex flex-column">
+                    <nav class="navbar navbar-expand-lg navbar-dark bg-omega p-0">
                         <div class="container">
-                            <div class="btn-toolbar m-1">
-                                <div class="btn-group me-3" role="group" aria-label="Basic example">
-                                    <button type="button" class="btn btn-light p-1 ps-2 pe-2 border-dark"
-                                        title="Regresa el mundo a su estado original">
-                                        <i class="bi bi-arrow-clockwise"></i>
-                                    </button>
-                                </div>
-                                <div class="btn-group me-3" role="group" aria-label="Basic example">
-                                    <button type="button" class="btn btn-light p-1 ps-2 pe-2 border-dark"
-                                        title="Compila el programa">
-                                        <i class="bi bi-microsoft"></i>
-                                    </button>
-                                    <button type="button" class="btn btn-light p-1 ps-2 pe-2 border-dark"
-                                        title="Regresa el mundo a su estado original">
-                                        <i class="bi bi-play-fill"></i>
-                                    </button>
-                                    <button type="button" class="btn btn-light p-1 ps-2 pe-2 border-dark"
-                                        title="Regresa el mundo a su estado original">
-                                        <i class="bi bi-skip-forward-fill"></i>
-                                    </button>
-                                    <button type="button" class="btn btn-light p-1 ps-2 pe-2 border-dark"
-                                        title="Regresa el mundo a su estado original">
-                                        <i class="bi bi-eye-fill"></i>
-                                    </button>
-                                </div>
-
-                                <div class="btn-group me-3" role="group" aria-label="Basic example">
-                                    <button type="button" class="btn btn-light p-1 ps-2 pe-2 border-dark"
-                                        title="Regresa el mundo a su estado original">
-                                        <i class="bi bi-house-door-fill"></i>
-                                    </button>
-                                    <button type="button" class="btn btn-light p-1 ps-2 pe-2 border-dark"
-                                        title="Regresa el mundo a su estado original">
-                                        <i class="bi bi-arrow-up"></i>
-                                    </button>
-                                </div>
-
-                                <div class="input-group me-3" role="group" aria-label="Basic example">
-                                    <div class="input-group-text bg-light border-dark ps-2 pe-2"><small>Mochila</small>
+                            <a class="navbar-brand" href="#">Karel.js</a>
+                            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+                                aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                                <span class="navbar-toggler-icon"></span>
+                            </button>
+                            <div class="collapse navbar-collapse" id="navbarNav">
+                                <ul class="navbar-nav">
+                                    <li class="nav-item dropdown">
+                                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button"
+                                            data-bs-toggle="dropdown" aria-expanded="false">
+                                            Mundo
+                                        </a>
+                                        <ul class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+                                            <li><a class="dropdown-item" href="#"><i class="bi bi-plus-square"></i> Nuevo</a>
+                                            </li>
+                                            <li><a class="dropdown-item" href="#"><i class="bi bi-file-earmark-image"></i> Abrir
+                                                    mundo.in</a></li>
+                                            <li><a class="dropdown-item" href="#"><i class="bi bi-file-earmark-arrow-down"></i>
+                                                    Importar
+                                                    MDO/KEC</a></li>
+                                            <li>
+                                                <hr class="dropdown-divider">
+                                            </li>
+                                            <li>
+                                                <a class="dropdown-item" href="#">
+                                                    <i class="bi bi-box-arrow-down"></i>
+                                                    Descargar mundo
+                                                </a>
+                                            </li>
+                                        </ul>
+                                    </li>
+                                    <li class="nav-item dropdown">
+                                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button"
+                                            data-bs-toggle="dropdown" aria-expanded="false">
+                                            Código
+                                        </a>
+                                        <ul class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+                                            <li>
+                                                <button id="newJavaCodeNavBtn" class="dropdown-item">
+                                                    <i class="bi bi-file-earmark-plus"></i> Nuevo Java
+                                                </button>
+                                            </li>
+                                            <li>
+                                                <button id="newPascalCodeNavBtn" class="dropdown-item">
+                                                    <i class="bi bi-file-earmark-plus"></i> Nuevo Pascal
+                                                </button>
+                                            </li>
+                                            <li>
+                                                <hr class="dropdown-divider">
+                                            </li>
+                                            <li><a class="dropdown-item" href="#"><i class="bi bi-folder2-open"></i> Abrir
+                                                    código</a>
+                                            </li>
+                                            <li>
+                                                <button type="button" class="dropdown-item" data-bs-toggle="modal"
+                                                    data-bs-target="#saveCodeModal">
+                                                    <i class="bi bi-box-arrow-down"></i> Descargar
+                                                    código
+                                                </button>
+                                            </li>
+                                        </ul>
+                                    </li>
+                                    <li class="nav-item dropdown">
+                                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button"
+                                            data-bs-toggle="dropdown" aria-expanded="false">
+                                            Opciones
+                                        </a>
+                                        <ul class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+                                            <li>
+                                                <a class="dropdown-item" href="#"><i class="bi bi-palette"></i> Tema</a>
+                                            </li>
+                                        </ul>
+                                    </li>
+                                    <li class="nav-item dropdown">
+                                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button"
+                                            data-bs-toggle="dropdown" aria-expanded="false">
+                                            Ayuda
+                                        </a>
+                                        <ul class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+                                            <li>
+                                                <a class="dropdown-item" href="ayuda.html" target="_blank"><i
+                                                        class="bi bi-book"></i> Manual de trucos</a>
+                                            </li>
+                                            <li>
+                                                <a class="dropdown-item"
+                                                    href="https://omegaup.com/course/IntroduccionaKarel/"><i
+                                                        class="bi bi-journal-text"></i> Curso Karel Java</a>
+                                            </li>
+                                            <li>
+                                                <a class="dropdown-item"
+                                                    href="https://omegaup.com/course/omiags-curso-karel/"><i
+                                                        class="bi bi-journal-text"></i> Curso Karel Pascal</a>
+                                            </li>
+                                            <li>
+                                                <hr class="dropdown-divider">
+                                            </li>
+                                            <li>
+                                                <a class="dropdown-item" href="#"><i class="bi bi-info-circle"></i> Acerca
+                                                    de</a>
+                                            </li>
+                                        </ul>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </nav>
+                    <div class="d-flex flex-column flex-grow-1 m-0 p-0">
+                        <div class="border-bottom bg-light p-1">
+                            <div class="container">
+                                <div class="btn-toolbar m-1 gap-2">
+                                    <div class="btn-group" role="group" aria-label="Basic example">
+                                        <button type="button" class="btn btn-light p-1 ps-2 pe-2 border-dark"
+                                            title="Regresa el mundo a su estado original">
+                                            <i class="bi bi-arrow-clockwise"></i>
+                                        </button>
                                     </div>
-                                    <input type="number" id="beeperBag" class="form-control border-dark" aria-label=""
-                                        aria-describedby="btnGroupAddon" min="0" value="0">
-                                    <button type="button" class="btn btn-light p-1 ps-3 pe-3 border-dark"
-                                        id="infiniteBeepersBtn" title="Regresa el mundo a su estado original">
-                                        <i class="bi bi-infinity"></i>
-                                    </button>
-                                </div>
-
-
-
-                                <div class="input-group me-3" role="group" aria-label="Basic example">
-                                    <div class="input-group-text bg-light border-dark ps-2 pe-2"><small>Retraso
-                                            (ms)</small>
+                                    <div class="btn-group" role="group" aria-label="Basic example">
+                                        <button type="button" class="btn btn-light p-1 ps-2 pe-2 border-dark"
+                                            title="Compila el programa">
+                                            <i class="bi bi-microsoft"></i>
+                                        </button>
+                                        <button type="button" class="btn btn-light p-1 ps-2 pe-2 border-dark"
+                                            title="Regresa el mundo a su estado original">
+                                            <i class="bi bi-play-fill"></i>
+                                        </button>
+                                        <button type="button" class="btn btn-light p-1 ps-2 pe-2 border-dark"
+                                            title="Regresa el mundo a su estado original">
+                                            <i class="bi bi-skip-forward-fill"></i>
+                                        </button>
+                                        <button type="button" class="btn btn-light p-1 ps-2 pe-2 border-dark"
+                                            title="Regresa el mundo a su estado original">
+                                            <i class="bi bi-eye-fill"></i>
+                                        </button>
                                     </div>
-                                    <input type="number" id="delayPanel" class="form-control border-dark" aria-label=""
-                                        aria-describedby="btnGroupAddon" min="0" value="0">
-                                    <button type="button" class="btn btn-light p-1 ps-1 pe-1 border-dark"
-                                        id="addDelayBtn" title="Regresa el mundo a su estado original">
-                                        <i class="bi bi-plus"></i>
-                                    </button>
-                                    <button type="button" class="btn btn-light p-1 ps-1 pe-1 border-dark"
-                                        id="removeDelayBtn" title="Regresa el mundo a su estado original">
-                                        <i class="bi bi-dash"></i>
-                                    </button>
-                                </div>
 
-
-                                <div class="input-group me-3" role="group" aria-label="Basic example">
-                                    <div class="input-group-text bg-light border-dark ps-2 pe-2"><small>Filas</small>
+                                    <div class="btn-group" role="group" aria-label="Basic example">
+                                        <button type="button" class="btn btn-light p-1 ps-2 pe-2 border-dark"
+                                            title="Regresa el mundo a su estado original">
+                                            <i class="bi bi-house-door-fill"></i>
+                                        </button>
+                                        <button type="button" class="btn btn-light p-1 ps-2 pe-2 border-dark"
+                                            title="Regresa el mundo a su estado original">
+                                            <i class="bi bi-arrow-up"></i>
+                                        </button>
                                     </div>
-                                    <input type="number" id="toolbarRows" class="form-control border-dark" aria-label=""
-                                        aria-describedby="btnGroupAddon" min="1" value="100">
-                                    <div class="input-group-text bg-light border-dark ps-2 pe-2"><small>Mochila</small>
-                                    </div>
-                                    <input type="number" id="toolbarCols" class="form-control border-dark" aria-label=""
-                                        aria-describedby="btnGroupAddon" min="1" value="100">
 
-                                </div>
-                                <div class="btn-group me-3" role="group" aria-label="Basic example">
-                                    <button type="button" class="btn btn-light p-1 ps-2 pe-2 border-dark"
-                                        title="Regresa el mundo a su estado original">
-                                        <i class="bi bi-list-check"></i> Evaluador
-                                    </button>
+                                    <div class="input-group" role="group" aria-label="Basic example">
+                                        <div class="input-group-text bg-light border-dark ps-2 pe-2"><small>Mochila</small>
+                                        </div>
+                                        <input type="number" id="beeperBag" class="form-control border-dark" aria-label=""
+                                            aria-describedby="btnGroupAddon" min="0" value="0">
+                                        <button type="button" class="btn btn-light p-1 ps-3 pe-3 border-dark"
+                                            id="infiniteBeepersBtn" title="Regresa el mundo a su estado original">
+                                            <i class="bi bi-infinity"></i>
+                                        </button>
+                                    </div>
+
+
+
+                                    <div class="input-group" role="group" aria-label="Basic example">
+                                        <div class="input-group-text bg-light border-dark ps-2 pe-2"><small>Retraso
+                                                (ms)</small>
+                                        </div>
+                                        <input type="number" id="delayPanel" class="form-control border-dark" aria-label=""
+                                            aria-describedby="btnGroupAddon" min="0" value="0">
+                                        <button type="button" class="btn btn-light p-1 ps-1 pe-1 border-dark"
+                                            id="addDelayBtn" title="Regresa el mundo a su estado original">
+                                            <i class="bi bi-plus"></i>
+                                        </button>
+                                        <button type="button" class="btn btn-light p-1 ps-1 pe-1 border-dark"
+                                            id="removeDelayBtn" title="Regresa el mundo a su estado original">
+                                            <i class="bi bi-dash"></i>
+                                        </button>
+                                    </div>
+
+
+                                    <div class="input-group" role="group" aria-label="Basic example">
+                                        <div class="input-group-text bg-light border-dark ps-2 pe-2"><small>Filas</small>
+                                        </div>
+                                        <input type="number" id="toolbarRows" class="form-control border-dark" aria-label=""
+                                            aria-describedby="btnGroupAddon" min="1" value="100">
+                                        <div class="input-group-text bg-light border-dark ps-2 pe-2"><small>Mochila</small>
+                                        </div>
+                                        <input type="number" id="toolbarCols" class="form-control border-dark" aria-label=""
+                                            aria-describedby="btnGroupAddon" min="1" value="100">
+
+                                    </div>
+                                    <div class="btn-group" role="group" aria-label="Basic example">
+                                        <button type="button" class="btn btn-light p-1 ps-2 pe-2 border-dark"
+                                            title="Regresa el mundo a su estado original">
+                                            <i class="bi bi-list-check"></i> Evaluador
+                                        </button>
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
-                    <div class="position-relative flex-grow-1">
-                        <div id="splitter-container">
-                            <div class="split split-horizontal" id="splitter-left-pane">
-                                <div class="split content" id="splitter-left-top-pane">
-                                    
-                   
-                                </div>
-                                <div class="split content tabbable flex-grow-1" id="splitter-left-bottom-pane">
+                        <div class="position-relative flex-grow-1">
+                            <div id="splitter-container">
+                                <div class="split split-horizontal" id="splitter-left-pane">
+                                    <div class="split content" id="splitter-left-top-pane">
+                                        
+                    
+                                    </div>
+                                    <div class="split content tabbable flex-grow-1" id="splitter-left-bottom-pane">
 
 
-                                    <!-- Only required for left/right tabs -->
-                                    <ul class="nav nav-tabs">
-                                        <li>
-                                            <a data-toggle="tab" href="#pila">Pila</a>
-                                        </li>
-                                        <li class="active">
-                                            <a data-toggle="tab" href="#mensajes">Mensajes <span
-                                                    id="mensajes_cuenta"></span></a>
-                                        </li>
-                                    </ul>
-                                    <div class="tab-content">
-                                        <div class="tab-pane" id="pila">
-                                            <table class="table table-striped table-hover"></table>
+                                        <!-- Only required for left/right tabs -->
+                                        <ul class="nav nav-tabs">
+                                            <li>
+                                                <a data-toggle="tab" href="#pila">Pila</a>
+                                            </li>
+                                            <li class="active">
+                                                <a data-toggle="tab" href="#mensajes">Mensajes <span
+                                                        id="mensajes_cuenta"></span></a>
+                                            </li>
+                                        </ul>
+                                        <div class="tab-content">
+                                            <div class="tab-pane" id="pila">
+                                                <table class="table table-striped table-hover"></table>
+                                            </div>
+                                            <div class="tab-pane active" id="mensajes"></div>
                                         </div>
-                                        <div class="tab-pane active" id="mensajes"></div>
                                     </div>
                                 </div>
-                            </div>
-                            <div class="split split-horizontal" id="splitter-right-pane">
-                                <canvas height="400" id="world" width="574"></canvas>
+                                <div class="split split-horizontal" id="splitter-right-pane">
+                                    <div class="w-100 h-100 d-flex flex-column-reverse overflow-scroll m-5"></div>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -369,10 +371,10 @@
                                 </div>
 
                                 <div class="btn-group mb-1">
-                                    <button class="btn btn-secondary border-end">
+                                    <button id="codeUndo" class="btn btn-secondary border-end">
                                         <i class="bi bi-arrow-counterclockwise"></i>
                                     </button>
-                                    <button class="btn btn-secondary border-start">
+                                    <button id="codeRedo" class="btn btn-secondary border-start">
                                         <i class="bi bi-arrow-clockwise"></i>
                                     </button>
                                 </div>

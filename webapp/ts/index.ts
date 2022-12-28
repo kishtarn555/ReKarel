@@ -76,6 +76,7 @@ HookUpCommonUI(
 let DesktopUI = GetDesktopUIHelper();
 let PhoneUI = GetPhoneUIHelper({
     editor: phoneEditor,
+    mainEdtior: destkopEditor,
     codeTab: {
         indent: "#codeIndent",
         unindent: "#codeUnindent",

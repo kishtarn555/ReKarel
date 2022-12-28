@@ -17398,24 +17398,26 @@
     //TODO: Add support for states
     function GetPhoneUIHelper(elements) {
         let response = {
-            changeCodeToolbar: (button) => activateButton(elements.codeTabToolbar, button),
+            changeCodeToolbar: (button) => activateButton(elements.codeTab.toolbar, button),
             changeNavToolbar: (button) => activateButton(elements.navToolbar, button),
             indent: () => indent(elements),
             unindent: () => unindent(elements),
-            btnSimpleCodeInput: (btn) => replaceWithIndetation(elements, elements.simpleCodeInputs[btn]()),
+            btnSimpleCodeInput: (btn) => replaceWithIndetation(elements, elements.codeTab.simpleCodeInputs[btn]()),
             replaceWithIndetation: (txt) => replaceWithIndetation(elements, txt),
         };
         for (const btn in elements.navToolbar) {
             $(btn).click(() => response.changeNavToolbar(btn));
         }
-        for (const btn in elements.codeTabToolbar) {
+        for (const btn in elements.codeTab.toolbar) {
             $(btn).click(() => response.changeCodeToolbar(btn));
         }
-        for (const btn in elements.simpleCodeInputs) {
+        for (const btn in elements.codeTab.simpleCodeInputs) {
             $(btn).click(() => response.btnSimpleCodeInput(btn));
         }
-        $(elements.codeIndent).click(response.indent);
-        $(elements.codeUnindent).click(response.unindent);
+        $(elements.codeTab.indent).click(response.indent);
+        $(elements.codeTab.unindent).click(response.unindent);
+        $(elements.codeTab.undo).on("click", () => { undo(elements.mainEdtior); });
+        $(elements.codeTab.redo).on("click", () => { redo(elements.mainEdtior); });
         return response;
     }
 
@@ -17533,56 +17535,61 @@
     let DesktopUI = GetDesktopUIHelper();
     let PhoneUI = GetPhoneUIHelper({
         editor: phoneEditor,
-        codeIndent: "#codeIndent",
-        codeUnindent: "#codeUnindent",
+        mainEdtior: destkopEditor,
+        codeTab: {
+            indent: "#codeIndent",
+            unindent: "#codeUnindent",
+            undo: "#codeUndo",
+            redo: "#codeRedo",
+            toolbar: {
+                "#codeEdit": () => {
+                    hideElement("#editToolbar");
+                    hideElement("#pascalAction");
+                    hideElement("#pascalFlow");
+                    hideElement("#pascalKeyword");
+                    showElement("#editToolbar");
+                    return "";
+                },
+                "#codeAction": () => {
+                    hideElement("#editToolbar");
+                    hideElement("#pascalAction");
+                    hideElement("#pascalFlow");
+                    hideElement("#pascalKeyword");
+                    showElement("#pascalAction");
+                    return "";
+                },
+                "#codeFlow": () => {
+                    hideElement("#editToolbar");
+                    hideElement("#pascalAction");
+                    hideElement("#pascalFlow");
+                    hideElement("#pascalKeyword");
+                    showElement("#pascalFlow");
+                    return "";
+                },
+                "#codeKeyword": () => {
+                    hideElement("#editToolbar");
+                    hideElement("#pascalAction");
+                    hideElement("#pascalFlow");
+                    hideElement("#pascalKeyword");
+                    showElement("#pascalKeyword");
+                    return "";
+                }
+            },
+            simpleCodeInputs: {
+                "#pAvanza": () => "avanza;",
+                "#pGira": () => "gira-izquierda;",
+                "#pCoge": () => "coge-zumbador;",
+                "#pDeja": () => "deja-zumbador;",
+                "#pApagate": () => "apagate;",
+                "#pSalir": () => "sal-de-instruccion;",
+            }
+        },
         navToolbar: {
             "#codeTabBtn": () => "",
             "#worldTabBtn": () => "",
             "#execTabBtn": () => "",
             "#settingTabBtn": () => ""
         },
-        codeTabToolbar: {
-            "#codeEdit": () => {
-                hideElement("#editToolbar");
-                hideElement("#pascalAction");
-                hideElement("#pascalFlow");
-                hideElement("#pascalKeyword");
-                showElement("#editToolbar");
-                return "";
-            },
-            "#codeAction": () => {
-                hideElement("#editToolbar");
-                hideElement("#pascalAction");
-                hideElement("#pascalFlow");
-                hideElement("#pascalKeyword");
-                showElement("#pascalAction");
-                return "";
-            },
-            "#codeFlow": () => {
-                hideElement("#editToolbar");
-                hideElement("#pascalAction");
-                hideElement("#pascalFlow");
-                hideElement("#pascalKeyword");
-                showElement("#pascalFlow");
-                return "";
-            },
-            "#codeKeyword": () => {
-                hideElement("#editToolbar");
-                hideElement("#pascalAction");
-                hideElement("#pascalFlow");
-                hideElement("#pascalKeyword");
-                showElement("#pascalKeyword");
-                return "";
-            }
-        },
-        simpleCodeInputs: {
-            "#pAvanza": () => "avanza;",
-            "#pGira": () => "gira-izquierda;",
-            "#pCoge": () => "coge-zumbador;",
-            "#pDeja": () => "deja-zumbador;",
-            "#pApagate": () => "apagate;",
-            "#pSalir": () => "sal-de-instruccion;",
-        }
     });
     //Activate default states
     PhoneUI.changeCodeToolbar("#codeAction");

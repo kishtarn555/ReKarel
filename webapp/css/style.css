@@ -161,7 +161,7 @@ pre.error-popup {
     -moz-box-sizing: border-box;
     box-sizing: border-box;
 
-    overflow-y: auto;
+    overflow-y: hidden;
     overflow-x: hidden;
 }
 

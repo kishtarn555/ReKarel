@@ -16,7 +16,8 @@ type CodeTab = {
 interface UIElements {
     navToolbar: Toolbar,
     codeTab: CodeTab
-    editor: EditorView
+    editor: EditorView,
+    mainEdtior: EditorView,
 }
 function activateButton(toolbar: Toolbar, buttonPressed: string) {
     for (const element in toolbar) {
@@ -104,11 +105,11 @@ function GetPhoneUIHelper(elements: UIElements) {
 
     $(elements.codeTab.undo).on(
         "click", 
-        ()=> { undo(elements.editor);}
+        ()=> { undo(elements.mainEdtior);}
     );
     $(elements.codeTab.redo).on(
         "click", 
-        ()=> { redo(elements.editor);}
+        ()=> { redo(elements.mainEdtior);}
     );
     return response
 }
