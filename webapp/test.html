@@ -1,34 +1,33 @@
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-    <style>
-        .gutter {
-    background-color: #444;
+<!DOCTYPE HTML>
+ <html>
+ <head>
+ <style type="text/css">
+       #div1 {width:350px;height:70px;padding:10px;border:1px solid #aaaaaa;}
+ </style>
+ </head>
+ <body>
 
-    background-repeat: no-repeat;
-    background-position: 50%;
-}
+ <p>Drag the W3Schools image into the rectangle:</p>
 
-.gutter.gutter-horizontal {
-    cursor: col-resize;
-}
+ <div id="div1"></div>
+ <br>
+ <img id="drag" src="img_logo.gif" width="336" height="69">
 
-.gutter.gutter-vertical {
-    cursor: row-resize;
-}
-    </style>
+ <script type="text/javascript">
+  var el = document.getElementById('drag'); 
 
-</head>
-<body>
-    <div style="width: 100%; height: 500px;">
-        <div id="a" style="background-color: red;"><p>hola</p></div>
-        <div id="b" style="background-color: blue;">Hello</div>
-    </div>
+  el.addEventListener("touchstart", handleStart, false);
+  el.addEventListener("touchend", handleEnd, false);
+  el.addEventListener("touchcancel", handleCancel, false);
+  el.addEventListener("touchleave", handleEnd, false);
+  el.addEventListener("touchmove", handleMove, false);
 
-    <script  src="js/splittest.js"></script>
+  function handleStart(event) {
+      // Handle the start of the touch
+  }
 
+  // ^ Do the same for the rest of the events
+
+</script>
 </body>
 </html>

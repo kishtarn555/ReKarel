@@ -8,6 +8,7 @@
         integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.2/font/bootstrap-icons.css">
 
+    <link rel="shortcut icon" href="img/karel-up.svg" type="image/x-icon">
 
     <title>Karel.js</title>   
 
@@ -172,18 +173,7 @@
                                             title="Ver resultado">
                                             <i class="bi bi-eye-fill"></i>
                                         </button>
-                                    </div>
-
-                                    <div class="btn-group" role="group" aria-label="Basic example">
-                                        <button type="button" class="btn btn-light p-1 ps-2 pe-2 border-dark"
-                                            title="Ver al origen (1,1)">
-                                            <i class="bi bi-house-door-fill"></i>
-                                        </button>
-                                        <button type="button" class="btn btn-light p-1 ps-2 pe-2 border-dark"
-                                            title="Ver a Karel">
-                                            <i class="bi bi-arrow-up"></i>
-                                        </button>
-                                    </div>
+                                    </div>                                    
 
                                     <div class="input-group" role="group" aria-label="Basic example">
                                         <div class="input-group-text bg-light border-dark ps-2 pe-2"
@@ -206,13 +196,13 @@
                                         </div>
                                         <input type="number" id="delayPanel" class="form-control border-dark"
                                             aria-label="" aria-describedby="btnGroupAddon" min="0" value="0">
+                                            <button type="button" class="btn btn-light p-1 ps-1 pe-1 border-dark"
+                                            id="removeDelayBtn" title="Regresa el mundo a su estado original">
+                                            <i class="bi bi-dash"></i>
+                                        </button>
                                         <button type="button" class="btn btn-light p-1 ps-1 pe-1 border-dark"
                                             id="addDelayBtn" title="Regresa el mundo a su estado original">
                                             <i class="bi bi-plus"></i>
-                                        </button>
-                                        <button type="button" class="btn btn-light p-1 ps-1 pe-1 border-dark"
-                                            id="removeDelayBtn" title="Regresa el mundo a su estado original">
-                                            <i class="bi bi-dash"></i>
                                         </button>
                                     </div>
 
@@ -253,22 +243,37 @@
                                         <div class="d-flex flex-column h-100 w-100">
                                             <ul class="nav nav-tabs" id="ExecData" role="tablist">
                                                 <li class="nav-item" role="presentation">
-                                                    <button class="nav-link active" id="mensajesTab-tab"
-                                                        data-bs-toggle="tab" data-bs-target="#mensajesTab" type="button"
-                                                        role="tab" aria-controls="mensajesTab"
-                                                        aria-selected="true">Mensajes</button>
+                                                    <button class="nav-link active" id="consoleTab-tab"
+                                                        data-bs-toggle="tab" data-bs-target="#consoleTab" type="button"
+                                                        role="tab" aria-controls="consoleTab"
+                                                        aria-selected="true">
+                                                        Consola
+                                                        <span class="badge rounded-pill bg-primary">0</span>
+                                                    </button>
                                                 </li>
                                                 <li class="nav-item" role="presentation">
                                                     <button class="nav-link" id="pilaTab-tab" data-bs-toggle="tab"
                                                         data-bs-target="#pilaTab" type="button" role="tab"
-                                                        aria-controls="pilaTab" aria-selected="false">Pila</button>
+                                                        aria-controls="pilaTab" aria-selected="false">
+                                                        <i class="bi bi-stack"></i> Pila
+                                                    </button>
                                                 </li>
                                             </ul>
                                             <div class="tab-content flex-grow-1 overflow-auto"
                                                 id="ExecDataContent">
-                                                <div class="tab-pane fade show active" id="mensajesTab" role="tabpanel"
-                                                    aria-labelledby="mensajesTab-tab">
-
+                                                <div class="tab-pane fade show active d-flex flex-column h-100 p-2 bg-dark text-light" id="consoleTab" role="tabpanel"
+                                                    aria-labelledby="consoleTab-tab">
+                                                    <div class="d-flex flex-column-reverse flex-grow-1 overflow-auto">
+                                                        <div><span class="text-info">[5:11:30 pm]</span> Bienvenido</div>
+                                                        
+                                                    </div>
+                                                    <div class="d-flex justify-content-around">
+                                                        <!-- <button class="btn-danger">Borrar consola</button>    
+                                                        <button class="btn-primary">Commando</button>     -->
+                                                        <button class="btn-danger"><i class="bi bi-x-circle"></i></button>
+                                                        <input type="text" class="flex-grow-1 bg-dark " placeholder="Prueba mandar 'ayuda'">
+                                                        <button class="btn-success "><i class="bi bi-send-fill"></i></button>
+                                                    </div>
                                                 </div>
                                                 <div class="tab-pane fade" id="pilaTab" role="tabpanel"
                                                     aria-labelledby="pilaTab-tab">
@@ -279,18 +284,146 @@
                                     </div>
                                 </div>
                                 <div class="split split-horizontal" id="splitter-right-pane">
-                                    <div class="w-100 h-100 overflow-scroll d-flex flex-column-reverse">
-                                        <!-- World -->
-                                        <div class="d-flex flex-nowrap kw-gutter-height">
-                                            <div class="bg-secondary m-0 kw-gutter-width"></div>
-                                            <canvas style="width: 1200px !important; min-width: 1200px;" class="bg-success kw-gutter-height"></canvas>                                        
-                                        </div>                                    
-                                        <div class="d-flex flex-nowrap">
-                                            <canvas style="height:1000px"; class="kw-gutter-width"></canvas>
-                                            <canvas style="height:1000px;width:1200px;" class="bg-info ">
-                                            </canvas>
-                                        </div>    
-
+                                    <div class="w-100 h-100 d-flex flex-column">
+                                        <div id="worldContainer"class="flex-grow-1 flex-shrink-1 overflow-scroll position-relative" style="height: 0px;">
+                                            <canvas 
+                                            id="worldCanvas" 
+                                            class="position-sticky top-0 start-0 w-100 h-100"
+                                            style="background: linear-gradient(90deg, rgba(2,0,36,1) 0%, rgba(9,9,121,1) 35%, rgba(0,212,255,1) 100%);"
+                                            ></canvas>
+                                            <div id="worldScrolledContainer"style="height:3000px;width:3000px;">
+                                            </div>
+                                        </div>
+                                        <div class="bg-light btn-toolbar d-flex p-2 gap-2 border-bottom flex-nowrap flex-shrink-0">
+                                            
+                                            <div class="btn-group dropup">
+                                                
+                                                <button class="btn border-dark btn-primary">
+                                                    <i class="bi bi-cursor-fill "></i>
+                                                </button>
+                                                <div  class="btn-group" aria-labelledby="beeperManipulationDesktop" >
+                                                    <a class="dropdown-toggle btn border-dark" href="#" id="beeperManipulationDesktop"
+                                                        role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                                        <i class="bi bi-1-square-fill text-success"></i>
+                                                    </a>
+                                                    <ul class="dropdown-menu" aria-labelledby="beeperManipulationDesktop" >
+                                                        <li>
+                                                            <button class="dropdown-item">
+                                                                <i class="bi bi-plus-circle-fill text-success"></i> Agregar uno
+                                                            </button>
+                                                        </li>
+                                                        <li>
+                                                            <button class="dropdown-item">
+                                                                <i class="bi bi-dash-circle-fill text-danger"></i> Quitar uno
+                                                            </button>
+                                                        </li>
+                                                        <li>
+                                                            <hr class="dropdown-divider">
+                                                        </li>
+                                                        <li>
+                                                            <button class="dropdown-item">
+                                                                <i class="bi bi-123 text-warning"></i> Elegir cantidad
+                                                            </button>
+                                                        </li>
+                                                        <li>
+                                                            <button class="dropdown-item">
+                                                                <i class="bi bi-slash-circle-fill text-danger"></i> Quitar todos
+                                                            </button>
+                                                        </li>
+    
+                                                    </ul>
+                                                </div>
+                                                <div class="btn-group dropup" aria-labelledby="orientationEditorDesktop">
+                                                    <a class="dropdown-toggle btn border-dark" href="#" id="orientationEditorDesktop"
+                                                        role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                                        <!-- Karel-up.svg -->
+                                                        <i class="text-primary h-auto w-auto">
+                                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-up" viewBox="0 0 16 16">
+                                                                <path xmlns="http://www.w3.org/2000/svg" fill-rule="evenodd" d="m 8,0.6640625 c 0.00276,0 -6.2505726,6.2982652 -6.2519531,6.296875 -4.423e-4,-4.454e-4 2.2613062,1.6e-4 4.0058593,0 V 15.535156 H 10.246094 V 6.9609375 c 1.744553,1.6e-4 4.006301,-4.454e-4 4.005859,0 C 14.250573,6.9623277 7.9972389,0.6640625 8,0.6640625 Z"/>
+                                                            </svg>
+                                                        </i>
+                                                    </a>
+                                                    <ul class="dropdown-menu" aria-labelledby="orientationEditorDesktop">
+                                                        <li>
+                                                            <button class="dropdown-item">                                                                
+                                                                <!-- Karel-up.svg -->
+                                                                <i class="text-primary h-auto w-auto">
+                                                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-up" viewBox="0 0 16 16">
+                                                                        <path xmlns="http://www.w3.org/2000/svg" fill-rule="evenodd" d="m 8,0.6640625 c 0.00276,0 -6.2505726,6.2982652 -6.2519531,6.296875 -4.423e-4,-4.454e-4 2.2613062,1.6e-4 4.0058593,0 V 15.535156 H 10.246094 V 6.9609375 c 1.744553,1.6e-4 4.006301,-4.454e-4 4.005859,0 C 14.250573,6.9623277 7.9972389,0.6640625 8,0.6640625 Z"/>
+                                                                    </svg>
+                                                                </i>
+                                                                Situar Karel al norte
+                                                            </button>
+                                                        </li>
+                                                        <li>
+                                                            <button class="dropdown-item">                                                                
+                                                                <!-- Karel-right.svg -->
+                                                                <i class="text-primary h-auto w-auto">
+                                                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-up" viewBox="0 0 16 16">
+                                                                        <path xmlns="http://www.w3.org/2000/svg" fill-rule="evenodd" d="m 15.435547,8.0996093 c 0,0.00276 -6.2982655,-6.2505726 -6.2968753,-6.2519531 4.454e-4,-4.423e-4 -1.6e-4,2.2613062 0,4.0058593 H 0.5644532 v 4.4921875 h 8.5742185 c -1.6e-4,1.744553 4.454e-4,4.006301 0,4.005859 -0.00139,-0.0014 6.2968753,-6.2547138 6.2968753,-6.2519527 z" />
+                                                                    </svg>
+                                                                </i>
+                                                                Situar Karel al este
+                                                            </button>
+                                                        </li>
+                                                        <li>
+                                                            <button class="dropdown-item">                                                                
+                                                                <!-- Karel-down.svg -->
+                                                                <i class="text-primary h-auto w-auto">
+                                                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-up" viewBox="0 0 16 16">
+                                                                        <path xmlns="http://www.w3.org/2000/svg" fill-rule="evenodd" d="m 7.9999999,15.535156 c -0.00276,0 6.2505721,-6.2982655 6.2519531,-6.2968753 4.42e-4,4.454e-4 -2.261306,-1.6e-4 -4.005859,0 V 0.6640622 H 5.7539062 v 8.5742185 c -1.744553,-1.6e-4 -4.006301,4.454e-4 -4.005859,0 0.0014,-0.00139 6.2547138,6.2968753 6.2519527,6.2968753 z" />
+                                                                    </svg>
+                                                                </i>
+                                                                Situar Karel al sur
+                                                            </button>
+                                                        </li>
+                                                        <li>
+                                                            <button class="dropdown-item">                                                                
+                                                                <!-- Karel-down.svg -->
+                                                                <i class="text-primary h-auto w-auto">
+                                                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-up" viewBox="0 0 16 16">
+                                                                        <path xmlns="http://www.w3.org/2000/svg" fill-rule="evenodd" d="m 0.5644532,8.0996089 c 0,-0.00276 6.2982655,6.2505721 6.2968753,6.2519531 -4.454e-4,4.42e-4 1.6e-4,-2.261306 0,-4.005859 H 15.435547 V 5.8535152 H 6.8613285 c 1.6e-4,-1.744553 -4.454e-4,-4.006301 0,-4.005859 0.00139,0.0014 -6.2968753,6.2547138 -6.2968753,6.2519527 z" />
+                                                                    </svg>
+                                                                </i>
+                                                                Situar Karel al oeste
+                                                            </button>
+                                                        </li>
+                                                    </ul>
+                                                </div>
+                                            </div>
+                                            <div class="btn-group" role="group">
+                                                <button type="button" class="btn btn-light p-1 ps-2 pe-2 border-dark"
+                                                    title="Ver al origen (1,1)">
+                                                    <i class="bi bi-house-door-fill"></i>
+                                                </button>
+                                                <button type="button" class="btn btn-light p-1 ps-2 pe-2 border-dark"
+                                                    title="Ver a Karel">                                                    
+                                                    <img src="img/karel-up.svg"  class="h-auto w-auto">
+                                                </button>
+                                            </div>
+                                            <!-- <div class="btn-group">
+                                                <button class="btn border-dark">
+                                                    <i class="bi bi-caret-left-fill"></i>
+                                                </button>
+                                                <button class="btn border-dark">
+                                                    <i class="bi bi-caret-right-fill"></i>
+                                                </button>
+                                            </div>
+                                            <div class="btn-group">
+                                                <button class="btn border-dark">
+                                                    <i class="bi bi-caret-up-fill"></i>
+                                                </button>
+                                                <button class="btn border-dark">
+                                                    <i class="bi bi-caret-down-fill"></i>
+                                                </button>
+                                            </div> -->
+                                            
+                                            <div class="btn-group">                                                
+                                                <button class="btn btn-secondary"><i class="bi bi-zoom-out"></i></button>
+                                                <input type="number" min="50" max="250" value="100" step="10">
+                                                <button class="btn btn-secondary"><i class="bi bi-zoom-in"></i></button>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -537,6 +670,7 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
         crossorigin="anonymous"></script>
+    <!-- <script src="https://code.jquery.com/ui/1.13.2/jquery-ui.min.js" integrity="sha256-lSjKY0/srUM9BE3dPm+c4fBo1dky2v27Gdjm2uoZaL0=" crossorigin="anonymous"></script> -->
     <script src="js/cindex.js"></script>
     <!-- <script src="js/editor.bundle.js"></script> -->
 

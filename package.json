@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "npx tsc && rollup ./dist/index.js --file ./webapp/js/cindex.js --format iife -p @rollup/plugin-node-resolve"
+    "build": "npx tsc && rollup ./dist/index.js --file ./webapp/js/cindex.js --format iife -p @rollup/plugin-node-resolve -g bootstrap:bootstrap"
   },
   "type": "module",
   "keywords": [],

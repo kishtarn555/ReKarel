@@ -17597,6 +17597,12 @@
     $("#infiniteBeepersBtn").click(DesktopUI.toggleInfinityBeepers);
     $(document).ready(() => {
         responsiveHack();
+        //THIS NEEDS TO BE MOVED
+        $("#worldContainer").scroll(() => {
+            console.log("lol");
+            $("#worldContainer").scrollLeft();
+            $("#worldContainer").scrollTop();
+        });
     });
 
 })(bootstrap);
