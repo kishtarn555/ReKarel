@@ -783,7 +783,33 @@
         });
     }
 
+    function clearAllDisplayClasses(element) {
+        $(element).removeClass("d-none");
+        $(element).removeClass("d-lg-block");
+        $(element).removeClass("d-lg-none");
+    }
+    function hideElement$1(element) {
+        $(element).addClass("d-none");
+    }
+    function SetResponsiveness() {
+        clearAllDisplayClasses("#desktopView");
+        clearAllDisplayClasses("#phoneView");
+        $("#phoneView").addClass("d-lg-none");
+        $("#desktopView").addClass("d-none");
+        $("#desktopView").addClass("d-lg-block");
+    }
+    function SetDesktopView() {
+        clearAllDisplayClasses("#phoneView");
+        clearAllDisplayClasses("#desktopView");
+        hideElement$1("#phoneView");
+    }
+    function SetPhoneView() {
+        clearAllDisplayClasses("#phoneView");
+        clearAllDisplayClasses("#desktopView");
+        hideElement$1("#desktopView");
+    }
     function responsiveHack() {
+        $("#phoneView").removeClass("position-absolute");
         {
             $("#phoneView").addClass("d-none");
         }
@@ -17595,8 +17621,25 @@
     PhoneUI.changeNavToolbar("#codeTabBtn");
     //Hoock all UI
     $("#infiniteBeepersBtn").click(DesktopUI.toggleInfinityBeepers);
+    function useSettings(settings) {
+        switch (settings.interface) {
+            case "auto":
+                SetResponsiveness();
+                break;
+            case "desktop":
+                SetDesktopView();
+                break;
+            case "mobile":
+                SetPhoneView();
+                break;
+            default:
+                SetDesktopView();
+                break;
+        }
+    }
     $(document).ready(() => {
         responsiveHack();
+        useSettings({ interface: "desktop" });
         //THIS NEEDS TO BE MOVED
         $("#worldContainer").scroll(() => {
             console.log("lol");

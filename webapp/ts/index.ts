@@ -1,5 +1,5 @@
 import { splitPanels } from "./split";
-import { responsiveHack } from "./responsive-load";
+import { responsiveHack, SetResponsiveness, SetDesktopView, SetPhoneView } from "./responsive-load";
 import { createEditors } from "./editor";
 import { GetDesktopUIHelper } from "./desktop-ui";
 import { GetPhoneUIHelper } from "./phone-ui";
@@ -144,10 +144,31 @@ PhoneUI.changeNavToolbar("#codeTabBtn");
 //Hoock all UI
 $("#infiniteBeepersBtn").click(DesktopUI.toggleInfinityBeepers);
 
+type AppSettings = {
+    interface : "auto" | "desktop" | "mobile"
+}
+
+
+function useSettings(settings: AppSettings) {
+    switch (settings.interface) {
+        case "auto":
+            SetResponsiveness();
+            break;
+        case "desktop":
+            SetDesktopView();
+            break;
+        case "mobile":
+            SetPhoneView();
+            break;
+        default:
+            SetDesktopView();
+            break;
+    }
+}
 
 $(document).ready(()=>{
     responsiveHack();
-
+    useSettings({ interface: "desktop"});
     //THIS NEEDS TO BE MOVED
     $("#worldContainer").scroll(()=> {
         console.log("lol");

@@ -258,6 +258,9 @@
                                                         <i class="bi bi-stack"></i> Pila
                                                     </button>
                                                 </li>
+                                                <li class="nav-item ms-auto p-2">
+                                                    <button class="btn-danger">Limpiar</button>  
+                                                </li>
                                             </ul>
                                             <div class="tab-content flex-grow-1 overflow-auto"
                                                 id="ExecDataContent">
@@ -266,13 +269,6 @@
                                                     <div class="d-flex flex-column-reverse flex-grow-1 overflow-auto">
                                                         <div><span class="text-info">[5:11:30 pm]</span> Bienvenido</div>
                                                         
-                                                    </div>
-                                                    <div class="d-flex justify-content-around">
-                                                        <!-- <button class="btn-danger">Borrar consola</button>    
-                                                        <button class="btn-primary">Commando</button>     -->
-                                                        <button class="btn-danger"><i class="bi bi-x-circle"></i></button>
-                                                        <input type="text" class="flex-grow-1 bg-dark " placeholder="Prueba mandar 'ayuda'">
-                                                        <button class="btn-success "><i class="bi bi-send-fill"></i></button>
                                                     </div>
                                                 </div>
                                                 <div class="tab-pane fade" id="pilaTab" role="tabpanel"
@@ -294,13 +290,11 @@
                                             <div id="worldScrolledContainer"style="height:3000px;width:3000px;">
                                             </div>
                                         </div>
-                                        <div class="bg-light btn-toolbar d-flex p-2 gap-2 border-bottom flex-nowrap flex-shrink-0">
+                                        <div class="bg-light btn-toolbar d-flex p-2 gap-2 border-bottom flex-shrink-0">
                                             
                                             <div class="btn-group dropup">
                                                 
-                                                <button class="btn border-dark btn-primary">
-                                                    <i class="bi bi-cursor-fill "></i>
-                                                </button>
+                                               
                                                 <div  class="btn-group" aria-labelledby="beeperManipulationDesktop" >
                                                     <a class="dropdown-toggle btn border-dark" href="#" id="beeperManipulationDesktop"
                                                         role="button" data-bs-toggle="dropdown" aria-expanded="false">
@@ -309,12 +303,12 @@
                                                     <ul class="dropdown-menu" aria-labelledby="beeperManipulationDesktop" >
                                                         <li>
                                                             <button class="dropdown-item">
-                                                                <i class="bi bi-plus-circle-fill text-success"></i> Agregar uno
+                                                                <i class="bi bi-1-square-fill text-success"></i> Agregar uno
                                                             </button>
                                                         </li>
                                                         <li>
                                                             <button class="dropdown-item">
-                                                                <i class="bi bi-dash-circle-fill text-danger"></i> Quitar uno
+                                                                <i class="bi bi-1-square-fill text-danger"></i> Quitar uno
                                                             </button>
                                                         </li>
                                                         <li>
@@ -322,7 +316,12 @@
                                                         </li>
                                                         <li>
                                                             <button class="dropdown-item">
-                                                                <i class="bi bi-123 text-warning"></i> Elegir cantidad
+                                                                <i class="bi bi-123 text-info"></i> Elegir cantidad
+                                                            </button>
+                                                        </li>
+                                                        <li>
+                                                            <button class="dropdown-item">
+                                                                <i class="bi bi-infinity text-warning"></i> Infinitos
                                                             </button>
                                                         </li>
                                                         <li>
@@ -388,6 +387,59 @@
                                                                 Situar Karel al oeste
                                                             </button>
                                                         </li>
+                                                    </ul>
+                                                </div>
+                                                <div  class="btn-group" aria-labelledby="wallEditDesktop" >
+                                                    <a class="dropdown-toggle btn border-dark" href="#" id="wallEditDesktop"
+                                                        role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                                        <img src="img/fullgrid.svg" alt="Paredes">
+                                                    </a>
+                                                    <ul class="dropdown-menu" aria-labelledby="wallEditDesktop" >
+                                                        <li>
+                                                            <button class="dropdown-item">
+                                                                <img src="img/grid-up.svg" alt="Paredes"> Pared norte
+                                                            </button>
+                                                        </li>
+                                                        <li>
+                                                            <button class="dropdown-item">
+                                                                <img src="img/grid-right.svg" alt="Paredes"> Pared este
+                                                            </button>
+                                                        </li>
+                                                        <li>
+                                                            <button class="dropdown-item">
+                                                                <img src="img/grid-down.svg" alt="Paredes"> Pared sur
+                                                            </button>
+                                                        </li>
+                                                        <li>
+                                                            <button class="dropdown-item">
+                                                                <img src="img/grid-left.svg" alt="Paredes"> Pared oeste
+                                                            </button>
+                                                        </li>
+                                                        <li>
+                                                            <button class="dropdown-item">
+                                                                <img src="img/fullgrid.svg" alt="Paredes"> Cuarto
+                                                            </button>
+                                                        </li>
+                                                        
+                                                    </ul>
+                                                </div>
+                                                <div  class="btn-group" aria-labelledby="cellImportanceDesktop" >
+                                                    <a class="dropdown-toggle btn border-dark" href="#" id="cellImportanceDesktop"
+                                                        role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                                        <i class="bi bi-binoculars-fill"></i>
+                                                    </a>
+                                                    <ul class="dropdown-menu" aria-labelledby="cellImportanceDesktop" >
+                                                        <li>
+                                                            <button class="dropdown-item">
+                                                                <i class="bi bi-binoculars-fill text-warning"></i> Evaluar casilla
+                                                            </button>
+                                                        </li>
+                                                        <li>
+                                                            <button class="dropdown-item">
+                                                                <i class="bi bi-binoculars-fill text-secondary"></i> Ignorar casilla
+                                                            </button>
+                                                        </li>
+                                                        
                                                     </ul>
                                                 </div>
                                             </div>
