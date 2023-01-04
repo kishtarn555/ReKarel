@@ -10,7 +10,7 @@
 
     <link rel="shortcut icon" href="img/karel-up.svg" type="image/x-icon">
 
-    <title>Karel.js</title>
+    <title>ReKarel</title>
 
     <link href="css/karel.css" rel="stylesheet" type="text/css" />
 
@@ -31,7 +31,7 @@
                 <div class="h-100 w-100 d-flex flex-column">
                     <nav class="navbar navbar-expand-lg navbar-dark bg-omega p-0">
                         <div class="container">
-                            <a class="navbar-brand" href="#">Karel.js</a>
+                            <a class="navbar-brand" href="#">ReKarel</a>
                             <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
                                 data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false"
                                 aria-label="Toggle navigation">
@@ -137,9 +137,11 @@
                                                 <hr class="dropdown-divider">
                                             </li>
                                             <li>
-                                                <a class="dropdown-item" href="#"><i class="bi bi-info-circle"></i>
-                                                    Acerca
-                                                    de</a>
+                                                <button class="dropdown-item"type="button" data-bs-toggle="modal"
+                                                data-bs-target="#aboutModal">
+                                                    <i class="bi bi-info-circle"></i>
+                                                    Acerca de
+                                                </button>
                                             </li>
                                         </ul>
                                     </li>
@@ -192,8 +194,9 @@
 
 
                                     <div class="input-group" role="group" aria-label="Basic example">
-                                        <div class="input-group-text bg-light border-dark ps-2 pe-2"><small>Retraso
-                                                (ms)</small>
+                                        <div class="input-group-text bg-light border-dark ps-2 pe-2" 
+                                        title="Tiempo de espera entre instrucción e instruccion en milisegundos">
+                                            <small>Retraso (ms)</small>
                                         </div>
                                         <input type="number" id="delayPanel" class="form-control border-dark"
                                             aria-label="" aria-describedby="btnGroupAddon" min="0" value="0">
@@ -209,13 +212,15 @@
 
 
                                     <div class="input-group" role="group" aria-label="Basic example">
-                                        <div class="input-group-text bg-light border-dark ps-2 pe-2">
+                                        <div class="input-group-text bg-light border-dark ps-2 pe-2"
+                                        title="Alto del mundo">
                                             <small>Filas</small>
                                         </div>
                                         <input type="number" id="toolbarRows" class="form-control border-dark"
                                             aria-label="" aria-describedby="btnGroupAddon" min="1" value="100">
-                                        <div class="input-group-text bg-light border-dark ps-2 pe-2">
-                                            <small>Mochila</small>
+                                        <div class="input-group-text bg-light border-dark ps-2 pe-2"
+                                        title="Ancho del mundo">
+                                            <small>Columnas</small>
                                         </div>
                                         <input type="number" id="toolbarCols" class="form-control border-dark"
                                             aria-label="" aria-describedby="btnGroupAddon" min="1" value="100">
@@ -239,21 +244,25 @@
                                             <ul class="nav nav-tabs" id="ExecData" role="tablist">
                                                 <li class="nav-item" role="presentation">
                                                     <button class="nav-link active" id="consoleTab-tab"
-                                                        data-bs-toggle="tab" data-bs-target="#consoleTab" type="button"
-                                                        role="tab" aria-controls="consoleTab" aria-selected="true">
-                                                        Consola
-                                                        <span class="badge rounded-pill bg-primary">0</span>
+                                                    data-bs-toggle="tab" data-bs-target="#consoleTab" type="button"
+                                                    role="tab" aria-controls="consoleTab" aria-selected="true"
+                                                    title="Ve mensajes de Karel">
+                                                    <span class="badge rounded-pill bg-primary">0</span>
+                                                        Mensajes
                                                     </button>
                                                 </li>
                                                 <li class="nav-item" role="presentation">
                                                     <button class="nav-link" id="pilaTab-tab" data-bs-toggle="tab"
                                                         data-bs-target="#pilaTab" type="button" role="tab"
-                                                        aria-controls="pilaTab" aria-selected="false">
+                                                        aria-controls="pilaTab" aria-selected="false"
+                                                        title="Revisa la pila de llamadas">
                                                         <i class="bi bi-stack"></i> Pila
                                                     </button>
                                                 </li>
                                                 <li class="nav-item ms-auto p-2">
-                                                    <button class="btn p-1 btn-danger">Limpiar</button>
+                                                    <button class="btn p-1 btn-danger" title="Quitar todos los mensajes de la consola">
+                                                        Limpiar
+                                                    </button>
                                                 </li>
                                             </ul>
                                             <div class="tab-content flex-grow-1 overflow-auto" id="ExecDataContent">
@@ -285,7 +294,7 @@
                                         </div>
                                         <div class="bg-light btn-toolbar d-flex p-2 gap-2 border-bottom flex-shrink-0">
 
-                                            <div class="btn-group dropup">
+                                            <div class="btn-group dropup" title="Cambiar zumbadores">
 
 
                                                 <div class="btn-group" aria-labelledby="beeperManipulationDesktop">
@@ -331,7 +340,8 @@
                                                     </ul>
                                                 </div>
                                                 <div class="btn-group dropup"
-                                                    aria-labelledby="orientationEditorDesktop">
+                                                aria-labelledby="orientationEditorDesktop"
+                                                title="Situar a Karel">
                                                     <a class="dropdown-toggle btn border-dark" href="#"
                                                         id="orientationEditorDesktop" role="button"
                                                         data-bs-toggle="dropdown" aria-expanded="false">
@@ -410,7 +420,7 @@
                                                         </li>
                                                     </ul>
                                                 </div>
-                                                <div class="btn-group" aria-labelledby="wallEditDesktop">
+                                                <div class="btn-group" aria-labelledby="wallEditDesktop" title="Colocar paredes">
                                                     <a class="dropdown-toggle btn border-dark" href="#"
                                                         id="wallEditDesktop" role="button" data-bs-toggle="dropdown"
                                                         aria-expanded="false">
@@ -480,10 +490,13 @@
                                             </div> -->
 
                                             <div class="btn-group">
-                                                <button class="btn btn-secondary"><i
-                                                        class="bi bi-zoom-out"></i></button>
+                                                <button class="btn btn-secondary" title="Reducir zoom">
+                                                    <i class="bi bi-zoom-out"></i>
+                                                </button>
                                                 <input type="number" min="50" max="250" value="100" step="10">
-                                                <button class="btn btn-secondary"><i class="bi bi-zoom-in"></i></button>
+                                                <button class="btn btn-secondary" title="Aumentar zoom">
+                                                    <i class="bi bi-zoom-in"></i>
+                                                </button>
                                             </div>
                                             <div class="btn-group">
                                                 <div class="btn-group" aria-labelledby="cellImportanceDesktop">
@@ -826,6 +839,40 @@
             </div>
         </form>
     </div>
+    <!-- About modal -->
+    <div id="aboutModal" class="modal fade" tabindex="-1" aria-labelledby="aboutModal" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Acerca de</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p>Karel es una herramienta programación que permite programar un Robot Virtual y ver los resultados de forma visual.</p>
+                    <p>ReKarel es una implementación de Karel en javascript basada en <a href="https://omegaup.com/karel.js/#">Karel.js</a> de omegaup.</p>
+
+                    <h5>Autores ReKarel</h5>
+                    <ul>
+                        <li>ReKarel: Kishtarn(Héctor Ricárdez)</li>
+                    </ul>
+                    <h5>Autores Karel.js</h5>
+                    <p>Programadores de la versión original sobre la cual está se encuentra basada.</p>
+                    <ul>
+                        <li>alanboy</li>
+                        <li>joemmanuel</li>
+                        <li>lhchavez</li>
+                        <li>Categulario</li>
+                        <li>Pacha</li>
+                    </ul>
+                </div>
+                <div class="modal-footer">                    
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" data-bs-dialog="none">
+                        Cerrar
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
     <!-- Context menu -->
     <div id="contextMenuDiv" class="dropend position-absolute" style="top:680px; left:630px; width: 0px; height: 0px; " id="contextMenu">
         <button id="contextMenuToggler" type="button" class="p-0 m-0 h-0 w-0 position-absolute"
@@ -839,8 +886,8 @@
                     <button type="button" class="dropdown-item dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false" >
                         <i class="text-primary h-auto w-auto">
                             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
-                                class="bi bi-arrow-up" viewBox="0 0 16 16">
-                                <path xmlns="http://www.w3.org/2000/svg" fill-rule="evenodd"
+                            <path xmlns="http://www.w3.org/2000/svg" fill-rule="evenodd"
+                            class="bi bi-arrow-up" viewBox="0 0 16 16">
                                     d="m 8,0.6640625 c 0.00276,0 -6.2505726,6.2982652 -6.2519531,6.296875 -4.423e-4,-4.454e-4 2.2613062,1.6e-4 4.0058593,0 V 15.535156 H 10.246094 V 6.9609375 c 1.744553,1.6e-4 4.006301,-4.454e-4 4.005859,0 C 14.250573,6.9623277 7.9972389,0.6640625 8,0.6640625 Z" />
                             </svg>
                         </i>
