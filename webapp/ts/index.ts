@@ -143,14 +143,25 @@ PhoneUI.changeNavToolbar("#codeTabBtn");
 //Hoock all UI
 $("#infiniteBeepersBtn").click(DesktopUI.toggleInfinityBeepers);
 
+type fontSizes = number;
+type responsiveInterfaces = "auto" | "desktop" | "mobile";
+
 type AppSettings = {
-    interface : "auto" | "desktop" | "mobile"
+    interface : responsiveInterfaces,
+    editorFontSize: fontSizes,
 }
 
 let appSettings: AppSettings = {
-    interface : "auto"
+    interface : "auto",
+    editorFontSize: 12
 }
 
+function isFontSize(str: number): str is fontSizes {
+    return 6 < str && str < 50;
+}
+function isResponsiveInterfaces(str: string): str is responsiveInterfaces {
+    return ["auto" , "desktop" , "mobile"].indexOf(str)>-1;
+}
 
 function applySettings(settings: AppSettings) {
     switch (settings.interface) {
@@ -167,21 +178,20 @@ function applySettings(settings: AppSettings) {
             SetDesktopView();
             break;
     }
+    $(":root")[0].style.setProperty("--editor-font-size", `${settings.editorFontSize}pt`);
 }
 
 function setSettings(event: Event) {
-    switch ($("#settingsForm select[name=interface]").val()) {
-        case "desktop":
-            appSettings.interface=  "desktop";
-            break;
-        case "mobile":
-                appSettings.interface=  "mobile";
-                break;
-        case "auto":
-        default:
-            appSettings.interface=  "auto";
-            break;
+    let interfaceType = <string>$("#settingsForm select[name=interface]").val();
+    let fontSize = <number>$("#settingsForm input[name=fontSize]").val();
+    console.log(fontSize);
+    if (isResponsiveInterfaces(interfaceType)) {
+        appSettings.interface= interfaceType;
     }
+    if (isFontSize(fontSize)) {
+        appSettings.editorFontSize= fontSize;
+    }
+    
     console.log(appSettings);
     applySettings(appSettings);
     event.preventDefault();
@@ -190,7 +200,7 @@ function setSettings(event: Event) {
 $(document).ready(()=>{
     $("#settingsForm").on("submit", setSettings)
     responsiveHack();
-    applySettings({ interface: "auto"});
+    applySettings(appSettings);
     //THIS NEEDS TO BE MOVED
     $("#worldContainer").scroll(()=> {
         console.log("lol");
@@ -199,4 +209,25 @@ $(document).ready(()=>{
     });
 })
 
+
+$(document).on("keydown", (e)=> {
+    if (e.ctrlKey && e.which === 75) {
+        let fontSize = appSettings.editorFontSize;
+        fontSize--;
+        if (fontSize < 6) fontSize=7;
+        appSettings.editorFontSize= fontSize;
+        applySettings(appSettings);
+        e.preventDefault();
+        return false;
+    }
+    if (e.ctrlKey && e.which === 76) {
+        let fontSize = appSettings.editorFontSize;
+        fontSize++;
+        if (fontSize > 30) fontSize=30;
+        appSettings.editorFontSize= fontSize;        
+        applySettings(appSettings);
+        e.preventDefault();
+        return false;
+    }
+})
 

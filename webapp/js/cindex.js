@@ -17621,8 +17621,15 @@
     //Hoock all UI
     $("#infiniteBeepersBtn").click(DesktopUI.toggleInfinityBeepers);
     let appSettings = {
-        interface: "auto"
+        interface: "auto",
+        editorFontSize: 12
     };
+    function isFontSize(str) {
+        return 6 < str && str < 50;
+    }
+    function isResponsiveInterfaces(str) {
+        return ["auto", "desktop", "mobile"].indexOf(str) > -1;
+    }
     function applySettings(settings) {
         switch (settings.interface) {
             case "auto":
@@ -17638,19 +17645,17 @@
                 SetDesktopView();
                 break;
         }
+        $(":root")[0].style.setProperty("--editor-font-size", `${settings.editorFontSize}pt`);
     }
     function setSettings(event) {
-        switch ($("#settingsForm select[name=interface]").val()) {
-            case "desktop":
-                appSettings.interface = "desktop";
-                break;
-            case "mobile":
-                appSettings.interface = "mobile";
-                break;
-            case "auto":
-            default:
-                appSettings.interface = "auto";
-                break;
+        let interfaceType = $("#settingsForm select[name=interface]").val();
+        let fontSize = $("#settingsForm input[name=fontSize]").val();
+        console.log(fontSize);
+        if (isResponsiveInterfaces(interfaceType)) {
+            appSettings.interface = interfaceType;
+        }
+        if (isFontSize(fontSize)) {
+            appSettings.editorFontSize = fontSize;
         }
         console.log(appSettings);
         applySettings(appSettings);
@@ -17660,13 +17665,35 @@
     $(document).ready(() => {
         $("#settingsForm").on("submit", setSettings);
         responsiveHack();
-        applySettings({ interface: "auto" });
+        applySettings(appSettings);
         //THIS NEEDS TO BE MOVED
         $("#worldContainer").scroll(() => {
             console.log("lol");
             $("#worldContainer").scrollLeft();
             $("#worldContainer").scrollTop();
         });
+    });
+    $(document).on("keydown", (e) => {
+        if (e.ctrlKey && e.which === 75) {
+            let fontSize = appSettings.editorFontSize;
+            fontSize--;
+            if (fontSize < 6)
+                fontSize = 7;
+            appSettings.editorFontSize = fontSize;
+            applySettings(appSettings);
+            e.preventDefault();
+            return false;
+        }
+        if (e.ctrlKey && e.which === 76) {
+            let fontSize = appSettings.editorFontSize;
+            fontSize++;
+            if (fontSize > 30)
+                fontSize = 30;
+            appSettings.editorFontSize = fontSize;
+            applySettings(appSettings);
+            e.preventDefault();
+            return false;
+        }
     });
 
 })(bootstrap);

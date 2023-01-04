@@ -4,7 +4,18 @@
     --keyword: rgb(10, 140, 40);
     --kw-gutter-size: 30px;
     --omegaup-blue: #678dd7;
+    --editor-font-size: medium;
 }
+
+.cm-editor .cm-content {
+    font-size: var(--editor-font-size);
+}
+
+.cm-editor .cm-gutter {
+    font-size: var(--editor-font-size);
+}
+
+
 
 html,
 body {
