@@ -157,7 +157,7 @@ let appSettings: AppSettings = {
 }
 
 function isFontSize(str: number): str is fontSizes {
-    return 6 < str && str < 50;
+    return 6 < str && str < 31;
 }
 function isResponsiveInterfaces(str: string): str is responsiveInterfaces {
     return ["auto" , "desktop" , "mobile"].indexOf(str)>-1;
@@ -214,7 +214,7 @@ $(document).on("keydown", (e)=> {
     if (e.ctrlKey && e.which === 75) {
         let fontSize = appSettings.editorFontSize;
         fontSize--;
-        if (fontSize < 6) fontSize=7;
+        if (fontSize < 7) fontSize=7;
         appSettings.editorFontSize= fontSize;
         applySettings(appSettings);
         e.preventDefault();

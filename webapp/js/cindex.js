@@ -17625,7 +17625,7 @@
         editorFontSize: 12
     };
     function isFontSize(str) {
-        return 6 < str && str < 50;
+        return 6 < str && str < 31;
     }
     function isResponsiveInterfaces(str) {
         return ["auto", "desktop", "mobile"].indexOf(str) > -1;
@@ -17677,7 +17677,7 @@
         if (e.ctrlKey && e.which === 75) {
             let fontSize = appSettings.editorFontSize;
             fontSize--;
-            if (fontSize < 6)
+            if (fontSize < 7)
                 fontSize = 7;
             appSettings.editorFontSize = fontSize;
             applySettings(appSettings);
