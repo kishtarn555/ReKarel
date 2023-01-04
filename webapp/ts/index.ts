@@ -1,7 +1,7 @@
 import { splitPanels } from "./split";
 import { responsiveHack, SetResponsiveness, SetDesktopView, SetPhoneView } from "./responsive-load";
 import { createEditors } from "./editor";
-import { GetDesktopUIHelper } from "./desktop-ui";
+import { GetDesktopUIHelper, ToggleConextMenu } from "./desktop-ui";
 import { GetPhoneUIHelper } from "./phone-ui";
 import { HookUpCommonUI, SetText } from "./common-ui";
 
@@ -229,5 +229,8 @@ $(document).on("keydown", (e)=> {
         e.preventDefault();
         return false;
     }
+    
 })
+
+
 
