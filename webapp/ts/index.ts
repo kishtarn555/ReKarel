@@ -132,8 +132,7 @@ let PhoneUI = GetPhoneUIHelper({
     navToolbar: {
         "#codeTabBtn": () => "",
         "#worldTabBtn": () => "",
-        "#execTabBtn": () => "",
-        "#settingTabBtn": () => ""
+        "#execTabBtn": () => ""
     },
     
 })
@@ -148,8 +147,12 @@ type AppSettings = {
     interface : "auto" | "desktop" | "mobile"
 }
 
+let appSettings: AppSettings = {
+    interface : "auto"
+}
 
-function useSettings(settings: AppSettings) {
+
+function applySettings(settings: AppSettings) {
     switch (settings.interface) {
         case "auto":
             SetResponsiveness();
@@ -166,9 +169,28 @@ function useSettings(settings: AppSettings) {
     }
 }
 
+function setSettings(event: Event) {
+    switch ($("#settingsForm select[name=interface]").val()) {
+        case "desktop":
+            appSettings.interface=  "desktop";
+            break;
+        case "mobile":
+                appSettings.interface=  "mobile";
+                break;
+        case "auto":
+        default:
+            appSettings.interface=  "auto";
+            break;
+    }
+    console.log(appSettings);
+    applySettings(appSettings);
+    event.preventDefault();
+    return false;
+}
 $(document).ready(()=>{
+    $("#settingsForm").on("submit", setSettings)
     responsiveHack();
-    useSettings({ interface: "desktop"});
+    applySettings({ interface: "auto"});
     //THIS NEEDS TO BE MOVED
     $("#worldContainer").scroll(()=> {
         console.log("lol");

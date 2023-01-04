@@ -108,7 +108,13 @@
                                         </a>
                                         <ul class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
                                             <li>
-                                                <button class="dropdown-item"><i class="bi bi-gear-fill"></i> Configuración</button>
+                                                <button 
+                                                class="dropdown-item"
+                                                type="button"
+                                                data-bs-toggle="modal"
+                                                data-bs-target="#settingsModal">
+                                                    <i class="bi bi-gear-fill"></i> Configuración
+                                                </button>
                                             </li>
                                         </ul>
                                     </li>
@@ -220,12 +226,6 @@
                                             aria-label="" aria-describedby="btnGroupAddon" min="1" value="100">
 
                                     </div>
-                                    <div class="btn-group" role="group" aria-label="Basic example">
-                                        <button type="button" class="btn btn-light p-1 ps-2 pe-2 border-dark"
-                                            title="Regresa el mundo a su estado original">
-                                            <i class="bi bi-list-check"></i> Evaluador
-                                        </button>
-                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -259,7 +259,7 @@
                                                     </button>
                                                 </li>
                                                 <li class="nav-item ms-auto p-2">
-                                                    <button class="btn-danger">Limpiar</button>  
+                                                    <button class="btn p-1 btn-danger">Limpiar</button>  
                                                 </li>
                                             </ul>
                                             <div class="tab-content flex-grow-1 overflow-auto"
@@ -423,34 +423,21 @@
                                                         
                                                     </ul>
                                                 </div>
-                                                <div  class="btn-group" aria-labelledby="cellImportanceDesktop" >
-                                                    <a class="dropdown-toggle btn border-dark" href="#" id="cellImportanceDesktop"
-                                                        role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                                        <i class="bi bi-binoculars-fill"></i>
-                                                    </a>
-                                                    <ul class="dropdown-menu" aria-labelledby="cellImportanceDesktop" >
-                                                        <li>
-                                                            <button class="dropdown-item">
-                                                                <i class="bi bi-binoculars-fill text-warning"></i> Evaluar casilla
-                                                            </button>
-                                                        </li>
-                                                        <li>
-                                                            <button class="dropdown-item">
-                                                                <i class="bi bi-binoculars-fill text-secondary"></i> Ignorar casilla
-                                                            </button>
-                                                        </li>
-                                                        
-                                                    </ul>
-                                                </div>
+                                                
                                             </div>
                                             <div class="btn-group" role="group">
                                                 <button type="button" class="btn btn-light p-1 ps-2 pe-2 border-dark"
-                                                    title="Ver al origen (1,1)">
+                                                    title="Ir al origen (1,1)">
                                                     <i class="bi bi-house-door-fill"></i>
                                                 </button>
                                                 <button type="button" class="btn btn-light p-1 ps-2 pe-2 border-dark"
-                                                    title="Ver a Karel">                                                    
+                                                    title="Ir a Karel">                                                    
                                                     <img src="img/karel-up.svg"  class="h-auto w-auto">
+                                                </button>
+                                                
+                                                <button type="button" class="btn btn-light p-1 ps-2 pe-2 border-dark"
+                                                    title="Ir al cursor">                                                    
+                                                    <i class="bi bi-cursor-fill"></i>
                                                 </button>
                                             </div>
                                             <!-- <div class="btn-group">
@@ -474,6 +461,31 @@
                                                 <button class="btn btn-secondary"><i class="bi bi-zoom-out"></i></button>
                                                 <input type="number" min="50" max="250" value="100" step="10">
                                                 <button class="btn btn-secondary"><i class="bi bi-zoom-in"></i></button>
+                                            </div>
+                                            <div class="btn-group">
+                                                <div  class="btn-group" aria-labelledby="cellImportanceDesktop" >
+                                                    <a class="dropdown-toggle btn border-dark" href="#" id="cellImportanceDesktop"
+                                                        role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                                        <i class="bi bi-flag-fill"></i>
+                                                    </a>
+                                                    <ul class="dropdown-menu" aria-labelledby="cellImportanceDesktop" >
+                                                        <li>
+                                                            <button class="dropdown-item">
+                                                                <i class="bi bi-flag-fill text-warning"></i> Evaluar casilla
+                                                            </button>
+                                                        </li>
+                                                        <li>
+                                                            <button class="dropdown-item">
+                                                                <i class="bi bi-flag-fill text-secondary"></i> Ignorar casilla
+                                                            </button>
+                                                        </li>
+                                                        
+                                                    </ul>
+                                                </div>
+                                                <button type="button" class="btn btn-light p-1 ps-2 pe-2 border-dark"
+                                                    title="Regresa el mundo a su estado original">
+                                                    <i class="bi bi-list-check"></i> Evaluador
+                                                </button>
                                             </div>
                                         </div>
                                     </div>
@@ -631,7 +643,10 @@
                             <button id="execTabBtn" class="btn"><span class="h3"><i
                                         class="bi bi-play-circle"></i></span></button>
 
-                            <button id="settingTabBtn" class="btn">
+                            <button 
+                            class="btn"  
+                            data-bs-toggle="modal"
+                            data-bs-target="#settingsModal">
                                 <span class="h3"><i class="bi bi-gear-fill"></i></span>
                             </button>
                         </div>
@@ -641,7 +656,7 @@
             </div>
         </div>
     </div>
-
+    <!-- Save Code Menu -->
     <div id="saveCodeModal" class="modal fade" tabindex="-1" aria-labelledby="saveCodeModal" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
@@ -663,6 +678,7 @@
         </div>
 
     </div>
+    <!-- Confirm Modal Menu -->
     <div id="confirmModal" class="modal fade" tabindex="-1" aria-labelledby="confirmModal" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
@@ -686,8 +702,8 @@
         </div>
     </div>
 
-    
-    <div id="downloadWorldModal" class="modal fade" tabindex="-1" aria-labelledby="confirmModal" aria-hidden="true">
+    <!-- Download World Menu -->
+    <div id="downloadWorldModal" class="modal fade" tabindex="-1" aria-labelledby="downloadWorldModal" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
@@ -715,6 +731,78 @@
                 </div>
             </div>
         </div>
+    </div>
+    <!--  Settings Menu-->
+    <div id="settingsModal" class="modal fade" tabindex="-1" aria-labelledby="settingsModal" aria-hidden="true">
+        <form id="settingsForm">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Configuración</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="container ">
+                            
+                            <h5>General</h5>
+                            <div class="row m-2">
+                                <div class="col-sm-12 col-md-4 col-lg-3">
+                                    <label>Vista:</label>
+                                </div>
+                                <div class="col-sm-12 col-md-8 col-lg-6">
+                                    <select class="form-select" aria-label="Tipo de interfaz" name="interface">
+                                        <option value="auto">Automático (Responsivo)</option>
+                                        <option value="desktop">Vista de escritorio</option>
+                                        <option value="mobile">Vista de celular</option>
+                                    </select>
+                                </div>
+                            </div>                            
+                            <div class="row m-2">
+                                <div class="col-sm-12 col-md-4 col-lg-3">
+                                    <label>Lenguaje:</label>
+                                </div>
+                                <div class="col-sm-12 col-md-8 col-lg-6">
+                                    <select class="form-select" aria-label="Tipo de interfaz">
+                                        <option value="auto">Automático</option>
+                                        <option value="desktop">Siempre Java</option>
+                                        <option value="desktop">Siempre Pascal</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <h5>Editor</h5>
+                            <div class="row m-2">
+                                <div class="col-sm-12 col-md-4 col-lg-3">
+                                    <label>Tamaño de fuente:</label>
+                                </div>
+                                <div class="col-sm-12 col-md-8 col-lg-6">
+                                    <select class="form-select" aria-label="Tipo de interfaz">
+                                        <option value="x-small">Extra pequeña</option>
+                                        <option value="small">Pequeña</option>
+                                        <option value="medium">Mediana</option>
+                                        <option value="large">Grande</option>
+                                        <option value="x-large">Extra grande</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>                        
+                    </div>
+                    <div class="modal-footer">
+                        
+                        <button type="submit" class="btn btn-warning">
+                            Aplicar
+                        </button>
+                        <button type="submit" class="btn btn-primary" data-bs-dismiss="modal"
+                            data-bs-dialog="none">
+                            Aceptar
+                        </button>
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"
+                            data-bs-dialog="none">
+                            Cancelar
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </form>
     </div>
 
     <!-- SCRIPTS -->

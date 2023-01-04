@@ -1,3 +1,7 @@
+:root {
+    --font-size: medium;
+}
+
 .cm-s-karel span.cm-keyword {color: rgb(147, 15, 128); }
 .cm-s-karel span.cm-indent {color: rgb(60, 76, 114); }
 .cm-s-karel span.cm-dedent {color: rgb(60, 76, 114); }
@@ -14,5 +18,5 @@
 .cm-s-karel .CodeMirror-matchingbracket {outline:1px solid grey;color:black !important;background:yellow;}
 
 .cm-editor .cm-content {
-    font-size:medium;
+    font-size: var(--font-size);
 }

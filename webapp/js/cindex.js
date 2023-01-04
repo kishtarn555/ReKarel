@@ -17612,8 +17612,7 @@
         navToolbar: {
             "#codeTabBtn": () => "",
             "#worldTabBtn": () => "",
-            "#execTabBtn": () => "",
-            "#settingTabBtn": () => ""
+            "#execTabBtn": () => ""
         },
     });
     //Activate default states
@@ -17621,7 +17620,10 @@
     PhoneUI.changeNavToolbar("#codeTabBtn");
     //Hoock all UI
     $("#infiniteBeepersBtn").click(DesktopUI.toggleInfinityBeepers);
-    function useSettings(settings) {
+    let appSettings = {
+        interface: "auto"
+    };
+    function applySettings(settings) {
         switch (settings.interface) {
             case "auto":
                 SetResponsiveness();
@@ -17637,9 +17639,28 @@
                 break;
         }
     }
+    function setSettings(event) {
+        switch ($("#settingsForm select[name=interface]").val()) {
+            case "desktop":
+                appSettings.interface = "desktop";
+                break;
+            case "mobile":
+                appSettings.interface = "mobile";
+                break;
+            case "auto":
+            default:
+                appSettings.interface = "auto";
+                break;
+        }
+        console.log(appSettings);
+        applySettings(appSettings);
+        event.preventDefault();
+        return false;
+    }
     $(document).ready(() => {
+        $("#settingsForm").on("submit", setSettings);
         responsiveHack();
-        useSettings({ interface: "desktop" });
+        applySettings({ interface: "auto" });
         //THIS NEEDS TO BE MOVED
         $("#worldContainer").scroll(() => {
             console.log("lol");
