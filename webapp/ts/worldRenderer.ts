@@ -1,5 +1,6 @@
 import { gutters } from "@codemirror/view";
 
+// FIXME: Change f coords to r (so it's all in english)
 class WorldRenderer {
     GutterSize: number;
     canvasContext: CanvasRenderingContext2D
@@ -144,9 +145,46 @@ class WorldRenderer {
         this.DrawGrid();
     }
 
-    DrawKarel(f: number, c:number) : void {
-        f
-
+    DrawKarel(r: number, c:number, orientation: "north" | "east" | "south" | "west" = "north") : void {
+        if (r- this.origin.f < 0 || r- this.origin.f >= this.GetRowCount()) {
+            // Cull Karel it's outside view by y coord
+            return;
+        }
+        
+        if (c- this.origin.c < 0 || c- this.origin.c >= this.GetColCount()) {
+            // Cull Karel it's outside view by x coord
+            return;
+        }
+        let h = this.canvasContext.canvas.clientHeight;
+        let x = this.GutterSize+ this.CellSize * (c- this.origin.c)+ this.CellSize/2;
+        let y = h-(this.GutterSize+ this.CellSize * (r- this.origin.f)+ this.CellSize/2);
+        
+        this.canvasContext.translate(x-0.5, y-0.5);
+        this.canvasContext.fillStyle = "#678dd7";
+        this.canvasContext.beginPath();
+        switch (orientation) {
+            case "east":
+                this.canvasContext.rotate(Math.PI/2);
+                break;
+            case "south":
+                this.canvasContext.rotate(Math.PI);
+                break;
+            case "west":
+                this.canvasContext.rotate(3*Math.PI/2);
+                break;
+        }
+        //FIXME: NOT ADHOC
+        this.canvasContext.moveTo(0,-14);
+        this.canvasContext.lineTo(14,0);
+        this.canvasContext.lineTo(5,0);
+        this.canvasContext.lineTo(5,14);
+        this.canvasContext.lineTo(-5,14);
+        this.canvasContext.lineTo(-5,0);
+        this.canvasContext.lineTo(-14,0);
+        this.canvasContext.lineTo(0,-14);
+        this.canvasContext.fill();
+        //Reset transform
+        this.canvasContext.setTransform(1, 0, 0, 1, 0, 0);
     }
 
     Draw() {
@@ -156,6 +194,7 @@ class WorldRenderer {
         this.canvasContext.clearRect(0, 0, w, h);
         this.DrawGutters();
         this.DrawBackground();
+        this.DrawKarel(10, 8, "south");
     }
 
     UpdateScroll(left: number, top: number): void {
