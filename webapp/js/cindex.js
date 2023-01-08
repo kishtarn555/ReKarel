@@ -17354,12 +17354,13 @@
 
     // FIXME: Change f coords to r (so it's all in english)
     class WorldRenderer {
-        constructor(canvasContext) {
+        constructor(canvasContext, style) {
             this.canvasContext = canvasContext;
             this.origin = { f: 1, c: 1 };
             this.CellSize = 30;
             this.margin = 8;
             this.GutterSize = 30;
+            this.style = style;
         }
         GetRowCount(mode = "ceil") {
             switch (mode) {
@@ -17388,17 +17389,17 @@
         DrawVerticalGutter() {
             let h = this.canvasContext.canvas.clientHeight;
             this.canvasContext.canvas.clientWidth;
-            this.canvasContext.fillStyle = "#e6e6e6";
+            this.canvasContext.fillStyle = this.style.gutterBackgroundColor;
             this.canvasContext.fillRect(0, 0, this.GutterSize, h - this.GutterSize);
             let rows = this.GetRowCount();
-            this.canvasContext.strokeStyle = "#c4c4c4";
+            this.canvasContext.strokeStyle = this.style.gridBorderColor;
             this.canvasContext.beginPath();
             for (let i = 0; i < rows; i++) {
                 this.canvasContext.moveTo(0, h - (this.GutterSize + (i + 1) * this.CellSize) + 0.5);
                 this.canvasContext.lineTo(this.GutterSize, h - (this.GutterSize + (i + 1) * this.CellSize) + 0.5);
             }
             this.canvasContext.stroke();
-            this.canvasContext.fillStyle = "#444444";
+            this.canvasContext.fillStyle = this.style.gutterColor;
             this.canvasContext.font = `${Math.min(this.CellSize, this.GutterSize) - this.margin}px monospace`;
             this.canvasContext.textAlign = "center";
             this.canvasContext.textBaseline = "middle";
@@ -17411,17 +17412,17 @@
         DrawHorizontalGutter() {
             let h = this.canvasContext.canvas.clientHeight;
             let w = this.canvasContext.canvas.clientWidth;
-            this.canvasContext.fillStyle = "#e6e6e6";
+            this.canvasContext.fillStyle = this.style.gutterBackgroundColor;
             this.canvasContext.fillRect(this.GutterSize, h - this.GutterSize, w, h);
             let cols = this.GetColCount();
-            this.canvasContext.strokeStyle = "#c4c4c4";
+            this.canvasContext.strokeStyle = this.style.gridBorderColor;
             this.canvasContext.beginPath();
             for (let i = 0; i < cols; i++) {
                 this.canvasContext.moveTo(this.GutterSize + (i + 1) * this.CellSize - 0.5, h);
                 this.canvasContext.lineTo(this.GutterSize + (i + 1) * this.CellSize - 0.5, h - this.GutterSize);
             }
             this.canvasContext.stroke();
-            this.canvasContext.fillStyle = "#444444";
+            this.canvasContext.fillStyle = this.style.gutterColor;
             this.canvasContext.font = `${Math.min(this.CellSize, this.GutterSize) - this.margin}px monospace`;
             this.canvasContext.textAlign = "center";
             this.canvasContext.textBaseline = "middle";
@@ -17434,7 +17435,7 @@
         DrawGutters() {
             let h = this.canvasContext.canvas.clientHeight;
             this.canvasContext.canvas.clientWidth;
-            this.canvasContext.fillStyle = "#c4c4c4";
+            this.canvasContext.fillStyle = this.style.gridBorderColor;
             this.canvasContext.fillRect(0, h - this.GutterSize, this.GutterSize, this.GutterSize);
             this.DrawVerticalGutter();
             this.DrawHorizontalGutter();
@@ -17444,7 +17445,7 @@
             let w = this.canvasContext.canvas.clientWidth;
             let cols = this.GetColCount();
             let rows = this.GetRowCount();
-            this.canvasContext.strokeStyle = "#c4c4c4";
+            this.canvasContext.strokeStyle = this.style.gridBorderColor;
             this.canvasContext.beginPath();
             for (let i = 0; i < rows; i++) {
                 this.canvasContext.moveTo(this.GutterSize, h - (this.GutterSize + (i + 1) * this.CellSize) + 0.5);
@@ -17459,7 +17460,7 @@
         DrawBackground() {
             let h = this.canvasContext.canvas.clientHeight;
             let w = this.canvasContext.canvas.clientWidth;
-            this.canvasContext.fillStyle = "#fdfdfd";
+            this.canvasContext.fillStyle = this.style.gridBackgroundColor;
             this.canvasContext.fillRect(this.GutterSize, 0, w - this.GutterSize, h - this.GutterSize);
             this.DrawGrid();
         }
@@ -17476,7 +17477,7 @@
             let x = this.GutterSize + this.CellSize * (c - this.origin.c) + this.CellSize / 2;
             let y = h - (this.GutterSize + this.CellSize * (r - this.origin.f) + this.CellSize / 2);
             this.canvasContext.translate(x - 0.5, y - 0.5);
-            this.canvasContext.fillStyle = "#678dd7";
+            this.canvasContext.fillStyle = this.style.karelColor;
             this.canvasContext.beginPath();
             switch (orientation) {
                 case "east":
@@ -17550,8 +17551,16 @@
         }
     }
     //TODO: Add support for states
+    const lightWRStyle = {
+        disabled: '#4f4f4f',
+        karelColor: '#678dd7',
+        gridBackgroundColor: '#f8f9fA',
+        gridBorderColor: '#c4c4c4',
+        gutterBackgroundColor: '#e6e6e6',
+        gutterColor: "#444444"
+    };
     function GetDesktopUIHelper() {
-        renderer = new WorldRenderer($("#worldCanvas")[0].getContext("2d"));
+        renderer = new WorldRenderer($("#worldCanvas")[0].getContext("2d"), lightWRStyle);
         // $("#worldCanvas").on("contextmenu", (e) => {
         //     const dumb =new bootstrap.Dropdown($("#contextMenuToggler")[0]);
         //     dumb.hide();

@@ -1,4 +1,11 @@
-import { gutters } from "@codemirror/view";
+type WRStyle = {
+    disabled: string,
+    karelColor: string,
+    gridBackgroundColor: string,
+    gridBorderColor: string,
+    gutterBackgroundColor: string,
+    gutterColor: string,
+}
 
 // FIXME: Change f coords to r (so it's all in english)
 class WorldRenderer {
@@ -7,13 +14,15 @@ class WorldRenderer {
     origin: { f: number, c: number };
     CellSize: number;
     margin: number;
+    style: WRStyle
 
-    constructor(canvasContext: CanvasRenderingContext2D) {
+    constructor(canvasContext: CanvasRenderingContext2D, style: WRStyle) {
         this.canvasContext = canvasContext;
         this.origin = { f: 1, c: 1 };
         this.CellSize= 30;
         this.margin = 8;
         this.GutterSize = 30;
+        this.style = style;
 
     }
 
@@ -49,10 +58,10 @@ class WorldRenderer {
         let h = this.canvasContext.canvas.clientHeight;
         let w = this.canvasContext.canvas.clientWidth;
         
-        this.canvasContext.fillStyle = "#e6e6e6";
+        this.canvasContext.fillStyle = this.style.gutterBackgroundColor;
         this.canvasContext.fillRect(0, 0, this.GutterSize, h - this.GutterSize);
         let rows = this.GetRowCount();
-        this.canvasContext.strokeStyle = "#c4c4c4";
+        this.canvasContext.strokeStyle = this.style.gridBorderColor;
         this.canvasContext.beginPath();
         for (let i =0; i < rows; i++) {
             this.canvasContext.moveTo(0, h-(this.GutterSize+ (i+1) *this.CellSize)+0.5);
@@ -60,7 +69,7 @@ class WorldRenderer {
         }
         this.canvasContext.stroke();
         
-        this.canvasContext.fillStyle= "#444444";
+        this.canvasContext.fillStyle= this.style.gutterColor;
         this.canvasContext.font = `${Math.min(this.CellSize, this.GutterSize) - this.margin}px monospace`;
         this.canvasContext.textAlign = "center";
         this.canvasContext.textBaseline = "middle";
@@ -82,17 +91,17 @@ class WorldRenderer {
     DrawHorizontalGutter(): void {
         let h = this.canvasContext.canvas.clientHeight;
         let w = this.canvasContext.canvas.clientWidth;
-        this.canvasContext.fillStyle = "#e6e6e6";
+        this.canvasContext.fillStyle = this.style.gutterBackgroundColor;
         this.canvasContext.fillRect(this.GutterSize, h - this.GutterSize, w, h);
         let cols = this.GetColCount();
-        this.canvasContext.strokeStyle = "#c4c4c4";
+        this.canvasContext.strokeStyle = this.style.gridBorderColor;
         this.canvasContext.beginPath();
         for (let i =0; i < cols; i++) {
             this.canvasContext.moveTo(this.GutterSize+(i+1)*this.CellSize-0.5, h);            
             this.canvasContext.lineTo(this.GutterSize+(i+1)*this.CellSize-0.5, h-this.GutterSize);
         }
         this.canvasContext.stroke();
-        this.canvasContext.fillStyle= "#444444";
+        this.canvasContext.fillStyle= this.style.gutterColor;
         this.canvasContext.font = `${Math.min(this.CellSize, this.GutterSize) - this.margin}px monospace`;
         this.canvasContext.textAlign = "center";
         this.canvasContext.textBaseline = "middle";
@@ -112,7 +121,7 @@ class WorldRenderer {
     DrawGutters(): void {
         let h = this.canvasContext.canvas.clientHeight;
         let w = this.canvasContext.canvas.clientWidth;
-        this.canvasContext.fillStyle = "#c4c4c4";
+        this.canvasContext.fillStyle = this.style.gridBorderColor;
         this.canvasContext.fillRect(0, h-this.GutterSize, this.GutterSize, this.GutterSize);
         this.DrawVerticalGutter();
         this.DrawHorizontalGutter();
@@ -123,7 +132,7 @@ class WorldRenderer {
         let w = this.canvasContext.canvas.clientWidth;
         let cols = this.GetColCount();
         let rows = this.GetRowCount();
-        this.canvasContext.strokeStyle = "#c4c4c4";
+        this.canvasContext.strokeStyle = this.style.gridBorderColor;
         this.canvasContext.beginPath();
         for (let i =0; i < rows; i++) {
             this.canvasContext.moveTo(this.GutterSize, h-(this.GutterSize+ (i+1) *this.CellSize)+0.5);
@@ -140,7 +149,7 @@ class WorldRenderer {
     DrawBackground(): void {
         let h = this.canvasContext.canvas.clientHeight;
         let w = this.canvasContext.canvas.clientWidth;
-        this.canvasContext.fillStyle = "#fdfdfd";
+        this.canvasContext.fillStyle = this.style.gridBackgroundColor;
         this.canvasContext.fillRect(this.GutterSize, 0, w-this.GutterSize, h-this.GutterSize);
         this.DrawGrid();
     }
@@ -160,7 +169,7 @@ class WorldRenderer {
         let y = h-(this.GutterSize+ this.CellSize * (r- this.origin.f)+ this.CellSize/2);
         
         this.canvasContext.translate(x-0.5, y-0.5);
-        this.canvasContext.fillStyle = "#678dd7";
+        this.canvasContext.fillStyle = this.style.karelColor;
         this.canvasContext.beginPath();
         switch (orientation) {
             case "east":
@@ -220,4 +229,4 @@ class WorldRenderer {
 
 }
 
-export { WorldRenderer };
+export { WorldRenderer, WRStyle};

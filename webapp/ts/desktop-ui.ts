@@ -1,6 +1,6 @@
 import { redoDepth } from '@codemirror/history';
 import bootstrap from 'bootstrap';
-import { WorldRenderer } from './worldRenderer';
+import { WorldRenderer, WRStyle } from './worldRenderer';
 
 let renderer: WorldRenderer = undefined;
 
@@ -49,8 +49,17 @@ function ToggleConextMenu() {
    
 }
 //TODO: Add support for states
+const lightWRStyle : WRStyle = {
+    disabled: '#4f4f4f',
+    karelColor: '#678dd7',
+    gridBackgroundColor: '#f8f9fA',
+    gridBorderColor: '#c4c4c4',
+    gutterBackgroundColor: '#e6e6e6',
+    gutterColor: "#444444"
+}
 function GetDesktopUIHelper() {
-    renderer = new WorldRenderer(($("#worldCanvas")[0] as HTMLCanvasElement).getContext("2d"));
+
+    renderer = new WorldRenderer(($("#worldCanvas")[0] as HTMLCanvasElement).getContext("2d"), lightWRStyle);
     // $("#worldCanvas").on("contextmenu", (e) => {
     //     const dumb =new bootstrap.Dropdown($("#contextMenuToggler")[0]);
     
