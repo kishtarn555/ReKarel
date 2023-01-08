@@ -45,7 +45,7 @@ class WorldRenderer {
         this.canvasContext.textBaseline = "middle";
         for (let i =0; i < rows; i++) {
             // this.canvasContext.measureText()
-            this.canvasContext.fillText(`${i+this.origin.f}`, this.GutterSize/2, h-(this.GutterSize+ (i+0.5) *this.CellSize), this.CellSize - this.margin);
+            this.canvasContext.fillText(`${i+this.origin.f}`, this.GutterSize/2, h-(this.GutterSize+ (i+0.5) *this.CellSize), this.GutterSize - this.margin);
         }
         
 
@@ -65,14 +65,18 @@ class WorldRenderer {
             this.canvasContext.lineTo(this.GutterSize+(i+1)*this.CellSize-0.5, h-this.GutterSize);
         }
         this.canvasContext.stroke();
-        return;
         this.canvasContext.fillStyle= "#444444";
-        this.canvasContext.font = `${this.CellSize - this.margin}px monospace`;
+        this.canvasContext.font = `${this.GutterSize - this.margin}px monospace`;
         this.canvasContext.textAlign = "center";
         this.canvasContext.textBaseline = "middle";
         for (let i =0; i < cols; i++) {
             // this.canvasContext.measureText()
-            this.canvasContext.fillText(`${i+this.origin.c}`, this.GutterSize/2, h-(this.GutterSize+ (i+0.5) *this.CellSize), this.CellSize - this.margin);
+            this.canvasContext.fillText(
+                `${i+this.origin.c}`, 
+                1.5*this.GutterSize + i*this.CellSize,
+                h-this.GutterSize/2, 
+                this.CellSize - this.margin
+            );
         }
 
     }
@@ -95,14 +99,15 @@ class WorldRenderer {
         this.DrawGutters();
     }
 
-    UpdateScroll(left: number, right: number): void {
-        let worldWidth = 100;
+    UpdateScroll(left: number, top: number): void {
+        let worldWidth = 2100;
         let worldHeight = 100;
 
         this.origin = {
-            f: Math.floor(1+ worldHeight*left),
-            c: Math.floor(1+ worldWidth*left),
+            f: Math.floor(1+ (worldHeight-1)*top),
+            c: Math.floor(1+ (worldWidth-1)*left),
         }
+        this.Draw()
     }
 
 }

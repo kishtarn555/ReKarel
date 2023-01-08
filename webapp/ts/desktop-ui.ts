@@ -40,6 +40,7 @@ function ToggleConextMenu() {
 }
 //TODO: Add support for states
 function GetDesktopUIHelper() {
+    renderer = new WorldRenderer(($("#worldCanvas")[0] as HTMLCanvasElement).getContext("2d"));
     // $("#worldCanvas").on("contextmenu", (e) => {
     //     const dumb =new bootstrap.Dropdown($("#contextMenuToggler")[0]);
     
@@ -50,8 +51,16 @@ function GetDesktopUIHelper() {
     //     ToggleConextMenu();
     //     e.preventDefault();
                 
-    
-    renderer = new WorldRenderer(($("#worldCanvas")[0] as HTMLCanvasElement).getContext("2d"));
+    $("#worldContainer").on("scroll", ()=> {
+        let left = 
+            $("#worldContainer").scrollLeft() 
+            / ($("#worldContainer")[0].scrollWidth-$("#worldContainer")[0].clientWidth);
+        let top 
+            = 1-$("#worldContainer").scrollTop() 
+            / ($("#worldContainer")[0].scrollHeight-$("#worldContainer")[0].clientHeight);
+        renderer.UpdateScroll(left, top);
+         
+    });
     $(window).on("resize", () => {        
         ResizeDesktopCanvas();
     });
