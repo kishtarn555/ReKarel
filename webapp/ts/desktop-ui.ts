@@ -4,11 +4,21 @@ import { WorldRenderer } from './worldRenderer';
 
 let renderer: WorldRenderer = undefined;
 
+function scrollCanvas() {
+    let left = 
+            $("#worldContainer").scrollLeft() 
+            / ($("#worldContainer")[0].scrollWidth-$("#worldContainer")[0].clientWidth);
+    let top 
+        = 1-$("#worldContainer").scrollTop() 
+        / ($("#worldContainer")[0].scrollHeight-$("#worldContainer")[0].clientHeight);
+    renderer.UpdateScroll(left, top);
+}
+
 function ResizeDesktopCanvas() {    
     $("#worldCanvas").attr("width", $("#worldContainer")[0].clientWidth);    
     $("#worldCanvas").attr("height", $("#worldContainer")[0].clientHeight);
-
     renderer.Draw();        
+    scrollCanvas();
 }
 
 function toggleInfinityBeepers () {
@@ -51,16 +61,7 @@ function GetDesktopUIHelper() {
     //     ToggleConextMenu();
     //     e.preventDefault();
                 
-    $("#worldContainer").on("scroll", ()=> {
-        let left = 
-            $("#worldContainer").scrollLeft() 
-            / ($("#worldContainer")[0].scrollWidth-$("#worldContainer")[0].clientWidth);
-        let top 
-            = 1-$("#worldContainer").scrollTop() 
-            / ($("#worldContainer")[0].scrollHeight-$("#worldContainer")[0].clientHeight);
-        renderer.UpdateScroll(left, top);
-         
-    });
+    $("#worldContainer").on("scroll", scrollCanvas);
     $(window).on("resize", () => {        
         ResizeDesktopCanvas();
     });

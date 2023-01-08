@@ -17357,14 +17357,32 @@
             this.canvasContext = canvasContext;
             this.origin = { f: 1, c: 1 };
             this.CellSize = 30;
-            this.margin = 12;
+            this.margin = 8;
             this.GutterSize = 30;
         }
-        GetRowCount() {
+        GetRowCount(mode = "ceil") {
+            switch (mode) {
+                case "ceil":
+                    return Math.ceil((this.canvasContext.canvas.clientHeight - this.GutterSize) / this.CellSize);
+                case "floor":
+                    return Math.floor((this.canvasContext.canvas.clientHeight - this.GutterSize) / this.CellSize);
+            }
             return Math.ceil((this.canvasContext.canvas.clientHeight - this.GutterSize) / this.CellSize);
         }
-        GetColCount() {
+        GetColCount(mode = "ceil") {
+            switch (mode) {
+                case "ceil":
+                    return Math.ceil((this.canvasContext.canvas.clientWidth - this.GutterSize) / this.CellSize);
+                case "floor":
+                    return Math.floor((this.canvasContext.canvas.clientWidth - this.GutterSize) / this.CellSize);
+            }
             return Math.ceil((this.canvasContext.canvas.clientWidth - this.GutterSize) / this.CellSize);
+        }
+        GetWorldRowCount() {
+            return 100;
+        }
+        GetWorldColCount() {
+            return 100;
         }
         DrawVerticalGutter() {
             let h = this.canvasContext.canvas.clientHeight;
@@ -17380,12 +17398,13 @@
             }
             this.canvasContext.stroke();
             this.canvasContext.fillStyle = "#444444";
-            this.canvasContext.font = `${this.CellSize - this.margin}px monospace`;
+            this.canvasContext.font = `${Math.min(this.CellSize, this.GutterSize) - this.margin}px monospace`;
             this.canvasContext.textAlign = "center";
             this.canvasContext.textBaseline = "middle";
             for (let i = 0; i < rows; i++) {
                 // this.canvasContext.measureText()
-                this.canvasContext.fillText(`${i + this.origin.f}`, this.GutterSize / 2, h - (this.GutterSize + (i + 0.5) * this.CellSize), this.GutterSize - this.margin);
+                if (i + this.origin.f <= this.GetWorldRowCount())
+                    this.canvasContext.fillText(`${i + this.origin.f}`, this.GutterSize / 2, h - (this.GutterSize + (i + 0.5) * this.CellSize), this.GutterSize - this.margin);
             }
         }
         DrawHorizontalGutter() {
@@ -17402,12 +17421,13 @@
             }
             this.canvasContext.stroke();
             this.canvasContext.fillStyle = "#444444";
-            this.canvasContext.font = `${this.GutterSize - this.margin}px monospace`;
+            this.canvasContext.font = `${Math.min(this.CellSize, this.GutterSize) - this.margin}px monospace`;
             this.canvasContext.textAlign = "center";
             this.canvasContext.textBaseline = "middle";
             for (let i = 0; i < cols; i++) {
-                // this.canvasContext.measureText()
-                this.canvasContext.fillText(`${i + this.origin.c}`, 1.5 * this.GutterSize + i * this.CellSize, h - this.GutterSize / 2, this.CellSize - this.margin);
+                // this.canvasContext.measureText()            
+                if (i + this.origin.c <= this.GetWorldColCount())
+                    this.canvasContext.fillText(`${i + this.origin.c}`, this.GutterSize + i * this.CellSize + 0.5 * this.CellSize, h - this.GutterSize / 2, this.CellSize - this.margin);
             }
         }
         DrawGutters() {
@@ -17418,28 +17438,61 @@
             this.DrawVerticalGutter();
             this.DrawHorizontalGutter();
         }
+        DrawGrid() {
+            let h = this.canvasContext.canvas.clientHeight;
+            let w = this.canvasContext.canvas.clientWidth;
+            let cols = this.GetColCount();
+            let rows = this.GetRowCount();
+            this.canvasContext.strokeStyle = "#c4c4c4";
+            this.canvasContext.beginPath();
+            for (let i = 0; i < rows; i++) {
+                this.canvasContext.moveTo(this.GutterSize, h - (this.GutterSize + (i + 1) * this.CellSize) + 0.5);
+                this.canvasContext.lineTo(w, h - (this.GutterSize + (i + 1) * this.CellSize) + 0.5);
+            }
+            for (let i = 0; i < cols; i++) {
+                this.canvasContext.moveTo(this.GutterSize + (i + 1) * this.CellSize - 0.5, 0);
+                this.canvasContext.lineTo(this.GutterSize + (i + 1) * this.CellSize - 0.5, h - this.GutterSize);
+            }
+            this.canvasContext.stroke();
+        }
+        DrawBackground() {
+            let h = this.canvasContext.canvas.clientHeight;
+            let w = this.canvasContext.canvas.clientWidth;
+            this.canvasContext.fillStyle = "#fdfdfd";
+            this.canvasContext.fillRect(this.GutterSize, 0, w - this.GutterSize, h - this.GutterSize);
+            this.DrawGrid();
+        }
         Draw() {
             let h = this.canvasContext.canvas.clientHeight;
             let w = this.canvasContext.canvas.clientWidth;
             this.canvasContext.clearRect(0, 0, w, h);
             this.DrawGutters();
+            this.DrawBackground();
         }
         UpdateScroll(left, top) {
-            let worldWidth = 2100;
-            let worldHeight = 100;
+            let worldWidth = this.GetWorldColCount();
+            let worldHeight = this.GetWorldRowCount();
             this.origin = {
-                f: Math.floor(1 + (worldHeight - 1) * top),
-                c: Math.floor(1 + (worldWidth - 1) * left),
+                f: Math.floor(1 + Math.max(0, worldHeight - this.GetRowCount("floor") + 1) * top),
+                c: Math.floor(1 + Math.max(0, worldWidth - this.GetColCount("floor") + 1) * left),
             };
             this.Draw();
         }
     }
 
     let renderer = undefined;
+    function scrollCanvas() {
+        let left = $("#worldContainer").scrollLeft()
+            / ($("#worldContainer")[0].scrollWidth - $("#worldContainer")[0].clientWidth);
+        let top = 1 - $("#worldContainer").scrollTop()
+            / ($("#worldContainer")[0].scrollHeight - $("#worldContainer")[0].clientHeight);
+        renderer.UpdateScroll(left, top);
+    }
     function ResizeDesktopCanvas() {
         $("#worldCanvas").attr("width", $("#worldContainer")[0].clientWidth);
         $("#worldCanvas").attr("height", $("#worldContainer")[0].clientHeight);
         renderer.Draw();
+        scrollCanvas();
     }
     function toggleInfinityBeepers() {
         if ($("#beeperBag").attr("hidden") !== undefined) {
@@ -17466,13 +17519,7 @@
         //     $("#contextMenuDiv")[0].style.setProperty("left", `${e.pageX}px`);      
         //     ToggleConextMenu();
         //     e.preventDefault();
-        $("#worldContainer").on("scroll", () => {
-            let left = $("#worldContainer").scrollLeft()
-                / ($("#worldContainer")[0].scrollWidth - $("#worldContainer")[0].clientWidth);
-            let top = 1 - $("#worldContainer").scrollTop()
-                / ($("#worldContainer")[0].scrollHeight - $("#worldContainer")[0].clientHeight);
-            renderer.UpdateScroll(left, top);
-        });
+        $("#worldContainer").on("scroll", scrollCanvas);
         $(window).on("resize", () => {
             ResizeDesktopCanvas();
         });

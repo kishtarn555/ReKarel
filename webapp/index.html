@@ -290,7 +290,7 @@
                                             <canvas id="worldCanvas" class="position-sticky top-0 start-0 world-canvas"
                                                 style="background: magenta"></canvas>
                                                 <div id="worldScrolledContainerVertical" style="height:3000px;width:1px;"></div>
-                                                <div id="worldScrolledContainerVertical" style="height:1px;width:63000px;"></div>
+                                                <div id="worldScrolledContainerVertical" style="height:1px;width:3000px;"></div>
                                             
                                         </div>
                                         <div class="bg-light btn-toolbar d-flex p-2 gap-2 border-bottom flex-shrink-0">
@@ -494,7 +494,17 @@
                                                 <button class="btn btn-secondary" title="Reducir zoom">
                                                     <i class="bi bi-zoom-out"></i>
                                                 </button>
-                                                <input type="number" min="50" max="250" value="100" step="10">
+                                                <select name="" id="zoomDekstop">
+                                                    <option value="small">
+                                                        50%
+                                                    </option>
+                                                    <option value="medium" selected>
+                                                        100%
+                                                    </option>
+                                                    <option value="large">
+                                                        250%
+                                                    </option>
+                                                </select>
                                                 <button class="btn btn-secondary" title="Aumentar zoom">
                                                     <i class="bi bi-zoom-in"></i>
                                                 </button>
