@@ -1,11 +1,11 @@
 import { splitPanels } from "./split";
 import { responsiveHack, SetResponsiveness, SetDesktopView, SetPhoneView } from "./responsive-load";
 import { createEditors } from "./editor";
-import { GetDesktopUIHelper, ToggleConextMenu } from "./desktop-ui";
+import { GetDesktopUIHelper, ToggleConextMenu, ResizeDesktopCanvas } from "./desktop-ui";
 import { GetPhoneUIHelper } from "./phone-ui";
 import { HookUpCommonUI, SetText } from "./common-ui";
 
-splitPanels();
+splitPanels(ResizeDesktopCanvas);
 
 var [destkopEditor, phoneEditor] = createEditors();
 //TODO: ThisShouldnt be here
@@ -179,6 +179,8 @@ function applySettings(settings: AppSettings) {
             break;
     }
     $(":root")[0].style.setProperty("--editor-font-size", `${settings.editorFontSize}pt`);
+    if (settings.interface== "desktop")
+        ResizeDesktopCanvas();
 }
 
 function setSettings(event: Event) {
@@ -200,13 +202,9 @@ function setSettings(event: Event) {
 $(document).ready(()=>{
     $("#settingsForm").on("submit", setSettings)
     responsiveHack();
-    applySettings(appSettings);
-    //THIS NEEDS TO BE MOVED
-    $("#worldContainer").scroll(()=> {
-        console.log("lol");
-        let x = $("#worldContainer").scrollLeft();
-        let y = $("#worldContainer").scrollTop();
-    });
+    applySettings(appSettings);    
+    DesktopUI.ResizeDesktopCanvas();
+    DesktopUI.renderer.DrawGutters();
 })
 
 

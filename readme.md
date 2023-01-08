@@ -33,7 +33,6 @@ This new version includes:
         * If set, syntax higlighting and compile will always try that language.
     * The view (force one view independent of screen size)
     * Code Font size
-* World edited by toolbars, based on Google's spreadsheets.
 * Hotkeys
     * `Ctrl+K` Decreases editor's font.
     * `Ctrl+L` Increases editor's font.
@@ -41,9 +40,12 @@ This new version includes:
 * Native scrolling with scrollbars for the world renderer.
     * The previous scroll was hard to use imo.
 * Added the ability to specify the name of the file to be downloaded
-
-# UX
-Here are improvements in UX based on my used of the tool, but there's not a secondary opinion.
 * Added clean button to remove old messages.
 * "Are you sure?" before reseting code
 * "Are you sure?" before reseting world
+* Added icons to Karel position.
+# World Editor
+Reworked world editor.
+
+Now it is more similar to Google's spreadsheet
+* World edition is based on cell selection and a toolbar.

@@ -7,12 +7,18 @@
     --editor-font-size: medium;
 }
 
+.text-emphasis {
+    color: var(--bs-emphasis-color);
+}
+
 .cm-editor .cm-content {
     font-size: var(--editor-font-size);
 }
 
 .cm-editor .cm-gutter {
     font-size: var(--editor-font-size);
+    color: var(--bs-emphasis-color);
+    background-color: var(--bs-secondary-bg);
 }
 
 

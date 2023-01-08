@@ -1,11 +1,12 @@
 import Split from 'split.js'
 
 
-function splitPanels () {
+function splitPanels (ResizeCanvas: ()=>void) {
     Split(['#splitter-left-pane', '#splitter-right-pane'], {
-        sizes: [30, 70]
+        sizes: [30, 70],
+        onDragEnd: ResizeCanvas
     });
-        Split(['#splitter-left-top-pane', '#splitter-left-bottom-pane'], {
+    Split(['#splitter-left-top-pane', '#splitter-left-bottom-pane'], {
         sizes: [70, 30],
         direction: 'vertical',
     });

@@ -773,9 +773,10 @@
         }
     };
 
-    function splitPanels() {
+    function splitPanels(ResizeCanvas) {
         Split(['#splitter-left-pane', '#splitter-right-pane'], {
-            sizes: [30, 70]
+            sizes: [30, 70],
+            onDragEnd: ResizeCanvas
         });
         Split(['#splitter-left-top-pane', '#splitter-left-bottom-pane'], {
             sizes: [70, 30],
@@ -17351,6 +17352,79 @@
         return [mainView, otherView];
     }
 
+    class WorldRenderer {
+        constructor(canvasContext) {
+            this.canvasContext = canvasContext;
+            this.origin = { f: 1, c: 1 };
+            this.CellSize = 30;
+            this.margin = 12;
+            this.GutterSize = 30;
+        }
+        GetRowCount() {
+            return Math.ceil((this.canvasContext.canvas.clientHeight - this.GutterSize) / this.CellSize);
+        }
+        GetColCount() {
+            return Math.ceil((this.canvasContext.canvas.clientWidth - this.GutterSize) / this.CellSize);
+        }
+        DrawVerticalGutter() {
+            let h = this.canvasContext.canvas.clientHeight;
+            this.canvasContext.canvas.clientWidth;
+            this.canvasContext.fillStyle = "#e6e6e6";
+            this.canvasContext.fillRect(0, 0, this.GutterSize, h - this.GutterSize);
+            let rows = this.GetRowCount();
+            this.canvasContext.strokeStyle = "#c4c4c4";
+            this.canvasContext.beginPath();
+            for (let i = 0; i < rows; i++) {
+                this.canvasContext.moveTo(0, h - (this.GutterSize + (i + 1) * this.CellSize) + 0.5);
+                this.canvasContext.lineTo(this.GutterSize, h - (this.GutterSize + (i + 1) * this.CellSize) + 0.5);
+            }
+            this.canvasContext.stroke();
+            this.canvasContext.fillStyle = "#444444";
+            this.canvasContext.font = `${this.CellSize - this.margin}px monospace`;
+            this.canvasContext.textAlign = "center";
+            this.canvasContext.textBaseline = "middle";
+            for (let i = 0; i < rows; i++) {
+                // this.canvasContext.measureText()
+                this.canvasContext.fillText(`${i + this.origin.f}`, this.GutterSize / 2, h - (this.GutterSize + (i + 0.5) * this.CellSize), this.CellSize - this.margin);
+            }
+        }
+        DrawHorizontalGutter() {
+            let h = this.canvasContext.canvas.clientHeight;
+            let w = this.canvasContext.canvas.clientWidth;
+            this.canvasContext.fillStyle = "#e6e6e6";
+            this.canvasContext.fillRect(this.GutterSize, h - this.GutterSize, w, h);
+            let cols = this.GetColCount();
+            this.canvasContext.strokeStyle = "#c4c4c4";
+            this.canvasContext.beginPath();
+            for (let i = 0; i < cols; i++) {
+                this.canvasContext.moveTo(this.GutterSize + (i + 1) * this.CellSize - 0.5, h);
+                this.canvasContext.lineTo(this.GutterSize + (i + 1) * this.CellSize - 0.5, h - this.GutterSize);
+            }
+            this.canvasContext.stroke();
+            return;
+        }
+        DrawGutters() {
+            let h = this.canvasContext.canvas.clientHeight;
+            this.canvasContext.canvas.clientWidth;
+            this.canvasContext.fillStyle = "#c4c4c4";
+            this.canvasContext.fillRect(0, h - this.GutterSize, this.GutterSize, this.GutterSize);
+            this.DrawVerticalGutter();
+            this.DrawHorizontalGutter();
+        }
+        Draw() {
+            let h = this.canvasContext.canvas.clientHeight;
+            let w = this.canvasContext.canvas.clientWidth;
+            this.canvasContext.clearRect(0, 0, w, h);
+            this.DrawGutters();
+        }
+    }
+
+    let renderer = undefined;
+    function ResizeDesktopCanvas() {
+        $("#worldCanvas").attr("width", $("#worldContainer")[0].clientWidth);
+        $("#worldCanvas").attr("height", $("#worldContainer")[0].clientHeight);
+        renderer.Draw();
+    }
     function toggleInfinityBeepers() {
         if ($("#beeperBag").attr("hidden") !== undefined) {
             $("#beeperBag").removeAttr("hidden");
@@ -17365,29 +17439,29 @@
             $("#infiniteBeepersBtn").addClass("btn-info");
         }
     }
-    function ToggleConextMenu() {
-        // $("#contextMenuToggler")[0].click();
-        let toggler = $("#contextMenuToggler");
-        const dumb = new bootstrap.Dropdown(toggler[0]);
-        dumb.show();
-    }
     //TODO: Add support for states
     function GetDesktopUIHelper() {
-        $("#worldCanvas").on("contextmenu", (e) => {
-            const dumb = new bootstrap.Dropdown($("#contextMenuToggler")[0]);
-            dumb.hide();
-            console.log(e);
-            $("#contextMenuDiv")[0].style.setProperty("top", `${e.pageY}px`);
-            $("#contextMenuDiv")[0].style.setProperty("left", `${e.pageX}px`);
-            ToggleConextMenu();
-            e.preventDefault();
-        });
+        // $("#worldCanvas").on("contextmenu", (e) => {
+        //     const dumb =new bootstrap.Dropdown($("#contextMenuToggler")[0]);
+        //     dumb.hide();
+        //     console.log(e);  
+        //     $("#contextMenuDiv")[0].style.setProperty("top", `${e.pageY}px`);
+        //     $("#contextMenuDiv")[0].style.setProperty("left", `${e.pageX}px`);      
+        //     ToggleConextMenu();
+        //     e.preventDefault();
+        // })
         // $("#contextMenuToggler").on("hidden.bs.dropdown", ()=>{
         //     $("#contextMenuDiv")[0].style.setProperty("top", `0px`);
         //     $("#contextMenuDiv")[0].style.setProperty("left", `0px`); 
         // });
+        renderer = new WorldRenderer($("#worldCanvas")[0].getContext("2d"));
+        $(window).on("resize", () => {
+            ResizeDesktopCanvas();
+        });
         return {
-            toggleInfinityBeepers: toggleInfinityBeepers
+            toggleInfinityBeepers: toggleInfinityBeepers,
+            renderer: renderer,
+            ResizeDesktopCanvas: ResizeDesktopCanvas
         };
     }
 
@@ -17517,7 +17591,7 @@
         editor.dispatch(transaction);
     }
 
-    splitPanels();
+    splitPanels(ResizeDesktopCanvas);
     var [destkopEditor, phoneEditor] = createEditors();
     //TODO: ThisShouldnt be here
     function hideElement(element) {
@@ -17665,6 +17739,8 @@
                 break;
         }
         $(":root")[0].style.setProperty("--editor-font-size", `${settings.editorFontSize}pt`);
+        if (settings.interface == "desktop")
+            ResizeDesktopCanvas();
     }
     function setSettings(event) {
         let interfaceType = $("#settingsForm select[name=interface]").val();
@@ -17685,12 +17761,8 @@
         $("#settingsForm").on("submit", setSettings);
         responsiveHack();
         applySettings(appSettings);
-        //THIS NEEDS TO BE MOVED
-        $("#worldContainer").scroll(() => {
-            console.log("lol");
-            $("#worldContainer").scrollLeft();
-            $("#worldContainer").scrollTop();
-        });
+        DesktopUI.ResizeDesktopCanvas();
+        DesktopUI.renderer.DrawGutters();
     });
     $(document).on("keydown", (e) => {
         if (e.ctrlKey && e.which === 75) {
