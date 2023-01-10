@@ -15,8 +15,16 @@ function scrollCanvas() {
 }
 
 function ResizeDesktopCanvas() {    
-    $("#worldCanvas").attr("width", $("#worldContainer")[0].clientWidth);    
-    $("#worldCanvas").attr("height", $("#worldContainer")[0].clientHeight);
+    $("#worldCanvas")[0].style.width= `${$("#worldContainer")[0].clientWidth}px`;    
+    $("#worldCanvas")[0].style.height= `${$("#worldContainer")[0].clientHeight}px`;
+    let scale = window.devicePixelRatio;
+    $("#worldCanvas").attr(
+        "width", Math.floor($("#worldContainer")[0].clientWidth * scale)
+    );    
+    $("#worldCanvas").attr(
+        "height", Math.floor($("#worldContainer")[0].clientHeight * scale)
+    );
+
     renderer.Draw();        
     scrollCanvas();
 }
@@ -51,29 +59,38 @@ function ToggleConextMenu() {
 //TODO: Add support for states
 const lightWRStyle : WRStyle = {
     disabled: '#4f4f4f',
-    karelColor: '#678dd7',
+    exportCellBackground: '#f5f7a8',
+    karelColor: '#315FB9',
     gridBackgroundColor: '#f8f9fA',
     gridBorderColor: '#c4c4c4',
     gutterBackgroundColor: '#e6e6e6',
-    gutterColor: "#444444"
+    gutterColor: "#444444",
+    beeperBackgroundColor: "#497029",    
+    beeperColor: "#FAFAFA"
 }
 function GetDesktopUIHelper() {
 
-    renderer = new WorldRenderer(($("#worldCanvas")[0] as HTMLCanvasElement).getContext("2d"), lightWRStyle);
-    // $("#worldCanvas").on("contextmenu", (e) => {
-    //     const dumb =new bootstrap.Dropdown($("#contextMenuToggler")[0]);
-    
-    //     dumb.hide();
-    //     console.log(e);  
-    //     $("#contextMenuDiv")[0].style.setProperty("top", `${e.pageY}px`);
-    //     $("#contextMenuDiv")[0].style.setProperty("left", `${e.pageX}px`);      
-    //     ToggleConextMenu();
-    //     e.preventDefault();
+    renderer = new WorldRenderer(
+        ($("#worldCanvas")[0] as HTMLCanvasElement).getContext("2d"),
+        lightWRStyle,
+        $("#worldContainer")[0]    
+    );
+    $("#worldCanvas").on("contextmenu", (e) => {
+        return;
+        const dumb =new bootstrap.Dropdown($("#contextMenuToggler")[0]);
+        dumb.hide();
+        console.log(e);  
+        $("#contextMenuDiv")[0].style.setProperty("top", `${e.pageY}px`);
+        $("#contextMenuDiv")[0].style.setProperty("left", `${e.pageX}px`);      
+        ToggleConextMenu();
+        e.preventDefault();
+    });
                 
     $("#worldContainer").on("scroll", scrollCanvas);
     $(window).on("resize", () => {        
         ResizeDesktopCanvas();
     });
+    renderer.FocusOrigin();
     return {
         toggleInfinityBeepers : toggleInfinityBeepers,
         renderer: renderer,

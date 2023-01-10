@@ -1,5 +1,8 @@
 type WRStyle = {
+    beeperBackgroundColor: string,
+    beeperColor: string,
     disabled: string,
+    exportCellBackground: string,
     karelColor: string,
     gridBackgroundColor: string,
     gridBorderColor: string,
@@ -10,40 +13,49 @@ type WRStyle = {
 // FIXME: Change f coords to r (so it's all in english)
 class WorldRenderer {
     GutterSize: number;
-    canvasContext: CanvasRenderingContext2D
+    canvasContext: CanvasRenderingContext2D;
     origin: { f: number, c: number };
     CellSize: number;
     margin: number;
-    style: WRStyle
+    style: WRStyle;
+    scale: number;
+    scroller: HTMLElement;
 
-    constructor(canvasContext: CanvasRenderingContext2D, style: WRStyle) {
+    constructor(canvasContext: CanvasRenderingContext2D, style: WRStyle, scroller: HTMLElement) {
         this.canvasContext = canvasContext;
         this.origin = { f: 1, c: 1 };
-        this.CellSize= 30;
+        this.CellSize= 35;
         this.margin = 8;
         this.GutterSize = 30;
         this.style = style;
+        this.scale = 1;
+        this.scroller = scroller;
+    }
 
+    GetWidth() : number {
+        return this.canvasContext.canvas.width;
+    }
+
+    GetHeight() : number {
+        return this.canvasContext.canvas.height;
     }
 
     GetRowCount(mode : "floor"| "ceil" = "ceil"): number {
         switch (mode) {
             case "ceil":
-                return Math.ceil((this.canvasContext.canvas.clientHeight-this.GutterSize)/ this.CellSize );
+                return Math.ceil((this.GetHeight()-this.GutterSize)/ this.CellSize );
             case "floor":
-                return Math.floor((this.canvasContext.canvas.clientHeight-this.GutterSize)/ this.CellSize );
+                return Math.floor((this.GetHeight()-this.GutterSize)/ this.CellSize );
         }
-        return Math.ceil((this.canvasContext.canvas.clientHeight-this.GutterSize)/ this.CellSize );
     }
 
     GetColCount(mode : "floor"| "ceil" = "ceil"): number {
         switch (mode) {
             case "ceil":
-                return Math.ceil((this.canvasContext.canvas.clientWidth-this.GutterSize)/ this.CellSize );
+                return Math.ceil((this.GetWidth()-this.GutterSize)/ this.CellSize );
             case "floor":
-                return Math.floor((this.canvasContext.canvas.clientWidth-this.GutterSize)/ this.CellSize );
+                return Math.floor((this.GetWidth()-this.GutterSize)/ this.CellSize );
         }
-        return Math.ceil((this.canvasContext.canvas.clientWidth-this.GutterSize)/ this.CellSize );
     }
 
     GetWorldRowCount(): number {
@@ -55,8 +67,8 @@ class WorldRenderer {
     }
 
     DrawVerticalGutter(): void {
-        let h = this.canvasContext.canvas.clientHeight;
-        let w = this.canvasContext.canvas.clientWidth;
+        let h = this.GetHeight();
+        let w = this.GetWidth();
         
         this.canvasContext.fillStyle = this.style.gutterBackgroundColor;
         this.canvasContext.fillRect(0, 0, this.GutterSize, h - this.GutterSize);
@@ -76,7 +88,7 @@ class WorldRenderer {
         for (let i =0; i < rows; i++) {
             // this.canvasContext.measureText()
             if (i+this.origin.f <= this.GetWorldRowCount())
-                this.canvasContext.fillText(
+                this.DrawTextVerticallyAlign(
                     `${i+this.origin.f}`, 
                     this.GutterSize/2, 
                     h-(this.GutterSize+ (i+0.5) *this.CellSize), 
@@ -89,8 +101,8 @@ class WorldRenderer {
     }
 
     DrawHorizontalGutter(): void {
-        let h = this.canvasContext.canvas.clientHeight;
-        let w = this.canvasContext.canvas.clientWidth;
+        let h = this.GetHeight();
+        let w = this.GetWidth();
         this.canvasContext.fillStyle = this.style.gutterBackgroundColor;
         this.canvasContext.fillRect(this.GutterSize, h - this.GutterSize, w, h);
         let cols = this.GetColCount();
@@ -108,7 +120,7 @@ class WorldRenderer {
         for (let i =0; i < cols; i++) {
             // this.canvasContext.measureText()            
             if (i+this.origin.c <= this.GetWorldColCount())
-                this.canvasContext.fillText(
+                this.DrawTextVerticallyAlign(
                     `${i+this.origin.c}`, 
                     this.GutterSize + i*this.CellSize + 0.5*this.CellSize,
                     h-this.GutterSize/2, 
@@ -119,8 +131,8 @@ class WorldRenderer {
     }
 
     DrawGutters(): void {
-        let h = this.canvasContext.canvas.clientHeight;
-        let w = this.canvasContext.canvas.clientWidth;
+        let h = this.GetHeight();
+        let w = this.GetWidth();
         this.canvasContext.fillStyle = this.style.gridBorderColor;
         this.canvasContext.fillRect(0, h-this.GutterSize, this.GutterSize, this.GutterSize);
         this.DrawVerticalGutter();
@@ -128,8 +140,8 @@ class WorldRenderer {
     }
 
     DrawGrid(): void {
-        let h = this.canvasContext.canvas.clientHeight;
-        let w = this.canvasContext.canvas.clientWidth;
+        let h = this.GetHeight();
+        let w = this.GetWidth();
         let cols = this.GetColCount();
         let rows = this.GetRowCount();
         this.canvasContext.strokeStyle = this.style.gridBorderColor;
@@ -147,11 +159,10 @@ class WorldRenderer {
     }
 
     DrawBackground(): void {
-        let h = this.canvasContext.canvas.clientHeight;
-        let w = this.canvasContext.canvas.clientWidth;
+        let h = this.GetHeight();
+        let w = this.GetWidth();
         this.canvasContext.fillStyle = this.style.gridBackgroundColor;
         this.canvasContext.fillRect(this.GutterSize, 0, w-this.GutterSize, h-this.GutterSize);
-        this.DrawGrid();
     }
 
     DrawKarel(r: number, c:number, orientation: "north" | "east" | "south" | "west" = "north") : void {
@@ -164,11 +175,11 @@ class WorldRenderer {
             // Cull Karel it's outside view by x coord
             return;
         }
-        let h = this.canvasContext.canvas.clientHeight;
+        let h = this.GetHeight();
         let x = this.GutterSize+ this.CellSize * (c- this.origin.c)+ this.CellSize/2;
         let y = h-(this.GutterSize+ this.CellSize * (r- this.origin.f)+ this.CellSize/2);
         
-        this.canvasContext.translate(x-0.5, y-0.5);
+        this.canvasContext.translate(x-0.5, y+0.5);
         this.canvasContext.fillStyle = this.style.karelColor;
         this.canvasContext.beginPath();
         switch (orientation) {
@@ -183,27 +194,83 @@ class WorldRenderer {
                 break;
         }
         //FIXME: NOT ADHOC
-        this.canvasContext.moveTo(0,-14);
-        this.canvasContext.lineTo(14,0);
-        this.canvasContext.lineTo(5,0);
-        this.canvasContext.lineTo(5,14);
-        this.canvasContext.lineTo(-5,14);
-        this.canvasContext.lineTo(-5,0);
-        this.canvasContext.lineTo(-14,0);
-        this.canvasContext.lineTo(0,-14);
+        this.canvasContext.moveTo(0,-17);
+        this.canvasContext.lineTo(17,0);
+        this.canvasContext.lineTo(8,0);
+        this.canvasContext.lineTo(8,17);
+        this.canvasContext.lineTo(-8,17);
+        this.canvasContext.lineTo(-8,0);
+        this.canvasContext.lineTo(-17,0);
+        this.canvasContext.lineTo(0,-17);
         this.canvasContext.fill();
         //Reset transform
+        this.ResetTransform();
+    }
+
+    ResetTransform() {
         this.canvasContext.setTransform(1, 0, 0, 1, 0, 0);
     }
 
-    Draw() {
+    ColorCell(r: number, c: number, color:string) : void {
+        let h = this.GetHeight();
+        let x = c*this.CellSize+this.GutterSize;
+        let y = h-((r+1)*this.CellSize+this.GutterSize);
+
+        this.canvasContext.fillStyle= color;
+        this.canvasContext.fillRect(x, y, this.CellSize, this.CellSize);
+    }
+
+    DrawTextVerticallyAlign(text:string, x: number, y:number, maxWidth: number) {
+        this.canvasContext.textAlign = "center";
+        this.canvasContext.textBaseline = "alphabetic";
+
+        let hs = this.canvasContext.measureText(text).actualBoundingBoxAscent;
+        // this.canvasContext.strokeText(text, x, y+hs/2, maxWidth);
+        this.canvasContext.fillText(text, x, y+hs/2, maxWidth);
+
+    }
+
+    DrawTextCell(r: number, c: number, text: string) {
+        let h = this.GetHeight();
+        let x = c*this.CellSize+this.GutterSize+this.CellSize/2;
+        let y = h-((r+0.5)*this.CellSize+this.GutterSize);
         
-        let h = this.canvasContext.canvas.clientHeight;
-        let w = this.canvasContext.canvas.clientWidth;
+        this.canvasContext.fillStyle = this.style.beeperColor;
+               
+        this.canvasContext.font = `${this.CellSize-18}px Arial`
+        this.DrawTextVerticallyAlign(text, x, y, this.CellSize-8);
+        
+        this.canvasContext.shadowBlur=0;
+    }
+
+    DrawBeeperSquare(r: number, c:number,ammount: number, color: string) {
+        this.canvasContext.fillStyle = color;
+        let h = this.GetHeight();
+        let x = c*this.CellSize+this.GutterSize;
+        let y = h-((r+1)*this.CellSize+this.GutterSize);
+        
+        this.canvasContext.fillRect(x+1, y+5, this.CellSize-3, this.CellSize-9);
+    }
+
+    Draw() {        
+        this.ResetTransform();
+        let h = this.GetHeight();
+        let w = this.GetWidth();
         this.canvasContext.clearRect(0, 0, w, h);
         this.DrawGutters();
         this.DrawBackground();
-        this.DrawKarel(10, 8, "south");
+        this.ColorCell(3, 3, this.style.exportCellBackground);
+        this.DrawGrid();        
+        this.DrawBeeperSquare(3, 3, 423, this.style.beeperBackgroundColor);
+        this.DrawKarel(5, 5, "east");
+        this.DrawTextCell(3, 3, "423");
+
+        
+    }
+
+    FocusOrigin() {
+        this.scroller.scrollLeft = 0;
+        this.scroller.scrollTop = this.scroller.scrollHeight - this.scroller.clientHeight;
     }
 
     UpdateScroll(left: number, top: number): void {
@@ -214,13 +281,13 @@ class WorldRenderer {
             f: Math.floor(
                 1+ Math.max(
                     0, 
-                    worldHeight-this.GetRowCount("floor")+1
+                    worldHeight-this.GetRowCount("floor") + 1
                 )*top
             ),
             c: Math.floor(
                 1+ Math.max(
                     0,
-                    worldWidth-this.GetColCount("floor")+1
+                    worldWidth-this.GetColCount("floor") + 1
                 )*left
                 ),
         }
