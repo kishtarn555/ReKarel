@@ -60,13 +60,13 @@ function ToggleConextMenu() {
 const lightWRStyle : WRStyle = {
     disabled: '#4f4f4f',
     exportCellBackground: '#f5f7a8',
-    karelColor: '#315FB9',
+    karelColor: '#3E6AC1',
     gridBackgroundColor: '#f8f9fA',
     gridBorderColor: '#c4c4c4',
     gutterBackgroundColor: '#e6e6e6',
     gutterColor: "#444444",
-    beeperBackgroundColor: "#497029",    
-    beeperColor: "#FAFAFA"
+    beeperBackgroundColor: "#0ADB23",    
+    beeperColor: "#000000"
 }
 function GetDesktopUIHelper() {
 

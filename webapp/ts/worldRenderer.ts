@@ -230,26 +230,37 @@ class WorldRenderer {
 
     }
 
+    SetBeeperFont() {
+        this.canvasContext.textBaseline = "alphabetic";
+        this.canvasContext.font = `${this.CellSize-18}px monospace`
+    }
+
     DrawTextCell(r: number, c: number, text: string) {
         let h = this.GetHeight();
         let x = c*this.CellSize+this.GutterSize+this.CellSize/2;
         let y = h-((r+0.5)*this.CellSize+this.GutterSize);
-        
-        this.canvasContext.fillStyle = this.style.beeperColor;
-               
-        this.canvasContext.font = `${this.CellSize-18}px monospace`
         this.DrawTextVerticallyAlign(text, x, y, this.CellSize-8);
-        
-        this.canvasContext.shadowBlur=0;
     }
 
-    DrawBeeperSquare(r: number, c:number,ammount: number, color: string) {
-        this.canvasContext.fillStyle = color;
+    DrawBeeperSquare(
+        { r, c, ammount, background, color }: 
+        { r: number; c: number; ammount: number; background: string; color: string; }) {
         let h = this.GetHeight();
         let x = c*this.CellSize+this.GutterSize;
         let y = h-((r+1)*this.CellSize+this.GutterSize);
-        
-        this.canvasContext.fillRect(x+1, y+5, this.CellSize-3, this.CellSize-9);
+        this.SetBeeperFont();
+        let measure = this.canvasContext.measureText(String(ammount));
+        let textH = measure.actualBoundingBoxAscent+6;
+        let textW = Math.min(measure.width+6, this.CellSize-8);
+        this.canvasContext.fillStyle = background;
+        this.canvasContext.fillRect(
+            x+this.CellSize/2-(textW/2), 
+            y+this.CellSize/2-(textH/2),             
+            textW, 
+            textH
+        );               
+        this.canvasContext.fillStyle= color;        
+        this.DrawTextCell(r, c, String(ammount));
     }
 
     Draw() {        
@@ -261,9 +272,17 @@ class WorldRenderer {
         this.DrawBackground();
         this.ColorCell(3, 3, this.style.exportCellBackground);
         this.DrawGrid();        
-        this.DrawBeeperSquare(3, 3, 423, this.style.beeperBackgroundColor);
         this.DrawKarel(5, 5, "east");
-        this.DrawTextCell(3, 3, "423");
+        this.DrawKarel(5, 6, "north");
+        this.DrawKarel(5, 7, "west");
+        this.DrawKarel(5, 8, "south");
+        this.DrawBeeperSquare({
+            r: 3, 
+            c: 3, 
+            ammount: 1,
+            background: this.style.beeperBackgroundColor,
+            color: this.style.beeperColor
+        });
 
         
     }
