@@ -237,7 +237,7 @@ class WorldRenderer {
         
         this.canvasContext.fillStyle = this.style.beeperColor;
                
-        this.canvasContext.font = `${this.CellSize-18}px Arial`
+        this.canvasContext.font = `${this.CellSize-18}px monospace`
         this.DrawTextVerticallyAlign(text, x, y, this.CellSize-8);
         
         this.canvasContext.shadowBlur=0;
@@ -281,14 +281,14 @@ class WorldRenderer {
             f: Math.floor(
                 1+ Math.max(
                     0, 
-                    worldHeight-this.GetRowCount("floor") + 1
-                )*top
+                    (worldHeight-this.GetRowCount("floor") + 1)*top
+                )
             ),
             c: Math.floor(
                 1+ Math.max(
                     0,
-                    worldWidth-this.GetColCount("floor") + 1
-                )*left
+                    (worldWidth-this.GetColCount("floor") + 1)*left
+                )
                 ),
         }
         this.Draw()

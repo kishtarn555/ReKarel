@@ -68,11 +68,11 @@
                                         </ul>
                                     </li>
                                     <li class="nav-item dropdown">
-                                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink"
+                                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownCodeLink"
                                             role="button" data-bs-toggle="dropdown" aria-expanded="false">
                                             Código
                                         </a>
-                                        <ul class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+                                        <ul class="dropdown-menu" aria-labelledby="navbarDropdownCodeLink">
                                             <li>
                                                 <button id="newJavaCodeNavBtn" class="dropdown-item">
                                                     <i class="bi bi-file-earmark-plus"></i> Nuevo Java
@@ -100,11 +100,11 @@
                                         </ul>
                                     </li>
                                     <li class="nav-item dropdown">
-                                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink"
+                                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownOptionsLink"
                                             role="button" data-bs-toggle="dropdown" aria-expanded="false">
                                             Opciones
                                         </a>
-                                        <ul class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+                                        <ul class="dropdown-menu" aria-labelledby="navbarDropdownOptionsLink">
                                             <li>
                                                 <button class="dropdown-item" type="button" data-bs-toggle="modal"
                                                     data-bs-target="#settingsModal">
@@ -114,11 +114,11 @@
                                         </ul>
                                     </li>
                                     <li class="nav-item dropdown">
-                                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink"
+                                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownHelp"
                                             role="button" data-bs-toggle="dropdown" aria-expanded="false">
                                             Ayuda
                                         </a>
-                                        <ul class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+                                        <ul class="dropdown-menu" aria-labelledby="navbarDropdownHelp">
                                             <li>
                                                 <a class="dropdown-item" href="ayuda.html" target="_blank"><i
                                                         class="bi bi-book"></i> Manual de trucos</a>
@@ -137,7 +137,7 @@
                                                 <hr class="dropdown-divider">
                                             </li>
                                             <li>
-                                                <button class="dropdown-item"type="button" data-bs-toggle="modal"
+                                                <button class="dropdown-item" type="button" data-bs-toggle="modal"
                                                 data-bs-target="#aboutModal">
                                                     <i class="bi bi-info-circle"></i>
                                                     Acerca de
@@ -184,7 +184,7 @@
                                             <small>Mochila</small>
                                         </div>
                                         <input type="number" id="beeperBag" class="form-control border-dark"
-                                            aria-label="" aria-describedby="btnGroupAddon" min="0" value="0">
+                                            aria-label="" min="0" value="0">
                                         <button type="button" class="btn btn-light p-1 ps-3 pe-3 border-dark"
                                             id="infiniteBeepersBtn" title="Activar/desactivar zumbadores infinitos">
                                             <i class="bi bi-infinity"></i>
@@ -199,7 +199,7 @@
                                             <small>Retraso (ms)</small>
                                         </div>
                                         <input type="number" id="delayPanel" class="form-control border-dark"
-                                            aria-label="" aria-describedby="btnGroupAddon" min="0" value="0">
+                                            min="0" value="0">
                                         <button type="button" class="btn btn-light p-1 ps-1 pe-1 border-dark"
                                             id="removeDelayBtn" title="Regresa el mundo a su estado original">
                                             <i class="bi bi-dash"></i>
@@ -217,13 +217,13 @@
                                             <small>Filas</small>
                                         </div>
                                         <input type="number" id="toolbarRows" class="form-control border-dark"
-                                            aria-label="" aria-describedby="btnGroupAddon" min="1" value="100">
+                                            min="1" value="100">
                                         <div class="input-group-text bg-light border-dark ps-2 pe-2"
                                         title="Ancho del mundo">
                                             <small>Columnas</small>
                                         </div>
                                         <input type="number" id="toolbarCols" class="form-control border-dark"
-                                            aria-label="" aria-describedby="btnGroupAddon" min="1" value="100">
+                                            min="1" value="100">
 
                                     </div>
                                 </div>
@@ -289,8 +289,8 @@
                                             style="height: 0px;">
                                             <canvas id="worldCanvas" class="position-sticky top-0 start-0 world-canvas"
                                                 style="background: magenta"></canvas>
-                                                <div id="worldScrolledContainerVertical" style="height:3000px;width:1px;"></div>
-                                                <div id="worldScrolledContainerVertical" style="height:1px;width:3000px;"></div>
+                                            <div id="worldScrolledContainerVertical" style="height:3000px;width:1px;"></div>
+                                            <div id="worldScrolledContainerHorizontal" style="height:1px;width:3000px;"></div>
                                             
                                         </div>
                                         <div class="bg-light btn-toolbar d-flex p-2 gap-2 border-bottom flex-shrink-0">
@@ -465,7 +465,7 @@
                                                 </button>
                                                 <button type="button" class="btn btn-light p-1 ps-2 pe-2 border-dark"
                                                     title="Ir a Karel">
-                                                    <img src="img/karel-up.svg" class="h-auto w-auto">
+                                                    <img src="img/karel-up.svg" class="h-auto w-auto" alt="karel-up">
                                                 </button>
 
                                                 <button type="button" class="btn btn-light p-1 ps-2 pe-2 border-dark"
@@ -494,7 +494,7 @@
                                                 <button class="btn btn-secondary" title="Reducir zoom">
                                                     <i class="bi bi-zoom-out"></i>
                                                 </button>
-                                                <select name="" id="zoomDekstop">
+                                                <select name="karelSize" id="zoomDekstop">
                                                     <option value="small">
                                                         50%
                                                     </option>
@@ -574,14 +574,14 @@
                                         <i class="bi bi-archive "></i>
                                     </button>
 
-                                    <ul class="dropdown-menu  mb-1" aria-labelledby="navbarDropdownMenuLink">
+                                    <ul class="dropdown-menu  mb-1">
                                         <li>
                                             <button id="newJavaCodeBtn" class="dropdown-item">
                                                 <i class="bi bi-file-earmark-plus"></i> Nuevo Java
                                             </button>
                                         </li>
                                         <li><button id="newPascalCodeBtn" class="dropdown-item">
-                                                <i class="bi bi-file-earmark-plus"></i> Nuevo Pascal</a>
+                                                <i class="bi bi-file-earmark-plus"></i> Nuevo Pascal</button>
                                         </li>
                                         <li>
                                             <hr class="dropdown-divider">
@@ -649,10 +649,10 @@
                                     <i class="bi bi-microsoft"></i>
                                 </button>
                                 <div class="btn-group">
-                                    <button id="codeAction" class="btn btn-primary border-end">
+                                    <button id="upLine" class="btn btn-primary border-end">
                                         <i class="bi bi-caret-up-fill"></i>
                                     </button>
-                                    <button id="codeAction" class="btn  btn-primary border-start">
+                                    <button id="downLine" class="btn  btn-primary border-start">
                                         <i class="bi bi-caret-down-fill"></i>
                                     </button>
                                 </div>
@@ -666,10 +666,10 @@
                                     </button>
                                 </div>
 
-                                <button id="codeAction" class="btn  btn-success">
+                                <button id="ctrlZ" class="btn  btn-success">
                                     <i class="bi bi-plus-circle"></i>
                                 </button>
-                                <button id="codeAction" class="btn   btn-danger">
+                                <button id="ctrlY" class="btn   btn-danger">
                                     <i class="bi bi-x-circle"></i>
                                 </button>
 
@@ -766,7 +766,7 @@
                             data-bs-dialog="none">
                             Descargar mundo.in
                         </button>
-                        <button id="downloadWorldIn" class="btn btn-primary" data-bs-dismiss="modal"
+                        <button id="downloadWorldOut" class="btn btn-primary" data-bs-dismiss="modal"
                             data-bs-dialog="none">
                             Descargar mundo.out
                         </button>
@@ -884,7 +884,7 @@
         </div>
     </div>
     <!-- Context menu -->
-    <div id="contextMenuDiv" class="dropend position-absolute" style="top:680px; left:630px; width: 0px; height: 0px; " id="contextMenu">
+    <div id="contextMenuDiv" class="dropend position-absolute" style="top:680px; left:630px; width: 0px; height: 0px;">
         <button id="contextMenuToggler" type="button" class="p-0 m-0 h-0 w-0 position-absolute"
         data-bs-toggle="dropdown" aria-expanded="false" data-bs-auto-close="outside" 
         style="visibility: hidden; overflow: hidden; max-width: 0px; max-height: 0px; z-index: -1">

@@ -17530,7 +17530,7 @@
             let x = c * this.CellSize + this.GutterSize + this.CellSize / 2;
             let y = h - ((r + 0.5) * this.CellSize + this.GutterSize);
             this.canvasContext.fillStyle = this.style.beeperColor;
-            this.canvasContext.font = `${this.CellSize - 18}px Arial`;
+            this.canvasContext.font = `${this.CellSize - 18}px monospace`;
             this.DrawTextVerticallyAlign(text, x, y, this.CellSize - 8);
             this.canvasContext.shadowBlur = 0;
         }
@@ -17562,8 +17562,8 @@
             let worldWidth = this.GetWorldColCount();
             let worldHeight = this.GetWorldRowCount();
             this.origin = {
-                f: Math.floor(1 + Math.max(0, worldHeight - this.GetRowCount("floor") + 1) * top),
-                c: Math.floor(1 + Math.max(0, worldWidth - this.GetColCount("floor") + 1) * left),
+                f: Math.floor(1 + Math.max(0, (worldHeight - this.GetRowCount("floor") + 1) * top)),
+                c: Math.floor(1 + Math.max(0, (worldWidth - this.GetColCount("floor") + 1) * left)),
             };
             this.Draw();
         }
