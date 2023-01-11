@@ -244,7 +244,8 @@ class WorldRenderer {
 
     DrawBeeperSquare(
         { r, c, ammount, background, color }: 
-        { r: number; c: number; ammount: number; background: string; color: string; }) {
+        { r: number; c: number; ammount: number; background: string; color: string; }
+    ) {
         let h = this.GetHeight();
         let x = c*this.CellSize+this.GutterSize;
         let y = h-((r+1)*this.CellSize+this.GutterSize);
@@ -263,6 +264,35 @@ class WorldRenderer {
         this.DrawTextCell(r, c, String(ammount));
     }
 
+    DrawWall(r: number, c: number, type: "north"| "east" | "west" | "south") {
+        let h = this.GetHeight();
+        let x = this.GutterSize+ (c+0.5) * this.CellSize;
+        let y = h-(this.GutterSize+ (r+0.5) * this.CellSize);
+        this.canvasContext.translate(x,y);
+        switch (type) {
+            case "north":
+                break;
+            case "east":
+                this.canvasContext.rotate(Math.PI/2);
+                break;
+            case "south":                
+                this.canvasContext.rotate(Math.PI);
+                break;
+            case "west":
+                this.canvasContext.rotate(3*Math.PI/2);
+                break;
+        }
+        let lineOr = this.canvasContext.lineWidth;
+        this.canvasContext.strokeStyle = "#000";
+        this.canvasContext.lineWidth = 3;
+        this.canvasContext.beginPath();
+        this.canvasContext.moveTo(-this.CellSize/2, -this.CellSize/2+0.5);
+        this.canvasContext.lineTo(this.CellSize/2, -this.CellSize/2+0.5);
+        this.canvasContext.stroke();
+        this.canvasContext.lineWidth = lineOr;
+        this.ResetTransform();
+    }
+
     Draw() {        
         this.ResetTransform();
         let h = this.GetHeight();
@@ -276,6 +306,11 @@ class WorldRenderer {
         this.DrawKarel(5, 6, "north");
         this.DrawKarel(5, 7, "west");
         this.DrawKarel(5, 8, "south");
+
+        this.DrawWall(1, 1, "north");
+        this.DrawWall(1, 1, "east");
+        this.DrawWall(0, 0, "south");
+        this.DrawWall(1, 1, "west");
         this.DrawBeeperSquare({
             r: 3, 
             c: 3, 
