@@ -10,6 +10,11 @@ type WRStyle = {
     gutterColor: string,
 }
 
+type WRState  = {
+    cursorX:number
+    cursorY:number
+}
+
 // FIXME: Change f coords to r (so it's all in english)
 class WorldRenderer {
     GutterSize: number;
@@ -20,6 +25,7 @@ class WorldRenderer {
     style: WRStyle;
     scale: number;
     scroller: HTMLElement;
+    state: WRState;
 
     constructor(canvasContext: CanvasRenderingContext2D, style: WRStyle, scroller: HTMLElement) {
         this.canvasContext = canvasContext;
@@ -30,6 +36,10 @@ class WorldRenderer {
         this.style = style;
         this.scale = 1;
         this.scroller = scroller;
+        this.state = {
+            cursorX: 0,
+            cursorY: 0
+        }
     }
 
     GetWidth() : number {
@@ -59,11 +69,11 @@ class WorldRenderer {
     }
 
     GetWorldRowCount(): number {
-        return 100;
+        return 8;
     }
 
     GetWorldColCount(): number {
-        return 100;
+        return 8;
     }
 
     DrawVerticalGutter(): void {
@@ -127,7 +137,6 @@ class WorldRenderer {
                     this.CellSize - this.margin
                 );
         }
-
     }
 
     DrawGutters(): void {
@@ -293,6 +302,11 @@ class WorldRenderer {
         this.ResetTransform();
     }
 
+    DrawMouseCursor() {
+        this.canvasContext.fillStyle="red";
+        this.canvasContext.fillRect(this.state.cursorX-5, this.state.cursorY-5,10,10);
+    }
+
     Draw() {        
         this.ResetTransform();
         let h = this.GetHeight();
@@ -318,7 +332,7 @@ class WorldRenderer {
             background: this.style.beeperBackgroundColor,
             color: this.style.beeperColor
         });
-
+        this.DrawMouseCursor();
         
     }
 
@@ -346,6 +360,20 @@ class WorldRenderer {
                 ),
         }
         this.Draw()
+    }
+
+    TrackMouse(e: MouseEvent) {
+        let boundingBox =this.canvasContext.canvas.getBoundingClientRect();
+        let x = (e.clientX - boundingBox.left) * this.canvasContext.canvas.width / boundingBox.width;
+        let y = (e.clientY - boundingBox.top)* this.canvasContext.canvas.height / boundingBox.height;
+        this.state.cursorX=x;
+        this.state.cursorY=y;
+        console.log({
+            x: e.clientX,
+            y: e.clientY,
+        });
+        this.Draw();
+        
     }
 
 }

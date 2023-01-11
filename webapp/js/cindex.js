@@ -17363,6 +17363,10 @@
             this.style = style;
             this.scale = 1;
             this.scroller = scroller;
+            this.state = {
+                cursorX: 0,
+                cursorY: 0
+            };
         }
         GetWidth() {
             return this.canvasContext.canvas.width;
@@ -17387,10 +17391,10 @@
             }
         }
         GetWorldRowCount() {
-            return 100;
+            return 8;
         }
         GetWorldColCount() {
-            return 100;
+            return 8;
         }
         DrawVerticalGutter() {
             let h = this.GetHeight();
@@ -17576,6 +17580,10 @@
             this.canvasContext.lineWidth = lineOr;
             this.ResetTransform();
         }
+        DrawMouseCursor() {
+            this.canvasContext.fillStyle = "red";
+            this.canvasContext.fillRect(this.state.cursorX - 5, this.state.cursorY - 5, 10, 10);
+        }
         Draw() {
             this.ResetTransform();
             let h = this.GetHeight();
@@ -17600,6 +17608,7 @@
                 background: this.style.beeperBackgroundColor,
                 color: this.style.beeperColor
             });
+            this.DrawMouseCursor();
         }
         FocusOrigin() {
             this.scroller.scrollLeft = 0;
@@ -17614,14 +17623,30 @@
             };
             this.Draw();
         }
+        TrackMouse(e) {
+            let boundingBox = this.canvasContext.canvas.getBoundingClientRect();
+            let x = (e.clientX - boundingBox.left) * this.canvasContext.canvas.width / boundingBox.width;
+            let y = (e.clientY - boundingBox.top) * this.canvasContext.canvas.height / boundingBox.height;
+            this.state.cursorX = x;
+            this.state.cursorY = y;
+            console.log({
+                x: e.clientX,
+                y: e.clientY,
+            });
+            this.Draw();
+        }
     }
 
     let renderer = undefined;
     function scrollCanvas() {
-        let left = $("#worldContainer").scrollLeft()
-            / ($("#worldContainer")[0].scrollWidth - $("#worldContainer")[0].clientWidth);
-        let top = 1 - $("#worldContainer").scrollTop()
-            / ($("#worldContainer")[0].scrollHeight - $("#worldContainer")[0].clientHeight);
+        let left = ($("#worldContainer")[0].scrollWidth - $("#worldContainer")[0].clientWidth) !== 0 ?
+            $("#worldContainer").scrollLeft()
+                / ($("#worldContainer")[0].scrollWidth - $("#worldContainer")[0].clientWidth)
+            : 1;
+        let top = ($("#worldContainer")[0].scrollHeight - $("#worldContainer")[0].clientHeight) !== 0 ?
+            1 - $("#worldContainer").scrollTop()
+                / ($("#worldContainer")[0].scrollHeight - $("#worldContainer")[0].clientHeight)
+            : 1;
         renderer.UpdateScroll(left, top);
     }
     function ResizeDesktopCanvas() {
@@ -17669,6 +17694,7 @@
             ResizeDesktopCanvas();
         });
         renderer.FocusOrigin();
+        $("#worldCanvas").on("mousemove", renderer.TrackMouse.bind(renderer));
         return {
             toggleInfinityBeepers: toggleInfinityBeepers,
             renderer: renderer,

@@ -6,11 +6,15 @@ let renderer: WorldRenderer = undefined;
 
 function scrollCanvas() {
     let left = 
+        ($("#worldContainer")[0].scrollWidth-$("#worldContainer")[0].clientWidth)!==0?
             $("#worldContainer").scrollLeft() 
-            / ($("#worldContainer")[0].scrollWidth-$("#worldContainer")[0].clientWidth);
-    let top 
-        = 1-$("#worldContainer").scrollTop() 
-        / ($("#worldContainer")[0].scrollHeight-$("#worldContainer")[0].clientHeight);
+            / ($("#worldContainer")[0].scrollWidth-$("#worldContainer")[0].clientWidth)
+            :1;
+    let top =
+        ($("#worldContainer")[0].scrollHeight-$("#worldContainer")[0].clientHeight)!==0?
+            1-$("#worldContainer").scrollTop() 
+            / ($("#worldContainer")[0].scrollHeight-$("#worldContainer")[0].clientHeight)
+            :1;
     renderer.UpdateScroll(left, top);
 }
 
@@ -85,12 +89,14 @@ function GetDesktopUIHelper() {
         ToggleConextMenu();
         e.preventDefault();
     });
-                
+
+    
     $("#worldContainer").on("scroll", scrollCanvas);
     $(window).on("resize", () => {        
         ResizeDesktopCanvas();
     });
     renderer.FocusOrigin();
+    $("#worldCanvas").on("mousemove",renderer.TrackMouse.bind(renderer)); 
     return {
         toggleInfinityBeepers : toggleInfinityBeepers,
         renderer: renderer,
