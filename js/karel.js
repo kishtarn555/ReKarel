@@ -1640,17 +1640,21 @@ function detectLanguage(code) {
   return 'none';
 }
 
+// !!! MODS TO FILE
+import { kareljava } from '../js/kareljava.js';
+import { karelpascal } from './karelpascal.js';
+
 function compile(code) {
   var lang = detectLanguage(code);
   var parser = null;
 
   switch (lang) {
     case 'java':
-      parser = require('../js/kareljava.js').parse;
+      parser = kareljava.parse;
       break;
 
     case 'pascal':
-      parser = require('../js/karelpascal.js').parse;
+      parser = karelpascal.parse;
       break;
 
     case 'ruby':
