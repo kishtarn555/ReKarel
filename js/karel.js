@@ -1670,4 +1670,6 @@ if (typeof require !== 'undefined' && typeof exports !== 'undefined') {
   exports.compile = compile;
 }
 
+// !!!!!! ADDED BY REKAREL !!!!!
+export { World, detectLanguage, compile};
 // vim: set noexpandtab:ts=2:sw=2
