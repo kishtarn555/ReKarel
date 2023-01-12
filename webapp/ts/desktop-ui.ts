@@ -2,6 +2,8 @@ import { redoDepth } from '@codemirror/history';
 import bootstrap from 'bootstrap';
 import { WorldRenderer, WRStyle } from './worldRenderer';
 import { WorldController } from "./worldController";
+import { World } from '../../js/karel';
+
 
 let renderer: WorldRenderer = undefined;
 let controller: WorldController = undefined;
@@ -31,7 +33,7 @@ function ResizeDesktopCanvas() {
         "height", Math.floor($("#worldContainer")[0].clientHeight * scale)
     );
 
-    renderer.Draw();        
+    controller.Update();        
     scrollCanvas();
 }
 
@@ -74,14 +76,15 @@ const lightWRStyle : WRStyle = {
     beeperBackgroundColor: "#0ADB23",    
     beeperColor: "#000000"
 }
-function GetDesktopUIHelper() {
+function GetDesktopUIHelper(world: World) {
     renderer = new WorldRenderer(
         ($("#worldCanvas")[0] as HTMLCanvasElement).getContext("2d"),
         lightWRStyle   
     );
     controller = new WorldController(
         renderer,
-        $("#worldContainer")[0] 
+        $("#worldContainer")[0] ,
+        world
     );
     $("#worldCanvas").on("contextmenu", (e) => {
         return;

@@ -4,6 +4,7 @@ import { createEditors } from "./editor";
 import { GetDesktopUIHelper, ToggleConextMenu, ResizeDesktopCanvas } from "./desktop-ui";
 import { GetPhoneUIHelper } from "./phone-ui";
 import { HookUpCommonUI, SetText } from "./common-ui";
+import { World } from "../../js/karel";
 
 splitPanels(ResizeDesktopCanvas);
 
@@ -73,7 +74,10 @@ HookUpCommonUI(
         ]
     }
 )
-let DesktopUI = GetDesktopUIHelper();
+
+let KarelWorld: World = new World(100, 100);
+
+let DesktopUI = GetDesktopUIHelper(KarelWorld);
 let PhoneUI = GetPhoneUIHelper({
     editor: phoneEditor,
     mainEdtior: destkopEditor,

@@ -17361,11 +17361,7 @@
             this.margin = 8;
             this.GutterSize = 28;
             this.style = style;
-            this.scale = 1;
-            this.state = {
-                cursorX: 0,
-                cursorY: 0
-            };
+            this.world = undefined;
         }
         GetWidth() {
             return this.canvasContext.canvas.width / window.devicePixelRatio;
@@ -17391,10 +17387,10 @@
             }
         }
         GetWorldRowCount() {
-            return 100;
+            return this.world.w;
         }
         GetWorldColCount() {
-            return 100;
+            return this.world.h;
         }
         DrawVerticalGutter() {
             let h = this.GetHeight();

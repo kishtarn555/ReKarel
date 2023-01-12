@@ -1,4 +1,4 @@
-
+import { World } from "../../js/karel";
 
 type WRStyle = {
     beeperBackgroundColor: string,
@@ -24,6 +24,7 @@ class WorldRenderer {
     style: WRStyle;
     scale: number;
     scroller: HTMLElement;
+    private world: World;
 
     constructor(canvasContext: CanvasRenderingContext2D, style: WRStyle) {
         this.canvasContext = canvasContext;
@@ -31,7 +32,8 @@ class WorldRenderer {
         this.CellSize= 28;
         this.margin = 8;
         this.GutterSize = 28;
-        this.style = style;       
+        this.style = style;      
+        this.world = undefined; 
     }
 
     GetWidth() : number {
@@ -63,14 +65,14 @@ class WorldRenderer {
     }
 
     GetWorldRowCount(): number {
-        return 100;
+        return this.world.w;
     }
 
     GetWorldColCount(): number {
-        return 100;
+        return this.world.h;
     }
 
-    DrawVerticalGutter(): void {
+    private DrawVerticalGutter(): void {
         let h = this.GetHeight();
         let w = this.GetWidth();
         
@@ -297,7 +299,8 @@ class WorldRenderer {
         this.ResetTransform();
     }
 
-    Draw() {        
+    Draw(world: World) {        
+        this.world= world;
         this.ResetTransform();
         let h = this.GetHeight();
         let w = this.GetWidth();

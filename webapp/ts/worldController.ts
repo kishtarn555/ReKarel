@@ -1,18 +1,19 @@
 import { WorldRenderer } from "./worldRenderer";
-
+import { World } from "../../js/karel";
 class WorldController {
     renderer: WorldRenderer
     container: HTMLElement
-
+    world: World;
     state: {
         cursorX: number,
         cursorY: number,
     }
 
 
-    constructor(renderer: WorldRenderer, container: HTMLElement) {
+    constructor(renderer: WorldRenderer, container: HTMLElement, world: World) {
         this.renderer = renderer;
         this.container = container;
+        this.world = world;
     }
 
     Select(r: number, c: number, rowCount: number, colCount:number) {
@@ -51,7 +52,11 @@ class WorldController {
                 )
                 ),
         }
-        this.renderer.Draw()
+        this.Update();
+    }
+
+    Update() {
+        this.renderer.Draw(this.world);
     }
 }
 
