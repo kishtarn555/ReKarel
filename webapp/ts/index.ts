@@ -225,7 +225,7 @@ $(document).ready(()=>{
     responsiveHack();
     applySettings(appSettings);    
     DesktopUI.ResizeDesktopCanvas();
-    DesktopUI.renderer.DrawGutters();
+    DesktopUI.controller.Update();
 })
 
 
