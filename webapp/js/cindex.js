@@ -17387,10 +17387,10 @@
             }
         }
         GetWorldRowCount() {
-            return this.world.w;
+            return this.world.h;
         }
         GetWorldColCount() {
-            return this.world.h;
+            return this.world.w;
         }
         DrawVerticalGutter() {
             let h = this.GetHeight();
@@ -17524,7 +17524,7 @@
             this.canvasContext.textBaseline = "alphabetic";
             let hs = this.canvasContext.measureText(text).actualBoundingBoxAscent;
             // this.canvasContext.strokeText(text, x, y+hs/2, maxWidth);
-            this.canvasContext.fillText(text, x, y + hs / 2);
+            this.canvasContext.fillText(text, x, y + hs / 2, maxWidth);
         }
         SetBeeperFont() {
             this.canvasContext.textBaseline = "alphabetic";
@@ -17534,7 +17534,7 @@
             let h = this.GetHeight();
             let x = c * this.CellSize + this.GutterSize + this.CellSize / 2;
             let y = h - ((r + 0.5) * this.CellSize + this.GutterSize);
-            this.DrawTextVerticallyAlign(text, x, y, this.CellSize - 5);
+            this.DrawTextVerticallyAlign(text, x, y, this.CellSize * 2);
         }
         DrawBeeperSquare({ r, c, ammount, background, color }) {
             let h = this.GetHeight();
@@ -17577,6 +17577,43 @@
             this.canvasContext.lineWidth = lineOr;
             this.ResetTransform();
         }
+        DrawWalls() {
+            for (let i = 0; i < this.GetRowCount(); i++) {
+                for (let j = 0; j < this.GetColCount(); j++) {
+                    let walls = this.world.walls(i + this.origin.f, j + this.origin.c);
+                    for (let k = 0; k < 4; k++) {
+                        if ((walls & (1 << k)) !== 0) {
+                            this.DrawWall(i, j, this.GetOrientation(k));
+                        }
+                    }
+                }
+            }
+        }
+        DrawBeepers() {
+            for (let i = 0; i < this.GetRowCount(); i++) {
+                for (let j = 0; j < this.GetColCount(); j++) {
+                    let buzzers = this.world.buzzers(i + this.origin.f, j + this.origin.c);
+                    if (buzzers !== 0) {
+                        this.DrawBeeperSquare({
+                            r: i,
+                            c: j,
+                            ammount: buzzers,
+                            background: this.style.beeperBackgroundColor,
+                            color: this.style.beeperColor
+                        });
+                    }
+                }
+            }
+        }
+        DrawDumpCells() {
+            for (let i = 0; i < this.GetRowCount(); i++) {
+                for (let j = 0; j < this.GetColCount(); j++) {
+                    if (this.world.getDumpCell(i + this.origin.f, j + this.origin.c)) {
+                        this.ColorCell(i, j, this.style.exportCellBackground);
+                    }
+                }
+            }
+        }
         Draw(world) {
             this.world = world;
             this.ResetTransform();
@@ -17585,23 +17622,24 @@
             this.canvasContext.clearRect(0, 0, w, h);
             this.DrawGutters();
             this.DrawBackground();
-            this.ColorCell(3, 3, this.style.exportCellBackground);
+            this.DrawDumpCells();
             this.DrawGrid();
-            this.DrawKarel(5, 5, "east");
-            this.DrawKarel(5, 6, "north");
-            this.DrawKarel(5, 7, "west");
-            this.DrawKarel(5, 8, "south");
-            this.DrawWall(1, 1, "north");
-            this.DrawWall(1, 1, "east");
-            this.DrawWall(0, 0, "south");
-            this.DrawWall(1, 1, "west");
-            this.DrawBeeperSquare({
-                r: 3,
-                c: 3,
-                ammount: 888,
-                background: this.style.beeperBackgroundColor,
-                color: this.style.beeperColor
-            });
+            this.DrawKarel(world.i, world.j, this.GetOrientation(world.orientation));
+            this.DrawWalls();
+            this.DrawBeepers();
+        }
+        GetOrientation(n) {
+            switch (n) {
+                case 0:
+                    return "west";
+                case 1:
+                    return "north";
+                case 2:
+                    return "east";
+                case 3:
+                    return "south";
+            }
+            return "north";
         }
     }
 
@@ -21173,6 +21211,18 @@
         ]
     });
     let KarelWorld = new World(100, 100);
+    function debugWorld() {
+        KarelWorld.resize(90, 105);
+        KarelWorld.move(12, 19);
+        KarelWorld.rotate('OESTE');
+        for (let k = 0; k < 4; k++) {
+            KarelWorld.addWall(5 + k, 5 + k * 2, k);
+            KarelWorld.addWall(2, 2, k);
+            KarelWorld.setDumpCell(1, k + 1, true);
+        }
+        KarelWorld.setBuzzers(9, 12, 13);
+        console.log("test");
+    }
     let DesktopUI = GetDesktopUIHelper(KarelWorld);
     let PhoneUI = GetPhoneUIHelper({
         editor: phoneEditor,
@@ -21281,6 +21331,7 @@
         return false;
     }
     $(document).ready(() => {
+        debugWorld();
         $("#settingsForm").on("submit", setSettings);
         responsiveHack();
         applySettings(appSettings);

@@ -5,6 +5,7 @@ import { GetDesktopUIHelper, ToggleConextMenu, ResizeDesktopCanvas } from "./des
 import { GetPhoneUIHelper } from "./phone-ui";
 import { HookUpCommonUI, SetText } from "./common-ui";
 import { World } from "../../js/karel";
+import { karel } from "../../js";
 
 splitPanels(ResizeDesktopCanvas);
 
@@ -76,6 +77,21 @@ HookUpCommonUI(
 )
 
 let KarelWorld: World = new World(100, 100);
+
+function debugWorld () {
+    KarelWorld.resize(90, 105);
+    KarelWorld.move(12, 19);
+    KarelWorld.rotate('OESTE');
+    for (let k =0; k < 4; k++) {
+        KarelWorld.addWall(5+k, 5+k*2, k);
+        KarelWorld.addWall(2, 2, k);
+        KarelWorld.setDumpCell(
+            1, k+1, true
+        )
+    }
+    KarelWorld.setBuzzers(9,12, 13);
+    console.log("test");
+}
 
 let DesktopUI = GetDesktopUIHelper(KarelWorld);
 let PhoneUI = GetPhoneUIHelper({
@@ -204,6 +220,7 @@ function setSettings(event: Event) {
     return false;
 }
 $(document).ready(()=>{
+    debugWorld();
     $("#settingsForm").on("submit", setSettings)
     responsiveHack();
     applySettings(appSettings);    
