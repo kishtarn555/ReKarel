@@ -17694,7 +17694,7 @@
             ResizeDesktopCanvas();
         });
         renderer.FocusOrigin();
-        $("#worldCanvas").on("mousemove", renderer.TrackMouse.bind(renderer));
+        $("#worldCanvas").on("mouseup", renderer.TrackMouse.bind(renderer));
         return {
             toggleInfinityBeepers: toggleInfinityBeepers,
             renderer: renderer,
