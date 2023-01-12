@@ -283,10 +283,44 @@
                                     </div>
                                 </div>
                                 <div class="split split-horizontal" id="splitter-right-pane">
-                                    <div class="w-100 h-100 d-flex flex-column">
+                                    <div class="w-100 h-100 d-flex flex-column position-relative">
+                                        <div id="waffleContainer">
+                                            <div class="box-select position-absolute"
+                                            style="
+                                            top:10px;
+                                            left: 65px;"
+                                            >
+                                                <div 
+                                                class="position-absolute waffle-border waffle-element"
+                                                style="
+                                                width: 0px;
+                                                height: 35px;
+                                                min-width: 0px;
+                                                min-height: 35px;
+                                                max-width: 0px;
+                                                max-height: 35px;
+                                                top: 50px;
+                                                left: 0px;
+                                                border-right-width: 1px;
+                                                "></div>
+                                                <div 
+                                                class="position-absolute waffle-border waffle-element"
+                                                style="
+                                                width: 0px;
+                                                height: 35px;
+                                                min-width: 0px;
+                                                min-height: 35px;
+                                                max-width: 0px;
+                                                max-height: 35px;
+                                                bottom: 50px;
+                                                border-right-width: 1px;
+                                                "></div>
+                                            </div>
+                                        </div>
                                         <div id="worldContainer"
                                             class="flex-grow-1 flex-shrink-1 overflow-scroll position-relative"
                                             style="height: 0px;">
+                                            
                                             <canvas id="worldCanvas" class="position-sticky top-0 start-0 world-canvas"
                                                 style="background: magenta"></canvas>
                                             <div id="worldScrolledContainerVertical" style="height:3000px;width:1px;"></div>

@@ -17357,9 +17357,9 @@
         constructor(canvasContext, style, scroller) {
             this.canvasContext = canvasContext;
             this.origin = { f: 1, c: 1 };
-            this.CellSize = 35;
+            this.CellSize = 28;
             this.margin = 8;
-            this.GutterSize = 30;
+            this.GutterSize = 28;
             this.style = style;
             this.scale = 1;
             this.scroller = scroller;
@@ -17369,10 +17369,11 @@
             };
         }
         GetWidth() {
-            return this.canvasContext.canvas.width;
+            console.log(this.canvasContext.canvas.width);
+            return this.canvasContext.canvas.width / window.devicePixelRatio;
         }
         GetHeight() {
-            return this.canvasContext.canvas.height;
+            return this.canvasContext.canvas.height / window.devicePixelRatio;
         }
         GetRowCount(mode = "ceil") {
             switch (mode) {
@@ -17391,10 +17392,10 @@
             }
         }
         GetWorldRowCount() {
-            return 8;
+            return 100;
         }
         GetWorldColCount() {
-            return 8;
+            return 100;
         }
         DrawVerticalGutter() {
             let h = this.GetHeight();
@@ -17514,6 +17515,7 @@
         }
         ResetTransform() {
             this.canvasContext.setTransform(1, 0, 0, 1, 0, 0);
+            this.canvasContext.scale(window.devicePixelRatio, window.devicePixelRatio);
         }
         ColorCell(r, c, color) {
             let h = this.GetHeight();
@@ -17531,13 +17533,13 @@
         }
         SetBeeperFont() {
             this.canvasContext.textBaseline = "alphabetic";
-            this.canvasContext.font = `${this.CellSize - 18}px monospace`;
+            this.canvasContext.font = `${this.CellSize - 8}px monospace`;
         }
         DrawTextCell(r, c, text) {
             let h = this.GetHeight();
             let x = c * this.CellSize + this.GutterSize + this.CellSize / 2;
             let y = h - ((r + 0.5) * this.CellSize + this.GutterSize);
-            this.DrawTextVerticallyAlign(text, x, y, this.CellSize - 8);
+            this.DrawTextVerticallyAlign(text, x, y, this.CellSize - 5);
         }
         DrawBeeperSquare({ r, c, ammount, background, color }) {
             let h = this.GetHeight();
@@ -17545,8 +17547,8 @@
             let y = h - ((r + 1) * this.CellSize + this.GutterSize);
             this.SetBeeperFont();
             let measure = this.canvasContext.measureText(String(ammount));
-            let textH = measure.actualBoundingBoxAscent + 6;
-            let textW = Math.min(measure.width + 6, this.CellSize - 8);
+            let textH = measure.actualBoundingBoxAscent + 4;
+            let textW = Math.min(measure.width + 4, this.CellSize - 5);
             this.canvasContext.fillStyle = background;
             this.canvasContext.fillRect(x + this.CellSize / 2 - (textW / 2), y + this.CellSize / 2 - (textH / 2), textW, textH);
             this.canvasContext.fillStyle = color;
@@ -17627,8 +17629,8 @@
             let boundingBox = this.canvasContext.canvas.getBoundingClientRect();
             let x = (e.clientX - boundingBox.left) * this.canvasContext.canvas.width / boundingBox.width;
             let y = (e.clientY - boundingBox.top) * this.canvasContext.canvas.height / boundingBox.height;
-            this.state.cursorX = x;
-            this.state.cursorY = y;
+            this.state.cursorX = x / window.devicePixelRatio;
+            this.state.cursorY = y / window.devicePixelRatio;
             console.log({
                 x: e.clientX,
                 y: e.clientY,
