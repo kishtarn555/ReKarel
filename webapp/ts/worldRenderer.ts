@@ -43,7 +43,6 @@ class WorldRenderer {
     }
 
     GetWidth() : number {
-        console.log(this.canvasContext.canvas.width);
         return this.canvasContext.canvas.width / window.devicePixelRatio;
     }
 
@@ -52,6 +51,8 @@ class WorldRenderer {
     }
 
     GetRowCount(mode : "floor"| "ceil" = "ceil"): number {
+        
+        console.log((this.GetHeight()-this.GutterSize)/ this.CellSize );
         switch (mode) {
             case "ceil":
                 return Math.ceil((this.GetHeight()-this.GutterSize)/ this.CellSize );
@@ -204,14 +205,14 @@ class WorldRenderer {
                 break;
         }
         //FIXME: NOT ADHOC
-        this.canvasContext.moveTo(0,-17);
-        this.canvasContext.lineTo(17,0);
-        this.canvasContext.lineTo(8,0);
-        this.canvasContext.lineTo(8,17);
-        this.canvasContext.lineTo(-8,17);
-        this.canvasContext.lineTo(-8,0);
-        this.canvasContext.lineTo(-17,0);
-        this.canvasContext.lineTo(0,-17);
+        this.canvasContext.moveTo(0,-this.CellSize/2);
+        this.canvasContext.lineTo(this.CellSize/2,0);
+        this.canvasContext.lineTo(this.CellSize/4,0);
+        this.canvasContext.lineTo(this.CellSize/4,this.CellSize/2);
+        this.canvasContext.lineTo(-this.CellSize/4,this.CellSize/2);
+        this.canvasContext.lineTo(-this.CellSize/4,0);
+        this.canvasContext.lineTo(-this.CellSize/2,0);
+        this.canvasContext.lineTo(0,-this.CellSize/2);
         this.canvasContext.fill();
         //Reset transform
         this.ResetTransform();

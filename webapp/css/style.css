@@ -58,6 +58,7 @@ body {
 }
 .waffle-border {
     border: solid 0px blue;
+    cursor: grab;
 }
 
 .fillPanel {
