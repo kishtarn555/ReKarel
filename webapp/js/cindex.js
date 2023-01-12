@@ -17736,6 +17736,7 @@
             ResizeDesktopCanvas();
         });
         controller.FocusOrigin();
+        $("#desktopGoHome").on("click", () => controller.FocusOrigin());
         $("#worldCanvas").on("mouseup", controller.TrackMouse.bind(controller));
         return {
             toggleInfinityBeepers: toggleInfinityBeepers,
