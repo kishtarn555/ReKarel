@@ -64,11 +64,11 @@ class WorldRenderer {
         }
     }
 
-    GetWorldRowCount(): number {
+    private GetWorldRowCount(): number {
         return this.world.h;
     }
 
-    GetWorldColCount(): number {
+    private GetWorldColCount(): number {
         return this.world.w;
     }
 
@@ -106,7 +106,7 @@ class WorldRenderer {
 
     }
 
-    DrawHorizontalGutter(): void {
+    private DrawHorizontalGutter(): void {
         let h = this.GetHeight();
         let w = this.GetWidth();
         this.canvasContext.fillStyle = this.style.gutterBackgroundColor;
@@ -135,7 +135,7 @@ class WorldRenderer {
         }
     }
 
-    DrawGutters(): void {
+    private DrawGutters(): void {
         let h = this.GetHeight();
         let w = this.GetWidth();
         this.canvasContext.fillStyle = this.style.gridBorderColor;
@@ -144,7 +144,7 @@ class WorldRenderer {
         this.DrawHorizontalGutter();
     }
 
-    DrawGrid(): void {
+    private DrawGrid(): void {
         let h = this.GetHeight();
         let w = this.GetWidth();
         let cols = this.GetColCount();
@@ -163,14 +163,14 @@ class WorldRenderer {
         this.canvasContext.stroke();
     }
 
-    DrawBackground(): void {
+    private DrawBackground(): void {
         let h = this.GetHeight();
         let w = this.GetWidth();
         this.canvasContext.fillStyle = this.style.gridBackgroundColor;
         this.canvasContext.fillRect(this.GutterSize, 0, w-this.GutterSize, h-this.GutterSize);
     }
 
-    DrawKarel(r: number, c:number, orientation: "north" | "east" | "south" | "west" = "north") : void {
+    private DrawKarel(r: number, c:number, orientation: "north" | "east" | "south" | "west" = "north") : void {
         if (r- this.origin.f < 0 || r- this.origin.f >= this.GetRowCount()) {
             // Cull Karel it's outside view by y coord
             return;
@@ -212,12 +212,12 @@ class WorldRenderer {
         this.ResetTransform();
     }
 
-    ResetTransform() {
+    private ResetTransform() {
         this.canvasContext.setTransform(1, 0, 0, 1, 0, 0);
         this.canvasContext.scale(window.devicePixelRatio,window.devicePixelRatio)
     }
 
-    ColorCell(r: number, c: number, color:string) : void {
+    private ColorCell(r: number, c: number, color:string) : void {
         let h = this.GetHeight();
         let x = c*this.CellSize+this.GutterSize;
         let y = h-((r+1)*this.CellSize+this.GutterSize);
@@ -226,7 +226,7 @@ class WorldRenderer {
         this.canvasContext.fillRect(x, y, this.CellSize, this.CellSize);
     }
 
-    DrawTextVerticallyAlign(text:string, x: number, y:number, maxWidth: number) {
+    private DrawTextVerticallyAlign(text:string, x: number, y:number, maxWidth: number) {
         this.canvasContext.textAlign = "center";
         this.canvasContext.textBaseline = "alphabetic";
 
@@ -236,19 +236,19 @@ class WorldRenderer {
 
     }
 
-    SetBeeperFont() {
+    private SetBeeperFont() {
         this.canvasContext.textBaseline = "alphabetic";
         this.canvasContext.font = `${this.CellSize/2}px monospace`
     }
 
-    DrawTextCell(r: number, c: number, text: string) {
+    private DrawTextCell(r: number, c: number, text: string) {
         let h = this.GetHeight();
         let x = c*this.CellSize+this.GutterSize+this.CellSize/2;
         let y = h-((r+0.5)*this.CellSize+this.GutterSize);
         this.DrawTextVerticallyAlign(text, x, y, this.CellSize*2);
     }
 
-    DrawBeeperSquare(
+    private DrawBeeperSquare(
         { r, c, ammount, background, color }: 
         { r: number; c: number; ammount: number; background: string; color: string; }
     ) {
@@ -270,7 +270,7 @@ class WorldRenderer {
         this.DrawTextCell(r, c, String(ammount));
     }
 
-    DrawWall(r: number, c: number, type: "north"| "east" | "west" | "south") {
+    private DrawWall(r: number, c: number, type: "north"| "east" | "west" | "south") {
         let h = this.GetHeight();
         let x = this.GutterSize+ (c+0.5) * this.CellSize;
         let y = h-(this.GutterSize+ (r+0.5) * this.CellSize);
@@ -299,7 +299,7 @@ class WorldRenderer {
         this.ResetTransform();
     }
 
-    DrawWalls() {
+    private DrawWalls() {
         for (let i =0; i < this.GetRowCount(); i++) {
             for (let j =0; j < this.GetColCount(); j++) {
                 let walls = this.world.walls(i + this.origin.f, j + this.origin.c);
@@ -313,7 +313,7 @@ class WorldRenderer {
     }
 
 
-    DrawBeepers() {
+    private DrawBeepers() {
         for (let i =0; i < this.GetRowCount(); i++) {
             for (let j =0; j < this.GetColCount(); j++) {
                 let buzzers: number = this.world.buzzers(i + this.origin.f, j + this.origin.c);
@@ -330,7 +330,7 @@ class WorldRenderer {
         }
     }
 
-    DrawDumpCells() {
+    private DrawDumpCells() {
         for (let i =0; i < this.GetRowCount(); i++) {
             for (let j =0; j < this.GetColCount(); j++) {
                 if (this.world.getDumpCell(i+this.origin.f, j + this.origin.c)) {
