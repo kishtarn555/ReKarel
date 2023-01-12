@@ -65,7 +65,6 @@ class WorldController {
         }
         this.Select(cell.r, cell.c, 1, 1);
         console.log(this.selection.r, this.selection.c);
-        this.Update();
 
         
     }
@@ -74,18 +73,20 @@ class WorldController {
         this.world.move(this.selection.r, this.selection.c);
         switch (direction) {
             case "north":
-                this.world.rotate(1);
+                this.world.rotate('NORTE');
                 break;
             case "east":
-                this.world.rotate(2);
+                this.world.rotate('ESTE');
                 break;
             case "south":
-                this.world.rotate(3);
+                this.world.rotate('SUR');
                 break;
             case "west":
-                this.world.rotate(0);
+                this.world.rotate('OESTE');
                 break;
         }
+        this.Update();
+
     }
 
     FocusOrigin() {

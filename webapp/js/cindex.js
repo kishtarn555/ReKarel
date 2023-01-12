@@ -17693,24 +17693,24 @@
             }
             this.Select(cell.r, cell.c, 1, 1);
             console.log(this.selection.r, this.selection.c);
-            this.Update();
         }
         SetKarelOnSelection(direction = "north") {
             this.world.move(this.selection.r, this.selection.c);
             switch (direction) {
                 case "north":
-                    this.world.rotate(1);
+                    this.world.rotate('NORTE');
                     break;
                 case "east":
-                    this.world.rotate(2);
+                    this.world.rotate('ESTE');
                     break;
                 case "south":
-                    this.world.rotate(3);
+                    this.world.rotate('SUR');
                     break;
                 case "west":
-                    this.world.rotate(0);
+                    this.world.rotate('OESTE');
                     break;
             }
+            this.Update();
         }
         FocusOrigin() {
             this.container.scrollLeft = 0;
@@ -17807,6 +17807,10 @@
         $("#desktopGoHome").on("click", () => controller.FocusOrigin());
         $("#desktopGoKarel").on("click", () => controller.FocusKarel());
         $("#worldCanvas").on("mouseup", controller.ClickUp.bind(controller));
+        $("#desktopKarelNorth").on("click", () => controller.SetKarelOnSelection("north"));
+        $("#desktopKarelEast").on("click", () => controller.SetKarelOnSelection("east"));
+        $("#desktopKarelSouth").on("click", () => controller.SetKarelOnSelection("south"));
+        $("#desktopKarelWest").on("click", () => controller.SetKarelOnSelection("west"));
         return {
             toggleInfinityBeepers: toggleInfinityBeepers,
             renderer: renderer,

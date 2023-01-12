@@ -383,7 +383,6 @@ class WorldRenderer {
             r: Math.floor(r) + this.origin.f, 
             c: Math.floor(c) + this.origin.c,
         };
-
     }
 
 }

@@ -108,6 +108,10 @@ function GetDesktopUIHelper(world: World) {
     $("#desktopGoHome").on("click", ()=>controller.FocusOrigin());
     $("#desktopGoKarel").on("click", ()=>controller.FocusKarel());
     $("#worldCanvas").on("mouseup",controller.ClickUp.bind(controller)); 
+    $("#desktopKarelNorth").on("click", ()=>controller.SetKarelOnSelection("north"));
+    $("#desktopKarelEast").on("click", ()=>controller.SetKarelOnSelection("east"));
+    $("#desktopKarelSouth").on("click", ()=>controller.SetKarelOnSelection("south"));
+    $("#desktopKarelWest").on("click", ()=>controller.SetKarelOnSelection("west"));
     return {
         toggleInfinityBeepers : toggleInfinityBeepers,
         renderer: renderer,
