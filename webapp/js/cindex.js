@@ -17354,7 +17354,7 @@
 
     // FIXME: Change f coords to r (so it's all in english)
     class WorldRenderer {
-        constructor(canvasContext, style, scroller) {
+        constructor(canvasContext, style) {
             this.canvasContext = canvasContext;
             this.origin = { f: 1, c: 1 };
             this.CellSize = 28;
@@ -17362,7 +17362,6 @@
             this.GutterSize = 28;
             this.style = style;
             this.scale = 1;
-            this.scroller = scroller;
             this.state = {
                 cursorX: 0,
                 cursorY: 0
@@ -17529,11 +17528,11 @@
             this.canvasContext.textBaseline = "alphabetic";
             let hs = this.canvasContext.measureText(text).actualBoundingBoxAscent;
             // this.canvasContext.strokeText(text, x, y+hs/2, maxWidth);
-            this.canvasContext.fillText(text, x, y + hs / 2, maxWidth);
+            this.canvasContext.fillText(text, x, y + hs / 2);
         }
         SetBeeperFont() {
             this.canvasContext.textBaseline = "alphabetic";
-            this.canvasContext.font = `${this.CellSize - 8}px monospace`;
+            this.canvasContext.font = `${this.CellSize / 2}px monospace`;
         }
         DrawTextCell(r, c, text) {
             let h = this.GetHeight();
@@ -17574,17 +17573,13 @@
             }
             let lineOr = this.canvasContext.lineWidth;
             this.canvasContext.strokeStyle = "#000";
-            this.canvasContext.lineWidth = 3;
+            this.canvasContext.lineWidth = 2;
             this.canvasContext.beginPath();
             this.canvasContext.moveTo(-this.CellSize / 2, -this.CellSize / 2 + 0.5);
             this.canvasContext.lineTo(this.CellSize / 2, -this.CellSize / 2 + 0.5);
             this.canvasContext.stroke();
             this.canvasContext.lineWidth = lineOr;
             this.ResetTransform();
-        }
-        DrawMouseCursor() {
-            this.canvasContext.fillStyle = "red";
-            this.canvasContext.fillRect(this.state.cursorX - 5, this.state.cursorY - 5, 10, 10);
         }
         Draw() {
             this.ResetTransform();
@@ -17606,40 +17601,45 @@
             this.DrawBeeperSquare({
                 r: 3,
                 c: 3,
-                ammount: 1,
+                ammount: 888,
                 background: this.style.beeperBackgroundColor,
                 color: this.style.beeperColor
             });
-            this.DrawMouseCursor();
         }
-        FocusOrigin() {
-            this.scroller.scrollLeft = 0;
-            this.scroller.scrollTop = this.scroller.scrollHeight - this.scroller.clientHeight;
+    }
+
+    class WorldController {
+        constructor(renderer, container) {
+            this.renderer = renderer;
+            this.container = container;
         }
-        UpdateScroll(left, top) {
-            let worldWidth = this.GetWorldColCount();
-            let worldHeight = this.GetWorldRowCount();
-            this.origin = {
-                f: Math.floor(1 + Math.max(0, (worldHeight - this.GetRowCount("floor") + 1) * top)),
-                c: Math.floor(1 + Math.max(0, (worldWidth - this.GetColCount("floor") + 1) * left)),
-            };
-            this.Draw();
+        Select(r, c, rowCount, colCount) {
         }
         TrackMouse(e) {
-            let boundingBox = this.canvasContext.canvas.getBoundingClientRect();
-            let x = (e.clientX - boundingBox.left) * this.canvasContext.canvas.width / boundingBox.width;
-            let y = (e.clientY - boundingBox.top) * this.canvasContext.canvas.height / boundingBox.height;
+            let canvas = this.renderer.canvasContext.canvas;
+            let boundingBox = canvas.getBoundingClientRect();
+            let x = (e.clientX - boundingBox.left) * canvas.width / boundingBox.width;
+            let y = (e.clientY - boundingBox.top) * canvas.height / boundingBox.height;
             this.state.cursorX = x / window.devicePixelRatio;
             this.state.cursorY = y / window.devicePixelRatio;
-            console.log({
-                x: e.clientX,
-                y: e.clientY,
-            });
-            this.Draw();
+        }
+        FocusOrigin() {
+            this.container.scrollLeft = 0;
+            this.container.scrollTop = this.container.scrollHeight - this.container.clientHeight;
+        }
+        UpdateScroll(left, top) {
+            let worldWidth = this.renderer.GetWorldColCount();
+            let worldHeight = this.renderer.GetWorldRowCount();
+            this.renderer.origin = {
+                f: Math.floor(1 + Math.max(0, (worldHeight - this.renderer.GetRowCount("floor") + 1) * top)),
+                c: Math.floor(1 + Math.max(0, (worldWidth - this.renderer.GetColCount("floor") + 1) * left)),
+            };
+            this.renderer.Draw();
         }
     }
 
     let renderer = undefined;
+    let controller = undefined;
     function scrollCanvas() {
         let left = ($("#worldContainer")[0].scrollWidth - $("#worldContainer")[0].clientWidth) !== 0 ?
             $("#worldContainer").scrollLeft()
@@ -17649,7 +17649,7 @@
             1 - $("#worldContainer").scrollTop()
                 / ($("#worldContainer")[0].scrollHeight - $("#worldContainer")[0].clientHeight)
             : 1;
-        renderer.UpdateScroll(left, top);
+        controller.UpdateScroll(left, top);
     }
     function ResizeDesktopCanvas() {
         $("#worldCanvas")[0].style.width = `${$("#worldContainer")[0].clientWidth}px`;
@@ -17687,7 +17687,8 @@
         beeperColor: "#000000"
     };
     function GetDesktopUIHelper() {
-        renderer = new WorldRenderer($("#worldCanvas")[0].getContext("2d"), lightWRStyle, $("#worldContainer")[0]);
+        renderer = new WorldRenderer($("#worldCanvas")[0].getContext("2d"), lightWRStyle);
+        controller = new WorldController(renderer, $("#worldContainer")[0]);
         $("#worldCanvas").on("contextmenu", (e) => {
             return;
         });
@@ -17695,8 +17696,8 @@
         $(window).on("resize", () => {
             ResizeDesktopCanvas();
         });
-        renderer.FocusOrigin();
-        $("#worldCanvas").on("mouseup", renderer.TrackMouse.bind(renderer));
+        controller.FocusOrigin();
+        $("#worldCanvas").on("mouseup", controller.TrackMouse.bind(controller));
         return {
             toggleInfinityBeepers: toggleInfinityBeepers,
             renderer: renderer,

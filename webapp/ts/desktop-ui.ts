@@ -1,8 +1,10 @@
 import { redoDepth } from '@codemirror/history';
 import bootstrap from 'bootstrap';
 import { WorldRenderer, WRStyle } from './worldRenderer';
+import { WorldController } from "./worldController";
 
 let renderer: WorldRenderer = undefined;
+let controller: WorldController = undefined;
 
 function scrollCanvas() {
     let left = 
@@ -15,7 +17,7 @@ function scrollCanvas() {
             1-$("#worldContainer").scrollTop() 
             / ($("#worldContainer")[0].scrollHeight-$("#worldContainer")[0].clientHeight)
             :1;
-    renderer.UpdateScroll(left, top);
+    controller.UpdateScroll(left, top);
 }
 
 function ResizeDesktopCanvas() {    
@@ -73,11 +75,13 @@ const lightWRStyle : WRStyle = {
     beeperColor: "#000000"
 }
 function GetDesktopUIHelper() {
-
     renderer = new WorldRenderer(
         ($("#worldCanvas")[0] as HTMLCanvasElement).getContext("2d"),
-        lightWRStyle,
-        $("#worldContainer")[0]    
+        lightWRStyle   
+    );
+    controller = new WorldController(
+        renderer,
+        $("#worldContainer")[0] 
     );
     $("#worldCanvas").on("contextmenu", (e) => {
         return;
@@ -95,8 +99,8 @@ function GetDesktopUIHelper() {
     $(window).on("resize", () => {        
         ResizeDesktopCanvas();
     });
-    renderer.FocusOrigin();
-    $("#worldCanvas").on("mouseup",renderer.TrackMouse.bind(renderer)); 
+    controller.FocusOrigin();
+    $("#worldCanvas").on("mouseup",controller.TrackMouse.bind(controller)); 
     return {
         toggleInfinityBeepers : toggleInfinityBeepers,
         renderer: renderer,

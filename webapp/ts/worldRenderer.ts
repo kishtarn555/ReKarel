@@ -1,3 +1,5 @@
+
+
 type WRStyle = {
     beeperBackgroundColor: string,
     beeperColor: string,
@@ -10,10 +12,7 @@ type WRStyle = {
     gutterColor: string,
 }
 
-type WRState  = {
-    cursorX:number
-    cursorY:number
-}
+
 
 // FIXME: Change f coords to r (so it's all in english)
 class WorldRenderer {
@@ -25,21 +24,14 @@ class WorldRenderer {
     style: WRStyle;
     scale: number;
     scroller: HTMLElement;
-    state: WRState;
 
-    constructor(canvasContext: CanvasRenderingContext2D, style: WRStyle, scroller: HTMLElement) {
+    constructor(canvasContext: CanvasRenderingContext2D, style: WRStyle) {
         this.canvasContext = canvasContext;
         this.origin = { f: 1, c: 1 };
         this.CellSize= 28;
         this.margin = 8;
         this.GutterSize = 28;
-        this.style = style;
-        this.scale = 1;
-        this.scroller = scroller;
-        this.state = {
-            cursorX: 0,
-            cursorY: 0
-        }
+        this.style = style;       
     }
 
     GetWidth() : number {
@@ -238,13 +230,13 @@ class WorldRenderer {
 
         let hs = this.canvasContext.measureText(text).actualBoundingBoxAscent;
         // this.canvasContext.strokeText(text, x, y+hs/2, maxWidth);
-        this.canvasContext.fillText(text, x, y+hs/2, maxWidth);
+        this.canvasContext.fillText(text, x, y+hs/2);
 
     }
 
     SetBeeperFont() {
         this.canvasContext.textBaseline = "alphabetic";
-        this.canvasContext.font = `${this.CellSize-8}px monospace`
+        this.canvasContext.font = `${this.CellSize/2}px monospace`
     }
 
     DrawTextCell(r: number, c: number, text: string) {
@@ -296,18 +288,13 @@ class WorldRenderer {
         }
         let lineOr = this.canvasContext.lineWidth;
         this.canvasContext.strokeStyle = "#000";
-        this.canvasContext.lineWidth = 3;
+        this.canvasContext.lineWidth = 2;
         this.canvasContext.beginPath();
         this.canvasContext.moveTo(-this.CellSize/2, -this.CellSize/2+0.5);
         this.canvasContext.lineTo(this.CellSize/2, -this.CellSize/2+0.5);
         this.canvasContext.stroke();
         this.canvasContext.lineWidth = lineOr;
         this.ResetTransform();
-    }
-
-    DrawMouseCursor() {
-        this.canvasContext.fillStyle="red";
-        this.canvasContext.fillRect(this.state.cursorX-5, this.state.cursorY-5,10,10);
     }
 
     Draw() {        
@@ -331,52 +318,10 @@ class WorldRenderer {
         this.DrawBeeperSquare({
             r: 3, 
             c: 3, 
-            ammount: 1,
+            ammount: 888,
             background: this.style.beeperBackgroundColor,
             color: this.style.beeperColor
-        });
-        this.DrawMouseCursor();
-        
-    }
-
-    FocusOrigin() {
-        this.scroller.scrollLeft = 0;
-        this.scroller.scrollTop = this.scroller.scrollHeight - this.scroller.clientHeight;
-    }
-
-    UpdateScroll(left: number, top: number): void {
-        let worldWidth = this.GetWorldColCount();
-        let worldHeight = this.GetWorldRowCount();
-
-        this.origin = {
-            f: Math.floor(
-                1+ Math.max(
-                    0, 
-                    (worldHeight-this.GetRowCount("floor") + 1)*top
-                )
-            ),
-            c: Math.floor(
-                1+ Math.max(
-                    0,
-                    (worldWidth-this.GetColCount("floor") + 1)*left
-                )
-                ),
-        }
-        this.Draw()
-    }
-
-    TrackMouse(e: MouseEvent) {
-        let boundingBox =this.canvasContext.canvas.getBoundingClientRect();
-        let x = (e.clientX - boundingBox.left) * this.canvasContext.canvas.width / boundingBox.width;
-        let y = (e.clientY - boundingBox.top)* this.canvasContext.canvas.height / boundingBox.height;
-        this.state.cursorX= x /  window.devicePixelRatio;
-        this.state.cursorY= y /  window.devicePixelRatio;
-        console.log({
-            x: e.clientX,
-            y: e.clientY,
-        });
-        this.Draw();
-        
+        });        
     }
 
 }
