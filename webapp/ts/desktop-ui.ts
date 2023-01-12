@@ -104,9 +104,10 @@ function GetDesktopUIHelper(world: World) {
     });
     controller.FocusOrigin();
 
+
     $("#desktopGoHome").on("click", ()=>controller.FocusOrigin());
     $("#desktopGoKarel").on("click", ()=>controller.FocusKarel());
-    $("#worldCanvas").on("mouseup",controller.TrackMouse.bind(controller)); 
+    $("#worldCanvas").on("mouseup",controller.ClickUp.bind(controller)); 
     return {
         toggleInfinityBeepers : toggleInfinityBeepers,
         renderer: renderer,

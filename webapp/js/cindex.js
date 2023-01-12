@@ -17370,7 +17370,6 @@
             return this.canvasContext.canvas.height / window.devicePixelRatio;
         }
         GetRowCount(mode = "ceil") {
-            console.log((this.GetHeight() - this.GutterSize) / this.CellSize);
             switch (mode) {
                 case "ceil":
                     return Math.ceil((this.GetHeight() - this.GutterSize) / this.CellSize);
@@ -17641,6 +17640,17 @@
             }
             return "north";
         }
+        PointToCell(x, y) {
+            let c = (x - this.GutterSize) / this.CellSize;
+            let r = ((this.GetHeight() - y) - this.GutterSize) / this.CellSize;
+            if (c < 0 || r < 0) {
+                return { r: -1, c: -1 };
+            }
+            return {
+                r: Math.floor(r) + this.origin.f,
+                c: Math.floor(c) + this.origin.c,
+            };
+        }
     }
 
     class WorldController {
@@ -17648,8 +17658,24 @@
             this.renderer = renderer;
             this.container = container;
             this.world = world;
+            this.selection = {
+                r: 1,
+                c: 1,
+                rows: 1,
+                cols: 1,
+            };
+            this.state = {
+                cursorX: 0,
+                cursorY: 0,
+            };
         }
         Select(r, c, rowCount, colCount) {
+            this.selection = {
+                r: r,
+                c: c,
+                rows: rowCount,
+                cols: colCount,
+            };
         }
         TrackMouse(e) {
             let canvas = this.renderer.canvasContext.canvas;
@@ -17658,6 +17684,33 @@
             let y = (e.clientY - boundingBox.top) * canvas.height / boundingBox.height;
             this.state.cursorX = x / window.devicePixelRatio;
             this.state.cursorY = y / window.devicePixelRatio;
+        }
+        ClickUp(e) {
+            this.TrackMouse(e);
+            let cell = this.renderer.PointToCell(this.state.cursorX, this.state.cursorY);
+            if (cell.r < 0) {
+                return;
+            }
+            this.Select(cell.r, cell.c, 1, 1);
+            console.log(this.selection.r, this.selection.c);
+            this.Update();
+        }
+        SetKarelOnSelection(direction = "north") {
+            this.world.move(this.selection.r, this.selection.c);
+            switch (direction) {
+                case "north":
+                    this.world.rotate(1);
+                    break;
+                case "east":
+                    this.world.rotate(2);
+                    break;
+                case "south":
+                    this.world.rotate(3);
+                    break;
+                case "west":
+                    this.world.rotate(0);
+                    break;
+            }
         }
         FocusOrigin() {
             this.container.scrollLeft = 0;
@@ -17679,8 +17732,8 @@
             this.container.scrollTop = (1 - top) * (this.container.scrollHeight - this.container.clientHeight);
         }
         UpdateScroll(left, top) {
-            let worldWidth = this.renderer.GetWorldColCount();
-            let worldHeight = this.renderer.GetWorldRowCount();
+            let worldWidth = this.world.w;
+            let worldHeight = this.world.h;
             this.renderer.origin = {
                 f: Math.floor(1 + Math.max(0, (worldHeight - this.renderer.GetRowCount("floor") + 1) * top)),
                 c: Math.floor(1 + Math.max(0, (worldWidth - this.renderer.GetColCount("floor") + 1) * left)),
@@ -17753,10 +17806,11 @@
         controller.FocusOrigin();
         $("#desktopGoHome").on("click", () => controller.FocusOrigin());
         $("#desktopGoKarel").on("click", () => controller.FocusKarel());
-        $("#worldCanvas").on("mouseup", controller.TrackMouse.bind(controller));
+        $("#worldCanvas").on("mouseup", controller.ClickUp.bind(controller));
         return {
             toggleInfinityBeepers: toggleInfinityBeepers,
             renderer: renderer,
+            controller: controller,
             ResizeDesktopCanvas: ResizeDesktopCanvas
         };
     }
@@ -21353,7 +21407,7 @@
         responsiveHack();
         applySettings(appSettings);
         DesktopUI.ResizeDesktopCanvas();
-        DesktopUI.renderer.DrawGutters();
+        DesktopUI.controller.Update();
     });
     $(document).on("keydown", (e) => {
         if (e.ctrlKey && e.which === 75) {

@@ -45,8 +45,6 @@ class WorldRenderer {
     }
 
     GetRowCount(mode : "floor"| "ceil" = "ceil"): number {
-        
-        console.log((this.GetHeight()-this.GutterSize)/ this.CellSize );
         switch (mode) {
             case "ceil":
                 return Math.ceil((this.GetHeight()-this.GutterSize)/ this.CellSize );
@@ -371,6 +369,21 @@ class WorldRenderer {
                 return "south";
         }
         return "north";
+    }
+
+    PointToCell(x:number, y:number) : {r:number, c: number} {
+        let c = (x-this.GutterSize)/this.CellSize;
+        let r = ((this.GetHeight()-y)-this.GutterSize)/this.CellSize;
+
+        if (c < 0 || r < 0) {
+            return {r: -1, c: -1};
+        }
+        
+        return {
+            r: Math.floor(r) + this.origin.f, 
+            c: Math.floor(c) + this.origin.c,
+        };
+
     }
 
 }

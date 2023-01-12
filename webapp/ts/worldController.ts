@@ -1,6 +1,16 @@
 import { WorldRenderer } from "./worldRenderer";
 import { World } from "../../js/karel";
 import { karel } from "../../js";
+import { redoDepth } from "@codemirror/history";
+import { Collapse } from "bootstrap";
+
+type CellSelection = {
+    r: number,
+    c: number,
+    rows: number,
+    cols: number,
+}
+
 class WorldController {
     renderer: WorldRenderer
     container: HTMLElement
@@ -9,17 +19,33 @@ class WorldController {
         cursorX: number,
         cursorY: number,
     }
+    selection: CellSelection
 
 
     constructor(renderer: WorldRenderer, container: HTMLElement, world: World) {
         this.renderer = renderer;
         this.container = container;
         this.world = world;
+        this.selection = {
+            r: 1,
+            c: 1,
+            rows: 1,
+            cols: 1,
+        };
+        this.state = {
+            cursorX: 0,
+            cursorY: 0,
+        }
     }
 
     Select(r: number, c: number, rowCount: number, colCount:number) {
-
-    }
+        this.selection = {
+            r: r,
+            c: c,
+            rows: rowCount,
+            cols: colCount,
+        };
+    }    
 
     TrackMouse(e: MouseEvent) {
         let canvas = this.renderer.canvasContext.canvas;
@@ -28,6 +54,38 @@ class WorldController {
         let y = (e.clientY - boundingBox.top)* canvas.height / boundingBox.height;
         this.state.cursorX= x /  window.devicePixelRatio;
         this.state.cursorY= y /  window.devicePixelRatio;
+    }
+
+    ClickUp(e: MouseEvent) {
+        this.TrackMouse(e);
+
+        let cell = this.renderer.PointToCell(this.state.cursorX, this.state.cursorY);
+        if (cell.r < 0) {
+            return;
+        }
+        this.Select(cell.r, cell.c, 1, 1);
+        console.log(this.selection.r, this.selection.c);
+        this.Update();
+
+        
+    }
+
+    SetKarelOnSelection(direction: "north" | "east" | "west" | "south" = "north") {
+        this.world.move(this.selection.r, this.selection.c);
+        switch (direction) {
+            case "north":
+                this.world.rotate(1);
+                break;
+            case "east":
+                this.world.rotate(2);
+                break;
+            case "south":
+                this.world.rotate(3);
+                break;
+            case "west":
+                this.world.rotate(0);
+                break;
+        }
     }
 
     FocusOrigin() {
