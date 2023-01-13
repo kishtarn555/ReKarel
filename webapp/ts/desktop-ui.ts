@@ -3,6 +3,7 @@ import bootstrap from 'bootstrap';
 import { WorldRenderer, WRStyle } from './worldRenderer';
 import { WorldController } from "./worldController";
 import { World } from '../../js/karel';
+import { htmlPrefilter } from 'jquery';
 
 
 let renderer: WorldRenderer = undefined;
@@ -178,20 +179,29 @@ function DesktopKeyUp(e: JQuery.KeyUpEvent) {
         [82,()=>{controller.SetBeepers(0);}],
         [81,()=>{controller.ChangeBeepers(-1);}],
         [69,()=>{controller.ChangeBeepers(1);}],
+        [48,()=>{controller.SetBeepers(0);}],
+        [46,()=>{controller.SetBeepers(1);}],
+        [50,()=>{controller.SetBeepers(2);}],
+        [51,()=>{controller.SetBeepers(3);}],
+        [52,()=>{controller.SetBeepers(4);}],
+        [53,()=>{controller.SetBeepers(5);}],
+        [54,()=>{controller.SetBeepers(6);}],
+        [55,()=>{controller.SetBeepers(7);}],
+        [56,()=>{controller.SetBeepers(8);}],
+        [57,()=>{controller.SetBeepers(9);}],
     ]);
-    hotkeys.forEach((value:()=>void, key:number) => {
-        if (e.which === key) {
-            if (e.shiftKey) {
-                let dummy: MouseEvent = new MouseEvent("", {
-                    clientX: e.clientX,
-                    clientY: e.clientY,
-                });
-                controller.ClickUp(dummy);
-            }
-            value();
-        }
-    });
-    console.log(tag);
+    if (!hotkeys.has(e.which)) {
+        return;
+    }     
+     
+    if (e.shiftKey) {
+        let dummy: MouseEvent = new MouseEvent("", {
+            clientX: e.clientX,
+            clientY: e.clientY,
+        });
+        controller.ClickUp(dummy);
+    }
+    hotkeys[e.which]();
 }
 
 
