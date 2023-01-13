@@ -17742,7 +17742,7 @@
             this.Update();
         }
         SetBeepers(ammount) {
-            if (this.world.buzzers(this.selection.r, this.selection.c) === 0) {
+            if (this.world.buzzers(this.selection.r, this.selection.c) === ammount) {
                 return;
             }
             this.world.setBuzzers(this.selection.r, this.selection.c, ammount);
@@ -17926,20 +17926,28 @@
             [82, () => { controller.SetBeepers(0); }],
             [81, () => { controller.ChangeBeepers(-1); }],
             [69, () => { controller.ChangeBeepers(1); }],
+            [48, () => { controller.SetBeepers(0); }],
+            [49, () => { controller.SetBeepers(1); }],
+            [50, () => { controller.SetBeepers(2); }],
+            [51, () => { controller.SetBeepers(3); }],
+            [52, () => { controller.SetBeepers(4); }],
+            [53, () => { controller.SetBeepers(5); }],
+            [54, () => { controller.SetBeepers(6); }],
+            [55, () => { controller.SetBeepers(7); }],
+            [56, () => { controller.SetBeepers(8); }],
+            [57, () => { controller.SetBeepers(9); }],
         ]);
-        hotkeys.forEach((value, key) => {
-            if (e.which === key) {
-                if (e.shiftKey) {
-                    let dummy = new MouseEvent("", {
-                        clientX: e.clientX,
-                        clientY: e.clientY,
-                    });
-                    controller.ClickUp(dummy);
-                }
-                value();
-            }
-        });
-        console.log(tag);
+        if (hotkeys.has(e.which) === false) {
+            return;
+        }
+        if (e.shiftKey) {
+            let dummy = new MouseEvent("", {
+                clientX: e.clientX,
+                clientY: e.clientY,
+            });
+            controller.ClickUp(dummy);
+        }
+        hotkeys.get(e.which)();
     }
 
     function activateButton(toolbar, buttonPressed) {

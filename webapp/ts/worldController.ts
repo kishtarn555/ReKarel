@@ -9,6 +9,8 @@ type CellSelection = {
     c: number,
     rows: number,
     cols: number,
+    dr: number,
+    dc: number,
 }
 
 type Gizmos = {
@@ -129,7 +131,7 @@ class WorldController {
     }
 
     SetBeepers(ammount: number) {
-        if (this.world.buzzers(this.selection.r, this.selection.c)===0) {
+        if (this.world.buzzers(this.selection.r, this.selection.c)===ammount) {
             return;
         }
         this.world.setBuzzers(this.selection.r, this.selection.c, ammount);
@@ -166,9 +168,10 @@ class WorldController {
 
         this.container.scrollLeft = left * (this.container.scrollWidth - this.container.clientWidth);
         this.container.scrollTop = (1-top) * (this.container.scrollHeight - this.container.clientHeight);
+    }
 
-        
-
+    ToggleWall(which: "north" | "east" | "west" | "south" | "outher") {
+        for ()
     }
 
     UpdateScroll(left: number, top: number): void {

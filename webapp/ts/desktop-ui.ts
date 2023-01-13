@@ -180,7 +180,7 @@ function DesktopKeyUp(e: JQuery.KeyUpEvent) {
         [81,()=>{controller.ChangeBeepers(-1);}],
         [69,()=>{controller.ChangeBeepers(1);}],
         [48,()=>{controller.SetBeepers(0);}],
-        [46,()=>{controller.SetBeepers(1);}],
+        [49,()=>{controller.SetBeepers(1);}],
         [50,()=>{controller.SetBeepers(2);}],
         [51,()=>{controller.SetBeepers(3);}],
         [52,()=>{controller.SetBeepers(4);}],
@@ -190,7 +190,7 @@ function DesktopKeyUp(e: JQuery.KeyUpEvent) {
         [56,()=>{controller.SetBeepers(8);}],
         [57,()=>{controller.SetBeepers(9);}],
     ]);
-    if (!hotkeys.has(e.which)) {
+    if (hotkeys.has(e.which) === false) {
         return;
     }     
      
@@ -201,7 +201,7 @@ function DesktopKeyUp(e: JQuery.KeyUpEvent) {
         });
         controller.ClickUp(dummy);
     }
-    hotkeys[e.which]();
+    hotkeys.get(e.which)();
 }
 
 
