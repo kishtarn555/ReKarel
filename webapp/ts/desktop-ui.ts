@@ -57,11 +57,11 @@ function ToggleConextMenu() {
     // $("#contextMenuToggler")[0].click();
     let toggler = $("#contextMenuToggler");
     const dumb =new bootstrap.Dropdown(toggler[0]);
-    function p() {
+    if (toggler.attr("aria-expanded")==="false") {
         dumb.show();
-        toggler.off("hidden.bs.dropdown",p);
-    };
-    dumb.show();
+    } else {
+        dumb.hide();
+    }
    
 }
 //TODO: Add support for states
@@ -87,7 +87,6 @@ function GetDesktopUIHelper(world: World) {
         world
     );
     $("#worldCanvas").on("contextmenu", (e) => {
-        return;
         const dumb =new bootstrap.Dropdown($("#contextMenuToggler")[0]);
         dumb.hide();
         console.log(e);  
@@ -105,13 +104,36 @@ function GetDesktopUIHelper(world: World) {
     controller.FocusOrigin();
 
 
+    $("#worldCanvas").on("mouseup",controller.ClickUp.bind(controller)); 
+    
     $("#desktopGoHome").on("click", ()=>controller.FocusOrigin());
     $("#desktopGoKarel").on("click", ()=>controller.FocusKarel());
-    $("#worldCanvas").on("mouseup",controller.ClickUp.bind(controller)); 
+    
     $("#desktopKarelNorth").on("click", ()=>controller.SetKarelOnSelection("north"));
     $("#desktopKarelEast").on("click", ()=>controller.SetKarelOnSelection("east"));
     $("#desktopKarelSouth").on("click", ()=>controller.SetKarelOnSelection("south"));
     $("#desktopKarelWest").on("click", ()=>controller.SetKarelOnSelection("west"));
+    
+    
+    $("#contextKarelNorth").on("click", ()=>{
+        ToggleConextMenu();
+        controller.SetKarelOnSelection("north");
+    });
+    $("#contextKarelEast").on("click", ()=>{        
+        ToggleConextMenu();
+        controller.SetKarelOnSelection("east");
+    });
+    $("#contextKarelSouth").on("click", ()=>{        
+        ToggleConextMenu();
+        controller.SetKarelOnSelection("south");
+    });
+    $("#contextKarelWest").on("click", ()=>{        
+        ToggleConextMenu();
+        controller.SetKarelOnSelection("west");
+    });
+
+    
+
     return {
         toggleInfinityBeepers : toggleInfinityBeepers,
         renderer: renderer,

@@ -17781,6 +17781,17 @@
             $("#infiniteBeepersBtn").addClass("btn-info");
         }
     }
+    function ToggleConextMenu() {
+        // $("#contextMenuToggler")[0].click();
+        let toggler = $("#contextMenuToggler");
+        const dumb = new bootstrap.Dropdown(toggler[0]);
+        if (toggler.attr("aria-expanded") === "false") {
+            dumb.show();
+        }
+        else {
+            dumb.hide();
+        }
+    }
     //TODO: Add support for states
     const lightWRStyle = {
         disabled: '#4f4f4f',
@@ -17797,20 +17808,42 @@
         renderer = new WorldRenderer($("#worldCanvas")[0].getContext("2d"), lightWRStyle);
         controller = new WorldController(renderer, $("#worldContainer")[0], world);
         $("#worldCanvas").on("contextmenu", (e) => {
-            return;
+            const dumb = new bootstrap.Dropdown($("#contextMenuToggler")[0]);
+            dumb.hide();
+            console.log(e);
+            $("#contextMenuDiv")[0].style.setProperty("top", `${e.pageY}px`);
+            $("#contextMenuDiv")[0].style.setProperty("left", `${e.pageX}px`);
+            ToggleConextMenu();
+            e.preventDefault();
         });
         $("#worldContainer").on("scroll", scrollCanvas);
         $(window).on("resize", () => {
             ResizeDesktopCanvas();
         });
         controller.FocusOrigin();
+        $("#worldCanvas").on("mouseup", controller.ClickUp.bind(controller));
         $("#desktopGoHome").on("click", () => controller.FocusOrigin());
         $("#desktopGoKarel").on("click", () => controller.FocusKarel());
-        $("#worldCanvas").on("mouseup", controller.ClickUp.bind(controller));
         $("#desktopKarelNorth").on("click", () => controller.SetKarelOnSelection("north"));
         $("#desktopKarelEast").on("click", () => controller.SetKarelOnSelection("east"));
         $("#desktopKarelSouth").on("click", () => controller.SetKarelOnSelection("south"));
         $("#desktopKarelWest").on("click", () => controller.SetKarelOnSelection("west"));
+        $("#contextKarelNorth").on("click", () => {
+            ToggleConextMenu();
+            controller.SetKarelOnSelection("north");
+        });
+        $("#contextKarelEast").on("click", () => {
+            ToggleConextMenu();
+            controller.SetKarelOnSelection("east");
+        });
+        $("#contextKarelSouth").on("click", () => {
+            ToggleConextMenu();
+            controller.SetKarelOnSelection("south");
+        });
+        $("#contextKarelWest").on("click", () => {
+            ToggleConextMenu();
+            controller.SetKarelOnSelection("west");
+        });
         return {
             toggleInfinityBeepers: toggleInfinityBeepers,
             renderer: renderer,
