@@ -17669,6 +17669,8 @@
                 c: 1,
                 rows: 1,
                 cols: 1,
+                dr: 1,
+                dc: 1,
             };
             this.state = {
                 cursorX: 0,
@@ -17676,12 +17678,14 @@
             };
             this.gizmos = gizmos;
         }
-        Select(r, c, rowCount, colCount) {
+        Select(r, c, r2, c2) {
             this.selection = {
                 r: r,
                 c: c,
-                rows: rowCount,
-                cols: colCount,
+                rows: Math.abs(r - r2) + 1,
+                cols: Math.abs(c - c2) + 1,
+                dr: r <= r2 ? 1 : -1,
+                dc: c <= c2 ? 1 : -1,
             };
             this.UpdateWaffle();
         }
@@ -17704,7 +17708,7 @@
             if (cell.r < 0) {
                 return;
             }
-            this.Select(cell.r, cell.c, 1, 1);
+            this.Select(cell.r, cell.c, cell.r, cell.c);
             console.log(this.selection.r, this.selection.c);
         }
         SetKarelOnSelection(direction = "north") {
@@ -17771,6 +17775,55 @@
             top = top > 1 ? 1 : top;
             this.container.scrollLeft = left * (this.container.scrollWidth - this.container.clientWidth);
             this.container.scrollTop = (1 - top) * (this.container.scrollHeight - this.container.clientHeight);
+        }
+        ToggleWall(which) {
+            switch (which) {
+                case "north":
+                    for (let i = 0; i < this.selection.rows; i++) {
+                        let r = this.selection.r + i * this.selection.dr;
+                        let c = Math.min(this.selection.c, this.selection.c + (this.selection.cols - 1) * this.selection.dc);
+                        this.world.toggleWall(r, c, 1);
+                    }
+                    break;
+                case "south":
+                    for (let i = 0; i < this.selection.rows; i++) {
+                        let r = this.selection.r + i * this.selection.dr;
+                        let c = Math.max(this.selection.c, this.selection.c + (this.selection.cols - 1) * this.selection.dc);
+                        this.world.toggleWall(r, c, 3);
+                    }
+                    break;
+                case "west":
+                    for (let i = 0; i < this.selection.cols; i++) {
+                        let r = Math.min(this.selection.r, this.selection.r + (this.selection.rows - 1) * this.selection.dr);
+                        let c = this.selection.c + i * this.selection.dc;
+                        this.world.toggleWall(r, c, 0);
+                    }
+                    break;
+                case "east":
+                    for (let i = 0; i < this.selection.cols; i++) {
+                        let r = Math.max(this.selection.r, this.selection.r + (this.selection.rows - 1) * this.selection.dr);
+                        let c = this.selection.c + i * this.selection.dc;
+                        this.world.toggleWall(r, c, 2);
+                    }
+                    break;
+                case "outer":
+                    for (let i = 0; i < this.selection.cols; i++) {
+                        let rmin = Math.min(this.selection.r, this.selection.r + (this.selection.rows - 1) * this.selection.dr);
+                        let rmax = Math.max(this.selection.r, this.selection.r + (this.selection.rows - 1) * this.selection.dr);
+                        let c = this.selection.c + i * this.selection.dc;
+                        this.world.toggleWall(rmin, c, 2);
+                        this.world.toggleWall(rmax, c, 0);
+                    }
+                    for (let i = 0; i < this.selection.rows; i++) {
+                        let r = this.selection.r + i * this.selection.dr;
+                        let cmin = Math.min(this.selection.c, this.selection.c + (this.selection.cols - 1) * this.selection.dc);
+                        let cmax = Math.max(this.selection.c, this.selection.c + (this.selection.cols - 1) * this.selection.dc);
+                        this.world.toggleWall(r, cmin, 1);
+                        this.world.toggleWall(r, cmax, 3);
+                    }
+                    break;
+            }
+            this.Update();
         }
         UpdateScroll(left, top) {
             let worldWidth = this.world.w;
@@ -17881,6 +17934,11 @@
         $("#desktopAddBeeper").on("click", () => controller.ChangeBeepers(1));
         $("#desktopDecrementBeeper").on("click", () => controller.ChangeBeepers(-1));
         $("#desktopRemoveAll").on("click", () => controller.SetBeepers(0));
+        $("#desktopNorthWall").on("click", () => controller.ToggleWall("north"));
+        $("#desktopEastWall").on("click", () => controller.ToggleWall("east"));
+        $("#desktopSouthWall").on("click", () => controller.ToggleWall("south"));
+        $("#desktopWestWall").on("click", () => controller.ToggleWall("west"));
+        $("#desktopOuterWall").on("click", () => controller.ToggleWall("outer"));
         $("#contextKarelNorth").on("click", () => {
             ToggleConextMenu();
             controller.SetKarelOnSelection("north");
@@ -17908,6 +17966,26 @@
         $("#contextRemoveAll").on("click", () => {
             ToggleConextMenu();
             controller.SetBeepers(0);
+        });
+        $("#contextNorthWall").on("click", () => {
+            ToggleConextMenu();
+            controller.ToggleWall("north");
+        });
+        $("#contextEastWall").on("click", () => {
+            ToggleConextMenu();
+            controller.ToggleWall("east");
+        });
+        $("#contextSouthWall").on("click", () => {
+            ToggleConextMenu();
+            controller.ToggleWall("south");
+        });
+        $("#contextWestWall").on("click", () => {
+            ToggleConextMenu();
+            controller.ToggleWall("west");
+        });
+        $("#contextOuterWall").on("click", () => {
+            ToggleConextMenu();
+            controller.ToggleWall("outer");
         });
         return {
             toggleInfinityBeepers: toggleInfinityBeepers,

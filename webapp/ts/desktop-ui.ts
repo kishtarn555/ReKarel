@@ -127,6 +127,12 @@ function GetDesktopUIHelper(world: World) {
     $("#desktopAddBeeper").on("click", ()=>controller.ChangeBeepers(1));
     $("#desktopDecrementBeeper").on("click", ()=>controller.ChangeBeepers(-1));
     $("#desktopRemoveAll").on("click", ()=>controller.SetBeepers(0));
+    
+    $("#desktopNorthWall").on("click", ()=>controller.ToggleWall("north"));
+    $("#desktopEastWall").on("click", ()=>controller.ToggleWall("east"));
+    $("#desktopSouthWall").on("click", ()=>controller.ToggleWall("south"));
+    $("#desktopWestWall").on("click", ()=>controller.ToggleWall("west"));
+    $("#desktopOuterWall").on("click", ()=>controller.ToggleWall("outer"));
 
     $("#contextKarelNorth").on("click", ()=>{
         ToggleConextMenu();
@@ -155,6 +161,28 @@ function GetDesktopUIHelper(world: World) {
     $("#contextRemoveAll").on("click", ()=>{
         ToggleConextMenu();
         controller.SetBeepers(0);
+    });
+
+    
+    $("#contextNorthWall").on("click", ()=>{
+        ToggleConextMenu();
+        controller.ToggleWall("north");
+    });
+    $("#contextEastWall").on("click", ()=>{
+        ToggleConextMenu();
+        controller.ToggleWall("east");
+    });
+    $("#contextSouthWall").on("click", ()=>{
+        ToggleConextMenu();
+        controller.ToggleWall("south");
+    });
+    $("#contextWestWall").on("click", ()=>{
+        ToggleConextMenu();
+        controller.ToggleWall("west");
+    });
+    $("#contextOuterWall").on("click", ()=>{
+        ToggleConextMenu();
+        controller.ToggleWall("outer");
     });
 
     

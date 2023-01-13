@@ -44,6 +44,8 @@ class WorldController {
             c: 1,
             rows: 1,
             cols: 1,
+            dr:1,
+            dc:1,
         };
         this.state = {
             cursorX: 0,
@@ -52,12 +54,14 @@ class WorldController {
         this.gizmos = gizmos;
     }
 
-    Select(r: number, c: number, rowCount: number, colCount:number) {
+    Select(r: number, c: number, r2: number, c2: number) {
         this.selection = {
             r: r,
             c: c,
-            rows: rowCount,
-            cols: colCount,
+            rows: Math.abs(r-r2)+1,
+            cols: Math.abs(c-c2)+1,
+            dr: r <= r2? 1:-1,
+            dc: c <= c2? 1:-1,
         };
         this.UpdateWaffle();
     }    
@@ -83,7 +87,7 @@ class WorldController {
         if (cell.r < 0) {
             return;
         }
-        this.Select(cell.r, cell.c, 1, 1);
+        this.Select(cell.r, cell.c, cell.r, cell.c);
         console.log(this.selection.r, this.selection.c);
 
         
@@ -170,8 +174,78 @@ class WorldController {
         this.container.scrollTop = (1-top) * (this.container.scrollHeight - this.container.clientHeight);
     }
 
-    ToggleWall(which: "north" | "east" | "west" | "south" | "outher") {
-        for ()
+    ToggleWall(which: "north" | "east" | "west" | "south" | "outer") {
+        switch(which) {
+            case "north":
+                for (let i=0; i < this.selection.rows; i++) {
+                    let r = this.selection.r + i * this.selection.dr;
+                    let c = Math.min(
+                        this.selection.c,
+                        this.selection.c + (this.selection.cols-1) * this.selection.dc
+                    );
+                    this.world.toggleWall(r, c, 1);
+                }
+                break;
+            case "south":
+                for (let i=0; i < this.selection.rows; i++) {
+                    let r = this.selection.r + i * this.selection.dr;
+                    let c = Math.max(
+                        this.selection.c,
+                        this.selection.c + (this.selection.cols-1) * this.selection.dc
+                    );
+                    this.world.toggleWall(r, c, 3);
+                }
+                break;
+            case "west":
+                for (let i=0; i < this.selection.cols; i++) {
+                    let r = Math.min(
+                        this.selection.r,
+                        this.selection.r + (this.selection.rows-1) * this.selection.dr
+                        );
+                    let c = this.selection.c + i * this.selection.dc;
+                    this.world.toggleWall(r, c, 0);
+                }
+                break;
+            case "east":
+                for (let i=0; i < this.selection.cols; i++) {
+                    let r = Math.max(
+                        this.selection.r,
+                        this.selection.r + (this.selection.rows-1) * this.selection.dr
+                        );
+                    let c = this.selection.c + i * this.selection.dc;
+                    this.world.toggleWall(r, c, 2);
+                }
+                break;
+            case "outer":                
+                for (let i=0; i < this.selection.cols; i++) {
+                    let rmin = Math.min(
+                        this.selection.r,
+                        this.selection.r + (this.selection.rows-1) * this.selection.dr
+                        );
+                    let rmax = Math.max(
+                        this.selection.r,
+                        this.selection.r + (this.selection.rows-1) * this.selection.dr
+                        );
+                    let c = this.selection.c + i * this.selection.dc;
+                    this.world.toggleWall(rmin, c, 2);
+                    this.world.toggleWall(rmax, c, 0);
+                }
+                for (let i=0; i < this.selection.rows; i++) {
+                    let r = this.selection.r + i * this.selection.dr;                    
+                    let cmin = Math.min(
+                        this.selection.c,
+                        this.selection.c + (this.selection.cols-1) * this.selection.dc
+                    );
+                    let cmax = Math.max(
+                        this.selection.c,
+                        this.selection.c + (this.selection.cols-1) * this.selection.dc
+                    );
+                    this.world.toggleWall(r, cmin, 1);
+                    this.world.toggleWall(r, cmax, 3);
+                }
+                break;
+        }
+        this.Update();
     }
 
     UpdateScroll(left: number, top: number): void {
