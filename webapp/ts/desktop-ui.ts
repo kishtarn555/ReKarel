@@ -84,7 +84,16 @@ function GetDesktopUIHelper(world: World) {
     controller = new WorldController(
         renderer,
         $("#worldContainer")[0] ,
-        world
+        world,
+        {
+            selectionBox: {
+                main: $("#desktopBoxSelect")[0],
+                bottom: $("#desktopBoxSelect [name='bottom']")[0],
+                top: $("#desktopBoxSelect [name='top']")[0],
+                left: $("#desktopBoxSelect [name='left']")[0],
+                right: $("#desktopBoxSelect [name='right']")[0],
+            }
+        }
     );
     $("#worldCanvas").on("contextmenu", (e) => {
         const dumb =new bootstrap.Dropdown($("#contextMenuToggler")[0]);

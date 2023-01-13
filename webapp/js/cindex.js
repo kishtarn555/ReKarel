@@ -17651,10 +17651,16 @@
                 c: Math.floor(c) + this.origin.c,
             };
         }
+        CellToPoint(r, c) {
+            return {
+                x: this.GutterSize + (c - this.origin.c) * this.GutterSize,
+                y: this.GetHeight() - (this.GutterSize + (r - this.origin.f + 1) * this.GutterSize),
+            };
+        }
     }
 
     class WorldController {
-        constructor(renderer, container, world) {
+        constructor(renderer, container, world, gizmos) {
             this.renderer = renderer;
             this.container = container;
             this.world = world;
@@ -17668,6 +17674,7 @@
                 cursorX: 0,
                 cursorY: 0,
             };
+            this.gizmos = gizmos;
         }
         Select(r, c, rowCount, colCount) {
             this.selection = {
@@ -17676,6 +17683,13 @@
                 rows: rowCount,
                 cols: colCount,
             };
+            this.UpdateWaffle();
+        }
+        UpdateWaffle() {
+            let coords = this.renderer.CellToPoint(this.selection.r, this.selection.c);
+            let selectionBox = this.gizmos.selectionBox.main;
+            selectionBox.style.top = `${coords.y}px`;
+            selectionBox.style.left = `${coords.x}px`;
         }
         TrackMouse(e) {
             let canvas = this.renderer.canvasContext.canvas;
@@ -17739,6 +17753,7 @@
                 c: Math.floor(1 + Math.max(0, (worldWidth - this.renderer.GetColCount("floor") + 1) * left)),
             };
             this.Update();
+            this.UpdateWaffle();
         }
         Update() {
             this.renderer.Draw(this.world);
@@ -17806,7 +17821,15 @@
     };
     function GetDesktopUIHelper(world) {
         renderer = new WorldRenderer($("#worldCanvas")[0].getContext("2d"), lightWRStyle);
-        controller = new WorldController(renderer, $("#worldContainer")[0], world);
+        controller = new WorldController(renderer, $("#worldContainer")[0], world, {
+            selectionBox: {
+                main: $("#desktopBoxSelect")[0],
+                bottom: $("#desktopBoxSelect [name='bottom']")[0],
+                top: $("#desktopBoxSelect [name='top']")[0],
+                left: $("#desktopBoxSelect [name='left']")[0],
+                right: $("#desktopBoxSelect [name='right']")[0],
+            }
+        });
         $("#worldCanvas").on("contextmenu", (e) => {
             const dumb = new bootstrap.Dropdown($("#contextMenuToggler")[0]);
             dumb.hide();

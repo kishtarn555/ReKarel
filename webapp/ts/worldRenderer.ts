@@ -385,6 +385,13 @@ class WorldRenderer {
         };
     }
 
+    CellToPoint(r:number, c: number): {x:number, y:number} {        
+        return {
+            x: this.GutterSize+(c-this.origin.c)*this.GutterSize,
+            y: this.GetHeight()-(this.GutterSize+(r-this.origin.f+1)*this.GutterSize),
+        };        
+    }
+
 }
 
 export { WorldRenderer, WRStyle};

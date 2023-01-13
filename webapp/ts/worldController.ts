@@ -11,9 +11,20 @@ type CellSelection = {
     cols: number,
 }
 
+type Gizmos = {
+    selectionBox: {
+        main: HTMLElement,
+        left: HTMLElement,
+        right: HTMLElement,
+        top: HTMLElement,
+        bottom: HTMLElement,
+    }
+}
+
 class WorldController {
     renderer: WorldRenderer
     container: HTMLElement
+    gizmos: Gizmos
     world: World;
     state: {
         cursorX: number,
@@ -22,7 +33,7 @@ class WorldController {
     selection: CellSelection
 
 
-    constructor(renderer: WorldRenderer, container: HTMLElement, world: World) {
+    constructor(renderer: WorldRenderer, container: HTMLElement, world: World, gizmos: Gizmos) {
         this.renderer = renderer;
         this.container = container;
         this.world = world;
@@ -36,6 +47,7 @@ class WorldController {
             cursorX: 0,
             cursorY: 0,
         }
+        this.gizmos = gizmos;
     }
 
     Select(r: number, c: number, rowCount: number, colCount:number) {
@@ -45,7 +57,15 @@ class WorldController {
             rows: rowCount,
             cols: colCount,
         };
+        this.UpdateWaffle();
     }    
+
+    UpdateWaffle() {
+        let coords= this.renderer.CellToPoint(this.selection.r, this.selection.c);
+        let selectionBox = this.gizmos.selectionBox.main;
+        selectionBox.style.top= `${coords.y}px`
+        selectionBox.style.left= `${coords.x}px`
+    }
 
     TrackMouse(e: MouseEvent) {
         let canvas = this.renderer.canvasContext.canvas;
@@ -137,6 +157,7 @@ class WorldController {
                 ),
         }
         this.Update();
+        this.UpdateWaffle();
     }
 
     Update() {
