@@ -77,8 +77,6 @@ class WorldController {
     }
 
     ClickUp(e: MouseEvent) {
-        this.TrackMouse(e);
-
         let cell = this.renderer.PointToCell(this.state.cursorX, this.state.cursorY);
         if (cell.r < 0) {
             return;
@@ -107,6 +105,27 @@ class WorldController {
         }
         this.Update();
 
+    }
+
+    ChangeBeepers(delta: number) {
+        if (delta===0) {
+            return;
+        }
+        let buzzers = this.world.buzzers(this.selection.r, this.selection.c);
+        if (buzzers < 0 && delta < 0) {
+            //Do nothing
+            return;
+        }
+        buzzers+=delta;
+        if (buzzers < 0) {
+            buzzers = 0;
+        }
+        this.world.setBuzzers(
+            this.selection.r,
+            this.selection.c,
+            buzzers
+        );
+        this.Update();        
     }
 
     SetBeepers(ammount: number) {

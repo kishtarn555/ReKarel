@@ -112,7 +112,8 @@ function GetDesktopUIHelper(world: World) {
     controller.FocusOrigin();
 
 
-    $("#worldCanvas").on("mouseup",controller.ClickUp.bind(controller)); 
+    $("#worldCanvas").on("mouseup", controller.ClickUp.bind(controller)); 
+    $("#worldCanvas").on("mousemove", controller.TrackMouse.bind(controller));
     
     $("#desktopGoHome").on("click", ()=>controller.FocusOrigin());
     $("#desktopGoKarel").on("click", ()=>controller.FocusKarel());
@@ -122,6 +123,8 @@ function GetDesktopUIHelper(world: World) {
     $("#desktopKarelSouth").on("click", ()=>controller.SetKarelOnSelection("south"));
     $("#desktopKarelWest").on("click", ()=>controller.SetKarelOnSelection("west"));
     
+    $("#desktopAddBeeper").on("click", ()=>controller.ChangeBeepers(1));
+    $("#desktopDecrementBeeper").on("click", ()=>controller.ChangeBeepers(-1));
     $("#desktopRemoveAll").on("click", ()=>controller.SetBeepers(0));
 
     $("#contextKarelNorth").on("click", ()=>{
@@ -139,6 +142,14 @@ function GetDesktopUIHelper(world: World) {
     $("#contextKarelWest").on("click", ()=>{        
         ToggleConextMenu();
         controller.SetKarelOnSelection("west");
+    });
+    $("#contextAddBeeper").on("click", ()=>{
+        ToggleConextMenu();
+        controller.ChangeBeepers(1);
+    });
+    $("#contextDecrementBeeper").on("click", ()=>{
+        ToggleConextMenu();
+        controller.ChangeBeepers(-1);
     });
     $("#contextRemoveAll").on("click", ()=>{
         ToggleConextMenu();
@@ -161,12 +172,25 @@ function DesktopKeyUp(e: JQuery.KeyUpEvent) {
     if (document.activeElement.getAttribute("role")=="textbox" || tag=="input") {
         return;
     }
-    if (!e.ctrlKey && e.which === 71) {
-        controller.ToggleKarelPosition()
-    }
-    if (!e.ctrlKey && e.which === 90) {
-        controller.SetBeepers(0)
-    }
+
+    let hotkeys = new Map<number, ()=>void>([
+        [71,()=>{controller.ToggleKarelPosition();}],
+        [82,()=>{controller.SetBeepers(0);}],
+        [81,()=>{controller.ChangeBeepers(-1);}],
+        [69,()=>{controller.ChangeBeepers(1);}],
+    ]);
+    hotkeys.forEach((value:()=>void, key:number) => {
+        if (e.which === key) {
+            if (e.shiftKey) {
+                let dummy: MouseEvent = new MouseEvent("", {
+                    clientX: e.clientX,
+                    clientY: e.clientY,
+                });
+                controller.ClickUp(dummy);
+            }
+            value();
+        }
+    });
     console.log(tag);
 }
 

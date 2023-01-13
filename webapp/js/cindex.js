@@ -17700,7 +17700,6 @@
             this.state.cursorY = y / window.devicePixelRatio;
         }
         ClickUp(e) {
-            this.TrackMouse(e);
             let cell = this.renderer.PointToCell(this.state.cursorX, this.state.cursorY);
             if (cell.r < 0) {
                 return;
@@ -17724,6 +17723,22 @@
                     this.world.rotate('OESTE');
                     break;
             }
+            this.Update();
+        }
+        ChangeBeepers(delta) {
+            if (delta === 0) {
+                return;
+            }
+            let buzzers = this.world.buzzers(this.selection.r, this.selection.c);
+            if (buzzers < 0 && delta < 0) {
+                //Do nothing
+                return;
+            }
+            buzzers += delta;
+            if (buzzers < 0) {
+                buzzers = 0;
+            }
+            this.world.setBuzzers(this.selection.r, this.selection.c, buzzers);
             this.Update();
         }
         SetBeepers(ammount) {
@@ -17856,12 +17871,15 @@
         });
         controller.FocusOrigin();
         $("#worldCanvas").on("mouseup", controller.ClickUp.bind(controller));
+        $("#worldCanvas").on("mousemove", controller.TrackMouse.bind(controller));
         $("#desktopGoHome").on("click", () => controller.FocusOrigin());
         $("#desktopGoKarel").on("click", () => controller.FocusKarel());
         $("#desktopKarelNorth").on("click", () => controller.SetKarelOnSelection("north"));
         $("#desktopKarelEast").on("click", () => controller.SetKarelOnSelection("east"));
         $("#desktopKarelSouth").on("click", () => controller.SetKarelOnSelection("south"));
         $("#desktopKarelWest").on("click", () => controller.SetKarelOnSelection("west"));
+        $("#desktopAddBeeper").on("click", () => controller.ChangeBeepers(1));
+        $("#desktopDecrementBeeper").on("click", () => controller.ChangeBeepers(-1));
         $("#desktopRemoveAll").on("click", () => controller.SetBeepers(0));
         $("#contextKarelNorth").on("click", () => {
             ToggleConextMenu();
@@ -17879,6 +17897,14 @@
             ToggleConextMenu();
             controller.SetKarelOnSelection("west");
         });
+        $("#contextAddBeeper").on("click", () => {
+            ToggleConextMenu();
+            controller.ChangeBeepers(1);
+        });
+        $("#contextDecrementBeeper").on("click", () => {
+            ToggleConextMenu();
+            controller.ChangeBeepers(-1);
+        });
         $("#contextRemoveAll").on("click", () => {
             ToggleConextMenu();
             controller.SetBeepers(0);
@@ -17895,12 +17921,24 @@
         if (document.activeElement.getAttribute("role") == "textbox" || tag == "input") {
             return;
         }
-        if (!e.ctrlKey && e.which === 71) {
-            controller.ToggleKarelPosition();
-        }
-        if (!e.ctrlKey && e.which === 90) {
-            controller.SetBeepers(0);
-        }
+        let hotkeys = new Map([
+            [71, () => { controller.ToggleKarelPosition(); }],
+            [82, () => { controller.SetBeepers(0); }],
+            [81, () => { controller.ChangeBeepers(-1); }],
+            [69, () => { controller.ChangeBeepers(1); }],
+        ]);
+        hotkeys.forEach((value, key) => {
+            if (e.which === key) {
+                if (e.shiftKey) {
+                    let dummy = new MouseEvent("", {
+                        clientX: e.clientX,
+                        clientY: e.clientY,
+                    });
+                    controller.ClickUp(dummy);
+                }
+                value();
+            }
+        });
         console.log(tag);
     }
 
