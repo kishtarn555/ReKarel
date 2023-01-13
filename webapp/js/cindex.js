@@ -17726,6 +17726,13 @@
             }
             this.Update();
         }
+        SetBeepers(ammount) {
+            if (this.world.buzzers(this.selection.r, this.selection.c) === 0) {
+                return;
+            }
+            this.world.setBuzzers(this.selection.r, this.selection.c, ammount);
+            this.Update();
+        }
         ToggleKarelPosition() {
             this.world.move(this.selection.r, this.selection.c);
             this.world.rotate();
@@ -17855,6 +17862,7 @@
         $("#desktopKarelEast").on("click", () => controller.SetKarelOnSelection("east"));
         $("#desktopKarelSouth").on("click", () => controller.SetKarelOnSelection("south"));
         $("#desktopKarelWest").on("click", () => controller.SetKarelOnSelection("west"));
+        $("#desktopRemoveAll").on("click", () => controller.SetBeepers(0));
         $("#contextKarelNorth").on("click", () => {
             ToggleConextMenu();
             controller.SetKarelOnSelection("north");
@@ -17871,6 +17879,10 @@
             ToggleConextMenu();
             controller.SetKarelOnSelection("west");
         });
+        $("#contextRemoveAll").on("click", () => {
+            ToggleConextMenu();
+            controller.SetBeepers(0);
+        });
         return {
             toggleInfinityBeepers: toggleInfinityBeepers,
             renderer: renderer,
@@ -17885,6 +17897,9 @@
         }
         if (!e.ctrlKey && e.which === 71) {
             controller.ToggleKarelPosition();
+        }
+        if (!e.ctrlKey && e.which === 90) {
+            controller.SetBeepers(0);
         }
         console.log(tag);
     }

@@ -122,7 +122,8 @@ function GetDesktopUIHelper(world: World) {
     $("#desktopKarelSouth").on("click", ()=>controller.SetKarelOnSelection("south"));
     $("#desktopKarelWest").on("click", ()=>controller.SetKarelOnSelection("west"));
     
-    
+    $("#desktopRemoveAll").on("click", ()=>controller.SetBeepers(0));
+
     $("#contextKarelNorth").on("click", ()=>{
         ToggleConextMenu();
         controller.SetKarelOnSelection("north");
@@ -138,6 +139,10 @@ function GetDesktopUIHelper(world: World) {
     $("#contextKarelWest").on("click", ()=>{        
         ToggleConextMenu();
         controller.SetKarelOnSelection("west");
+    });
+    $("#contextRemoveAll").on("click", ()=>{
+        ToggleConextMenu();
+        controller.SetBeepers(0);
     });
 
     

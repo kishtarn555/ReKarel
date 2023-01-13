@@ -110,7 +110,11 @@ class WorldController {
     }
 
     SetBeepers(ammount: number) {
+        if (this.world.buzzers(this.selection.r, this.selection.c)===0) {
+            return;
+        }
         this.world.setBuzzers(this.selection.r, this.selection.c, ammount);
+        this.Update();
     }
 
     ToggleKarelPosition() {
