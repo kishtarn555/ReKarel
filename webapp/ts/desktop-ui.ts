@@ -98,7 +98,6 @@ function GetDesktopUIHelper(world: World) {
     $("#worldCanvas").on("contextmenu", (e) => {
         const dumb =new bootstrap.Dropdown($("#contextMenuToggler")[0]);
         dumb.hide();
-        console.log(e);  
         $("#contextMenuDiv")[0].style.setProperty("top", `${e.pageY}px`);
         $("#contextMenuDiv")[0].style.setProperty("left", `${e.pageX}px`);      
         ToggleConextMenu();
@@ -152,6 +151,19 @@ function GetDesktopUIHelper(world: World) {
     };
 }
 
+function DesktopKeyUp(e: JQuery.KeyUpEvent) {
+    let tag = e.target.tagName.toLowerCase();
+    if (document.activeElement.getAttribute("role")=="textbox" || tag=="input") {
+        return;
+    }
+    if (!e.ctrlKey && e.which === 71) {
+        controller.ToggleKarelPosition()
+    }
+    if (!e.ctrlKey && e.which === 90) {
+        controller.SetBeepers(0)
+    }
+    console.log(tag);
+}
 
 
-export {GetDesktopUIHelper, ToggleConextMenu, ResizeDesktopCanvas};
+export {GetDesktopUIHelper, DesktopKeyUp, ResizeDesktopCanvas};

@@ -1,7 +1,7 @@
 import { splitPanels } from "./split";
 import { responsiveHack, SetResponsiveness, SetDesktopView, SetPhoneView } from "./responsive-load";
 import { createEditors } from "./editor";
-import { GetDesktopUIHelper, ToggleConextMenu, ResizeDesktopCanvas } from "./desktop-ui";
+import { GetDesktopUIHelper, DesktopKeyUp, ResizeDesktopCanvas } from "./desktop-ui";
 import { GetPhoneUIHelper } from "./phone-ui";
 import { HookUpCommonUI, SetText } from "./common-ui";
 import { World } from "../../js/karel";
@@ -249,4 +249,8 @@ $(document).on("keydown", (e)=> {
         return false;
     }
     
+});
+
+$(document).on("keyup", (e)=> {
+    DesktopKeyUp(e);
 });

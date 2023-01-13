@@ -109,6 +109,16 @@ class WorldController {
 
     }
 
+    SetBeepers(ammount: number) {
+        this.world.setBuzzers(this.selection.r, this.selection.c, ammount);
+    }
+
+    ToggleKarelPosition() {
+        this.world.move(this.selection.r, this.selection.c);
+        this.world.rotate();
+        this.Update();
+    }
+
     FocusOrigin() {
         this.container.scrollLeft = 0;
         this.container.scrollTop = this.container.scrollHeight - this.container.clientHeight;

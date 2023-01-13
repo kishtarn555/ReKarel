@@ -17726,6 +17726,11 @@
             }
             this.Update();
         }
+        ToggleKarelPosition() {
+            this.world.move(this.selection.r, this.selection.c);
+            this.world.rotate();
+            this.Update();
+        }
         FocusOrigin() {
             this.container.scrollLeft = 0;
             this.container.scrollTop = this.container.scrollHeight - this.container.clientHeight;
@@ -17833,7 +17838,6 @@
         $("#worldCanvas").on("contextmenu", (e) => {
             const dumb = new bootstrap.Dropdown($("#contextMenuToggler")[0]);
             dumb.hide();
-            console.log(e);
             $("#contextMenuDiv")[0].style.setProperty("top", `${e.pageY}px`);
             $("#contextMenuDiv")[0].style.setProperty("left", `${e.pageX}px`);
             ToggleConextMenu();
@@ -17873,6 +17877,16 @@
             controller: controller,
             ResizeDesktopCanvas: ResizeDesktopCanvas
         };
+    }
+    function DesktopKeyUp(e) {
+        let tag = e.target.tagName.toLowerCase();
+        if (document.activeElement.getAttribute("role") == "textbox" || tag == "input") {
+            return;
+        }
+        if (!e.ctrlKey && e.which === 71) {
+            controller.ToggleKarelPosition();
+        }
+        console.log(tag);
     }
 
     function activateButton(toolbar, buttonPressed) {
@@ -21490,6 +21504,9 @@
             e.preventDefault();
             return false;
         }
+    });
+    $(document).on("keyup", (e) => {
+        DesktopKeyUp(e);
     });
 
 })(bootstrap);
