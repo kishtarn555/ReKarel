@@ -17354,7 +17354,7 @@
 
     // FIXME: Change f coords to r (so it's all in english)
     class WorldRenderer {
-        constructor(canvasContext, style) {
+        constructor(canvasContext, style, scale) {
             this.canvasContext = canvasContext;
             this.origin = { f: 1, c: 1 };
             this.CellSize = 28;
@@ -17362,12 +17362,13 @@
             this.GutterSize = 28;
             this.style = style;
             this.world = undefined;
+            this.scale = scale;
         }
         GetWidth() {
-            return this.canvasContext.canvas.width / window.devicePixelRatio;
+            return this.canvasContext.canvas.width / this.scale;
         }
         GetHeight() {
-            return this.canvasContext.canvas.height / window.devicePixelRatio;
+            return this.canvasContext.canvas.height / this.scale;
         }
         GetRowCount(mode = "ceil") {
             switch (mode) {
@@ -17509,7 +17510,7 @@
         }
         ResetTransform() {
             this.canvasContext.setTransform(1, 0, 0, 1, 0, 0);
-            this.canvasContext.scale(window.devicePixelRatio, window.devicePixelRatio);
+            this.canvasContext.scale(this.scale, this.scale);
         }
         ColorCell(r, c, color) {
             let h = this.GetHeight();
@@ -17653,8 +17654,8 @@
         }
         CellToPoint(r, c) {
             return {
-                x: this.GutterSize + (c - this.origin.c) * this.GutterSize,
-                y: this.GetHeight() - (this.GutterSize + (r - this.origin.f + 1) * this.GutterSize),
+                x: (this.GutterSize + (c - this.origin.c) * this.GutterSize) * this.scale,
+                y: (this.GetHeight() - (this.GutterSize + (r - this.origin.f + 1) * this.GutterSize)) * this.scale,
             };
         }
     }
@@ -17677,6 +17678,7 @@
                 cursorY: 0,
             };
             this.gizmos = gizmos;
+            this.scale = 1;
         }
         Select(r, c, r2, c2) {
             this.selection = {
@@ -17692,16 +17694,33 @@
         UpdateWaffle() {
             let coords = this.renderer.CellToPoint(this.selection.r, this.selection.c);
             let selectionBox = this.gizmos.selectionBox.main;
-            selectionBox.style.top = `${coords.y}px`;
-            selectionBox.style.left = `${coords.x}px`;
+            selectionBox.style.top = `${coords.y / window.devicePixelRatio}px`;
+            selectionBox.style.left = `${coords.x / window.devicePixelRatio}px`;
+        }
+        SetScale(scale) {
+            this.renderer.scale = scale * window.devicePixelRatio;
+            this.scale = scale;
+            //FIXME, this should be in update waffle
+            this.gizmos.selectionBox.bottom.style.maxWidth = `${this.renderer.CellSize * scale}px`;
+            this.gizmos.selectionBox.bottom.style.minWidth = `${this.renderer.CellSize * scale}px`;
+            this.gizmos.selectionBox.top.style.maxWidth = `${this.renderer.CellSize * scale}px`;
+            this.gizmos.selectionBox.top.style.minWidth = `${this.renderer.CellSize * scale}px`;
+            this.gizmos.selectionBox.left.style.maxHeight = `${this.renderer.CellSize * scale}px`;
+            this.gizmos.selectionBox.left.style.minHeight = `${this.renderer.CellSize * scale}px`;
+            this.gizmos.selectionBox.right.style.maxHeight = `${this.renderer.CellSize * scale}px`;
+            this.gizmos.selectionBox.right.style.minHeight = `${this.renderer.CellSize * scale}px`;
+            this.gizmos.selectionBox.bottom.style.top = `${this.renderer.CellSize * scale}px`;
+            this.gizmos.selectionBox.right.style.left = `${this.renderer.CellSize * scale}px`;
+            this.UpdateWaffle();
+            this.Update();
         }
         TrackMouse(e) {
             let canvas = this.renderer.canvasContext.canvas;
             let boundingBox = canvas.getBoundingClientRect();
             let x = (e.clientX - boundingBox.left) * canvas.width / boundingBox.width;
             let y = (e.clientY - boundingBox.top) * canvas.height / boundingBox.height;
-            this.state.cursorX = x / window.devicePixelRatio;
-            this.state.cursorY = y / window.devicePixelRatio;
+            this.state.cursorX = x / this.renderer.scale;
+            this.state.cursorY = y / this.renderer.scale;
         }
         ClickUp(e) {
             let cell = this.renderer.PointToCell(this.state.cursorX, this.state.cursorY);
@@ -17900,7 +17919,7 @@
         beeperColor: "#000000"
     };
     function GetDesktopUIHelper(world) {
-        renderer = new WorldRenderer($("#worldCanvas")[0].getContext("2d"), lightWRStyle);
+        renderer = new WorldRenderer($("#worldCanvas")[0].getContext("2d"), lightWRStyle, window.devicePixelRatio);
         controller = new WorldController(renderer, $("#worldContainer")[0], world, {
             selectionBox: {
                 main: $("#desktopBoxSelect")[0],
@@ -17917,6 +17936,10 @@
             $("#contextMenuDiv")[0].style.setProperty("left", `${e.pageX}px`);
             ToggleConextMenu();
             e.preventDefault();
+        });
+        $("#zoomDekstop").on("change", () => {
+            let scale = parseFloat(String($("#zoomDekstop").val()));
+            controller.SetScale(scale);
         });
         $("#worldContainer").on("scroll", scrollCanvas);
         $(window).on("resize", () => {
@@ -18014,6 +18037,10 @@
             [55, () => { controller.SetBeepers(7); }],
             [56, () => { controller.SetBeepers(8); }],
             [57, () => { controller.SetBeepers(9); }],
+            [87, () => { controller.ToggleWall("north"); }],
+            [68, () => { controller.ToggleWall("east"); }],
+            [83, () => { controller.ToggleWall("south"); }],
+            [65, () => { controller.ToggleWall("west"); }],
         ]);
         if (hotkeys.has(e.which) === false) {
             return;

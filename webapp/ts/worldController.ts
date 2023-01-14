@@ -28,6 +28,7 @@ class WorldController {
     container: HTMLElement
     gizmos: Gizmos
     world: World;
+    scale: number;
     state: {
         cursorX: number,
         cursorY: number,
@@ -44,42 +45,67 @@ class WorldController {
             c: 1,
             rows: 1,
             cols: 1,
-            dr:1,
-            dc:1,
+            dr: 1,
+            dc: 1,
         };
         this.state = {
             cursorX: 0,
             cursorY: 0,
         }
         this.gizmos = gizmos;
+        this.scale = 1;
     }
 
     Select(r: number, c: number, r2: number, c2: number) {
         this.selection = {
             r: r,
             c: c,
-            rows: Math.abs(r-r2)+1,
-            cols: Math.abs(c-c2)+1,
-            dr: r <= r2? 1:-1,
-            dc: c <= c2? 1:-1,
+            rows: Math.abs(r - r2) + 1,
+            cols: Math.abs(c - c2) + 1,
+            dr: r <= r2 ? 1 : -1,
+            dc: c <= c2 ? 1 : -1,
         };
         this.UpdateWaffle();
-    }    
+    }
 
     UpdateWaffle() {
-        let coords= this.renderer.CellToPoint(this.selection.r, this.selection.c);
+        let coords = this.renderer.CellToPoint(this.selection.r, this.selection.c);
         let selectionBox = this.gizmos.selectionBox.main;
-        selectionBox.style.top= `${coords.y}px`
-        selectionBox.style.left= `${coords.x}px`
+        selectionBox.style.top = `${coords.y / window.devicePixelRatio}px`
+        selectionBox.style.left = `${coords.x / window.devicePixelRatio}px`
+    }
+
+    SetScale(scale: number) {
+        this.renderer.scale = scale * window.devicePixelRatio;
+        this.scale = scale;
+        //FIXME, this should be in update waffle
+        this.gizmos.selectionBox.bottom.style.maxWidth = `${this.renderer.CellSize * scale}px`;
+        this.gizmos.selectionBox.bottom.style.minWidth = `${this.renderer.CellSize * scale}px`;
+        
+        this.gizmos.selectionBox.top.style.maxWidth = `${this.renderer.CellSize * scale}px`;
+        this.gizmos.selectionBox.top.style.minWidth = `${this.renderer.CellSize * scale}px`;
+        
+        this.gizmos.selectionBox.left.style.maxHeight = `${this.renderer.CellSize * scale}px`;
+        this.gizmos.selectionBox.left.style.minHeight = `${this.renderer.CellSize * scale}px`;
+        
+        this.gizmos.selectionBox.right.style.maxHeight = `${this.renderer.CellSize * scale}px`;
+        this.gizmos.selectionBox.right.style.minHeight = `${this.renderer.CellSize * scale}px`;
+
+        this.gizmos.selectionBox.bottom.style.top = `${this.renderer.CellSize * scale}px`;
+        this.gizmos.selectionBox.right.style.left = `${this.renderer.CellSize * scale}px`;
+
+
+        this.UpdateWaffle();
+        this.Update();        
     }
 
     TrackMouse(e: MouseEvent) {
         let canvas = this.renderer.canvasContext.canvas;
-        let boundingBox =canvas.getBoundingClientRect();
+        let boundingBox = canvas.getBoundingClientRect();
         let x = (e.clientX - boundingBox.left) * canvas.width / boundingBox.width;
-        let y = (e.clientY - boundingBox.top)* canvas.height / boundingBox.height;
-        this.state.cursorX= x /  window.devicePixelRatio;
-        this.state.cursorY= y /  window.devicePixelRatio;
+        let y = (e.clientY - boundingBox.top) * canvas.height / boundingBox.height;
+        this.state.cursorX = x / this.renderer.scale;
+        this.state.cursorY = y / this.renderer.scale;
     }
 
     ClickUp(e: MouseEvent) {
@@ -90,7 +116,7 @@ class WorldController {
         this.Select(cell.r, cell.c, cell.r, cell.c);
         console.log(this.selection.r, this.selection.c);
 
-        
+
     }
 
     SetKarelOnSelection(direction: "north" | "east" | "west" | "south" = "north") {
@@ -114,7 +140,7 @@ class WorldController {
     }
 
     ChangeBeepers(delta: number) {
-        if (delta===0) {
+        if (delta === 0) {
             return;
         }
         let buzzers = this.world.buzzers(this.selection.r, this.selection.c);
@@ -122,7 +148,7 @@ class WorldController {
             //Do nothing
             return;
         }
-        buzzers+=delta;
+        buzzers += delta;
         if (buzzers < 0) {
             buzzers = 0;
         }
@@ -131,11 +157,11 @@ class WorldController {
             this.selection.c,
             buzzers
         );
-        this.Update();        
+        this.Update();
     }
 
     SetBeepers(ammount: number) {
-        if (this.world.buzzers(this.selection.r, this.selection.c)===ammount) {
+        if (this.world.buzzers(this.selection.r, this.selection.c) === ammount) {
             return;
         }
         this.world.setBuzzers(this.selection.r, this.selection.c, ammount);
@@ -154,91 +180,91 @@ class WorldController {
     }
 
     FocusKarel() {
-        let r = Math.max(1,this.world.i-2);
-        let c = Math.max(1, this.world.j-2);
+        let r = Math.max(1, this.world.i - 2);
+        let c = Math.max(1, this.world.j - 2);
 
-        this.FocusTo(r,c);
+        this.FocusTo(r, c);
     }
 
     FocusTo(r: number, c: number) {
-        
 
-        let left = c/(this.world.w - this.renderer.GetColCount("floor") + 1) ;
-        left = left < 0 ? 0 :left;
-        left = left > 1 ? 1 :left;
-        let top = r/(this.world.h - this.renderer.GetRowCount("floor") + 1);        
-        top = top < 0 ? 0 :top;
-        top = top > 1 ? 1 :top;
+
+        let left = c / (this.world.w - this.renderer.GetColCount("floor") + 1);
+        left = left < 0 ? 0 : left;
+        left = left > 1 ? 1 : left;
+        let top = r / (this.world.h - this.renderer.GetRowCount("floor") + 1);
+        top = top < 0 ? 0 : top;
+        top = top > 1 ? 1 : top;
 
         this.container.scrollLeft = left * (this.container.scrollWidth - this.container.clientWidth);
-        this.container.scrollTop = (1-top) * (this.container.scrollHeight - this.container.clientHeight);
+        this.container.scrollTop = (1 - top) * (this.container.scrollHeight - this.container.clientHeight);
     }
 
     ToggleWall(which: "north" | "east" | "west" | "south" | "outer") {
-        switch(which) {
+        switch (which) {
             case "north":
-                for (let i=0; i < this.selection.rows; i++) {
+                for (let i = 0; i < this.selection.rows; i++) {
                     let r = this.selection.r + i * this.selection.dr;
                     let c = Math.min(
                         this.selection.c,
-                        this.selection.c + (this.selection.cols-1) * this.selection.dc
+                        this.selection.c + (this.selection.cols - 1) * this.selection.dc
                     );
                     this.world.toggleWall(r, c, 1);
                 }
                 break;
             case "south":
-                for (let i=0; i < this.selection.rows; i++) {
+                for (let i = 0; i < this.selection.rows; i++) {
                     let r = this.selection.r + i * this.selection.dr;
                     let c = Math.max(
                         this.selection.c,
-                        this.selection.c + (this.selection.cols-1) * this.selection.dc
+                        this.selection.c + (this.selection.cols - 1) * this.selection.dc
                     );
                     this.world.toggleWall(r, c, 3);
                 }
                 break;
             case "west":
-                for (let i=0; i < this.selection.cols; i++) {
+                for (let i = 0; i < this.selection.cols; i++) {
                     let r = Math.min(
                         this.selection.r,
-                        this.selection.r + (this.selection.rows-1) * this.selection.dr
-                        );
+                        this.selection.r + (this.selection.rows - 1) * this.selection.dr
+                    );
                     let c = this.selection.c + i * this.selection.dc;
                     this.world.toggleWall(r, c, 0);
                 }
                 break;
             case "east":
-                for (let i=0; i < this.selection.cols; i++) {
+                for (let i = 0; i < this.selection.cols; i++) {
                     let r = Math.max(
                         this.selection.r,
-                        this.selection.r + (this.selection.rows-1) * this.selection.dr
-                        );
+                        this.selection.r + (this.selection.rows - 1) * this.selection.dr
+                    );
                     let c = this.selection.c + i * this.selection.dc;
                     this.world.toggleWall(r, c, 2);
                 }
                 break;
-            case "outer":                
-                for (let i=0; i < this.selection.cols; i++) {
+            case "outer":
+                for (let i = 0; i < this.selection.cols; i++) {
                     let rmin = Math.min(
                         this.selection.r,
-                        this.selection.r + (this.selection.rows-1) * this.selection.dr
-                        );
+                        this.selection.r + (this.selection.rows - 1) * this.selection.dr
+                    );
                     let rmax = Math.max(
                         this.selection.r,
-                        this.selection.r + (this.selection.rows-1) * this.selection.dr
-                        );
+                        this.selection.r + (this.selection.rows - 1) * this.selection.dr
+                    );
                     let c = this.selection.c + i * this.selection.dc;
                     this.world.toggleWall(rmin, c, 2);
                     this.world.toggleWall(rmax, c, 0);
                 }
-                for (let i=0; i < this.selection.rows; i++) {
-                    let r = this.selection.r + i * this.selection.dr;                    
+                for (let i = 0; i < this.selection.rows; i++) {
+                    let r = this.selection.r + i * this.selection.dr;
                     let cmin = Math.min(
                         this.selection.c,
-                        this.selection.c + (this.selection.cols-1) * this.selection.dc
+                        this.selection.c + (this.selection.cols - 1) * this.selection.dc
                     );
                     let cmax = Math.max(
                         this.selection.c,
-                        this.selection.c + (this.selection.cols-1) * this.selection.dc
+                        this.selection.c + (this.selection.cols - 1) * this.selection.dc
                     );
                     this.world.toggleWall(r, cmin, 1);
                     this.world.toggleWall(r, cmax, 3);
@@ -254,17 +280,17 @@ class WorldController {
 
         this.renderer.origin = {
             f: Math.floor(
-                1+ Math.max(
-                    0, 
-                    (worldHeight-this.renderer.GetRowCount("floor") + 1)*top
+                1 + Math.max(
+                    0,
+                    (worldHeight - this.renderer.GetRowCount("floor") + 1) * top
                 )
             ),
             c: Math.floor(
-                1+ Math.max(
+                1 + Math.max(
                     0,
-                    (worldWidth-this.renderer.GetColCount("floor") + 1)*left
+                    (worldWidth - this.renderer.GetColCount("floor") + 1) * left
                 )
-                ),
+            ),
         }
         this.Update();
         this.UpdateWaffle();
@@ -275,4 +301,4 @@ class WorldController {
     }
 }
 
-export {WorldController};
+export { WorldController };

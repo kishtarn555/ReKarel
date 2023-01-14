@@ -26,7 +26,7 @@ class WorldRenderer {
     scroller: HTMLElement;
     private world: World;
 
-    constructor(canvasContext: CanvasRenderingContext2D, style: WRStyle) {
+    constructor(canvasContext: CanvasRenderingContext2D, style: WRStyle, scale: number) {
         this.canvasContext = canvasContext;
         this.origin = { f: 1, c: 1 };
         this.CellSize= 28;
@@ -34,14 +34,15 @@ class WorldRenderer {
         this.GutterSize = 28;
         this.style = style;      
         this.world = undefined; 
+        this.scale=scale;
     }
 
     GetWidth() : number {
-        return this.canvasContext.canvas.width / window.devicePixelRatio;
+        return this.canvasContext.canvas.width / this.scale;
     }
 
     GetHeight() : number {
-        return this.canvasContext.canvas.height / window.devicePixelRatio;
+        return this.canvasContext.canvas.height / this.scale;
     }
 
     GetRowCount(mode : "floor"| "ceil" = "ceil"): number {
@@ -212,7 +213,7 @@ class WorldRenderer {
 
     private ResetTransform() {
         this.canvasContext.setTransform(1, 0, 0, 1, 0, 0);
-        this.canvasContext.scale(window.devicePixelRatio,window.devicePixelRatio)
+        this.canvasContext.scale(this.scale,this.scale)
     }
 
     private ColorCell(r: number, c: number, color:string) : void {
@@ -387,8 +388,8 @@ class WorldRenderer {
 
     CellToPoint(r:number, c: number): {x:number, y:number} {        
         return {
-            x: this.GutterSize+(c-this.origin.c)*this.GutterSize,
-            y: this.GetHeight()-(this.GutterSize+(r-this.origin.f+1)*this.GutterSize),
+            x: (this.GutterSize+(c-this.origin.c)*this.GutterSize) * this.scale,
+            y: (this.GetHeight()-(this.GutterSize+(r-this.origin.f+1)*this.GutterSize))*this.scale,
         };        
     }
 

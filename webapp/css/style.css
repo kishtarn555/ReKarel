@@ -218,6 +218,7 @@ pre.error-popup {
 .waffle-border {
     border: solid 0px blue;
     cursor: grab;
+    opacity: 0.8;
 }
 
 .kw-gutter-width {

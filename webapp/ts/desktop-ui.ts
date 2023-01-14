@@ -80,7 +80,8 @@ const lightWRStyle : WRStyle = {
 function GetDesktopUIHelper(world: World) {
     renderer = new WorldRenderer(
         ($("#worldCanvas")[0] as HTMLCanvasElement).getContext("2d"),
-        lightWRStyle   
+        lightWRStyle,
+        window.devicePixelRatio  
     );
     controller = new WorldController(
         renderer,
@@ -104,6 +105,11 @@ function GetDesktopUIHelper(world: World) {
         ToggleConextMenu();
         e.preventDefault();
     });
+
+    $("#zoomDekstop").on("change", ()=> {
+        let scale = parseFloat(String($("#zoomDekstop").val()));
+        controller.SetScale(scale);
+    })
 
     
     $("#worldContainer").on("scroll", scrollCanvas);
@@ -217,6 +223,10 @@ function DesktopKeyUp(e: JQuery.KeyUpEvent) {
         [55,()=>{controller.SetBeepers(7);}],
         [56,()=>{controller.SetBeepers(8);}],
         [57,()=>{controller.SetBeepers(9);}],
+        [87,()=>{controller.ToggleWall("north");}],
+        [68,()=>{controller.ToggleWall("east");}],
+        [83,()=>{controller.ToggleWall("south");}],
+        [65,()=>{controller.ToggleWall("west");}],
     ]);
     if (hotkeys.has(e.which) === false) {
         return;
