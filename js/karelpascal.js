@@ -980,4 +980,6 @@ if (typeof module !== 'undefined' && require.main === module) {
 }
 }
 
-export {karelpascal}
+function pascalParser () { return karelpascal.parse.apply(karelpascal, arguments); }
+
+export {karelpascal, pascalParser}

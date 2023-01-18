@@ -907,7 +907,7 @@ if (typeof module !== 'undefined' && require.main === module) {
 }
 }
 
-function javaParse() {
+function javaParser() {
     return kareljava.parse.apply(kareljava, arguments);
 }
-export {kareljava, javaParse }
+export {kareljava, javaParser }

@@ -202,7 +202,7 @@ function GetDesktopUIHelper(world: World) {
     };
 }
 
-function DesktopKeyUp(e: JQuery.KeyUpEvent) {
+function DesktopKeyDown(e: JQuery.KeyDownEvent) {
     let tag = e.target.tagName.toLowerCase();
     if (document.activeElement.getAttribute("role")=="textbox" || tag=="input") {
         return;
@@ -227,6 +227,11 @@ function DesktopKeyUp(e: JQuery.KeyUpEvent) {
         [68,()=>{controller.ToggleWall("east");}],
         [83,()=>{controller.ToggleWall("south");}],
         [65,()=>{controller.ToggleWall("west");}],
+        [37,()=>{controller.MoveSelection(0,-1);}],
+        [38,()=>{controller.MoveSelection(1, 0);}],
+        [39,()=>{controller.MoveSelection(0, 1);}],
+        [40,()=>{controller.MoveSelection(-1, 0);}],
+        
     ]);
     if (hotkeys.has(e.which) === false) {
         return;
@@ -240,7 +245,8 @@ function DesktopKeyUp(e: JQuery.KeyUpEvent) {
         controller.ClickUp(dummy);
     }
     hotkeys.get(e.which)();
+    e.preventDefault();
 }
 
 
-export {GetDesktopUIHelper, DesktopKeyUp, ResizeDesktopCanvas};
+export {GetDesktopUIHelper, DesktopKeyDown, ResizeDesktopCanvas};

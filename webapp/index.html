@@ -168,8 +168,11 @@
                                             title="Ejecuta el programa">
                                             <i class="bi bi-play-fill"></i>
                                         </button>
-                                        <button type="button" class="btn btn-light p-1 ps-2 pe-2 border-dark"
-                                            title="Avanza un paso el programa">
+                                        <button 
+                                        type="button"
+                                        class="btn btn-light p-1 ps-2 pe-2 border-dark"
+                                        id="desktopStepProgram"
+                                        title="Avanza un paso el programa">
                                             <i class="bi bi-skip-forward-fill"></i>
                                         </button>
                                         <button type="button" class="btn btn-light p-1 ps-2 pe-2 border-dark"
@@ -177,21 +180,6 @@
                                             <i class="bi bi-eye-fill"></i>
                                         </button>
                                     </div>
-
-                                    <div class="input-group" role="group" aria-label="Basic example">
-                                        <div class="input-group-text bg-light border-dark ps-2 pe-2"
-                                            title="Zumbadores en Karel">
-                                            <small>Mochila</small>
-                                        </div>
-                                        <input type="number" id="beeperBag" class="form-control border-dark"
-                                            aria-label="" min="0" value="0">
-                                        <button type="button" class="btn btn-light p-1 ps-3 pe-3 border-dark"
-                                            id="infiniteBeepersBtn" title="Activar/desactivar zumbadores infinitos">
-                                            <i class="bi bi-infinity"></i>
-                                        </button>
-                                    </div>
-
-
 
                                     <div class="input-group" role="group" aria-label="Basic example">
                                         <div class="input-group-text bg-light border-dark ps-2 pe-2" 
@@ -210,6 +198,18 @@
                                         </button>
                                     </div>
 
+                                    <div class="input-group" role="group" aria-label="Basic example">
+                                        <div class="input-group-text bg-light border-dark ps-2 pe-2"
+                                            title="Zumbadores en Karel">
+                                            <small>Mochila</small>
+                                        </div>
+                                        <input type="number" id="beeperBag" class="form-control border-dark"
+                                            aria-label="" min="0" value="0">
+                                        <button type="button" class="btn btn-light p-1 ps-3 pe-3 border-dark"
+                                            id="infiniteBeepersBtn" title="Activar/desactivar zumbadores infinitos">
+                                            <i class="bi bi-infinity"></i>
+                                        </button>
+                                    </div>
 
                                     <div class="input-group" role="group" aria-label="Basic example">
                                         <div class="input-group-text bg-light border-dark ps-2 pe-2"

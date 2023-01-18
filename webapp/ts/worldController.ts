@@ -56,6 +56,26 @@ class WorldController {
         this.scale = 1;
     }
 
+    Reset() {
+        this.world.reset();
+    }
+
+    GetRuntime() {
+        return this.world.runtime;
+    }
+
+    SetWorld(world: World) {
+        this.world = world;
+        this.Update();
+        this.Select(1,1,1,1);    
+    }
+
+    CheckUpdate() {
+        if (this.world.dirty) {
+            this.Update();
+        }
+    }
+
     Select(r: number, c: number, r2: number, c2: number) {
         this.selection = {
             r: r,
@@ -66,6 +86,21 @@ class WorldController {
             dc: c <= c2 ? 1 : -1,
         };
         this.UpdateWaffle();
+    }
+
+    MoveSelection(dr: number, dc: number) {
+        let r = this.selection.r+dr;
+        let c =this.selection.c+dc;
+
+        if (r < 1 || c < 1 || r > this.world.h || c > this.world.w) {
+                return;
+        }
+        this.Select(
+            this.selection.r+dr,
+            this.selection.c+dc,
+            this.selection.r+dr,
+            this.selection.c+dc,
+        );
     }
 
     UpdateWaffle() {
@@ -297,6 +332,7 @@ class WorldController {
     }
 
     Update() {
+        this.world.dirty=false;
         this.renderer.Draw(this.world);
     }
 }

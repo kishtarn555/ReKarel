@@ -1,15 +1,16 @@
 import { splitPanels } from "./split";
 import { responsiveHack, SetResponsiveness, SetDesktopView, SetPhoneView } from "./responsive-load";
 import { createEditors } from "./editor";
-import { GetDesktopUIHelper, DesktopKeyUp, ResizeDesktopCanvas } from "./desktop-ui";
+import { GetDesktopUIHelper, DesktopKeyDown, ResizeDesktopCanvas } from "./desktop-ui";
 import { GetPhoneUIHelper } from "./phone-ui";
 import { HookUpCommonUI, SetText } from "./common-ui";
 import { World } from "../../js/karel";
 import { karel } from "../../js";
+import { KarelController } from "./KarelController";
 
 splitPanels(ResizeDesktopCanvas);
 
-var [destkopEditor, phoneEditor] = createEditors();
+var [desktopEditor, phoneEditor] = createEditors();
 //TODO: ThisShouldnt be here
 function hideElement(element:string) {
     $(element).addClass("d-none");
@@ -20,7 +21,7 @@ function showElement(element:string) {
 const pascalConfirm = {
     accept: ()=>{
         SetText(
-            destkopEditor, 
+            desktopEditor, 
             "iniciar-programa\n\tinicia-ejecucion\n\t\t{ TODO poner codigo aqui }\n\t\tapagate;\n\ttermina-ejecucion\nfinalizar-programa"
         ); 
     },
@@ -31,7 +32,7 @@ const pascalConfirm = {
 const javaConfirm = {
     accept: ()=>{
         SetText(
-            destkopEditor, 
+            desktopEditor, 
             "class program {\n\tprogram () {\n\t\t// TODO poner codigo aqui \n\t\tturnoff();\n\t}\n}"
         ); 
     },
@@ -41,7 +42,7 @@ const javaConfirm = {
 };
 HookUpCommonUI(
     {
-        editor:destkopEditor,
+        editor:desktopEditor,
         downloadModal: {
             modal: "#saveCodeModal",
             confirmBtn: "#downloadCodeBtn",
@@ -96,7 +97,7 @@ function debugWorld () {
 let DesktopUI = GetDesktopUIHelper(KarelWorld);
 let PhoneUI = GetPhoneUIHelper({
     editor: phoneEditor,
-    mainEdtior: destkopEditor,
+    mainEdtior: desktopEditor,
     codeTab: {
         indent: "#codeIndent",
         unindent: "#codeUnindent",
@@ -251,6 +252,12 @@ $(document).on("keydown", (e)=> {
     
 });
 
-$(document).on("keyup", (e)=> {
-    DesktopKeyUp(e);
+$(document).on("keydown", (e)=> {
+    DesktopKeyDown(e);
 });
+
+let karelController = new  KarelController(KarelWorld, DesktopUI.controller, desktopEditor);
+
+$("#desktopStepProgram").on("click", () => {
+    karelController.Step();
+})

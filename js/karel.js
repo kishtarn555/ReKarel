@@ -57,7 +57,8 @@ EventTarget.prototype.fireEvent = function (type, properties) {
 
   if (properties) {
     for (var p in properties) {
-      if (properties.hasOwnProperty(p)) {
+      // I DONT KNOW WHATS GOING ON HERE
+      if (properties.hasOwnProperty(p) && p!=="target") {
         evt[p] = properties[p];
       }
     }
@@ -1641,8 +1642,8 @@ function detectLanguage(code) {
 }
 
 // !!! MODS TO FILE
-import { kareljava } from '../js/kareljava.js';
-import { karelpascal } from './karelpascal.js';
+import { javaParser } from '../js/kareljava.js';
+import { pascalParser } from './karelpascal.js';
 
 function compile(code) {
   var lang = detectLanguage(code);
@@ -1650,11 +1651,11 @@ function compile(code) {
 
   switch (lang) {
     case 'java':
-      parser = kareljava.parse;
+      parser = javaParser;
       break;
 
     case 'pascal':
-      parser = karelpascal.parse;
+      parser = pascalParser;
       break;
 
     case 'ruby':
