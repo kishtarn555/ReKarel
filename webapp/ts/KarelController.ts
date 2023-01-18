@@ -1,6 +1,7 @@
 import { World, compile, detectLanguage } from "../../js/karel";
 import { WorldController } from "./worldController";
 import { EditorView } from "codemirror";
+import { EditorState, StateEffect } from "@codemirror/state"
 
 class KarelController {
     world: World;
@@ -26,14 +27,18 @@ class KarelController {
     validatorCallbacks(message) {
         console.log("validator said this: ", message);
       }
-
+    
+    Reset() {
+        this.running = false;
+        this.desktopController.Reset();
+    }
 
     StartRun(): boolean {
         let compiled = this.Compile();
         if (compiled == null) {
             return false;
         }
-        this.desktopController.Reset();
+        this.Reset();
         let runtime = this.desktopController.GetRuntime();        
         runtime.load(compiled);
         // FIXME: We skip validators, they seem useless, but I'm unsure

@@ -261,3 +261,7 @@ let karelController = new  KarelController(KarelWorld, DesktopUI.controller, des
 $("#desktopStepProgram").on("click", () => {
     karelController.Step();
 })
+
+$("#desktopResetKarel").on("click", ()=> {
+    karelController.Reset();
+})

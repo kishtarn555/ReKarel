@@ -17682,6 +17682,7 @@
         }
         Reset() {
             this.world.reset();
+            this.Update();
         }
         GetRuntime() {
             return this.world.runtime;
@@ -21514,17 +21515,27 @@
         validatorCallbacks(message) {
             console.log("validator said this: ", message);
         }
+        Reset() {
+            this.running = false;
+            this.desktopController.Reset();
+            this.mainEditor.dispatch({
+                effects: StateEffect.appendConfig.of(EditorView.editable.of(false))
+            });
+        }
         StartRun() {
             let compiled = this.Compile();
             if (compiled == null) {
                 return false;
             }
-            this.desktopController.Reset();
+            this.Reset();
             let runtime = this.desktopController.GetRuntime();
             runtime.load(compiled);
             // FIXME: We skip validators, they seem useless, but I'm unsure
             runtime.start();
             this.running = true;
+            this.mainEditor.dispatch({
+                effects: StateEffect.appendConfig.of(EditorView.editable.of(true))
+            });
             return true;
         }
         HighlightCurrentLine() {
@@ -21772,6 +21783,9 @@
     let karelController = new KarelController(KarelWorld, DesktopUI.controller, desktopEditor);
     $("#desktopStepProgram").on("click", () => {
         karelController.Step();
+    });
+    $("#desktopResetKarel").on("click", () => {
+        karelController.Reset();
     });
 
 })(bootstrap);

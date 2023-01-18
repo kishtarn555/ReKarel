@@ -58,6 +58,7 @@ class WorldController {
 
     Reset() {
         this.world.reset();
+        this.Update();
     }
 
     GetRuntime() {
