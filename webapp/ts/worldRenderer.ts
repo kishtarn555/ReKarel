@@ -266,7 +266,8 @@ class WorldRenderer {
         let x = c*this.CellSize+this.GutterSize;
         let y = h-((r+1)*this.CellSize+this.GutterSize);
         this.SetBeeperFont();
-        let measure = this.canvasContext.measureText(String(ammount));
+        let text = ammount !==-1?String(ammount): '∞';
+        let measure = this.canvasContext.measureText(text);
         let textH = measure.actualBoundingBoxAscent+4;
         let textW = Math.min(measure.width+4, this.CellSize-5);
         this.canvasContext.fillStyle = background;
@@ -277,7 +278,7 @@ class WorldRenderer {
             textH
         );               
         this.canvasContext.fillStyle= color;        
-        this.DrawTextCell(r, c, String(ammount));
+        this.DrawTextCell(r, c, text);
     }
 
     private DrawWall(r: number, c: number, type: "north"| "east" | "west" | "south") {
