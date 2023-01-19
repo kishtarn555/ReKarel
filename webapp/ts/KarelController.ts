@@ -2,6 +2,7 @@ import { World, compile, detectLanguage } from "../../js/karel";
 import { WorldController } from "./worldController";
 import { EditorView } from "codemirror";
 import { EditorState, StateEffect } from "@codemirror/state"
+import { DesktopController } from "./desktop-ui";
 
 class KarelController {
     world: World;
@@ -9,14 +10,16 @@ class KarelController {
     running: boolean;
     mainEditor: EditorView;
 
-    constructor(world: World, desktopController: WorldController, mainEditor: EditorView) {
+    constructor(world: World, mainEditor: EditorView) {
         this.world = world;
-        this.desktopController = desktopController;
-        this.desktopController.SetWorld(world);
         this.running = false;
         this.mainEditor = mainEditor;
     }
-
+    
+    SetDesktopController(desktopController: WorldController) {
+        this.desktopController = desktopController;
+        this.desktopController.SetWorld(this.world);
+    }
     Compile() {
         let code = this.mainEditor.state.doc.toString();
         // let language: string = detectLanguage(code);

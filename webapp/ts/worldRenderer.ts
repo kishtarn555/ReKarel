@@ -13,6 +13,17 @@ type WRStyle = {
 }
 
 
+const DefaultWRStyle: WRStyle = {
+    disabled: '#4f4f4f',
+    exportCellBackground: '#f5f7a8',
+    karelColor: '#3E6AC1',
+    gridBackgroundColor: '#f8f9fA',
+    gridBorderColor: '#c4c4c4',
+    gutterBackgroundColor: '#e6e6e6',
+    gutterColor: "#444444",
+    beeperBackgroundColor: "#0ADB23",    
+    beeperColor: "#000000",
+}
 
 // FIXME: Change f coords to r (so it's all in english)
 class WorldRenderer {
@@ -395,4 +406,4 @@ class WorldRenderer {
 
 }
 
-export { WorldRenderer, WRStyle};
+export { WorldRenderer, WRStyle, DefaultWRStyle};

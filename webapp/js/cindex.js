@@ -17352,6 +17352,17 @@
         return [mainView, otherView];
     }
 
+    const DefaultWRStyle = {
+        disabled: '#4f4f4f',
+        exportCellBackground: '#f5f7a8',
+        karelColor: '#3E6AC1',
+        gridBackgroundColor: '#f8f9fA',
+        gridBorderColor: '#c4c4c4',
+        gutterBackgroundColor: '#e6e6e6',
+        gutterColor: "#444444",
+        beeperBackgroundColor: "#0ADB23",
+        beeperColor: "#000000",
+    };
     // FIXME: Change f coords to r (so it's all in english)
     class WorldRenderer {
         constructor(canvasContext, style, scale) {
@@ -17885,7 +17896,46 @@
         }
     }
 
-    let renderer = undefined;
+    class DesktopController {
+        constructor(elements, karelController) {
+            this.worldContainer = elements.worldContainer;
+            this.worldCanvas = elements.worldCanvas;
+            this.worldZoom = elements.worldZoom;
+            this.karelController = karelController;
+            this.worldController = new WorldController(new WorldRenderer(this.worldCanvas[0].getContext("2d"), DefaultWRStyle, window.devicePixelRatio), elements.worldContainer[0], karelController.world, elements.gizmos);
+            this.karelController.SetDesktopController(this.worldController);
+        }
+        Init() {
+            $(window).on("resize", this.ResizeCanvas.bind(this));
+            this.worldContainer.on("scroll", this.calculateScroll.bind(this));
+            this.worldCanvas.on("mouseup", this.worldController.ClickUp.bind(this.worldController));
+            this.worldCanvas.on("mousemove", this.worldController.TrackMouse.bind(this.worldController));
+            this.ResizeCanvas();
+            this.worldController.FocusOrigin();
+        }
+        calculateScroll() {
+            let left = 1, top = 1;
+            const container = this.worldContainer[0];
+            if (container.scrollWidth !== container.clientWidth) {
+                left = container.scrollLeft / (container.scrollWidth - container.clientWidth);
+            }
+            if (container.scrollHeight !== container.clientHeight) {
+                top =
+                    1 - container.scrollTop
+                        / (container.scrollHeight - container.clientHeight);
+            }
+            this.worldController.UpdateScroll(left, top);
+        }
+        ResizeCanvas() {
+            this.worldCanvas[0].style.width = `${this.worldContainer[0].clientWidth}px`;
+            this.worldCanvas[0].style.height = `${this.worldContainer[0].clientHeight}px`;
+            let scale = window.devicePixelRatio;
+            this.worldCanvas.attr("width", Math.floor(this.worldContainer[0].clientWidth * scale));
+            this.worldCanvas.attr("height", Math.floor(this.worldContainer[0].clientHeight * scale));
+            this.worldController.Update();
+            this.calculateScroll();
+        }
+    }
     let controller = undefined;
     function scrollCanvas() {
         let left = ($("#worldContainer")[0].scrollWidth - $("#worldContainer")[0].clientWidth) !== 0 ?
@@ -17906,142 +17956,6 @@
         $("#worldCanvas").attr("height", Math.floor($("#worldContainer")[0].clientHeight * scale));
         controller.Update();
         scrollCanvas();
-    }
-    function toggleInfinityBeepers() {
-        if ($("#beeperBag").attr("hidden") !== undefined) {
-            $("#beeperBag").removeAttr("hidden");
-            $("#beeperBag").val("0");
-            $("#infiniteBeepersBtn").removeClass("btn-info");
-            $("#infiniteBeepersBtn").addClass("btn-light");
-        }
-        else {
-            $("#beeperBag").attr("hidden", "");
-            $("#beeperBag").val("-1");
-            $("#infiniteBeepersBtn").removeClass("btn-light");
-            $("#infiniteBeepersBtn").addClass("btn-info");
-        }
-    }
-    function ToggleConextMenu() {
-        // $("#contextMenuToggler")[0].click();
-        let toggler = $("#contextMenuToggler");
-        const dumb = new bootstrap.Dropdown(toggler[0]);
-        if (toggler.attr("aria-expanded") === "false") {
-            dumb.show();
-        }
-        else {
-            dumb.hide();
-        }
-    }
-    //TODO: Add support for states
-    const lightWRStyle = {
-        disabled: '#4f4f4f',
-        exportCellBackground: '#f5f7a8',
-        karelColor: '#3E6AC1',
-        gridBackgroundColor: '#f8f9fA',
-        gridBorderColor: '#c4c4c4',
-        gutterBackgroundColor: '#e6e6e6',
-        gutterColor: "#444444",
-        beeperBackgroundColor: "#0ADB23",
-        beeperColor: "#000000"
-    };
-    function GetDesktopUIHelper(world) {
-        renderer = new WorldRenderer($("#worldCanvas")[0].getContext("2d"), lightWRStyle, window.devicePixelRatio);
-        controller = new WorldController(renderer, $("#worldContainer")[0], world, {
-            selectionBox: {
-                main: $("#desktopBoxSelect")[0],
-                bottom: $("#desktopBoxSelect [name='bottom']")[0],
-                top: $("#desktopBoxSelect [name='top']")[0],
-                left: $("#desktopBoxSelect [name='left']")[0],
-                right: $("#desktopBoxSelect [name='right']")[0],
-            }
-        });
-        $("#worldCanvas").on("contextmenu", (e) => {
-            const dumb = new bootstrap.Dropdown($("#contextMenuToggler")[0]);
-            dumb.hide();
-            $("#contextMenuDiv")[0].style.setProperty("top", `${e.pageY}px`);
-            $("#contextMenuDiv")[0].style.setProperty("left", `${e.pageX}px`);
-            ToggleConextMenu();
-            e.preventDefault();
-        });
-        $("#zoomDekstop").on("change", () => {
-            let scale = parseFloat(String($("#zoomDekstop").val()));
-            controller.SetScale(scale);
-        });
-        $("#worldContainer").on("scroll", scrollCanvas);
-        $(window).on("resize", () => {
-            ResizeDesktopCanvas();
-        });
-        controller.FocusOrigin();
-        $("#worldCanvas").on("mouseup", controller.ClickUp.bind(controller));
-        $("#worldCanvas").on("mousemove", controller.TrackMouse.bind(controller));
-        $("#desktopGoHome").on("click", () => controller.FocusOrigin());
-        $("#desktopGoKarel").on("click", () => controller.FocusKarel());
-        $("#desktopKarelNorth").on("click", () => controller.SetKarelOnSelection("north"));
-        $("#desktopKarelEast").on("click", () => controller.SetKarelOnSelection("east"));
-        $("#desktopKarelSouth").on("click", () => controller.SetKarelOnSelection("south"));
-        $("#desktopKarelWest").on("click", () => controller.SetKarelOnSelection("west"));
-        $("#desktopAddBeeper").on("click", () => controller.ChangeBeepers(1));
-        $("#desktopDecrementBeeper").on("click", () => controller.ChangeBeepers(-1));
-        $("#desktopRemoveAll").on("click", () => controller.SetBeepers(0));
-        $("#desktopNorthWall").on("click", () => controller.ToggleWall("north"));
-        $("#desktopEastWall").on("click", () => controller.ToggleWall("east"));
-        $("#desktopSouthWall").on("click", () => controller.ToggleWall("south"));
-        $("#desktopWestWall").on("click", () => controller.ToggleWall("west"));
-        $("#desktopOuterWall").on("click", () => controller.ToggleWall("outer"));
-        $("#contextKarelNorth").on("click", () => {
-            ToggleConextMenu();
-            controller.SetKarelOnSelection("north");
-        });
-        $("#contextKarelEast").on("click", () => {
-            ToggleConextMenu();
-            controller.SetKarelOnSelection("east");
-        });
-        $("#contextKarelSouth").on("click", () => {
-            ToggleConextMenu();
-            controller.SetKarelOnSelection("south");
-        });
-        $("#contextKarelWest").on("click", () => {
-            ToggleConextMenu();
-            controller.SetKarelOnSelection("west");
-        });
-        $("#contextAddBeeper").on("click", () => {
-            ToggleConextMenu();
-            controller.ChangeBeepers(1);
-        });
-        $("#contextDecrementBeeper").on("click", () => {
-            ToggleConextMenu();
-            controller.ChangeBeepers(-1);
-        });
-        $("#contextRemoveAll").on("click", () => {
-            ToggleConextMenu();
-            controller.SetBeepers(0);
-        });
-        $("#contextNorthWall").on("click", () => {
-            ToggleConextMenu();
-            controller.ToggleWall("north");
-        });
-        $("#contextEastWall").on("click", () => {
-            ToggleConextMenu();
-            controller.ToggleWall("east");
-        });
-        $("#contextSouthWall").on("click", () => {
-            ToggleConextMenu();
-            controller.ToggleWall("south");
-        });
-        $("#contextWestWall").on("click", () => {
-            ToggleConextMenu();
-            controller.ToggleWall("west");
-        });
-        $("#contextOuterWall").on("click", () => {
-            ToggleConextMenu();
-            controller.ToggleWall("outer");
-        });
-        return {
-            toggleInfinityBeepers: toggleInfinityBeepers,
-            renderer: renderer,
-            controller: controller,
-            ResizeDesktopCanvas: ResizeDesktopCanvas
-        };
     }
     function DesktopKeyDown(e) {
         let tag = e.target.tagName.toLowerCase();
@@ -21499,12 +21413,14 @@
     // vim: set noexpandtab:ts=2:sw=2
 
     class KarelController {
-        constructor(world, desktopController, mainEditor) {
+        constructor(world, mainEditor) {
             this.world = world;
-            this.desktopController = desktopController;
-            this.desktopController.SetWorld(world);
             this.running = false;
             this.mainEditor = mainEditor;
+        }
+        SetDesktopController(desktopController) {
+            this.desktopController = desktopController;
+            this.desktopController.SetWorld(this.world);
         }
         Compile() {
             let code = this.mainEditor.state.doc.toString();
@@ -21518,9 +21434,6 @@
         Reset() {
             this.running = false;
             this.desktopController.Reset();
-            this.mainEditor.dispatch({
-                effects: StateEffect.appendConfig.of(EditorView.editable.of(false))
-            });
         }
         StartRun() {
             let compiled = this.Compile();
@@ -21533,9 +21446,6 @@
             // FIXME: We skip validators, they seem useless, but I'm unsure
             runtime.start();
             this.running = true;
-            this.mainEditor.dispatch({
-                effects: StateEffect.appendConfig.of(EditorView.editable.of(true))
-            });
             return true;
         }
         HighlightCurrentLine() {
@@ -21628,6 +21538,7 @@
         ]
     });
     let KarelWorld = new World(100, 100);
+    let karelController = new KarelController(KarelWorld, desktopEditor);
     function debugWorld() {
         KarelWorld.resize(90, 105);
         KarelWorld.move(12, 19);
@@ -21640,7 +21551,21 @@
         KarelWorld.setBuzzers(9, 12, 13);
         console.log("test");
     }
-    let DesktopUI = GetDesktopUIHelper(KarelWorld);
+    // let DesktopUI = GetDesktopUIHelper(KarelWorld);
+    let DesktopUI = new DesktopController({
+        worldCanvas: $("#worldCanvas"),
+        worldContainer: $("#worldContainer"),
+        gizmos: {
+            selectionBox: {
+                main: $("#desktopBoxSelect")[0],
+                bottom: $("#desktopBoxSelect [name='bottom']")[0],
+                top: $("#desktopBoxSelect [name='top']")[0],
+                left: $("#desktopBoxSelect [name='left']")[0],
+                right: $("#desktopBoxSelect [name='right']")[0],
+            }
+        },
+        worldZoom: $("#zoomDekstop")
+    }, karelController);
     let PhoneUI = GetPhoneUIHelper({
         editor: phoneEditor,
         mainEdtior: desktopEditor,
@@ -21701,8 +21626,6 @@
     //Activate default states
     PhoneUI.changeCodeToolbar("#codeAction");
     PhoneUI.changeNavToolbar("#codeTabBtn");
-    //Hoock all UI
-    $("#infiniteBeepersBtn").click(DesktopUI.toggleInfinityBeepers);
     let appSettings = {
         interface: "auto",
         editorFontSize: 12
@@ -21752,8 +21675,7 @@
         $("#settingsForm").on("submit", setSettings);
         responsiveHack();
         applySettings(appSettings);
-        DesktopUI.ResizeDesktopCanvas();
-        DesktopUI.controller.Update();
+        DesktopUI.Init();
     });
     $(document).on("keydown", (e) => {
         if (e.ctrlKey && e.which === 75) {
@@ -21780,7 +21702,6 @@
     $(document).on("keydown", (e) => {
         DesktopKeyDown(e);
     });
-    let karelController = new KarelController(KarelWorld, DesktopUI.controller, desktopEditor);
     $("#desktopStepProgram").on("click", () => {
         karelController.Step();
     });

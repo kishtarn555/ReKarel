@@ -338,4 +338,4 @@ class WorldController {
     }
 }
 
-export { WorldController };
+export { WorldController, Gizmos };

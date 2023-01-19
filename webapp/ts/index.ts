@@ -1,7 +1,7 @@
 import { splitPanels } from "./split";
 import { responsiveHack, SetResponsiveness, SetDesktopView, SetPhoneView } from "./responsive-load";
 import { createEditors } from "./editor";
-import { GetDesktopUIHelper, DesktopKeyDown, ResizeDesktopCanvas } from "./desktop-ui";
+import { GetDesktopUIHelper, DesktopKeyDown, ResizeDesktopCanvas, DesktopController } from "./desktop-ui";
 import { GetPhoneUIHelper } from "./phone-ui";
 import { HookUpCommonUI, SetText } from "./common-ui";
 import { World } from "../../js/karel";
@@ -78,6 +78,7 @@ HookUpCommonUI(
 )
 
 let KarelWorld: World = new World(100, 100);
+let karelController = new  KarelController(KarelWorld, desktopEditor);
 
 function debugWorld () {
     KarelWorld.resize(90, 105);
@@ -94,7 +95,24 @@ function debugWorld () {
     console.log("test");
 }
 
-let DesktopUI = GetDesktopUIHelper(KarelWorld);
+// let DesktopUI = GetDesktopUIHelper(KarelWorld);
+let DesktopUI = new DesktopController(
+    {
+        worldCanvas: $("#worldCanvas"),
+        worldContainer: $("#worldContainer"),
+        gizmos: {
+            selectionBox: {
+                main: $("#desktopBoxSelect")[0],
+                bottom: $("#desktopBoxSelect [name='bottom']")[0],
+                top: $("#desktopBoxSelect [name='top']")[0],
+                left: $("#desktopBoxSelect [name='left']")[0],
+                right: $("#desktopBoxSelect [name='right']")[0],
+            }
+        },
+        worldZoom: $("#zoomDekstop")
+    },
+    karelController
+);
 let PhoneUI = GetPhoneUIHelper({
     editor: phoneEditor,
     mainEdtior: desktopEditor,
@@ -161,8 +179,6 @@ let PhoneUI = GetPhoneUIHelper({
 //Activate default states
 PhoneUI.changeCodeToolbar("#codeAction");
 PhoneUI.changeNavToolbar("#codeTabBtn");
-//Hoock all UI
-$("#infiniteBeepersBtn").click(DesktopUI.toggleInfinityBeepers);
 
 type fontSizes = number;
 type responsiveInterfaces = "auto" | "desktop" | "mobile";
@@ -225,8 +241,7 @@ $(document).ready(()=>{
     $("#settingsForm").on("submit", setSettings)
     responsiveHack();
     applySettings(appSettings);    
-    DesktopUI.ResizeDesktopCanvas();
-    DesktopUI.controller.Update();
+    DesktopUI.Init();
 })
 
 
@@ -256,7 +271,6 @@ $(document).on("keydown", (e)=> {
     DesktopKeyDown(e);
 });
 
-let karelController = new  KarelController(KarelWorld, DesktopUI.controller, desktopEditor);
 
 $("#desktopStepProgram").on("click", () => {
     karelController.Step();

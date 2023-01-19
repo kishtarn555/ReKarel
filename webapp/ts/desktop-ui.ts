@@ -1,9 +1,96 @@
-import { redoDepth } from '@codemirror/history';
+import { EditorView } from 'codemirror'
+import { Compartment } from '@codemirror/state'
 import bootstrap from 'bootstrap';
-import { WorldRenderer, WRStyle } from './worldRenderer';
-import { WorldController } from "./worldController";
+import { WorldRenderer, WRStyle, DefaultWRStyle } from './worldRenderer';
+import { WorldController, Gizmos } from "./worldController";
 import { World } from '../../js/karel';
-import { htmlPrefilter } from 'jquery';
+import { KarelController } from './KarelController';
+
+interface DesktopElements {
+    worldContainer: JQuery,
+    worldCanvas: JQuery,
+    gizmos: Gizmos,
+    worldZoom: JQuery
+};
+
+class DesktopController {
+    worldContainer: JQuery;
+    worldCanvas: JQuery;
+    worldZoom: JQuery
+
+    worldController: WorldController;
+    karelController: KarelController;
+    
+    constructor (elements: DesktopElements, karelController: KarelController) {
+        this.worldContainer = elements.worldContainer;
+        this.worldCanvas = elements.worldCanvas;
+        this.worldZoom = elements.worldZoom;
+
+
+        this.karelController = karelController;
+        this.worldController = new WorldController(
+            new WorldRenderer(
+                (this.worldCanvas[0] as HTMLCanvasElement).getContext("2d"),
+                DefaultWRStyle,
+                window.devicePixelRatio
+            ),
+            elements.worldContainer[0],
+            karelController.world,
+            elements.gizmos
+        );
+        this.karelController.SetDesktopController(this.worldController);
+    }
+
+    Init() {
+        $(window).on("resize", this.ResizeCanvas.bind(this));
+        this.worldContainer.on("scroll", this.calculateScroll.bind(this));
+        this.worldCanvas.on(
+            "mouseup",
+            this.worldController.ClickUp.bind(this.worldController)
+        );
+        this.worldCanvas.on(
+            "mousemove",
+            this.worldController.TrackMouse.bind(this.worldController)
+        );
+
+        this.worldZoom.on("change", ()=> {
+            let scale = parseFloat(String($("#zoomDekstop").val()));
+            controller.SetScale(scale);
+        });
+        this.ResizeCanvas();
+        this.worldController.FocusOrigin();
+    }
+
+    private calculateScroll() {
+        let left = 1, top=1;
+        const container = this.worldContainer[0];
+        if (container.scrollWidth !== container.clientWidth) {
+            left = container.scrollLeft / (container.scrollWidth - container.clientWidth);
+        }
+        if(container.scrollHeight !== container.clientHeight) {
+            top = 
+                1 - container.scrollTop
+                / (container.scrollHeight - container.clientHeight);
+        }
+        this.worldController.UpdateScroll(left, top);
+    }
+
+    public ResizeCanvas() {
+        this.worldCanvas[0].style.width = `${this.worldContainer[0].clientWidth}px`;    
+        this.worldCanvas[0].style.height = `${this.worldContainer[0].clientHeight}px`;
+        let scale = window.devicePixelRatio;
+        this.worldCanvas.attr(
+            "width", Math.floor(this.worldContainer[0].clientWidth * scale)
+        );    
+        this.worldCanvas.attr(
+            "height", Math.floor(this.worldContainer[0].clientHeight * scale)
+        );
+
+        this.worldController.Update();        
+        this.calculateScroll();
+    }
+    
+}
 
 
 let renderer: WorldRenderer = undefined;
@@ -249,4 +336,4 @@ function DesktopKeyDown(e: JQuery.KeyDownEvent) {
 }
 
 
-export {GetDesktopUIHelper, DesktopKeyDown, ResizeDesktopCanvas};
+export {GetDesktopUIHelper, DesktopKeyDown, ResizeDesktopCanvas, DesktopController};
