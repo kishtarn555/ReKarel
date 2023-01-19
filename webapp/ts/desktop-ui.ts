@@ -6,26 +6,51 @@ import { WorldController, Gizmos } from "./worldController";
 import { World } from '../../js/karel';
 import { KarelController } from './KarelController';
 
+type BeeperToolbar= {
+    addOne: JQuery,
+    removeOne: JQuery,
+    ammount: JQuery,
+    infinite: JQuery,
+    clear: JQuery,    
+}
 interface DesktopElements {
     worldContainer: JQuery,
     worldCanvas: JQuery,
     gizmos: Gizmos,
-    worldZoom: JQuery
+    worldZoom: JQuery,
+    toolbar: {
+        beepers: BeeperToolbar
+    }
+    context: {
+        toggler: JQuery,
+        container: JQuery
+        beepers: BeeperToolbar,
+    }
 };
 
 class DesktopController {
     worldContainer: JQuery;
     worldCanvas: JQuery;
-    worldZoom: JQuery
+    worldZoom: JQuery;
+
+    contextToggler: JQuery;
+    contextContainer: JQuery
+    contextBeepers: BeeperToolbar;
 
     worldController: WorldController;
     karelController: KarelController;
+    beeperToolbar: BeeperToolbar;
     
     constructor (elements: DesktopElements, karelController: KarelController) {
         this.worldContainer = elements.worldContainer;
         this.worldCanvas = elements.worldCanvas;
         this.worldZoom = elements.worldZoom;
 
+        this.beeperToolbar = elements.toolbar.beepers;
+
+        this.contextToggler = elements.context.toggler;
+        this.contextContainer = elements.context.container;
+        this.contextBeepers = elements.context.beepers;
 
         this.karelController = karelController;
         this.worldController = new WorldController(
@@ -43,6 +68,8 @@ class DesktopController {
 
     Init() {
         $(window).on("resize", this.ResizeCanvas.bind(this));
+        $(window).on("keydown", this.HotKeys.bind(this));
+
         this.worldContainer.on("scroll", this.calculateScroll.bind(this));
         this.worldCanvas.on(
             "mouseup",
@@ -52,13 +79,84 @@ class DesktopController {
             "mousemove",
             this.worldController.TrackMouse.bind(this.worldController)
         );
+        this.worldCanvas.on("contextmenu", (e)=>{
+            const dropmenu =new bootstrap.Dropdown(this.contextToggler[0]);
+            dropmenu.hide();
+            this.contextContainer[0].style.setProperty("top", `${e.pageY}px`);
+            this.contextContainer[0].style.setProperty("left", `${e.pageX}px`);      
+            ToggleConextMenu();
+            e.preventDefault();
+        })
 
         this.worldZoom.on("change", ()=> {
-            let scale = parseFloat(String($("#zoomDekstop").val()));
-            controller.SetScale(scale);
+            let scale = parseFloat(String(this.worldZoom.val()));
+            this.worldController.SetScale(scale);
         });
+
+        this.beeperToolbar.addOne.on("click", ()=>this.worldController.ChangeBeepers(1));
+        this.beeperToolbar.removeOne.on("click", ()=>this.worldController.ChangeBeepers(-1));
+        
+        this.beeperToolbar.infinite.on("click", ()=>this.worldController.SetBeepers(-1));
+        this.beeperToolbar.clear.on("click", ()=>this.worldController.SetBeepers(0));
+
+        
         this.ResizeCanvas();
         this.worldController.FocusOrigin();
+    }
+
+    private ToggleContextMenu() {
+        const dropmenu = new bootstrap.Dropdown(this.contextToggler[0]);
+        if (this.contextToggler.attr("aria-expanded")==="false") {
+            dropmenu.show();
+        } else {
+            dropmenu.hide();
+        }
+    }
+
+    private HotKeys(e: JQuery.KeyDownEvent) {
+        let tag = e.target.tagName.toLowerCase();
+        if (document.activeElement.getAttribute("role")=="textbox" || tag=="input") {
+            return;
+        }
+
+        let hotkeys = new Map<number, ()=>void>([
+            [71,()=>{this.worldController.ToggleKarelPosition();}],
+            [82,()=>{this.worldController.SetBeepers(0);}],
+            [81,()=>{this.worldController.ChangeBeepers(-1);}],
+            [69,()=>{this.worldController.ChangeBeepers(1);}],
+            [48,()=>{this.worldController.SetBeepers(0);}],
+            [49,()=>{this.worldController.SetBeepers(1);}],
+            [50,()=>{this.worldController.SetBeepers(2);}],
+            [51,()=>{this.worldController.SetBeepers(3);}],
+            [52,()=>{this.worldController.SetBeepers(4);}],
+            [53,()=>{this.worldController.SetBeepers(5);}],
+            [54,()=>{this.worldController.SetBeepers(6);}],
+            [55,()=>{this.worldController.SetBeepers(7);}],
+            [56,()=>{this.worldController.SetBeepers(8);}],
+            [57,()=>{this.worldController.SetBeepers(9);}],
+            [87,()=>{this.worldController.ToggleWall("north");}],
+            [68,()=>{this.worldController.ToggleWall("east");}],
+            [83,()=>{this.worldController.ToggleWall("south");}],
+            [65,()=>{this.worldController.ToggleWall("west");}],
+            [37,()=>{this.worldController.MoveSelection(0,-1);}],
+            [38,()=>{this.worldController.MoveSelection(1, 0);}],
+            [39,()=>{this.worldController.MoveSelection(0, 1);}],
+            [40,()=>{this.worldController.MoveSelection(-1, 0);}],
+            
+        ]);
+        if (hotkeys.has(e.which) === false) {
+            return;
+        }     
+        
+        if (e.shiftKey) {
+            let dummy: MouseEvent = new MouseEvent("", {
+                clientX: e.clientX,
+                clientY: e.clientY,
+            });
+            this.worldController.ClickUp(dummy);
+        }
+        hotkeys.get(e.which)();
+        e.preventDefault();
     }
 
     private calculateScroll() {
@@ -91,6 +189,9 @@ class DesktopController {
     }
     
 }
+
+
+//=================================== TO BE DELETED FROM HERE DOWNWARDS ===================================
 
 
 let renderer: WorldRenderer = undefined;

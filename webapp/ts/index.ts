@@ -100,6 +100,27 @@ let DesktopUI = new DesktopController(
     {
         worldCanvas: $("#worldCanvas"),
         worldContainer: $("#worldContainer"),
+        toolbar: {
+            beepers: {
+                addOne: $("#desktopAddBeeper"),
+                removeOne: $("#desktopDecrementBeeper"),
+                infinite: $("#desktopSetInfinite"),
+                ammount: $("#desktopSetAmmount"),                
+                clear: $("#desktopRemoveAll"),
+
+            }
+        },
+        context: {
+            toggler: $("#contextMenuToggler"),
+            container: $("#contextMenuDiv"),
+            beepers: {
+                addOne: $("#contextAddBeeper"),
+                removeOne: $("#contextDecrementBeeper"),
+                infinite: $("#contextSetInfinite"),
+                ammount: $("#contextSetAmmount"),                
+                clear: $("#contextRemoveAll"),
+            }
+        },
         gizmos: {
             selectionBox: {
                 main: $("#desktopBoxSelect")[0],
@@ -266,11 +287,6 @@ $(document).on("keydown", (e)=> {
     }
     
 });
-
-$(document).on("keydown", (e)=> {
-    DesktopKeyDown(e);
-});
-
 
 $("#desktopStepProgram").on("click", () => {
     karelController.Step();

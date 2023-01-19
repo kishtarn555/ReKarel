@@ -17901,17 +17901,89 @@
             this.worldContainer = elements.worldContainer;
             this.worldCanvas = elements.worldCanvas;
             this.worldZoom = elements.worldZoom;
+            this.beeperToolbar = elements.toolbar.beepers;
+            this.contextToggler = elements.context.toggler;
+            this.contextContainer = elements.context.container;
+            this.contextBeepers = elements.context.beepers;
             this.karelController = karelController;
             this.worldController = new WorldController(new WorldRenderer(this.worldCanvas[0].getContext("2d"), DefaultWRStyle, window.devicePixelRatio), elements.worldContainer[0], karelController.world, elements.gizmos);
             this.karelController.SetDesktopController(this.worldController);
         }
         Init() {
             $(window).on("resize", this.ResizeCanvas.bind(this));
+            $(window).on("keydown", this.HotKeys.bind(this));
             this.worldContainer.on("scroll", this.calculateScroll.bind(this));
             this.worldCanvas.on("mouseup", this.worldController.ClickUp.bind(this.worldController));
             this.worldCanvas.on("mousemove", this.worldController.TrackMouse.bind(this.worldController));
+            this.worldCanvas.on("contextmenu", (e) => {
+                const dropmenu = new bootstrap.Dropdown(this.contextToggler[0]);
+                dropmenu.hide();
+                this.contextContainer[0].style.setProperty("top", `${e.pageY}px`);
+                this.contextContainer[0].style.setProperty("left", `${e.pageX}px`);
+                ToggleConextMenu();
+                e.preventDefault();
+            });
+            this.worldZoom.on("change", () => {
+                let scale = parseFloat(String(this.worldZoom.val()));
+                this.worldController.SetScale(scale);
+            });
+            this.beeperToolbar.addOne.on("click", () => this.worldController.ChangeBeepers(1));
+            this.beeperToolbar.removeOne.on("click", () => this.worldController.ChangeBeepers(-1));
+            this.beeperToolbar.infinite.on("click", () => this.worldController.SetBeepers(-1));
+            this.beeperToolbar.clear.on("click", () => this.worldController.SetBeepers(0));
             this.ResizeCanvas();
             this.worldController.FocusOrigin();
+        }
+        ToggleContextMenu() {
+            const dropmenu = new bootstrap.Dropdown(this.contextToggler[0]);
+            if (this.contextToggler.attr("aria-expanded") === "false") {
+                dropmenu.show();
+            }
+            else {
+                dropmenu.hide();
+            }
+        }
+        HotKeys(e) {
+            let tag = e.target.tagName.toLowerCase();
+            if (document.activeElement.getAttribute("role") == "textbox" || tag == "input") {
+                return;
+            }
+            let hotkeys = new Map([
+                [71, () => { this.worldController.ToggleKarelPosition(); }],
+                [82, () => { this.worldController.SetBeepers(0); }],
+                [81, () => { this.worldController.ChangeBeepers(-1); }],
+                [69, () => { this.worldController.ChangeBeepers(1); }],
+                [48, () => { this.worldController.SetBeepers(0); }],
+                [49, () => { this.worldController.SetBeepers(1); }],
+                [50, () => { this.worldController.SetBeepers(2); }],
+                [51, () => { this.worldController.SetBeepers(3); }],
+                [52, () => { this.worldController.SetBeepers(4); }],
+                [53, () => { this.worldController.SetBeepers(5); }],
+                [54, () => { this.worldController.SetBeepers(6); }],
+                [55, () => { this.worldController.SetBeepers(7); }],
+                [56, () => { this.worldController.SetBeepers(8); }],
+                [57, () => { this.worldController.SetBeepers(9); }],
+                [87, () => { this.worldController.ToggleWall("north"); }],
+                [68, () => { this.worldController.ToggleWall("east"); }],
+                [83, () => { this.worldController.ToggleWall("south"); }],
+                [65, () => { this.worldController.ToggleWall("west"); }],
+                [37, () => { this.worldController.MoveSelection(0, -1); }],
+                [38, () => { this.worldController.MoveSelection(1, 0); }],
+                [39, () => { this.worldController.MoveSelection(0, 1); }],
+                [40, () => { this.worldController.MoveSelection(-1, 0); }],
+            ]);
+            if (hotkeys.has(e.which) === false) {
+                return;
+            }
+            if (e.shiftKey) {
+                let dummy = new MouseEvent("", {
+                    clientX: e.clientX,
+                    clientY: e.clientY,
+                });
+                this.worldController.ClickUp(dummy);
+            }
+            hotkeys.get(e.which)();
+            e.preventDefault();
         }
         calculateScroll() {
             let left = 1, top = 1;
@@ -17957,47 +18029,16 @@
         controller.Update();
         scrollCanvas();
     }
-    function DesktopKeyDown(e) {
-        let tag = e.target.tagName.toLowerCase();
-        if (document.activeElement.getAttribute("role") == "textbox" || tag == "input") {
-            return;
+    function ToggleConextMenu() {
+        // $("#contextMenuToggler")[0].click();
+        let toggler = $("#contextMenuToggler");
+        const dumb = new bootstrap.Dropdown(toggler[0]);
+        if (toggler.attr("aria-expanded") === "false") {
+            dumb.show();
         }
-        let hotkeys = new Map([
-            [71, () => { controller.ToggleKarelPosition(); }],
-            [82, () => { controller.SetBeepers(0); }],
-            [81, () => { controller.ChangeBeepers(-1); }],
-            [69, () => { controller.ChangeBeepers(1); }],
-            [48, () => { controller.SetBeepers(0); }],
-            [49, () => { controller.SetBeepers(1); }],
-            [50, () => { controller.SetBeepers(2); }],
-            [51, () => { controller.SetBeepers(3); }],
-            [52, () => { controller.SetBeepers(4); }],
-            [53, () => { controller.SetBeepers(5); }],
-            [54, () => { controller.SetBeepers(6); }],
-            [55, () => { controller.SetBeepers(7); }],
-            [56, () => { controller.SetBeepers(8); }],
-            [57, () => { controller.SetBeepers(9); }],
-            [87, () => { controller.ToggleWall("north"); }],
-            [68, () => { controller.ToggleWall("east"); }],
-            [83, () => { controller.ToggleWall("south"); }],
-            [65, () => { controller.ToggleWall("west"); }],
-            [37, () => { controller.MoveSelection(0, -1); }],
-            [38, () => { controller.MoveSelection(1, 0); }],
-            [39, () => { controller.MoveSelection(0, 1); }],
-            [40, () => { controller.MoveSelection(-1, 0); }],
-        ]);
-        if (hotkeys.has(e.which) === false) {
-            return;
+        else {
+            dumb.hide();
         }
-        if (e.shiftKey) {
-            let dummy = new MouseEvent("", {
-                clientX: e.clientX,
-                clientY: e.clientY,
-            });
-            controller.ClickUp(dummy);
-        }
-        hotkeys.get(e.which)();
-        e.preventDefault();
     }
 
     function activateButton(toolbar, buttonPressed) {
@@ -21555,6 +21596,26 @@
     let DesktopUI = new DesktopController({
         worldCanvas: $("#worldCanvas"),
         worldContainer: $("#worldContainer"),
+        toolbar: {
+            beepers: {
+                addOne: $("#desktopAddBeeper"),
+                removeOne: $("#desktopDecrementBeeper"),
+                infinite: $("#desktopSetInfinite"),
+                ammount: $("#desktopSetAmmount"),
+                clear: $("#desktopRemoveAll"),
+            }
+        },
+        context: {
+            toggler: $("#contextMenuToggler"),
+            container: $("#contextMenuDiv"),
+            beepers: {
+                addOne: $("#contextAddBeeper"),
+                removeOne: $("#contextDecrementBeeper"),
+                infinite: $("#contextSetInfinite"),
+                ammount: $("#contextSetAmmount"),
+                clear: $("#contextRemoveAll"),
+            }
+        },
         gizmos: {
             selectionBox: {
                 main: $("#desktopBoxSelect")[0],
@@ -21698,9 +21759,6 @@
             e.preventDefault();
             return false;
         }
-    });
-    $(document).on("keydown", (e) => {
-        DesktopKeyDown(e);
     });
     $("#desktopStepProgram").on("click", () => {
         karelController.Step();
