@@ -240,15 +240,15 @@ class WorldRenderer {
         this.canvasContext.textAlign = "center";
         this.canvasContext.textBaseline = "alphabetic";
 
-        let hs = this.canvasContext.measureText(text).actualBoundingBoxAscent;
+        let hs = this.canvasContext.measureText(text).actualBoundingBoxAscent-this.canvasContext.measureText(text).actualBoundingBoxDescent;
         // this.canvasContext.strokeText(text, x, y+hs/2, maxWidth);
         this.canvasContext.fillText(text, x, y+hs/2, maxWidth);
 
     }
 
-    private SetBeeperFont() {
+    private SetBeeperFont(scale: number) {
         this.canvasContext.textBaseline = "alphabetic";
-        this.canvasContext.font = `${this.CellSize/2}px monospace`
+        this.canvasContext.font = `${scale * this.CellSize/2}px monospace`
     }
 
     private DrawTextCell(r: number, c: number, text: string) {
@@ -265,8 +265,8 @@ class WorldRenderer {
         let h = this.GetHeight();
         let x = c*this.CellSize+this.GutterSize;
         let y = h-((r+1)*this.CellSize+this.GutterSize);
-        this.SetBeeperFont();
         let text = ammount !==-1?String(ammount): '∞';
+        this.SetBeeperFont(ammount !==-1? 1: 1.5);
         let measure = this.canvasContext.measureText(text);
         let textH = measure.actualBoundingBoxAscent+4;
         let textW = Math.min(measure.width+4, this.CellSize-5);
