@@ -8,7 +8,6 @@ import { World } from "../../js/karel";
 import { karel } from "../../js";
 import { KarelController } from "./KarelController";
 
-splitPanels(ResizeDesktopCanvas);
 
 var [desktopEditor, phoneEditor] = createEditors();
 //TODO: ThisShouldnt be here
@@ -101,14 +100,31 @@ let DesktopUI = new DesktopController(
         worldCanvas: $("#worldCanvas"),
         worldContainer: $("#worldContainer"),
         toolbar: {
+            karel: {
+                north: $("#desktopKarelNorth"),
+                east: $("#desktopKarelEast"),
+                south: $("#desktopKarelSouth"),
+                west: $("#desktopKarelWest"),
+            },
             beepers: {
                 addOne: $("#desktopAddBeeper"),
                 removeOne: $("#desktopDecrementBeeper"),
                 infinite: $("#desktopSetInfinite"),
                 ammount: $("#desktopSetAmmount"),                
                 clear: $("#desktopRemoveAll"),
-
-            }
+            },            
+            wall: {
+                north: $("#desktopNorthWall"),
+                east: $("#desktopEastWall"),
+                south: $("#desktopSouthWall"),
+                west: $("#desktopWestWall"),
+                outside: $("#desktopOuterWall"),
+            },
+            focus:  {
+                karel: $("#desktopGoKarel"),
+                origin: $("#desktopGoHome"),
+                selector: $("#desktopGoSelection"),
+            },
         },
         context: {
             toggler: $("#contextMenuToggler"),
@@ -119,7 +135,20 @@ let DesktopUI = new DesktopController(
                 infinite: $("#contextSetInfinite"),
                 ammount: $("#contextSetAmmount"),                
                 clear: $("#contextRemoveAll"),
-            }
+            },            
+            karel: {
+                north: $("#contextKarelNorth"),
+                east: $("#contextKarelEast"),
+                south: $("#contextKarelSouth"),
+                west: $("#contextKarelWest"),
+            },
+            wall: {                
+                north: $("#contextNorthWall"),
+                east: $("#contextEastWall"),
+                south: $("#contextSouthWall"),
+                west: $("#contextWestWall"),
+                outside: $("#contextOuterWall"),
+            },
         },
         gizmos: {
             selectionBox: {
@@ -195,7 +224,10 @@ let PhoneUI = GetPhoneUIHelper({
         "#execTabBtn": () => ""
     },
     
-})
+});
+
+
+splitPanels(DesktopUI.ResizeCanvas.bind(DesktopUI));
 
 //Activate default states
 PhoneUI.changeCodeToolbar("#codeAction");

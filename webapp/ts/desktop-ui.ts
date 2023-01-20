@@ -5,6 +5,7 @@ import { WorldRenderer, WRStyle, DefaultWRStyle } from './worldRenderer';
 import { WorldController, Gizmos } from "./worldController";
 import { World } from '../../js/karel';
 import { KarelController } from './KarelController';
+import { GetOrCreateInstanceFactory } from 'bootstrap/js/dist/base-component';
 
 type BeeperToolbar= {
     addOne: JQuery,
@@ -13,6 +14,28 @@ type BeeperToolbar= {
     infinite: JQuery,
     clear: JQuery,    
 }
+type KarelToolbar= {
+    north: JQuery,
+    east: JQuery,
+    south: JQuery,
+    west: JQuery,
+}
+
+
+type WallToolbar= {
+    north: JQuery,
+    east: JQuery,
+    south: JQuery,
+    west: JQuery,
+    outside: JQuery,
+}
+
+type FocusToolbar = {
+    origin: JQuery,
+    karel: JQuery,
+    selector: JQuery,
+    
+}
 interface DesktopElements {
     worldContainer: JQuery,
     worldCanvas: JQuery,
@@ -20,11 +43,16 @@ interface DesktopElements {
     worldZoom: JQuery,
     toolbar: {
         beepers: BeeperToolbar
+        karel: KarelToolbar
+        wall: WallToolbar
+        focus: FocusToolbar
     }
     context: {
         toggler: JQuery,
         container: JQuery
         beepers: BeeperToolbar,
+        karel: KarelToolbar,
+        wall: WallToolbar
     }
 };
 
@@ -32,14 +60,21 @@ class DesktopController {
     worldContainer: JQuery;
     worldCanvas: JQuery;
     worldZoom: JQuery;
+    
+    beeperToolbar: BeeperToolbar;
+    karelToolbar: KarelToolbar;
+    wallToolbar: WallToolbar;
+
+    focusToolbar: FocusToolbar;
 
     contextToggler: JQuery;
     contextContainer: JQuery
     contextBeepers: BeeperToolbar;
+    contextKarel: KarelToolbar;
+    contextWall: WallToolbar;
 
     worldController: WorldController;
     karelController: KarelController;
-    beeperToolbar: BeeperToolbar;
     
     constructor (elements: DesktopElements, karelController: KarelController) {
         this.worldContainer = elements.worldContainer;
@@ -47,10 +82,16 @@ class DesktopController {
         this.worldZoom = elements.worldZoom;
 
         this.beeperToolbar = elements.toolbar.beepers;
+        this.karelToolbar = elements.toolbar.karel;
+        this.wallToolbar = elements.toolbar.wall;
+
+        this.focusToolbar = elements.toolbar.focus;
 
         this.contextToggler = elements.context.toggler;
         this.contextContainer = elements.context.container;
         this.contextBeepers = elements.context.beepers;
+        this.contextKarel = elements.context.karel;        
+        this.contextWall = elements.context.wall;
 
         this.karelController = karelController;
         this.worldController = new WorldController(
@@ -79,29 +120,79 @@ class DesktopController {
             "mousemove",
             this.worldController.TrackMouse.bind(this.worldController)
         );
-        this.worldCanvas.on("contextmenu", (e)=>{
-            const dropmenu =new bootstrap.Dropdown(this.contextToggler[0]);
-            dropmenu.hide();
-            this.contextContainer[0].style.setProperty("top", `${e.pageY}px`);
-            this.contextContainer[0].style.setProperty("left", `${e.pageX}px`);      
-            ToggleConextMenu();
-            e.preventDefault();
-        })
+        
 
         this.worldZoom.on("change", ()=> {
             let scale = parseFloat(String(this.worldZoom.val()));
             this.worldController.SetScale(scale);
         });
 
-        this.beeperToolbar.addOne.on("click", ()=>this.worldController.ChangeBeepers(1));
-        this.beeperToolbar.removeOne.on("click", ()=>this.worldController.ChangeBeepers(-1));
-        
-        this.beeperToolbar.infinite.on("click", ()=>this.worldController.SetBeepers(-1));
-        this.beeperToolbar.clear.on("click", ()=>this.worldController.SetBeepers(0));
-
+        this.ConnectToolbar();        
+        this.ConnectContextMenu();
         
         this.ResizeCanvas();
         this.worldController.FocusOrigin();
+    }
+
+    private ConnectToolbar() {        
+        this.beeperToolbar.addOne.on("click", ()=>this.worldController.ChangeBeepers(1));
+        this.beeperToolbar.removeOne.on("click", ()=>this.worldController.ChangeBeepers(-1));        
+        this.beeperToolbar.infinite.on("click", ()=>this.worldController.SetBeepers(-1));
+        this.beeperToolbar.clear.on("click", ()=>this.worldController.SetBeepers(0));
+
+        this.karelToolbar.north.on("click", ()=>this.worldController.SetKarelOnSelection("north"));
+        this.karelToolbar.east.on("click", ()=>this.worldController.SetKarelOnSelection("east"));
+        this.karelToolbar.south.on("click", ()=>this.worldController.SetKarelOnSelection("south"));
+        this.karelToolbar.west.on("click", ()=>this.worldController.SetKarelOnSelection("west"));
+        
+        this.wallToolbar.north.on("click", ()=>this.worldController.ToggleWall("north"));
+        this.wallToolbar.east.on("click", ()=>this.worldController.ToggleWall("east"));
+        this.wallToolbar.south.on("click", ()=>this.worldController.ToggleWall("south"));
+        this.wallToolbar.west.on("click", ()=>this.worldController.ToggleWall("west"));
+        this.wallToolbar.outside.on("click", ()=>this.worldController.ToggleWall("outer"));
+
+        this.focusToolbar.karel.on("click", ()=>this.worldController.FocusKarel());
+        this.focusToolbar.origin.on("click", ()=>this.worldController.FocusOrigin());
+        this.focusToolbar.selector.on("click", ()=>this.worldController.FocusSelection());
+    }
+
+    
+
+    private ConnectContextMenu() {
+        this.worldCanvas.on("contextmenu", (e)=>{
+            const dropmenu =new bootstrap.Dropdown(this.contextToggler[0]);
+            dropmenu.hide();
+            this.contextContainer[0].style.setProperty("top", `${e.pageY}px`);
+            this.contextContainer[0].style.setProperty("left", `${e.pageX}px`);      
+            this.ToggleContextMenu();
+            e.preventDefault();
+        })
+        const ContextAction = (target: JQuery, method:()=> void) => {
+            target.on(
+                "click",
+                (()=> {
+                    this.ToggleContextMenu();
+                    method();
+                }).bind(this)
+            );
+        }
+        ContextAction(this.contextBeepers.addOne, ()=>this.worldController.ChangeBeepers(1));
+        ContextAction(this.contextBeepers.removeOne, ()=>this.worldController.ChangeBeepers(-1));        
+        ContextAction(this.contextBeepers.infinite, ()=>this.worldController.SetBeepers(-1));
+        ContextAction(this.contextBeepers.clear, ()=>this.worldController.SetBeepers(0));
+
+        
+        ContextAction(this.contextKarel.north, ()=>this.worldController.SetKarelOnSelection("north"));
+        ContextAction(this.contextKarel.east, ()=>this.worldController.SetKarelOnSelection("east"));
+        ContextAction(this.contextKarel.south, ()=>this.worldController.SetKarelOnSelection("south"));
+        ContextAction(this.contextKarel.west, ()=>this.worldController.SetKarelOnSelection("west"));
+        
+        ContextAction(this.contextWall.north, ()=>this.worldController.ToggleWall("north"));
+        ContextAction(this.contextWall.east, ()=>this.worldController.ToggleWall("east"));
+        ContextAction(this.contextWall.south, ()=>this.worldController.ToggleWall("south"));
+        ContextAction(this.contextWall.west, ()=>this.worldController.ToggleWall("west"));
+        ContextAction(this.contextWall.outside, ()=>this.worldController.ToggleWall("outer"));
+
     }
 
     private ToggleContextMenu() {

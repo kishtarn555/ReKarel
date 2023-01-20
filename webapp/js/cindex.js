@@ -17533,13 +17533,13 @@
         DrawTextVerticallyAlign(text, x, y, maxWidth) {
             this.canvasContext.textAlign = "center";
             this.canvasContext.textBaseline = "alphabetic";
-            let hs = this.canvasContext.measureText(text).actualBoundingBoxAscent;
+            let hs = this.canvasContext.measureText(text).actualBoundingBoxAscent - this.canvasContext.measureText(text).actualBoundingBoxDescent;
             // this.canvasContext.strokeText(text, x, y+hs/2, maxWidth);
             this.canvasContext.fillText(text, x, y + hs / 2, maxWidth);
         }
-        SetBeeperFont() {
+        SetBeeperFont(scale) {
             this.canvasContext.textBaseline = "alphabetic";
-            this.canvasContext.font = `${this.CellSize / 2}px monospace`;
+            this.canvasContext.font = `${scale * this.CellSize / 2}px monospace`;
         }
         DrawTextCell(r, c, text) {
             let h = this.GetHeight();
@@ -17551,14 +17551,15 @@
             let h = this.GetHeight();
             let x = c * this.CellSize + this.GutterSize;
             let y = h - ((r + 1) * this.CellSize + this.GutterSize);
-            this.SetBeeperFont();
-            let measure = this.canvasContext.measureText(String(ammount));
+            let text = ammount !== -1 ? String(ammount) : '∞';
+            this.SetBeeperFont(ammount !== -1 ? 1 : 1.5);
+            let measure = this.canvasContext.measureText(text);
             let textH = measure.actualBoundingBoxAscent + 4;
             let textW = Math.min(measure.width + 4, this.CellSize - 5);
             this.canvasContext.fillStyle = background;
             this.canvasContext.fillRect(x + this.CellSize / 2 - (textW / 2), y + this.CellSize / 2 - (textH / 2), textW, textH);
             this.canvasContext.fillStyle = color;
-            this.DrawTextCell(r, c, String(ammount));
+            this.DrawTextCell(r, c, text);
         }
         DrawWall(r, c, type) {
             let h = this.GetHeight();
@@ -17821,6 +17822,11 @@
             let c = Math.max(1, this.world.j - 2);
             this.FocusTo(r, c);
         }
+        FocusSelection() {
+            let r = Math.max(1, this.selection.r - 2);
+            let c = Math.max(1, this.selection.c - 2);
+            this.FocusTo(r, c);
+        }
         FocusTo(r, c) {
             let left = c / (this.world.w - this.renderer.GetColCount("floor") + 1);
             left = left < 0 ? 0 : left;
@@ -17902,9 +17908,14 @@
             this.worldCanvas = elements.worldCanvas;
             this.worldZoom = elements.worldZoom;
             this.beeperToolbar = elements.toolbar.beepers;
+            this.karelToolbar = elements.toolbar.karel;
+            this.wallToolbar = elements.toolbar.wall;
+            this.focusToolbar = elements.toolbar.focus;
             this.contextToggler = elements.context.toggler;
             this.contextContainer = elements.context.container;
             this.contextBeepers = elements.context.beepers;
+            this.contextKarel = elements.context.karel;
+            this.contextWall = elements.context.wall;
             this.karelController = karelController;
             this.worldController = new WorldController(new WorldRenderer(this.worldCanvas[0].getContext("2d"), DefaultWRStyle, window.devicePixelRatio), elements.worldContainer[0], karelController.world, elements.gizmos);
             this.karelController.SetDesktopController(this.worldController);
@@ -17915,24 +17926,61 @@
             this.worldContainer.on("scroll", this.calculateScroll.bind(this));
             this.worldCanvas.on("mouseup", this.worldController.ClickUp.bind(this.worldController));
             this.worldCanvas.on("mousemove", this.worldController.TrackMouse.bind(this.worldController));
+            this.worldZoom.on("change", () => {
+                let scale = parseFloat(String(this.worldZoom.val()));
+                this.worldController.SetScale(scale);
+            });
+            this.ConnectToolbar();
+            this.ConnectContextMenu();
+            this.ResizeCanvas();
+            this.worldController.FocusOrigin();
+        }
+        ConnectToolbar() {
+            this.beeperToolbar.addOne.on("click", () => this.worldController.ChangeBeepers(1));
+            this.beeperToolbar.removeOne.on("click", () => this.worldController.ChangeBeepers(-1));
+            this.beeperToolbar.infinite.on("click", () => this.worldController.SetBeepers(-1));
+            this.beeperToolbar.clear.on("click", () => this.worldController.SetBeepers(0));
+            this.karelToolbar.north.on("click", () => this.worldController.SetKarelOnSelection("north"));
+            this.karelToolbar.east.on("click", () => this.worldController.SetKarelOnSelection("east"));
+            this.karelToolbar.south.on("click", () => this.worldController.SetKarelOnSelection("south"));
+            this.karelToolbar.west.on("click", () => this.worldController.SetKarelOnSelection("west"));
+            this.wallToolbar.north.on("click", () => this.worldController.ToggleWall("north"));
+            this.wallToolbar.east.on("click", () => this.worldController.ToggleWall("east"));
+            this.wallToolbar.south.on("click", () => this.worldController.ToggleWall("south"));
+            this.wallToolbar.west.on("click", () => this.worldController.ToggleWall("west"));
+            this.wallToolbar.outside.on("click", () => this.worldController.ToggleWall("outer"));
+            this.focusToolbar.karel.on("click", () => this.worldController.FocusKarel());
+            this.focusToolbar.origin.on("click", () => this.worldController.FocusOrigin());
+            this.focusToolbar.selector.on("click", () => this.worldController.FocusSelection());
+        }
+        ConnectContextMenu() {
             this.worldCanvas.on("contextmenu", (e) => {
                 const dropmenu = new bootstrap.Dropdown(this.contextToggler[0]);
                 dropmenu.hide();
                 this.contextContainer[0].style.setProperty("top", `${e.pageY}px`);
                 this.contextContainer[0].style.setProperty("left", `${e.pageX}px`);
-                ToggleConextMenu();
+                this.ToggleContextMenu();
                 e.preventDefault();
             });
-            this.worldZoom.on("change", () => {
-                let scale = parseFloat(String(this.worldZoom.val()));
-                this.worldController.SetScale(scale);
-            });
-            this.beeperToolbar.addOne.on("click", () => this.worldController.ChangeBeepers(1));
-            this.beeperToolbar.removeOne.on("click", () => this.worldController.ChangeBeepers(-1));
-            this.beeperToolbar.infinite.on("click", () => this.worldController.SetBeepers(-1));
-            this.beeperToolbar.clear.on("click", () => this.worldController.SetBeepers(0));
-            this.ResizeCanvas();
-            this.worldController.FocusOrigin();
+            const ContextAction = (target, method) => {
+                target.on("click", (() => {
+                    this.ToggleContextMenu();
+                    method();
+                }).bind(this));
+            };
+            ContextAction(this.contextBeepers.addOne, () => this.worldController.ChangeBeepers(1));
+            ContextAction(this.contextBeepers.removeOne, () => this.worldController.ChangeBeepers(-1));
+            ContextAction(this.contextBeepers.infinite, () => this.worldController.SetBeepers(-1));
+            ContextAction(this.contextBeepers.clear, () => this.worldController.SetBeepers(0));
+            ContextAction(this.contextKarel.north, () => this.worldController.SetKarelOnSelection("north"));
+            ContextAction(this.contextKarel.east, () => this.worldController.SetKarelOnSelection("east"));
+            ContextAction(this.contextKarel.south, () => this.worldController.SetKarelOnSelection("south"));
+            ContextAction(this.contextKarel.west, () => this.worldController.SetKarelOnSelection("west"));
+            ContextAction(this.contextWall.north, () => this.worldController.ToggleWall("north"));
+            ContextAction(this.contextWall.east, () => this.worldController.ToggleWall("east"));
+            ContextAction(this.contextWall.south, () => this.worldController.ToggleWall("south"));
+            ContextAction(this.contextWall.west, () => this.worldController.ToggleWall("west"));
+            ContextAction(this.contextWall.outside, () => this.worldController.ToggleWall("outer"));
         }
         ToggleContextMenu() {
             const dropmenu = new bootstrap.Dropdown(this.contextToggler[0]);
@@ -18028,17 +18076,6 @@
         $("#worldCanvas").attr("height", Math.floor($("#worldContainer")[0].clientHeight * scale));
         controller.Update();
         scrollCanvas();
-    }
-    function ToggleConextMenu() {
-        // $("#contextMenuToggler")[0].click();
-        let toggler = $("#contextMenuToggler");
-        const dumb = new bootstrap.Dropdown(toggler[0]);
-        if (toggler.attr("aria-expanded") === "false") {
-            dumb.show();
-        }
-        else {
-            dumb.hide();
-        }
     }
 
     function activateButton(toolbar, buttonPressed) {
@@ -21519,7 +21556,6 @@
         }
     }
 
-    splitPanels(ResizeDesktopCanvas);
     var [desktopEditor, phoneEditor] = createEditors();
     //TODO: ThisShouldnt be here
     function hideElement(element) {
@@ -21597,13 +21633,31 @@
         worldCanvas: $("#worldCanvas"),
         worldContainer: $("#worldContainer"),
         toolbar: {
+            karel: {
+                north: $("#desktopKarelNorth"),
+                east: $("#desktopKarelEast"),
+                south: $("#desktopKarelSouth"),
+                west: $("#desktopKarelWest"),
+            },
             beepers: {
                 addOne: $("#desktopAddBeeper"),
                 removeOne: $("#desktopDecrementBeeper"),
                 infinite: $("#desktopSetInfinite"),
                 ammount: $("#desktopSetAmmount"),
                 clear: $("#desktopRemoveAll"),
-            }
+            },
+            wall: {
+                north: $("#desktopNorthWall"),
+                east: $("#desktopEastWall"),
+                south: $("#desktopSouthWall"),
+                west: $("#desktopWestWall"),
+                outside: $("#desktopOuterWall"),
+            },
+            focus: {
+                karel: $("#desktopGoKarel"),
+                origin: $("#desktopGoHome"),
+                selector: $("#desktopGoSelection"),
+            },
         },
         context: {
             toggler: $("#contextMenuToggler"),
@@ -21614,7 +21668,20 @@
                 infinite: $("#contextSetInfinite"),
                 ammount: $("#contextSetAmmount"),
                 clear: $("#contextRemoveAll"),
-            }
+            },
+            karel: {
+                north: $("#contextKarelNorth"),
+                east: $("#contextKarelEast"),
+                south: $("#contextKarelSouth"),
+                west: $("#contextKarelWest"),
+            },
+            wall: {
+                north: $("#contextNorthWall"),
+                east: $("#contextEastWall"),
+                south: $("#contextSouthWall"),
+                west: $("#contextWestWall"),
+                outside: $("#contextOuterWall"),
+            },
         },
         gizmos: {
             selectionBox: {
@@ -21684,6 +21751,7 @@
             "#execTabBtn": () => ""
         },
     });
+    splitPanels(DesktopUI.ResizeCanvas.bind(DesktopUI));
     //Activate default states
     PhoneUI.changeCodeToolbar("#codeAction");
     PhoneUI.changeNavToolbar("#codeTabBtn");

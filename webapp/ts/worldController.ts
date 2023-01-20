@@ -221,6 +221,13 @@ class WorldController {
 
         this.FocusTo(r, c);
     }
+    
+    FocusSelection() {
+        let r = Math.max(1, this.selection.r - 2);
+        let c = Math.max(1, this.selection.c - 2);
+
+        this.FocusTo(r, c);
+    }
 
     FocusTo(r: number, c: number) {
 
