@@ -1,7 +1,7 @@
 import { splitPanels } from "./split";
 import { responsiveHack, SetResponsiveness, SetDesktopView, SetPhoneView } from "./responsive-load";
 import { createEditors } from "./editor";
-import { GetDesktopUIHelper, DesktopKeyDown, ResizeDesktopCanvas, DesktopController } from "./desktop-ui";
+import { DesktopController } from "./desktop-ui";
 import { GetPhoneUIHelper } from "./phone-ui";
 import { HookUpCommonUI, SetText } from "./common-ui";
 import { World } from "../../js/karel";
@@ -270,7 +270,7 @@ function applySettings(settings: AppSettings) {
     }
     $(":root")[0].style.setProperty("--editor-font-size", `${settings.editorFontSize}pt`);
     if (settings.interface== "desktop")
-        ResizeDesktopCanvas();
+    DesktopUI.ResizeCanvas();
 }
 
 function setSettings(event: Event) {

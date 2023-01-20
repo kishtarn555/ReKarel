@@ -18019,6 +18019,7 @@
                 [38, () => { this.worldController.MoveSelection(1, 0); }],
                 [39, () => { this.worldController.MoveSelection(0, 1); }],
                 [40, () => { this.worldController.MoveSelection(-1, 0); }],
+                [84, () => { this.worldController.SetBeepers(-1); }],
             ]);
             if (hotkeys.has(e.which) === false) {
                 return;
