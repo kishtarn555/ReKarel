@@ -40,7 +40,7 @@ type FocusToolbar = {
 type ExecutionToolbar = {
     reset: JQuery,
     compile: JQuery,
-    play: JQuery,
+    run: JQuery,
     step: JQuery,
     future: JQuery,
 }
@@ -73,6 +73,12 @@ class DesktopController {
     worldCanvas: JQuery;
     worldZoom: JQuery;
     
+    executionReset : JQuery;
+    executionCompile : JQuery;
+    executionRun : JQuery;
+    executionStep : JQuery;
+    executionEnd : JQuery;
+
     beeperToolbar: BeeperToolbar;
     karelToolbar: KarelToolbar;
     wallToolbar: WallToolbar;
@@ -92,6 +98,12 @@ class DesktopController {
         this.worldContainer = elements.worldContainer;
         this.worldCanvas = elements.worldCanvas;
         this.worldZoom = elements.worldZoom;
+
+        this.executionReset = elements.controlBar.execution.reset;
+        this.executionCompile = elements.controlBar.execution.compile;
+        this.executionRun = elements.controlBar.execution.run;
+        this.executionStep = elements.controlBar.execution.step;
+        this.executionEnd = elements.controlBar.execution.future;
 
         this.beeperToolbar = elements.toolbar.beepers;
         this.karelToolbar = elements.toolbar.karel;
