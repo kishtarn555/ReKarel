@@ -18003,17 +18003,29 @@
                 dropmenu.hide();
             }
         }
-        SendMessageToConsole(message) {
+        SendMessageToConsole(message, style) {
             const currentDate = new Date();
             const hour = currentDate.getHours() % 12 || 12;
             const minute = currentDate.getMinutes();
             const second = currentDate.getSeconds();
             const amOrPm = currentDate.getHours() < 12 ? "AM" : "PM";
-            const html = `<div><span class="text-info">[${hour}:${minute}:${second} ${amOrPm}]</span> ${message}</div>`;
+            const html = `<div><span class="text-${style}">[${hour}:${minute}:${second} ${amOrPm}]</span> ${message}</div>`;
             this.consoleTab.console.append(html);
         }
-        ConsoleMessage(message, type) {
-            this.SendMessageToConsole(message);
+        ConsoleMessage(message, type = "info") {
+            let style = "info";
+            switch (type) {
+                case "info":
+                    style = "info";
+                    break;
+                case "success":
+                    style = "success";
+                    break;
+                case "error":
+                    style = "danger";
+                    break;
+            }
+            this.SendMessageToConsole(message, style);
         }
         HotKeys(e) {
             let tag = e.target.tagName.toLowerCase();
