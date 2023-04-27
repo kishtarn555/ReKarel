@@ -17948,16 +17948,24 @@
             this.ConnectConsole();
         }
         ConnectExecutionButtonGroup() {
-            this.executionReset.on("click", () => this.karelController.Reset());
+            this.executionReset.on("click", () => this.ResetExecution());
             this.executionStep.on("click", () => this.Step());
             this.executionEnd.on("click", () => this.RunTillEnd());
         }
+        UpdateBeeperBag() {
+            this.beeperBagInput.val(this.worldController.GetBeepersInBag());
+        }
+        ResetExecution() {
+            this.karelController.Reset();
+            this.UpdateBeeperBag();
+        }
         RunTillEnd() {
             this.karelController.RunTillEnd();
+            this.UpdateBeeperBag();
         }
         Step() {
             this.karelController.Step();
-            this.beeperBagInput.val(this.worldController.GetBeepersInBag());
+            this.UpdateBeeperBag();
         }
         ConnectToolbar() {
             this.beeperToolbar.addOne.on("click", () => this.worldController.ChangeBeepers(1));

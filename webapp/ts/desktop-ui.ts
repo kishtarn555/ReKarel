@@ -180,13 +180,18 @@ class DesktopController {
 
 
     private ConnectExecutionButtonGroup() {
-        this.executionReset.on("click", ()=>this.karelController.Reset());
+        this.executionReset.on("click", ()=>this.ResetExecution());
         this.executionStep.on("click", ()=>this.Step());
         this.executionEnd.on("click", ()=> this.RunTillEnd());
     }
-
+    
     private UpdateBeeperBag() {
         this.beeperBagInput.val(this.worldController.GetBeepersInBag());
+    }
+    
+    private ResetExecution() {
+        this.karelController.Reset();
+        this.UpdateBeeperBag();
     }
 
     private RunTillEnd() {
