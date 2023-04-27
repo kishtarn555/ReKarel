@@ -17907,6 +17907,11 @@
             this.worldContainer = elements.worldContainer;
             this.worldCanvas = elements.worldCanvas;
             this.worldZoom = elements.worldZoom;
+            this.executionReset = elements.controlBar.execution.reset;
+            this.executionCompile = elements.controlBar.execution.compile;
+            this.executionRun = elements.controlBar.execution.run;
+            this.executionStep = elements.controlBar.execution.step;
+            this.executionEnd = elements.controlBar.execution.future;
             this.beeperToolbar = elements.toolbar.beepers;
             this.karelToolbar = elements.toolbar.karel;
             this.wallToolbar = elements.toolbar.wall;
@@ -17930,10 +17935,15 @@
                 let scale = parseFloat(String(this.worldZoom.val()));
                 this.worldController.SetScale(scale);
             });
+            this.ConnectExecutionButtonGroup();
             this.ConnectToolbar();
             this.ConnectContextMenu();
             this.ResizeCanvas();
             this.worldController.FocusOrigin();
+        }
+        ConnectExecutionButtonGroup() {
+            this.executionReset.on("click", () => this.karelController.Reset());
+            this.executionStep.on("click", () => this.karelController.Step());
         }
         ConnectToolbar() {
             this.beeperToolbar.addOne.on("click", () => this.worldController.ChangeBeepers(1));
@@ -21617,7 +21627,7 @@
             execution: {
                 reset: $("#desktopResetKarel"),
                 compile: $("#desktopCompileKarel"),
-                play: $("#dekstopRunKarel"),
+                run: $("#dekstopRunKarel"),
                 step: $("#desktopStepProgram"),
                 future: $("#desktopFutureProgram"),
             }
@@ -21817,12 +21827,6 @@
             e.preventDefault();
             return false;
         }
-    });
-    $("#desktopStepProgram").on("click", () => {
-        karelController.Step();
-    });
-    $("#desktopResetKarel").on("click", () => {
-        karelController.Reset();
     });
 
 })(bootstrap);

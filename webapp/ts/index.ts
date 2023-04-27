@@ -103,7 +103,7 @@ let DesktopUI = new DesktopController(
             execution: {
                 reset: $("#desktopResetKarel"),
                 compile: $("#desktopCompileKarel"),
-                play: $("#dekstopRunKarel"),
+                run: $("#dekstopRunKarel"),
                 step: $("#desktopStepProgram"),
                 future: $("#desktopFutureProgram"),
             }
@@ -329,10 +329,3 @@ $(document).on("keydown", (e)=> {
     
 });
 
-$("#desktopStepProgram").on("click", () => {
-    karelController.Step();
-})
-
-$("#desktopResetKarel").on("click", ()=> {
-    karelController.Reset();
-})

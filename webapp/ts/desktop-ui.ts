@@ -151,11 +151,18 @@ class DesktopController {
             this.worldController.SetScale(scale);
         });
 
+        this.ConnectExecutionButtonGroup();
+
         this.ConnectToolbar();        
         this.ConnectContextMenu();
         
         this.ResizeCanvas();
         this.worldController.FocusOrigin();
+    }
+
+    private ConnectExecutionButtonGroup() {
+        this.executionReset.on("click", ()=>this.karelController.Reset());
+        this.executionStep.on("click", ()=>this.karelController.Step());
     }
 
     private ConnectToolbar() {        
