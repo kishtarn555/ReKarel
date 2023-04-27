@@ -127,6 +127,7 @@ class KarelController {
         runtime.disableStackEvents= true; // FIXME: This should only be done when no breakpoints
         while (runtime.step());
         runtime.disableStackEvents= false; // FIXME: This should only be done when no breakpoints
+        this.desktopController.CheckUpdate();
     }
 
     RegisterMessageCallback(callback: MessageCallback) {
