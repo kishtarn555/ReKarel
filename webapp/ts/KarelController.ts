@@ -117,6 +117,9 @@ class KarelController {
 
 
     RunTillEnd() {
+        if (this.state == "finished") {
+            return;
+        }
         if (!this.running) {
             if (!this.StartRun()) {
                 return;

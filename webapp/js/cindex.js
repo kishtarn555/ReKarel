@@ -21620,6 +21620,9 @@
             }
         }
         RunTillEnd() {
+            if (this.state == "finished") {
+                return;
+            }
             if (!this.running) {
                 if (!this.StartRun()) {
                     return;
@@ -21631,6 +21634,7 @@
                 ;
             runtime.disableStackEvents = false; // FIXME: This should only be done when no breakpoints
             this.desktopController.CheckUpdate();
+            this.EndMessage();
         }
         RegisterMessageCallback(callback) {
             this.onMessage.push(callback);
