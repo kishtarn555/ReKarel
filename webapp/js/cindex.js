@@ -17699,6 +17699,9 @@
         GetRuntime() {
             return this.world.runtime;
         }
+        GetBeepersInBag() {
+            return this.world.bagBuzzers;
+        }
         SetWorld(world) {
             this.world = world;
             this.Update();
@@ -17912,6 +17915,7 @@
             this.executionRun = elements.controlBar.execution.run;
             this.executionStep = elements.controlBar.execution.step;
             this.executionEnd = elements.controlBar.execution.future;
+            this.beeperBagInput = elements.controlBar.beeperInput;
             this.beeperToolbar = elements.toolbar.beepers;
             this.karelToolbar = elements.toolbar.karel;
             this.wallToolbar = elements.toolbar.wall;
@@ -17945,7 +17949,11 @@
         }
         ConnectExecutionButtonGroup() {
             this.executionReset.on("click", () => this.karelController.Reset());
-            this.executionStep.on("click", () => this.karelController.Step());
+            this.executionStep.on("click", () => this.Step());
+        }
+        Step() {
+            this.karelController.Step();
+            this.beeperBagInput.val(this.worldController.GetBeepersInBag());
         }
         ConnectToolbar() {
             this.beeperToolbar.addOne.on("click", () => this.worldController.ChangeBeepers(1));
@@ -21706,7 +21714,8 @@
                 run: $("#dekstopRunKarel"),
                 step: $("#desktopStepProgram"),
                 future: $("#desktopFutureProgram"),
-            }
+            },
+            beeperInput: $("#beeperBag"),
         },
         toolbar: {
             karel: {

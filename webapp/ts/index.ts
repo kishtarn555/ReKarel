@@ -106,7 +106,8 @@ let DesktopUI = new DesktopController(
                 run: $("#dekstopRunKarel"),
                 step: $("#desktopStepProgram"),
                 future: $("#desktopFutureProgram"),
-            }
+            },
+            beeperInput: $("#beeperBag"),
         },
         toolbar: {
             karel: {

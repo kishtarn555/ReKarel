@@ -65,6 +65,11 @@ class WorldController {
         return this.world.runtime;
     }
 
+    
+    GetBeepersInBag(): number {
+        return this.world.bagBuzzers;
+    }
+
     SetWorld(world: World) {
         this.world = world;
         this.Update();

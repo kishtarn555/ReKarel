@@ -56,7 +56,8 @@ interface DesktopElements {
     gizmos: Gizmos,
     worldZoom: JQuery,
     controlBar: {
-        execution: ExecutionToolbar
+        execution: ExecutionToolbar,
+        beeperInput: JQuery,
     },
     toolbar: {
         beepers: BeeperToolbar
@@ -85,6 +86,8 @@ class DesktopController {
     executionStep : JQuery;
     executionEnd : JQuery;
 
+    beeperBagInput: JQuery
+
     beeperToolbar: BeeperToolbar;
     karelToolbar: KarelToolbar;
     wallToolbar: WallToolbar;
@@ -112,6 +115,8 @@ class DesktopController {
         this.executionRun = elements.controlBar.execution.run;
         this.executionStep = elements.controlBar.execution.step;
         this.executionEnd = elements.controlBar.execution.future;
+
+        this.beeperBagInput = elements.controlBar.beeperInput;
 
         this.beeperToolbar = elements.toolbar.beepers;
         this.karelToolbar = elements.toolbar.karel;
@@ -173,9 +178,15 @@ class DesktopController {
         this.ConnectConsole();
     }
 
+
     private ConnectExecutionButtonGroup() {
         this.executionReset.on("click", ()=>this.karelController.Reset());
-        this.executionStep.on("click", ()=>this.karelController.Step());
+        this.executionStep.on("click", ()=>this.Step());
+    }
+
+    private Step() {
+        this.karelController.Step();
+        this.beeperBagInput.val(this.worldController.GetBeepersInBag());
     }
 
     private ConnectToolbar() {        
