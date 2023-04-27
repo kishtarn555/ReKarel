@@ -168,7 +168,10 @@ let DesktopUI = new DesktopController(
                 right: $("#desktopBoxSelect [name='right']")[0],
             }
         },
-        worldZoom: $("#zoomDekstop")
+        worldZoom: $("#zoomDekstop"),
+        console: {
+            console: $("#desktopConsole"),
+        }
     },
     karelController
 );
@@ -304,6 +307,8 @@ $(document).ready(()=>{
     responsiveHack();
     applySettings(appSettings);    
     DesktopUI.Init();
+
+    DesktopUI.ConsoleMessage("Test");
 })
 
 

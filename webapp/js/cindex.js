@@ -17921,6 +17921,7 @@
             this.contextBeepers = elements.context.beepers;
             this.contextKarel = elements.context.karel;
             this.contextWall = elements.context.wall;
+            this.consoleTab = elements.console;
             this.karelController = karelController;
             this.worldController = new WorldController(new WorldRenderer(this.worldCanvas[0].getContext("2d"), DefaultWRStyle, window.devicePixelRatio), elements.worldContainer[0], karelController.world, elements.gizmos);
             this.karelController.SetDesktopController(this.worldController);
@@ -18000,6 +18001,18 @@
             else {
                 dropmenu.hide();
             }
+        }
+        ConsoleMessage(message) {
+            this.SendMessageToConsole(message);
+        }
+        SendMessageToConsole(message) {
+            const currentDate = new Date();
+            const hour = currentDate.getHours() % 12 || 12;
+            const minute = currentDate.getMinutes();
+            const second = currentDate.getSeconds();
+            const amOrPm = currentDate.getHours() < 12 ? "AM" : "PM";
+            const html = `<div><span class="text-info">[${hour}:${minute}:${second} ${amOrPm}]</span> ${message}</div>`;
+            this.consoleTab.console.append(html);
         }
         HotKeys(e) {
             let tag = e.target.tagName.toLowerCase();
@@ -21692,7 +21705,10 @@
                 right: $("#desktopBoxSelect [name='right']")[0],
             }
         },
-        worldZoom: $("#zoomDekstop")
+        worldZoom: $("#zoomDekstop"),
+        console: {
+            console: $("#desktopConsole"),
+        }
     }, karelController);
     let PhoneUI = GetPhoneUIHelper({
         editor: phoneEditor,
@@ -21805,6 +21821,7 @@
         responsiveHack();
         applySettings(appSettings);
         DesktopUI.Init();
+        DesktopUI.ConsoleMessage("Test");
     });
     $(document).on("keydown", (e) => {
         if (e.ctrlKey && e.which === 75) {

@@ -45,6 +45,10 @@ type ExecutionToolbar = {
     future: JQuery,
 }
 
+type ConsoleTab = {
+    console:JQuery
+}
+
 interface DesktopElements {
     worldContainer: JQuery,
     worldCanvas: JQuery,
@@ -65,7 +69,8 @@ interface DesktopElements {
         beepers: BeeperToolbar,
         karel: KarelToolbar,
         wall: WallToolbar
-    }
+    },
+    console: ConsoleTab,
 };
 
 class DesktopController {
@@ -93,6 +98,8 @@ class DesktopController {
 
     worldController: WorldController;
     karelController: KarelController;
+
+    consoleTab: ConsoleTab;
     
     constructor (elements: DesktopElements, karelController: KarelController) {
         this.worldContainer = elements.worldContainer;
@@ -116,6 +123,8 @@ class DesktopController {
         this.contextBeepers = elements.context.beepers;
         this.contextKarel = elements.context.karel;        
         this.contextWall = elements.context.wall;
+
+        this.consoleTab = elements.console;
 
         this.karelController = karelController;
         this.worldController = new WorldController(
@@ -233,6 +242,21 @@ class DesktopController {
         } else {
             dropmenu.hide();
         }
+    }
+
+    public ConsoleMessage(message: string) {
+        this.SendMessageToConsole(message);
+    }
+
+    private SendMessageToConsole(message: string) {
+        const currentDate = new Date();
+        const hour = currentDate.getHours() % 12 || 12;
+        const minute = currentDate.getMinutes();
+        const second = currentDate.getSeconds();
+        const amOrPm = currentDate.getHours() < 12 ? "AM" : "PM";
+
+        const html = `<div><span class="text-info">[${hour}:${minute}:${second} ${amOrPm}]</span> ${message}</div>`;
+        this.consoleTab.console.append(html);
     }
 
     private HotKeys(e: JQuery.KeyDownEvent) {
