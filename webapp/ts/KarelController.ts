@@ -33,7 +33,9 @@ class KarelController {
         // let language: string = detectLanguage(code);
         let response = null;
         try {
-            response = compile(code)    
+            response = compile(code);
+            //TODO: expand message            
+            this.SendMessage("Programa compilado correctamente", "info");
         } catch (e) {
             //TODO: Expand error
             this.SendMessage("Error de compilacion", "error");
@@ -127,6 +129,7 @@ class KarelController {
             this.SendMessage(ERRORCODES[runtime.state.error], "error");
             return;
         }
+        this.SendMessage("Ejecucion terminada exitosamente!", "success");
     }
 }
 

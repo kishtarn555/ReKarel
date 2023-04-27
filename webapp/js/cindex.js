@@ -21532,6 +21532,8 @@
             let response = null;
             try {
                 response = compile(code);
+                //TODO: expand message            
+                this.SendMessage("Programa compilado correctamente", "info");
             }
             catch (e) {
                 //TODO: Expand error
@@ -21610,6 +21612,7 @@
                 this.SendMessage(ERRORCODES[runtime.state.error], "error");
                 return;
             }
+            this.SendMessage("Ejecucion terminada exitosamente!", "success");
         }
     }
 
