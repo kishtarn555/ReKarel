@@ -229,6 +229,7 @@ class DesktopController {
             [68,()=>{this.worldController.ToggleWall("east");}],
             [83,()=>{this.worldController.ToggleWall("south");}],
             [65,()=>{this.worldController.ToggleWall("west");}],
+            [88,()=>{this.worldController.ToggleWall("outer");}],
             [37,()=>{this.worldController.MoveSelection(0,-1);}],
             [38,()=>{this.worldController.MoveSelection(1, 0);}],
             [39,()=>{this.worldController.MoveSelection(0, 1);}],
