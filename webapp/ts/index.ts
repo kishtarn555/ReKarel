@@ -270,7 +270,7 @@ function applySettings(settings: AppSettings) {
     }
     $(":root")[0].style.setProperty("--editor-font-size", `${settings.editorFontSize}pt`);
     if (settings.interface== "desktop")
-    DesktopUI.ResizeCanvas();
+        DesktopUI.ResizeCanvas();
 }
 
 function setSettings(event: Event) {
