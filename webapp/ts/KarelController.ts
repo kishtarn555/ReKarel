@@ -8,26 +8,32 @@ import { ERRORCODES } from "./common-ui";
 type messageType = "info"|"success"|"error";
 type MessageCallback = (message:string, type:messageType)=>void;
 type ControllerState = "unstarted"| "running" | "finished";
+type StateChangeCallback = (caller:KarelController, newState:ControllerState)=>void;
 class KarelController {
     world: World;
     desktopController: WorldController;
     running: boolean;
     mainEditor: EditorView;
-    onMessage: MessageCallback[];
-    state : ControllerState;
+    private onMessage: MessageCallback[];
+    private onStateChange: StateChangeCallback[];
+    private state : ControllerState;
+    private endedOnError:boolean;
 
     constructor(world: World, mainEditor: EditorView) {
         this.world = world;
         this.running = false;
         this.mainEditor = mainEditor;
         this.onMessage = [];
+        this.onStateChange = [];
         this.state = "unstarted";
+        this.endedOnError = false;
     }
     
     SetDesktopController(desktopController: WorldController) {
         this.desktopController = desktopController;
         this.desktopController.SetWorld(this.world);
     }
+
     Compile() {
         let code = this.mainEditor.state.doc.toString();
         // let language: string = detectLanguage(code);
@@ -47,15 +53,17 @@ class KarelController {
     // FIXME This is code from karel.js that I'm not even sure if it's ever executed by the web app.
     validatorCallbacks(message) {
         console.log("validator said this: ", message);
-      }
+    }
     
-    Reset() {
+    Reset() {        
+        this.endedOnError = false;
         this.running = false;
-        this.state = "unstarted";
+        this.ChangeState("unstarted");
         this.desktopController.Reset();
     }
 
-    StartRun(): boolean {
+    StartRun(): boolean {        
+        this.endedOnError = false;
         let compiled = this.Compile();
         if (compiled == null) {
             return false;
@@ -67,7 +75,7 @@ class KarelController {
         
         runtime.start();
         this.running = true;
-        this.state = "running";
+        this.ChangeState("running");
         return true;        
     }
 
@@ -108,14 +116,16 @@ class KarelController {
         this.HighlightCurrentLine();
         this.desktopController.CheckUpdate();
 
-        if (!runtime.state.running) {
-            this.state = "finished";
+        if (!runtime.state.running) {            
             this.EndMessage();
+            this.ChangeState("finished");
         }
 
     }
 
-
+    EndedOnError() {
+        return this.endedOnError;
+    }
     RunTillEnd() {
         if (this.state === "finished") {
             return;
@@ -132,25 +142,40 @@ class KarelController {
         runtime.disableStackEvents= false; // FIXME: This should only be done when no breakpoints
         this.desktopController.CheckUpdate();
         this.EndMessage();
-        this.state = "finished";
+        this.ChangeState("finished");
     }
 
     RegisterMessageCallback(callback: MessageCallback) {
         this.onMessage.push(callback);
     }
 
+    RegisterStateChangeObserver(callback: StateChangeCallback) {
+        this.onStateChange.push(callback);
+    }
+
     private SendMessage(message: string, type: messageType) {
         this.onMessage.forEach((callback) => callback(message, type));
+    }
+
+    private NotifyStateChange() {
+        this.onStateChange.forEach((callback) => callback(this, this.state));
+    }
+
+    
+    private ChangeState(nextState: ControllerState) {
+        this.state = nextState;
+        this.NotifyStateChange();
     }
 
     private EndMessage() {
         let runtime = this.desktopController.GetRuntime();
         if (runtime.state.error) {
-            this.SendMessage(ERRORCODES[runtime.state.error], "error");
+            this.SendMessage(ERRORCODES[runtime.state.error], "error");            
+            this.endedOnError = true;
             return;
         }
         this.SendMessage("Ejecucion terminada exitosamente!", "success");
     }
 }
 
-export {KarelController};
+export {KarelController, ControllerState};

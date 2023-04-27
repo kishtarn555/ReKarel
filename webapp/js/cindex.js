@@ -17356,6 +17356,7 @@
         disabled: '#4f4f4f',
         exportCellBackground: '#f5f7a8',
         karelColor: '#3E6AC1',
+        errorKarelcolor: "#d47272",
         gridBackgroundColor: '#f8f9fA',
         gridBorderColor: '#c4c4c4',
         gutterBackgroundColor: '#e6e6e6',
@@ -17374,6 +17375,7 @@
             this.style = style;
             this.world = undefined;
             this.scale = scale;
+            this.mode = "normal";
         }
         GetWidth() {
             return this.canvasContext.canvas.width / this.scale;
@@ -17396,6 +17398,12 @@
                 case "floor":
                     return Math.floor((this.GetWidth() - this.GutterSize) / this.CellSize);
             }
+        }
+        ErrorMode() {
+            this.mode = "error";
+        }
+        NormalMode() {
+            this.mode = "normal";
         }
         GetWorldRowCount() {
             return this.world.h;
@@ -17494,6 +17502,9 @@
             let y = h - (this.GutterSize + this.CellSize * (r - this.origin.f) + this.CellSize / 2);
             this.canvasContext.translate(x - 0.5, y + 0.5);
             this.canvasContext.fillStyle = this.style.karelColor;
+            if (this.mode === "error") {
+                this.canvasContext.fillStyle = this.style.errorKarelcolor;
+            }
             this.canvasContext.beginPath();
             switch (orientation) {
                 case "east":
@@ -17712,6 +17723,14 @@
                 this.Update();
             }
         }
+        ErrorMode() {
+            this.renderer.ErrorMode();
+            this.Update();
+        }
+        NormalMode() {
+            this.renderer.NormalMode();
+            this.Update();
+        }
         Select(r, c, r2, c2) {
             this.selection = {
                 r: r,
@@ -17929,6 +17948,7 @@
             this.karelController = karelController;
             this.worldController = new WorldController(new WorldRenderer(this.worldCanvas[0].getContext("2d"), DefaultWRStyle, window.devicePixelRatio), elements.worldContainer[0], karelController.world, elements.gizmos);
             this.karelController.SetDesktopController(this.worldController);
+            this.karelController.RegisterStateChangeObserver(this.OnKarelControllerStateChange.bind(this));
         }
         Init() {
             $(window).on("resize", this.ResizeCanvas.bind(this));
@@ -17966,6 +17986,32 @@
         Step() {
             this.karelController.Step();
             this.UpdateBeeperBag();
+        }
+        DisableControlBar() {
+            this.executionCompile.attr("disabled", "");
+            this.executionRun.attr("disabled", "");
+            this.executionStep.attr("disabled", "");
+            this.executionEnd.attr("disabled", "");
+            this.beeperBagInput.attr("disabled", "");
+        }
+        EnableControlBar() {
+            this.executionCompile.removeAttr("disabled");
+            this.executionRun.removeAttr("disabled");
+            this.executionStep.removeAttr("disabled");
+            this.executionEnd.removeAttr("disabled");
+            this.beeperBagInput.removeAttr("disabled");
+        }
+        OnKarelControllerStateChange(sender, state) {
+            if (state === "finished") {
+                this.DisableControlBar();
+                if (this.karelController.EndedOnError()) {
+                    this.worldController.ErrorMode();
+                }
+            }
+            else if (state === "unstarted") {
+                this.EnableControlBar();
+                this.worldController.NormalMode();
+            }
         }
         ConnectToolbar() {
             this.beeperToolbar.addOne.on("click", () => this.worldController.ChangeBeepers(1));
@@ -21547,7 +21593,9 @@
             this.running = false;
             this.mainEditor = mainEditor;
             this.onMessage = [];
+            this.onStateChange = [];
             this.state = "unstarted";
+            this.endedOnError = false;
         }
         SetDesktopController(desktopController) {
             this.desktopController = desktopController;
@@ -21573,11 +21621,13 @@
             console.log("validator said this: ", message);
         }
         Reset() {
+            this.endedOnError = false;
             this.running = false;
-            this.state = "unstarted";
+            this.ChangeState("unstarted");
             this.desktopController.Reset();
         }
         StartRun() {
+            this.endedOnError = false;
             let compiled = this.Compile();
             if (compiled == null) {
                 return false;
@@ -21588,7 +21638,7 @@
             // FIXME: We skip validators, they seem useless, but I'm unsure
             runtime.start();
             this.running = true;
-            this.state = "running";
+            this.ChangeState("running");
             return true;
         }
         HighlightCurrentLine() {
@@ -21623,9 +21673,12 @@
             this.HighlightCurrentLine();
             this.desktopController.CheckUpdate();
             if (!runtime.state.running) {
-                this.state = "finished";
                 this.EndMessage();
+                this.ChangeState("finished");
             }
+        }
+        EndedOnError() {
+            return this.endedOnError;
         }
         RunTillEnd() {
             if (this.state === "finished") {
@@ -21643,18 +21696,29 @@
             runtime.disableStackEvents = false; // FIXME: This should only be done when no breakpoints
             this.desktopController.CheckUpdate();
             this.EndMessage();
-            this.state = "finished";
+            this.ChangeState("finished");
         }
         RegisterMessageCallback(callback) {
             this.onMessage.push(callback);
         }
+        RegisterStateChangeObserver(callback) {
+            this.onStateChange.push(callback);
+        }
         SendMessage(message, type) {
             this.onMessage.forEach((callback) => callback(message, type));
+        }
+        NotifyStateChange() {
+            this.onStateChange.forEach((callback) => callback(this, this.state));
+        }
+        ChangeState(nextState) {
+            this.state = nextState;
+            this.NotifyStateChange();
         }
         EndMessage() {
             let runtime = this.desktopController.GetRuntime();
             if (runtime.state.error) {
                 this.SendMessage(ERRORCODES[runtime.state.error], "error");
+                this.endedOnError = true;
                 return;
             }
             this.SendMessage("Ejecucion terminada exitosamente!", "success");

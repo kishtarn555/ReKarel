@@ -4,7 +4,7 @@ import bootstrap from 'bootstrap';
 import { WorldRenderer, WRStyle, DefaultWRStyle } from './worldRenderer';
 import { WorldController, Gizmos } from "./worldController";
 import { World } from '../../js/karel';
-import { KarelController } from './KarelController';
+import { ControllerState, KarelController } from './KarelController';
 import { GetOrCreateInstanceFactory } from 'bootstrap/js/dist/base-component';
 
 type BeeperToolbar= {
@@ -145,6 +145,7 @@ class DesktopController {
             elements.gizmos
         );
         this.karelController.SetDesktopController(this.worldController);
+        this.karelController.RegisterStateChangeObserver(this.OnKarelControllerStateChange.bind(this));
 
     }
 
@@ -201,6 +202,36 @@ class DesktopController {
     private Step() {
         this.karelController.Step();
         this.UpdateBeeperBag();
+    }
+
+    private DisableControlBar() {
+        this.executionCompile.attr("disabled", "");
+        this.executionRun.attr("disabled", "");
+        this.executionStep.attr("disabled", "");
+        this.executionEnd.attr("disabled", "");
+        this.beeperBagInput.attr("disabled", "");
+    }
+
+    
+    private EnableControlBar() {
+        this.executionCompile.removeAttr("disabled");
+        this.executionRun.removeAttr("disabled");
+        this.executionStep.removeAttr("disabled");
+        this.executionEnd.removeAttr("disabled");
+        this.beeperBagInput.removeAttr("disabled");
+    }
+
+    private OnKarelControllerStateChange(sender: KarelController, state: ControllerState) {
+        if (state === "finished") {
+            this.DisableControlBar();
+            if (this.karelController.EndedOnError()) {
+                this.worldController.ErrorMode();
+            }
+        } else if (state === "unstarted") {
+            this.EnableControlBar();
+            
+            this.worldController.NormalMode();
+        }
     }
 
     private ConnectToolbar() {        

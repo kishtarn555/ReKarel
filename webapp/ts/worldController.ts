@@ -82,6 +82,16 @@ class WorldController {
         }
     }
 
+    ErrorMode() {
+        this.renderer.ErrorMode();
+        this.Update();
+    }
+
+    NormalMode() {
+        this.renderer.NormalMode();
+        this.Update();
+    }
+
     Select(r: number, c: number, r2: number, c2: number) {
         this.selection = {
             r: r,

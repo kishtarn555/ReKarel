@@ -6,6 +6,7 @@ type WRStyle = {
     disabled: string,
     exportCellBackground: string,
     karelColor: string,
+    errorKarelcolor: string,
     gridBackgroundColor: string,
     gridBorderColor: string,
     gutterBackgroundColor: string,
@@ -17,6 +18,7 @@ const DefaultWRStyle: WRStyle = {
     disabled: '#4f4f4f',
     exportCellBackground: '#f5f7a8',
     karelColor: '#3E6AC1',
+    errorKarelcolor: "#d47272",
     gridBackgroundColor: '#f8f9fA',
     gridBorderColor: '#c4c4c4',
     gutterBackgroundColor: '#e6e6e6',
@@ -36,6 +38,7 @@ class WorldRenderer {
     scale: number;
     scroller: HTMLElement;
     private world: World;
+    private mode: "normal" | "error";
 
     constructor(canvasContext: CanvasRenderingContext2D, style: WRStyle, scale: number) {
         this.canvasContext = canvasContext;
@@ -46,6 +49,7 @@ class WorldRenderer {
         this.style = style;      
         this.world = undefined; 
         this.scale=scale;
+        this.mode = "normal";
     }
 
     GetWidth() : number {
@@ -72,6 +76,14 @@ class WorldRenderer {
             case "floor":
                 return Math.floor((this.GetWidth()-this.GutterSize)/ this.CellSize );
         }
+    }
+
+    ErrorMode() {
+        this.mode = "error";
+    }
+
+    NormalMode() {
+        this.mode = "normal";
     }
 
     private GetWorldRowCount(): number {
@@ -196,6 +208,9 @@ class WorldRenderer {
         
         this.canvasContext.translate(x-0.5, y+0.5);
         this.canvasContext.fillStyle = this.style.karelColor;
+        if (this.mode === "error") {
+            this.canvasContext.fillStyle = this.style.errorKarelcolor;
+        }
         this.canvasContext.beginPath();
         switch (orientation) {
             case "east":
