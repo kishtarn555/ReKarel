@@ -17356,9 +17356,10 @@
         disabled: '#4f4f4f',
         exportCellBackground: '#f5f7a8',
         karelColor: '#3E6AC1',
-        errorKarelcolor: "#d47272",
         gridBackgroundColor: '#f8f9fA',
+        errorGridBackgroundColor: "#f5d5d5",
         gridBorderColor: '#c4c4c4',
+        errorGridBorderColor: '#a8838f',
         gutterBackgroundColor: '#e6e6e6',
         gutterColor: "#444444",
         beeperBackgroundColor: "#0ADB23",
@@ -17471,6 +17472,9 @@
             let cols = this.GetColCount();
             let rows = this.GetRowCount();
             this.canvasContext.strokeStyle = this.style.gridBorderColor;
+            if (this.mode === "error") {
+                this.canvasContext.strokeStyle = this.style.errorGridBorderColor;
+            }
             this.canvasContext.beginPath();
             for (let i = 0; i < rows; i++) {
                 this.canvasContext.moveTo(this.GutterSize, h - (this.GutterSize + (i + 1) * this.CellSize) + 0.5);
@@ -17486,6 +17490,9 @@
             let h = this.GetHeight();
             let w = this.GetWidth();
             this.canvasContext.fillStyle = this.style.gridBackgroundColor;
+            if (this.mode === "error") {
+                this.canvasContext.fillStyle = this.style.errorGridBackgroundColor;
+            }
             this.canvasContext.fillRect(this.GutterSize, 0, w - this.GutterSize, h - this.GutterSize);
         }
         DrawKarel(r, c, orientation = "north") {
@@ -17502,9 +17509,6 @@
             let y = h - (this.GutterSize + this.CellSize * (r - this.origin.f) + this.CellSize / 2);
             this.canvasContext.translate(x - 0.5, y + 0.5);
             this.canvasContext.fillStyle = this.style.karelColor;
-            if (this.mode === "error") {
-                this.canvasContext.fillStyle = this.style.errorKarelcolor;
-            }
             this.canvasContext.beginPath();
             switch (orientation) {
                 case "east":
