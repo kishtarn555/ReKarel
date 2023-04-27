@@ -185,12 +185,17 @@ class DesktopController {
         this.executionEnd.on("click", ()=> this.RunTillEnd());
     }
 
+    private UpdateBeeperBag() {
+        this.beeperBagInput.val(this.worldController.GetBeepersInBag());
+    }
+
     private RunTillEnd() {
-        this.karelController.RunTillEnd();
+        this.karelController.RunTillEnd();        
+        this.UpdateBeeperBag();
     }
     private Step() {
         this.karelController.Step();
-        this.beeperBagInput.val(this.worldController.GetBeepersInBag());
+        this.UpdateBeeperBag();
     }
 
     private ConnectToolbar() {        
