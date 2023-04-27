@@ -18057,27 +18057,6 @@
             this.calculateScroll();
         }
     }
-    let controller = undefined;
-    function scrollCanvas() {
-        let left = ($("#worldContainer")[0].scrollWidth - $("#worldContainer")[0].clientWidth) !== 0 ?
-            $("#worldContainer").scrollLeft()
-                / ($("#worldContainer")[0].scrollWidth - $("#worldContainer")[0].clientWidth)
-            : 1;
-        let top = ($("#worldContainer")[0].scrollHeight - $("#worldContainer")[0].clientHeight) !== 0 ?
-            1 - $("#worldContainer").scrollTop()
-                / ($("#worldContainer")[0].scrollHeight - $("#worldContainer")[0].clientHeight)
-            : 1;
-        controller.UpdateScroll(left, top);
-    }
-    function ResizeDesktopCanvas() {
-        $("#worldCanvas")[0].style.width = `${$("#worldContainer")[0].clientWidth}px`;
-        $("#worldCanvas")[0].style.height = `${$("#worldContainer")[0].clientHeight}px`;
-        let scale = window.devicePixelRatio;
-        $("#worldCanvas").attr("width", Math.floor($("#worldContainer")[0].clientWidth * scale));
-        $("#worldCanvas").attr("height", Math.floor($("#worldContainer")[0].clientHeight * scale));
-        controller.Update();
-        scrollCanvas();
-    }
 
     function activateButton(toolbar, buttonPressed) {
         for (const element in toolbar) {
@@ -21783,7 +21762,7 @@
         }
         $(":root")[0].style.setProperty("--editor-font-size", `${settings.editorFontSize}pt`);
         if (settings.interface == "desktop")
-            ResizeDesktopCanvas();
+            DesktopUI.ResizeCanvas();
     }
     function setSettings(event) {
         let interfaceType = $("#settingsForm select[name=interface]").val();
