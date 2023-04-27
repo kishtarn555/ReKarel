@@ -21508,6 +21508,7 @@
             this.running = false;
             this.mainEditor = mainEditor;
             this.onMessage = [];
+            this.state = "unstarted";
         }
         SetDesktopController(desktopController) {
             this.desktopController = desktopController;
@@ -21524,6 +21525,7 @@
         }
         Reset() {
             this.running = false;
+            this.state = "unstarted";
             this.desktopController.Reset();
         }
         StartRun() {
@@ -21537,6 +21539,7 @@
             // FIXME: We skip validators, they seem useless, but I'm unsure
             runtime.start();
             this.running = true;
+            this.state = "running";
             return true;
         }
         HighlightCurrentLine() {
@@ -21556,6 +21559,10 @@
             }
         }
         Step() {
+            if (this.state == "finished") {
+                //Ignore if the code already finished running
+                return;
+            }
             if (!this.running) {
                 if (!this.StartRun()) {
                     // Code Failed
@@ -21567,6 +21574,7 @@
             this.HighlightCurrentLine();
             this.desktopController.CheckUpdate();
             if (!runtime.state.running) {
+                this.state = "finished";
                 this.EndMessage();
             }
         }
