@@ -99,6 +99,15 @@ let DesktopUI = new DesktopController(
     {
         worldCanvas: $("#worldCanvas"),
         worldContainer: $("#worldContainer"),
+        controlBar: {
+            execution: {
+                reset: $("#desktopResetKarel"),
+                compile: $("#desktopCompileKarel"),
+                play: $("#dekstopRunKarel"),
+                step: $("#desktopStepProgram"),
+                future: $("#desktopFutureProgram"),
+            }
+        },
         toolbar: {
             karel: {
                 north: $("#desktopKarelNorth"),

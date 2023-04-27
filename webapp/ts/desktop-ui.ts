@@ -36,17 +36,29 @@ type FocusToolbar = {
     selector: JQuery,
     
 }
+
+type ExecutionToolbar = {
+    reset: JQuery,
+    compile: JQuery,
+    play: JQuery,
+    step: JQuery,
+    future: JQuery,
+}
+
 interface DesktopElements {
     worldContainer: JQuery,
     worldCanvas: JQuery,
     gizmos: Gizmos,
     worldZoom: JQuery,
+    controlBar: {
+        execution: ExecutionToolbar
+    },
     toolbar: {
         beepers: BeeperToolbar
         karel: KarelToolbar
         wall: WallToolbar
         focus: FocusToolbar
-    }
+    },
     context: {
         toggler: JQuery,
         container: JQuery
