@@ -308,7 +308,7 @@ $(document).ready(()=>{
     applySettings(appSettings);    
     DesktopUI.Init();
 
-    DesktopUI.ConsoleMessage("Test");
+    DesktopUI.ConsoleMessage("Test", "info");
 })
 
 

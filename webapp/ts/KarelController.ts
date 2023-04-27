@@ -3,17 +3,25 @@ import { WorldController } from "./worldController";
 import { EditorView } from "codemirror";
 import { EditorState, StateEffect } from "@codemirror/state"
 import { DesktopController } from "./desktop-ui";
+import { ERRORCODES } from "./common-ui";
 
+type messageType = "info"|"success"|"error";
+type MessageCallback = (message:string, type:messageType)=>void;
+type ControllerState = "unstarted"| "running" | "finished";
 class KarelController {
     world: World;
     desktopController: WorldController;
     running: boolean;
     mainEditor: EditorView;
+    onMessage: MessageCallback[];
+    state : ControllerState;
 
     constructor(world: World, mainEditor: EditorView) {
         this.world = world;
         this.running = false;
         this.mainEditor = mainEditor;
+        this.onMessage = [];
+        this.state = "unstarted";
     }
     
     SetDesktopController(desktopController: WorldController) {
@@ -33,6 +41,7 @@ class KarelController {
     
     Reset() {
         this.running = false;
+        this.state = "unstarted";
         this.desktopController.Reset();
     }
 
@@ -48,6 +57,7 @@ class KarelController {
         
         runtime.start();
         this.running = true;
+        this.state = "running";
         return true;        
     }
 
@@ -72,6 +82,10 @@ class KarelController {
       }
 
     Step() {
+        if (this.state == "finished") {
+            //Ignore if the code already finished running
+            return;
+        }
         if (!this.running) {
             if (!this.StartRun()) {
                 // Code Failed
@@ -84,6 +98,27 @@ class KarelController {
         this.HighlightCurrentLine();
         this.desktopController.CheckUpdate();
 
+        if (!runtime.state.running) {
+            this.state = "finished";
+            this.EndMessage();
+        }
+
+    }
+
+    RegisterMessageCallback(callback: MessageCallback) {
+        this.onMessage.push(callback);
+    }
+
+    private SendMessage(message: string, type: messageType) {
+        this.onMessage.forEach((callback) => callback(message, type));
+    }
+
+    private EndMessage() {
+        let runtime = this.desktopController.GetRuntime();
+        if (runtime.state.error) {
+            this.SendMessage(ERRORCODES[runtime.state.error], "error");
+            return;
+        }
     }
 }
 

@@ -127,6 +127,7 @@ class DesktopController {
         this.consoleTab = elements.console;
 
         this.karelController = karelController;
+
         this.worldController = new WorldController(
             new WorldRenderer(
                 (this.worldCanvas[0] as HTMLCanvasElement).getContext("2d"),
@@ -138,6 +139,7 @@ class DesktopController {
             elements.gizmos
         );
         this.karelController.SetDesktopController(this.worldController);
+        this.karelController.RegisterMessageCallback(this.ConsoleMessage.bind(this))
     }
 
     Init() {
@@ -244,10 +246,6 @@ class DesktopController {
         }
     }
 
-    public ConsoleMessage(message: string) {
-        this.SendMessageToConsole(message);
-    }
-
     private SendMessageToConsole(message: string) {
         const currentDate = new Date();
         const hour = currentDate.getHours() % 12 || 12;
@@ -258,6 +256,12 @@ class DesktopController {
         const html = `<div><span class="text-info">[${hour}:${minute}:${second} ${amOrPm}]</span> ${message}</div>`;
         this.consoleTab.console.append(html);
     }
+
+    public ConsoleMessage(message: string, type:"info"|"success"|"error") {
+        this.SendMessageToConsole(message);
+    }
+
+    
 
     private HotKeys(e: JQuery.KeyDownEvent) {
         let tag = e.target.tagName.toLowerCase();
