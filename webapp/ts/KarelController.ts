@@ -92,7 +92,7 @@ class KarelController {
       }
 
     Step() {
-        if (this.state == "finished") {
+        if (this.state === "finished") {
             //Ignore if the code already finished running
             return;
         }
@@ -117,7 +117,7 @@ class KarelController {
 
 
     RunTillEnd() {
-        if (this.state == "finished") {
+        if (this.state === "finished") {
             return;
         }
         if (!this.running) {
@@ -132,6 +132,7 @@ class KarelController {
         runtime.disableStackEvents= false; // FIXME: This should only be done when no breakpoints
         this.desktopController.CheckUpdate();
         this.EndMessage();
+        this.state = "finished";
     }
 
     RegisterMessageCallback(callback: MessageCallback) {

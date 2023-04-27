@@ -21600,7 +21600,7 @@
             }
         }
         Step() {
-            if (this.state == "finished") {
+            if (this.state === "finished") {
                 //Ignore if the code already finished running
                 return;
             }
@@ -21620,7 +21620,7 @@
             }
         }
         RunTillEnd() {
-            if (this.state == "finished") {
+            if (this.state === "finished") {
                 return;
             }
             if (!this.running) {
@@ -21635,6 +21635,7 @@
             runtime.disableStackEvents = false; // FIXME: This should only be done when no breakpoints
             this.desktopController.CheckUpdate();
             this.EndMessage();
+            this.state = "finished";
         }
         RegisterMessageCallback(callback) {
             this.onMessage.push(callback);
