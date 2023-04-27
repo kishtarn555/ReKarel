@@ -31,7 +31,15 @@ class KarelController {
     Compile() {
         let code = this.mainEditor.state.doc.toString();
         // let language: string = detectLanguage(code);
-        return compile(code);        
+        let response = null;
+        try {
+            response = compile(code)    
+        } catch (e) {
+            //TODO: Expand error
+            this.SendMessage("Error de compilacion", "error");
+        }
+        
+        return response;
     }
 
     // FIXME This is code from karel.js that I'm not even sure if it's ever executed by the web app.
@@ -58,7 +66,6 @@ class KarelController {
         runtime.start();
         this.running = true;
         this.state = "running";
-        this.SendMessage("Ejecucion iniciada", "info");
         return true;        
     }
 
