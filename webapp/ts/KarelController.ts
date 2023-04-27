@@ -58,6 +58,7 @@ class KarelController {
         runtime.start();
         this.running = true;
         this.state = "running";
+        this.SendMessage("Ejecucion iniciada", "info");
         return true;        
     }
 
