@@ -18083,7 +18083,7 @@
             const second = currentDate.getSeconds();
             const amOrPm = currentDate.getHours() < 12 ? "AM" : "PM";
             const html = `<div><span class="text-${style}">[${hour}:${minute}:${second} ${amOrPm}]</span> ${message}</div>`;
-            this.consoleTab.console.append(html);
+            this.consoleTab.console.prepend(html);
         }
         ConsoleMessage(message, type = "info") {
             let style = "info";
