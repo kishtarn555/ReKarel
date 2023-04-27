@@ -182,8 +182,12 @@ class DesktopController {
     private ConnectExecutionButtonGroup() {
         this.executionReset.on("click", ()=>this.karelController.Reset());
         this.executionStep.on("click", ()=>this.Step());
+        this.executionEnd.on("click", ()=> this.RunTillEnd());
     }
 
+    private RunTillEnd() {
+        this.karelController.RunTillEnd();
+    }
     private Step() {
         this.karelController.Step();
         this.beeperBagInput.val(this.worldController.GetBeepersInBag());

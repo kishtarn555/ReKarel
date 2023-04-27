@@ -115,6 +115,20 @@ class KarelController {
 
     }
 
+
+    RunTillEnd() {
+        if (!this.running) {
+            if (!this.StartRun()) {
+                return;
+            }
+        }
+
+        let runtime = this.desktopController.GetRuntime();
+        runtime.disableStackEvents= true; // FIXME: This should only be done when no breakpoints
+        while (runtime.step());
+        runtime.disableStackEvents= false; // FIXME: This should only be done when no breakpoints
+    }
+
     RegisterMessageCallback(callback: MessageCallback) {
         this.onMessage.push(callback);
     }

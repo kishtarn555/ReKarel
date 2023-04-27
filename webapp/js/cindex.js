@@ -17950,6 +17950,10 @@
         ConnectExecutionButtonGroup() {
             this.executionReset.on("click", () => this.karelController.Reset());
             this.executionStep.on("click", () => this.Step());
+            this.executionEnd.on("click", () => this.RunTillEnd());
+        }
+        RunTillEnd() {
+            this.karelController.RunTillEnd();
         }
         Step() {
             this.karelController.Step();
@@ -21614,6 +21618,18 @@
                 this.state = "finished";
                 this.EndMessage();
             }
+        }
+        RunTillEnd() {
+            if (!this.running) {
+                if (!this.StartRun()) {
+                    return;
+                }
+            }
+            let runtime = this.desktopController.GetRuntime();
+            runtime.disableStackEvents = true; // FIXME: This should only be done when no breakpoints
+            while (runtime.step())
+                ;
+            runtime.disableStackEvents = false; // FIXME: This should only be done when no breakpoints
         }
         RegisterMessageCallback(callback) {
             this.onMessage.push(callback);
