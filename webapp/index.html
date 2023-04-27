@@ -408,7 +408,9 @@
                                                         <li>
                                                             <button
                                                             class="dropdown-item"
-                                                            id="desktopSetAmmount">
+                                                            id="desktopSetAmmount"
+                                                            data-bs-toggle="modal"
+                                                            data-bs-target="#ammountModal">
                                                                 <i class="bi bi-123 text-info"></i> Elegir cantidad (C)
                                                             </button>
                                                         </li>
@@ -1010,6 +1012,34 @@
             </div>
         </div>
     </div>
+    <!-- Set Ammound Modal -->
+    <div id="ammountModal" class="modal fade" tabindex="-1" aria-labelledby="ammountModal" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Colocar cantidad de zumbadores</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">                    
+                    <div class="mb-4">
+                        <p>Elige la cantidad de zumbadores a colocar:</p>
+                        <input type="number" name="beeperCount" id="beeperCountInput" class="form-control" placeholder="Zumbadores" min="0">
+                    </div>
+
+                    <button class="btn btn-secondary">Usar opciones avanzadas</button>
+                </div>
+                <div class="modal-footer">                    
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" data-bs-dialog="none">
+                        Cancelar
+                    </button>
+                    
+                    <button type="button" class="btn btn-primary" data-bs-dismiss="modal" data-bs-dialog="none" id="btnSetAmmount">
+                        Colocar
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
     <!-- Context menu -->
     <div id="contextMenuDiv" class="dropend position-absolute" style="top:680px; left:630px; width: 0px; height: 0px;">
         <button id="contextMenuToggler" type="button" class="p-0 m-0 h-0 w-0 position-absolute"
@@ -1125,7 +1155,9 @@
                         <li>
                             <button
                             class="dropdown-item"
-                            id="contextSetAmmount">
+                            id="contextSetAmmount"                            
+                            data-bs-toggle="modal"
+                            data-bs-target="#ammountModal">
                                 <i class="bi bi-123 text-info"></i> Elegir cantidad
                             </button>
                         </li>
