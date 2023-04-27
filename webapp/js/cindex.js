@@ -17925,7 +17925,6 @@
             this.karelController = karelController;
             this.worldController = new WorldController(new WorldRenderer(this.worldCanvas[0].getContext("2d"), DefaultWRStyle, window.devicePixelRatio), elements.worldContainer[0], karelController.world, elements.gizmos);
             this.karelController.SetDesktopController(this.worldController);
-            this.karelController.RegisterMessageCallback(this.ConsoleMessage.bind(this));
         }
         Init() {
             $(window).on("resize", this.ResizeCanvas.bind(this));
@@ -17942,6 +17941,7 @@
             this.ConnectContextMenu();
             this.ResizeCanvas();
             this.worldController.FocusOrigin();
+            this.ConnectConsole();
         }
         ConnectExecutionButtonGroup() {
             this.executionReset.on("click", () => this.karelController.Reset());
@@ -17994,6 +17994,10 @@
             ContextAction(this.contextWall.west, () => this.worldController.ToggleWall("west"));
             ContextAction(this.contextWall.outside, () => this.worldController.ToggleWall("outer"));
         }
+        ConnectConsole() {
+            this.karelController.RegisterMessageCallback(this.ConsoleMessage.bind(this));
+            this.consoleTab.clear.on("click", () => this.ClearConsole());
+        }
         ToggleContextMenu() {
             const dropmenu = new bootstrap.Dropdown(this.contextToggler[0]);
             if (this.contextToggler.attr("aria-expanded") === "false") {
@@ -18002,6 +18006,9 @@
             else {
                 dropmenu.hide();
             }
+        }
+        ClearConsole() {
+            this.consoleTab.console.empty();
         }
         SendMessageToConsole(message, style) {
             const currentDate = new Date();
@@ -21764,6 +21771,7 @@
         worldZoom: $("#zoomDekstop"),
         console: {
             console: $("#desktopConsole"),
+            clear: $("#desktopClearConsole")
         }
     }, karelController);
     let PhoneUI = GetPhoneUIHelper({

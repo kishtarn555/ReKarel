@@ -46,7 +46,8 @@ type ExecutionToolbar = {
 }
 
 type ConsoleTab = {
-    console:JQuery
+    console:JQuery,
+    clear: JQuery
 }
 
 interface DesktopElements {
@@ -139,7 +140,7 @@ class DesktopController {
             elements.gizmos
         );
         this.karelController.SetDesktopController(this.worldController);
-        this.karelController.RegisterMessageCallback(this.ConsoleMessage.bind(this))
+
     }
 
     Init() {
@@ -169,6 +170,7 @@ class DesktopController {
         
         this.ResizeCanvas();
         this.worldController.FocusOrigin();
+        this.ConnectConsole();
     }
 
     private ConnectExecutionButtonGroup() {
@@ -237,6 +239,12 @@ class DesktopController {
 
     }
 
+    private ConnectConsole() {        
+        this.karelController.RegisterMessageCallback(this.ConsoleMessage.bind(this));
+        this.consoleTab.clear.on("click", ()=> this.ClearConsole());
+    }
+
+    
     private ToggleContextMenu() {
         const dropmenu = new bootstrap.Dropdown(this.contextToggler[0]);
         if (this.contextToggler.attr("aria-expanded")==="false") {
@@ -245,6 +253,10 @@ class DesktopController {
             dropmenu.hide();
         }
     }
+
+    private ClearConsole() {
+        this.consoleTab.console.empty();
+    } 
 
     private SendMessageToConsole(message: string, style:string) {
         const currentDate = new Date();
