@@ -41,10 +41,21 @@ const javaLanguage = LRLanguage.define({
 
   const javaCompletion = javaLanguage.data.of({
     autocomplete: completeFromList([
-      {label: "define", type: "keyword"},
-      {label: "move", type: "function"},
-      {label: "turnleft", type: "function"},
-      {label: "putbeeper", type: "function"},
+        {label: "class", type: "keyword"},
+        {label: "program", type: "keyword"},
+        {label: "define", type: "keyword"},
+        {label: "void", type: "keyword"},
+        {label: "return", type: "keyword"},
+        {label: "if", type: "keyword"},
+        {label: "else", type: "keyword"},
+        {label: "iterate", type: "keyword"},
+        {label: "while", type: "keyword"},
+        {label: "succ", type: "function"},
+        {label: "pred", type: "function"},
+        {label: "move", type: "function"},
+        {label: "turnleft", type: "function"},
+        {label: "turnoff", type: "function"},
+        {label: "putbeeper", type: "function"},
     ])
   })
 
