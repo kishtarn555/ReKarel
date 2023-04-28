@@ -4,7 +4,10 @@ export const
   Script = 2,
   Class = 3,
   Program = 4,
-  Define = 5,
-  Identifier = 6,
-  Block = 7,
-  Number = 8
+  Start = 5,
+  Define = 6,
+  Identifier = 7,
+  Block = 8,
+  InnerBlock = 9,
+  Number = 10,
+  End = 11

@@ -7,9 +7,9 @@ import {EditorView} from "@codemirror/view"
 import {Transaction, Annotation, Compartment} from "@codemirror/state"
 import { kjava } from "./javaCodeMirror"
 
-import {defaultHighlightStyle, syntaxHighlighting} from "@codemirror/language"
+import {defaultHighlightStyle, syntaxHighlighting, foldGutter} from "@codemirror/language"
 
-let language = new Compartment
+let language = new Compartment, tabSize = new Compartment
 
 function createEditors() : Array<EditorView> {
   let startState = EditorState.create({
@@ -21,6 +21,8 @@ function createEditors() : Array<EditorView> {
       drawSelection(),
       lineNumbers(),
       highlightActiveLine(),
+      foldGutter(),
+      tabSize.of(EditorState.tabSize.of(4)),
       keymap.of([
         indentWithTab,
         ...defaultKeymap,

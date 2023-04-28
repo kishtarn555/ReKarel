@@ -10281,7 +10281,7 @@
             }
         });
     }
-    const baseTheme$1 = /*@__PURE__*/buildTheme("." + baseThemeID, {
+    const baseTheme$1$1 = /*@__PURE__*/buildTheme("." + baseThemeID, {
         "&.cm-editor": {
             position: "relative !important",
             boxSizing: "border-box",
@@ -11610,7 +11610,7 @@
         }
         mountStyles() {
             this.styleModules = this.state.facet(styleModule);
-            StyleModule.mount(this.root, this.styleModules.concat(baseTheme$1).reverse());
+            StyleModule.mount(this.root, this.styleModules.concat(baseTheme$1$1).reverse());
         }
         readMeasured() {
             if (this.updateState == 2 /* UpdateState.Updating */)
@@ -12720,7 +12720,25 @@
     in all gutters for the line).
     */
     const gutterLineClass = /*@__PURE__*/Facet.define();
+    const defaults = {
+        class: "",
+        renderEmptyElements: false,
+        elementStyle: "",
+        markers: () => RangeSet.empty,
+        lineMarker: () => null,
+        lineMarkerChange: null,
+        initialSpacer: null,
+        updateSpacer: null,
+        domEventHandlers: {}
+    };
     const activeGutters = /*@__PURE__*/Facet.define();
+    /**
+    Define an editor gutter. The order in which the gutters appear is
+    determined by their extension priority.
+    */
+    function gutter(config) {
+        return [gutters(), activeGutters.of(Object.assign(Object.assign({}, defaults), config))];
+    }
     const unfixGutters = /*@__PURE__*/Facet.define({
         combine: values => values.some(x => x)
     });
@@ -16224,6 +16242,14 @@
             return closed ? context.column(aligned.from) : context.column(aligned.to);
         return context.baseIndent + (closed ? 0 : context.unit * units);
     }
+
+    /**
+    A facet that registers a code folding service. When called with
+    the extent of a line, such a function should return a foldable
+    range that starts on that line (but continues beyond it), if one
+    can be found.
+    */
+    const foldService = /*@__PURE__*/Facet.define();
     /**
     This node prop is used to associate folding information with
     syntax node types. Given a syntax node, it should check whether
@@ -16240,6 +16266,174 @@
         let first = node.firstChild, last = node.lastChild;
         return first && first.to < last.from ? { from: first.to, to: last.type.isError ? node.to : last.from } : null;
     }
+    function syntaxFolding(state, start, end) {
+        let tree = syntaxTree(state);
+        if (tree.length < end)
+            return null;
+        let inner = tree.resolveInner(end, 1);
+        let found = null;
+        for (let cur = inner; cur; cur = cur.parent) {
+            if (cur.to <= end || cur.from > end)
+                continue;
+            if (found && cur.from < start)
+                break;
+            let prop = cur.type.prop(foldNodeProp);
+            if (prop && (cur.to < tree.length - 50 || tree.length == state.doc.length || !isUnfinished(cur))) {
+                let value = prop(cur, state);
+                if (value && value.from <= end && value.from >= start && value.to > end)
+                    found = value;
+            }
+        }
+        return found;
+    }
+    function isUnfinished(node) {
+        let ch = node.lastChild;
+        return ch && ch.to == node.to && ch.type.isError;
+    }
+    /**
+    Check whether the given line is foldable. First asks any fold
+    services registered through
+    [`foldService`](https://codemirror.net/6/docs/ref/#language.foldService), and if none of them return
+    a result, tries to query the [fold node
+    prop](https://codemirror.net/6/docs/ref/#language.foldNodeProp) of syntax nodes that cover the end
+    of the line.
+    */
+    function foldable(state, lineStart, lineEnd) {
+        for (let service of state.facet(foldService)) {
+            let result = service(state, lineStart, lineEnd);
+            if (result)
+                return result;
+        }
+        return syntaxFolding(state, lineStart, lineEnd);
+    }
+    function mapRange(range, mapping) {
+        let from = mapping.mapPos(range.from, 1), to = mapping.mapPos(range.to, -1);
+        return from >= to ? undefined : { from, to };
+    }
+    /**
+    State effect that can be attached to a transaction to fold the
+    given range. (You probably only need this in exceptional
+    circumstances—usually you'll just want to let
+    [`foldCode`](https://codemirror.net/6/docs/ref/#language.foldCode) and the [fold
+    gutter](https://codemirror.net/6/docs/ref/#language.foldGutter) create the transactions.)
+    */
+    const foldEffect = /*@__PURE__*/StateEffect.define({ map: mapRange });
+    /**
+    State effect that unfolds the given range (if it was folded).
+    */
+    const unfoldEffect = /*@__PURE__*/StateEffect.define({ map: mapRange });
+    /**
+    The state field that stores the folded ranges (as a [decoration
+    set](https://codemirror.net/6/docs/ref/#view.DecorationSet)). Can be passed to
+    [`EditorState.toJSON`](https://codemirror.net/6/docs/ref/#state.EditorState.toJSON) and
+    [`fromJSON`](https://codemirror.net/6/docs/ref/#state.EditorState^fromJSON) to serialize the fold
+    state.
+    */
+    const foldState = /*@__PURE__*/StateField.define({
+        create() {
+            return Decoration.none;
+        },
+        update(folded, tr) {
+            folded = folded.map(tr.changes);
+            for (let e of tr.effects) {
+                if (e.is(foldEffect) && !foldExists(folded, e.value.from, e.value.to))
+                    folded = folded.update({ add: [foldWidget.range(e.value.from, e.value.to)] });
+                else if (e.is(unfoldEffect))
+                    folded = folded.update({ filter: (from, to) => e.value.from != from || e.value.to != to,
+                        filterFrom: e.value.from, filterTo: e.value.to });
+            }
+            // Clear folded ranges that cover the selection head
+            if (tr.selection) {
+                let onSelection = false, { head } = tr.selection.main;
+                folded.between(head, head, (a, b) => { if (a < head && b > head)
+                    onSelection = true; });
+                if (onSelection)
+                    folded = folded.update({
+                        filterFrom: head,
+                        filterTo: head,
+                        filter: (a, b) => b <= head || a >= head
+                    });
+            }
+            return folded;
+        },
+        provide: f => EditorView.decorations.from(f),
+        toJSON(folded, state) {
+            let ranges = [];
+            folded.between(0, state.doc.length, (from, to) => { ranges.push(from, to); });
+            return ranges;
+        },
+        fromJSON(value) {
+            if (!Array.isArray(value) || value.length % 2)
+                throw new RangeError("Invalid JSON for fold state");
+            let ranges = [];
+            for (let i = 0; i < value.length;) {
+                let from = value[i++], to = value[i++];
+                if (typeof from != "number" || typeof to != "number")
+                    throw new RangeError("Invalid JSON for fold state");
+                ranges.push(foldWidget.range(from, to));
+            }
+            return Decoration.set(ranges, true);
+        }
+    });
+    function findFold(state, from, to) {
+        var _a;
+        let found = null;
+        (_a = state.field(foldState, false)) === null || _a === void 0 ? void 0 : _a.between(from, to, (from, to) => {
+            if (!found || found.from > from)
+                found = { from, to };
+        });
+        return found;
+    }
+    function foldExists(folded, from, to) {
+        let found = false;
+        folded.between(from, from, (a, b) => { if (a == from && b == to)
+            found = true; });
+        return found;
+    }
+    const defaultConfig = {
+        placeholderDOM: null,
+        placeholderText: "…"
+    };
+    const foldConfig = /*@__PURE__*/Facet.define({
+        combine(values) { return combineConfig(values, defaultConfig); }
+    });
+    /**
+    Create an extension that configures code folding.
+    */
+    function codeFolding(config) {
+        let result = [foldState, baseTheme$1];
+        if (config)
+            result.push(foldConfig.of(config));
+        return result;
+    }
+    const foldWidget = /*@__PURE__*/Decoration.replace({ widget: /*@__PURE__*/new class extends WidgetType {
+            toDOM(view) {
+                let { state } = view, conf = state.facet(foldConfig);
+                let onclick = (event) => {
+                    let line = view.lineBlockAt(view.posAtDOM(event.target));
+                    let folded = findFold(view.state, line.from, line.to);
+                    if (folded)
+                        view.dispatch({ effects: unfoldEffect.of(folded) });
+                    event.preventDefault();
+                };
+                if (conf.placeholderDOM)
+                    return conf.placeholderDOM(view, onclick);
+                let element = document.createElement("span");
+                element.textContent = conf.placeholderText;
+                element.setAttribute("aria-label", state.phrase("folded code"));
+                element.title = state.phrase("unfold");
+                element.className = "cm-foldPlaceholder";
+                element.onclick = onclick;
+                return element;
+            }
+        } });
+    const foldGutterDefaults = {
+        openText: "⌄",
+        closedText: "›",
+        markerDOM: null,
+        domEventHandlers: {},
+        foldingChanged: () => false
+    };
     class FoldMarker extends GutterMarker {
         constructor(config, open) {
             super();
@@ -16256,6 +16450,81 @@
             return span;
         }
     }
+    /**
+    Create an extension that registers a fold gutter, which shows a
+    fold status indicator before foldable lines (which can be clicked
+    to fold or unfold the line).
+    */
+    function foldGutter(config = {}) {
+        let fullConfig = Object.assign(Object.assign({}, foldGutterDefaults), config);
+        let canFold = new FoldMarker(fullConfig, true), canUnfold = new FoldMarker(fullConfig, false);
+        let markers = ViewPlugin.fromClass(class {
+            constructor(view) {
+                this.from = view.viewport.from;
+                this.markers = this.buildMarkers(view);
+            }
+            update(update) {
+                if (update.docChanged || update.viewportChanged ||
+                    update.startState.facet(language$1) != update.state.facet(language$1) ||
+                    update.startState.field(foldState, false) != update.state.field(foldState, false) ||
+                    syntaxTree(update.startState) != syntaxTree(update.state) ||
+                    fullConfig.foldingChanged(update))
+                    this.markers = this.buildMarkers(update.view);
+            }
+            buildMarkers(view) {
+                let builder = new RangeSetBuilder();
+                for (let line of view.viewportLineBlocks) {
+                    let mark = findFold(view.state, line.from, line.to) ? canUnfold
+                        : foldable(view.state, line.from, line.to) ? canFold : null;
+                    if (mark)
+                        builder.add(line.from, line.from, mark);
+                }
+                return builder.finish();
+            }
+        });
+        let { domEventHandlers } = fullConfig;
+        return [
+            markers,
+            gutter({
+                class: "cm-foldGutter",
+                markers(view) { var _a; return ((_a = view.plugin(markers)) === null || _a === void 0 ? void 0 : _a.markers) || RangeSet.empty; },
+                initialSpacer() {
+                    return new FoldMarker(fullConfig, false);
+                },
+                domEventHandlers: Object.assign(Object.assign({}, domEventHandlers), { click: (view, line, event) => {
+                        if (domEventHandlers.click && domEventHandlers.click(view, line, event))
+                            return true;
+                        let folded = findFold(view.state, line.from, line.to);
+                        if (folded) {
+                            view.dispatch({ effects: unfoldEffect.of(folded) });
+                            return true;
+                        }
+                        let range = foldable(view.state, line.from, line.to);
+                        if (range) {
+                            view.dispatch({ effects: foldEffect.of(range) });
+                            return true;
+                        }
+                        return false;
+                    } })
+            }),
+            codeFolding()
+        ];
+    }
+    const baseTheme$1 = /*@__PURE__*/EditorView.baseTheme({
+        ".cm-foldPlaceholder": {
+            backgroundColor: "#eee",
+            border: "1px solid #ddd",
+            color: "#888",
+            borderRadius: ".2em",
+            margin: "0 1px",
+            padding: "0 1px",
+            cursor: "pointer"
+        },
+        ".cm-foldGutter span": {
+            padding: "0 1px",
+            cursor: "pointer"
+        }
+    });
 
     /**
     A highlight style associates CSS styles with higlighting
@@ -19577,14 +19846,18 @@
     // This file was generated by lezer-generator. You probably shouldn't edit it.
     const parser = LRParser.deserialize({
         version: 14,
-        states: "%pOYQPOOO_QPOOOdQPOOOiQQOOOqQSO'#CmOOQO'#Ce'#CeOiQQO'#ClOvQPO'#CsOOQO'#Cl'#ClO{QPOOO!QQPO,59XOOQO-E6c-E6cOOQO,59W,59WO!VQPO,59_QOQPOOO![QSO1G.sO!dQPO1G.yO!dQPO7+$_O!iQPO7+$_O!nQSO'#CcOOQO7+$e7+$eOOQO<<Gy<<GyO!dQPO<<GyO!yQPO'#CqOOQO'#Cp'#CpOOQO'#Cf'#CfO#OQSO,58}OOQO,58},58}OOQOAN=eAN=eO#ZQSO,59]OOQO-E6d-E6dOOQO1G.i1G.iOOQO'#Cr'#CrOOQO1G.w1G.wO#fQPO1G.wOOQO7+$c7+$c",
-        stateData: "#k~O]OSPOS~ORPO~OSQO~O_RO~OTSOhVO~OUYO~Ob]O~O^^O~Ob_O~Oc`O~OUbOcaO~O_cO~OcfO~OUgO^kO_cO~ObmO~OUgO^oO_cO~OUpOWpOcqO~OcsO~O",
-        goto: "!lhPPPPPPPiPv|PPPPP!S!VPP!Z!_!c!fQd`QeaShcjRlfQURRZUQjcRnjRXRTTRUTicjThcjRrmQWRR[U",
-        nodeNames: "⚠ Comment Script Class Program Define Identifier Block Number",
-        maxTerm: 24,
+        states: "%|OYQPOOO_QPOOOdQPOOOOQO'#Ca'#CaOiQQOOOqQSO'#CoOOQO'#Ch'#ChOiQQO'#CnOvQPO'#CvOOQO'#Cn'#CnO{QPOOO!QQPO,59ZOOQO-E6f-E6fOOQO,59Y,59YO!VQPO,59bOOQO'#Cg'#CgQOQPOOO![QSO1G.uOdQPO1G.|OdQPO7+$aO!dQPO7+$aO!iQSO'#CdOOQO7+$h7+$hOOQO<<G{<<G{OdQPO<<G{O!tQPO'#CsOOQO'#Cr'#CrOOQO'#Ci'#CiO!yQSO'#CeO{QPO,59OOOQOAN=gAN=gO#UQSO,59_OOQO-E6g-E6gOOQO1G.j1G.jOOQO'#Ct'#CtOOQO1G.y1G.yO#aQPO1G.yOOQO7+$e7+$e",
+        stateData: "#f~O`OSPOS~ORPO~OSQO~OaRO~OUTOkWO~OVZO~Od^O~Oi_O~OdaO~OebO~OVdOecO~OehO~OViOaROiXP~OdoO~OViOaROiXX~OVrOYrOesO~OeuO~O",
+        goto: "#SkPPPPPlPPv!TP!W!^!dPPPP!j!mPP!q!u!yP!|QSQZebcehlQfbQgcSjelRnhRmeQ`YRqmQVSR[VQleRplRYSTUSVTkelTjelRtoQXSR]V",
+        nodeNames: "⚠ Comment Script Class Program Start Define Identifier Block InnerBlock Number End",
+        maxTerm: 27,
+        nodeProps: [
+            ["closedBy", 5, "End"],
+            ["openedBy", 11, "Start"]
+        ],
         skippedNodes: [0, 1],
         repeatNodeCount: 2,
-        tokenData: "/Y~RiX^!ppq!pxy#eyz#j!P!Q#o!Q![$^!c!}$f#T#V$f#V#W$w#W#X'X#X#d$f#d#e*T#e#j$f#j#k-g#k#o$f#o#p/O#q#r/T#y#z!p$f$g!p#BY#BZ!p$IS$I_!p$I|$JO!p$JT$JU!p$KV$KW!p&FU&FV!p~!uY]~X^!ppq!p#y#z!p$f$g!p#BY#BZ!p$IS$I_!p$I|$JO!p$JT$JU!p$KV$KW!p&FU&FV!p~#jOb~~#oOc~~#rP!P!Q#u~#zSP~OY#uZ;'S#u;'S;=`$W<%lO#u~$ZP;=`<%l#u~$cPW~!Q![$^S$kSUS!Q![$f!c!}$f#R#S$f#T#o$fT$|UUS!Q![$f!c!}$f#R#S$f#T#`$f#`#a%`#a#o$fT%eTUS!Q![$f!c!}$f#R#S$f#T#U%t#U#o$fT%yUUS!Q![$f!c!}$f#R#S$f#T#g$f#g#h&]#h#o$fT&bUUS!Q![$f!c!}$f#R#S$f#T#g$f#g#h&t#h#o$fT&{SRPUS!Q![$f!c!}$f#R#S$f#T#o$fU'^UUS!Q![$f!c!}$f#R#S$f#T#X$f#X#Y'p#Y#o$fU'uUUS!Q![$f!c!}$f#R#S$f#T#Y$f#Y#Z(X#Z#o$fU(^UUS!Q![$f!c!}$f#R#S$f#T#]$f#]#^(p#^#o$fU(uUUS!Q![$f!c!}$f#R#S$f#T#b$f#b#c)X#c#o$fU)^UUS!Q![$f!c!}$f#R#S$f#T#X$f#X#Y)p#Y#o$fU)wSTQUS!Q![$f!c!}$f#R#S$f#T#o$fV*YUUS!Q![$f!c!}$f#R#S$f#T#f$f#f#g*l#g#o$fV*qUUS!Q![$f!c!}$f#R#S$f#T#c$f#c#d+T#d#o$fV+YUUS!Q![$f!c!}$f#R#S$f#T#Z$f#Z#[+l#[#o$fV+qUUS!Q![$f!c!}$f#R#S$f#T#f$f#f#g,T#g#o$fV,YTUS!Q![$f!c!}$f#R#S$f#T#U,i#U#o$fV,nUUS!Q![$f!c!}$f#R#S$f#T#a$f#a#b-Q#b#o$fV-ZShQUSSP!Q![$f!c!}$f#R#S$f#T#o$fU-lUUS!Q![$f!c!}$f#R#S$f#T#c$f#c#d.O#d#o$fU.TUUS!Q![$f!c!}$f#R#S$f#T#]$f#]#^.g#^#o$fU.lUUS!Q![$f!c!}$f#R#S$f#T#W$f#W#X)p#X#o$f~/TO_~~/YO^~",
+        tokenData: "/Y~RiX^!ppq!pxy#eyz#j!P!Q#o!Q![$^!c!}$f#T#V$f#V#W$w#W#X'X#X#d$f#d#e*T#e#j$f#j#k-g#k#o$f#o#p/O#q#r/T#y#z!p$f$g!p#BY#BZ!p$IS$I_!p$I|$JO!p$JT$JU!p$KV$KW!p&FU&FV!p~!uY`~X^!ppq!p#y#z!p$f$g!p#BY#BZ!p$IS$I_!p$I|$JO!p$JT$JU!p$KV$KW!p&FU&FV!p~#jOd~~#oOe~~#rP!P!Q#u~#zSP~OY#uZ;'S#u;'S;=`$W<%lO#u~$ZP;=`<%l#u~$cPY~!Q![$^S$kSVS!Q![$f!c!}$f#R#S$f#T#o$fT$|UVS!Q![$f!c!}$f#R#S$f#T#`$f#`#a%`#a#o$fT%eTVS!Q![$f!c!}$f#R#S$f#T#U%t#U#o$fT%yUVS!Q![$f!c!}$f#R#S$f#T#g$f#g#h&]#h#o$fT&bUVS!Q![$f!c!}$f#R#S$f#T#g$f#g#h&t#h#o$fT&{SRPVS!Q![$f!c!}$f#R#S$f#T#o$fU'^UVS!Q![$f!c!}$f#R#S$f#T#X$f#X#Y'p#Y#o$fU'uUVS!Q![$f!c!}$f#R#S$f#T#Y$f#Y#Z(X#Z#o$fU(^UVS!Q![$f!c!}$f#R#S$f#T#]$f#]#^(p#^#o$fU(uUVS!Q![$f!c!}$f#R#S$f#T#b$f#b#c)X#c#o$fU)^UVS!Q![$f!c!}$f#R#S$f#T#X$f#X#Y)p#Y#o$fU)wSUQVS!Q![$f!c!}$f#R#S$f#T#o$fV*YUVS!Q![$f!c!}$f#R#S$f#T#f$f#f#g*l#g#o$fV*qUVS!Q![$f!c!}$f#R#S$f#T#c$f#c#d+T#d#o$fV+YUVS!Q![$f!c!}$f#R#S$f#T#Z$f#Z#[+l#[#o$fV+qUVS!Q![$f!c!}$f#R#S$f#T#f$f#f#g,T#g#o$fV,YTVS!Q![$f!c!}$f#R#S$f#T#U,i#U#o$fV,nUVS!Q![$f!c!}$f#R#S$f#T#a$f#a#b-Q#b#o$fV-ZSkQVSSP!Q![$f!c!}$f#R#S$f#T#o$fU-lUVS!Q![$f!c!}$f#R#S$f#T#c$f#c#d.O#d#o$fU.TUVS!Q![$f!c!}$f#R#S$f#T#]$f#]#^.g#^#o$fU.lUVS!Q![$f!c!}$f#R#S$f#T#W$f#W#X)p#X#o$f~/TOa~~/YOi~",
         tokenizers: [0, 1, 2],
         topRules: { "Script": [0, 2] },
         tokenPrec: 0
@@ -19635,9 +19908,9 @@
                 Identifier: tags.variableName,
                 Number: tags.integer
             }),
-            indentNodeProp.add({
-                Block: context => context.column(context.node.from) + context.unit
-            }),
+            // indentNodeProp.add({
+            //     Block: context => context.column(context.node.parent.from) + context.unit,
+            //   }),           
             foldNodeProp.add({
                 Block: foldInside
             })
@@ -19661,7 +19934,7 @@
         return new LanguageSupport(javaLanguage, [javaCompletion]);
     }
 
-    let language = new Compartment;
+    let language = new Compartment, tabSize = new Compartment;
     function createEditors() {
         let startState = EditorState.create({
             doc: "iniciar-programa\n\tinicia-ejecucion\n\t\t{ TODO poner codigo aqui }\n\t\tapagate;\n\ttermina-ejecucion\nfinalizar-programa",
@@ -19672,6 +19945,8 @@
                 drawSelection(),
                 lineNumbers(),
                 highlightActiveLine(),
+                foldGutter(),
+                tabSize.of(EditorState.tabSize.of(4)),
                 keymap.of([
                     indentWithTab,
                     ...defaultKeymap,

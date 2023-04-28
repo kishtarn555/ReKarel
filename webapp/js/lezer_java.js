@@ -2,14 +2,18 @@
 import {LRParser} from "@lezer/lr"
 export const parser = LRParser.deserialize({
   version: 14,
-  states: "%pOYQPOOO_QPOOOdQPOOOiQQOOOqQSO'#CmOOQO'#Ce'#CeOiQQO'#ClOvQPO'#CsOOQO'#Cl'#ClO{QPOOO!QQPO,59XOOQO-E6c-E6cOOQO,59W,59WO!VQPO,59_QOQPOOO![QSO1G.sO!dQPO1G.yO!dQPO7+$_O!iQPO7+$_O!nQSO'#CcOOQO7+$e7+$eOOQO<<Gy<<GyO!dQPO<<GyO!yQPO'#CqOOQO'#Cp'#CpOOQO'#Cf'#CfO#OQSO,58}OOQO,58},58}OOQOAN=eAN=eO#ZQSO,59]OOQO-E6d-E6dOOQO1G.i1G.iOOQO'#Cr'#CrOOQO1G.w1G.wO#fQPO1G.wOOQO7+$c7+$c",
-  stateData: "#k~O]OSPOS~ORPO~OSQO~O_RO~OTSOhVO~OUYO~Ob]O~O^^O~Ob_O~Oc`O~OUbOcaO~O_cO~OcfO~OUgO^kO_cO~ObmO~OUgO^oO_cO~OUpOWpOcqO~OcsO~O",
-  goto: "!lhPPPPPPPiPv|PPPPP!S!VPP!Z!_!c!fQd`QeaShcjRlfQURRZUQjcRnjRXRTTRUTicjThcjRrmQWRR[U",
-  nodeNames: "⚠ Comment Script Class Program Define Identifier Block Number",
-  maxTerm: 24,
+  states: "%|OYQPOOO_QPOOOdQPOOOOQO'#Ca'#CaOiQQOOOqQSO'#CoOOQO'#Ch'#ChOiQQO'#CnOvQPO'#CvOOQO'#Cn'#CnO{QPOOO!QQPO,59ZOOQO-E6f-E6fOOQO,59Y,59YO!VQPO,59bOOQO'#Cg'#CgQOQPOOO![QSO1G.uOdQPO1G.|OdQPO7+$aO!dQPO7+$aO!iQSO'#CdOOQO7+$h7+$hOOQO<<G{<<G{OdQPO<<G{O!tQPO'#CsOOQO'#Cr'#CrOOQO'#Ci'#CiO!yQSO'#CeO{QPO,59OOOQOAN=gAN=gO#UQSO,59_OOQO-E6g-E6gOOQO1G.j1G.jOOQO'#Ct'#CtOOQO1G.y1G.yO#aQPO1G.yOOQO7+$e7+$e",
+  stateData: "#f~O`OSPOS~ORPO~OSQO~OaRO~OUTOkWO~OVZO~Od^O~Oi_O~OdaO~OebO~OVdOecO~OehO~OViOaROiXP~OdoO~OViOaROiXX~OVrOYrOesO~OeuO~O",
+  goto: "#SkPPPPPlPPv!TP!W!^!dPPPP!j!mPP!q!u!yP!|QSQZebcehlQfbQgcSjelRnhRmeQ`YRqmQVSR[VQleRplRYSTUSVTkelTjelRtoQXSR]V",
+  nodeNames: "⚠ Comment Script Class Program Start Define Identifier Block InnerBlock Number End",
+  maxTerm: 27,
+  nodeProps: [
+    ["closedBy", 5,"End"],
+    ["openedBy", 11,"Start"]
+  ],
   skippedNodes: [0,1],
   repeatNodeCount: 2,
-  tokenData: "/Y~RiX^!ppq!pxy#eyz#j!P!Q#o!Q![$^!c!}$f#T#V$f#V#W$w#W#X'X#X#d$f#d#e*T#e#j$f#j#k-g#k#o$f#o#p/O#q#r/T#y#z!p$f$g!p#BY#BZ!p$IS$I_!p$I|$JO!p$JT$JU!p$KV$KW!p&FU&FV!p~!uY]~X^!ppq!p#y#z!p$f$g!p#BY#BZ!p$IS$I_!p$I|$JO!p$JT$JU!p$KV$KW!p&FU&FV!p~#jOb~~#oOc~~#rP!P!Q#u~#zSP~OY#uZ;'S#u;'S;=`$W<%lO#u~$ZP;=`<%l#u~$cPW~!Q![$^S$kSUS!Q![$f!c!}$f#R#S$f#T#o$fT$|UUS!Q![$f!c!}$f#R#S$f#T#`$f#`#a%`#a#o$fT%eTUS!Q![$f!c!}$f#R#S$f#T#U%t#U#o$fT%yUUS!Q![$f!c!}$f#R#S$f#T#g$f#g#h&]#h#o$fT&bUUS!Q![$f!c!}$f#R#S$f#T#g$f#g#h&t#h#o$fT&{SRPUS!Q![$f!c!}$f#R#S$f#T#o$fU'^UUS!Q![$f!c!}$f#R#S$f#T#X$f#X#Y'p#Y#o$fU'uUUS!Q![$f!c!}$f#R#S$f#T#Y$f#Y#Z(X#Z#o$fU(^UUS!Q![$f!c!}$f#R#S$f#T#]$f#]#^(p#^#o$fU(uUUS!Q![$f!c!}$f#R#S$f#T#b$f#b#c)X#c#o$fU)^UUS!Q![$f!c!}$f#R#S$f#T#X$f#X#Y)p#Y#o$fU)wSTQUS!Q![$f!c!}$f#R#S$f#T#o$fV*YUUS!Q![$f!c!}$f#R#S$f#T#f$f#f#g*l#g#o$fV*qUUS!Q![$f!c!}$f#R#S$f#T#c$f#c#d+T#d#o$fV+YUUS!Q![$f!c!}$f#R#S$f#T#Z$f#Z#[+l#[#o$fV+qUUS!Q![$f!c!}$f#R#S$f#T#f$f#f#g,T#g#o$fV,YTUS!Q![$f!c!}$f#R#S$f#T#U,i#U#o$fV,nUUS!Q![$f!c!}$f#R#S$f#T#a$f#a#b-Q#b#o$fV-ZShQUSSP!Q![$f!c!}$f#R#S$f#T#o$fU-lUUS!Q![$f!c!}$f#R#S$f#T#c$f#c#d.O#d#o$fU.TUUS!Q![$f!c!}$f#R#S$f#T#]$f#]#^.g#^#o$fU.lUUS!Q![$f!c!}$f#R#S$f#T#W$f#W#X)p#X#o$f~/TO_~~/YO^~",
+  tokenData: "/Y~RiX^!ppq!pxy#eyz#j!P!Q#o!Q![$^!c!}$f#T#V$f#V#W$w#W#X'X#X#d$f#d#e*T#e#j$f#j#k-g#k#o$f#o#p/O#q#r/T#y#z!p$f$g!p#BY#BZ!p$IS$I_!p$I|$JO!p$JT$JU!p$KV$KW!p&FU&FV!p~!uY`~X^!ppq!p#y#z!p$f$g!p#BY#BZ!p$IS$I_!p$I|$JO!p$JT$JU!p$KV$KW!p&FU&FV!p~#jOd~~#oOe~~#rP!P!Q#u~#zSP~OY#uZ;'S#u;'S;=`$W<%lO#u~$ZP;=`<%l#u~$cPY~!Q![$^S$kSVS!Q![$f!c!}$f#R#S$f#T#o$fT$|UVS!Q![$f!c!}$f#R#S$f#T#`$f#`#a%`#a#o$fT%eTVS!Q![$f!c!}$f#R#S$f#T#U%t#U#o$fT%yUVS!Q![$f!c!}$f#R#S$f#T#g$f#g#h&]#h#o$fT&bUVS!Q![$f!c!}$f#R#S$f#T#g$f#g#h&t#h#o$fT&{SRPVS!Q![$f!c!}$f#R#S$f#T#o$fU'^UVS!Q![$f!c!}$f#R#S$f#T#X$f#X#Y'p#Y#o$fU'uUVS!Q![$f!c!}$f#R#S$f#T#Y$f#Y#Z(X#Z#o$fU(^UVS!Q![$f!c!}$f#R#S$f#T#]$f#]#^(p#^#o$fU(uUVS!Q![$f!c!}$f#R#S$f#T#b$f#b#c)X#c#o$fU)^UVS!Q![$f!c!}$f#R#S$f#T#X$f#X#Y)p#Y#o$fU)wSUQVS!Q![$f!c!}$f#R#S$f#T#o$fV*YUVS!Q![$f!c!}$f#R#S$f#T#f$f#f#g*l#g#o$fV*qUVS!Q![$f!c!}$f#R#S$f#T#c$f#c#d+T#d#o$fV+YUVS!Q![$f!c!}$f#R#S$f#T#Z$f#Z#[+l#[#o$fV+qUVS!Q![$f!c!}$f#R#S$f#T#f$f#f#g,T#g#o$fV,YTVS!Q![$f!c!}$f#R#S$f#T#U,i#U#o$fV,nUVS!Q![$f!c!}$f#R#S$f#T#a$f#a#b-Q#b#o$fV-ZSkQVSSP!Q![$f!c!}$f#R#S$f#T#o$fU-lUVS!Q![$f!c!}$f#R#S$f#T#c$f#c#d.O#d#o$fU.TUVS!Q![$f!c!}$f#R#S$f#T#]$f#]#^.g#^#o$fU.lUVS!Q![$f!c!}$f#R#S$f#T#W$f#W#X)p#X#o$f~/TOa~~/YOi~",
   tokenizers: [0, 1, 2],
   topRules: {"Script":[0,2]},
   tokenPrec: 0
