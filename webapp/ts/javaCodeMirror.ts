@@ -20,6 +20,7 @@ let javaWithContext = javaparser.configure({
         }),
         indentNodeProp.add({
             Block: context => context.column(context.node.parent.from) + context.unit,
+            ScriptBlock: context => context.column(context.node.parent.from) + context.unit
           }),           
         foldNodeProp.add({
             Block: foldInside

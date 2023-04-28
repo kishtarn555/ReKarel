@@ -7,8 +7,8 @@ import {EditorView} from "@codemirror/view"
 import {Transaction, Annotation, Compartment} from "@codemirror/state"
 import { kjava } from "./javaCodeMirror"
 
-import {defaultHighlightStyle, syntaxHighlighting, foldGutter, bracketMatching} from "@codemirror/language"
-import { closeBrackets } from "@codemirror/autocomplete"
+import {defaultHighlightStyle, syntaxHighlighting, foldGutter, bracketMatching, indentUnit} from "@codemirror/language"
+import { closeBrackets, autocompletion } from "@codemirror/autocomplete"
 
 let language = new Compartment, tabSize = new Compartment
 
@@ -24,7 +24,9 @@ function createEditors() : Array<EditorView> {
       highlightActiveLine(),
       foldGutter(),
       bracketMatching(),
+      autocompletion(),
       closeBrackets(),
+      indentUnit.of("\t"),
       tabSize.of(EditorState.tabSize.of(4)),
       keymap.of([
         indentWithTab,

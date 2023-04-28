@@ -1,7 +1,11 @@
 @top Script  {
-    Class Program Start inner End
+    Class Program ScriptBlock
 }
 
+
+ScriptBlock {
+    Start inner End
+}
 
 inner {
     function* main
