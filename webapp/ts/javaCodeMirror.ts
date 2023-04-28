@@ -4,13 +4,15 @@ import {LanguageSupport} from "@codemirror/language"
 
 import {foldNodeProp, foldInside, indentNodeProp} from "@codemirror/language"
 import {styleTags, tags as t} from "@lezer/highlight"
-import {LRLanguage} from "@codemirror/language"
+import {LRLanguage, continuedIndent} from "@codemirror/language"
 
 let javaWithContext = javaparser.configure({
     props: [
         styleTags({
             Class: t.keyword,
-            Program: t.className,
+            Define: t.keyword,
+            ProgramClass: t.className,
+            ProgramMain: t.function(t.variableName),
             Comment: t.comment,
             obr: t.bracket,
             cbr: t.bracket,
@@ -19,8 +21,8 @@ let javaWithContext = javaparser.configure({
 
         }),
         indentNodeProp.add({
-            Block: context => context.column(context.node.parent.from) + context.unit,
-            ScriptBlock: context => context.column(context.node.parent.from) + context.unit
+            Function: continuedIndent({}),
+            Script: continuedIndent({}),
           }),           
         foldNodeProp.add({
             Block: foldInside

@@ -1,5 +1,5 @@
 @top Script  {
-    Class Program ScriptBlock
+    Class ProgramClass ScriptBlock
 }
 
 
@@ -8,15 +8,15 @@ ScriptBlock {
 }
 
 inner {
-    function* main
+    Function* main
 }
 
-function {
+Function {
     Define Identifier "("Identifier?")" Block 
 }
 
 main {
-    "program" "(" ")" Block
+    ProgramMain "(" ")" Block
 
 }
 
@@ -51,11 +51,14 @@ End[openedBy="Start"] {
     end
 }
 
+ProgramClass { program }
+ProgramMain { program }
+
 @tokens {
   space { @whitespace+ }
   Comment { "//" ![\n]* }
   Class { "class" }
-  Program { "program" }
+  program { "program" }
   Identifier { $[a-zA-Z]$[a-zA-Z0-9_]*}
   Number { $[0-9]+ }
   Define { "define"|"void" }
