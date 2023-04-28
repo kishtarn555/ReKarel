@@ -1452,6 +1452,17 @@
         return ((code0 - 0xd800) << 10) + (code1 - 0xdc00) + 0x10000;
     }
     /**
+    Given a Unicode codepoint, return the JavaScript string that
+    respresents it (like
+    [`String.fromCodePoint`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/fromCodePoint)).
+    */
+    function fromCodePoint(code) {
+        if (code <= 0xffff)
+            return String.fromCharCode(code);
+        code -= 0x10000;
+        return String.fromCharCode((code >> 10) + 0xd800, (code & 1023) + 0xdc00);
+    }
+    /**
     The amount of positions a character takes up a JavaScript string.
     */
     function codePointSize(code) { return code < 0x10000 ? 1 : 2; }
@@ -6745,7 +6756,7 @@
     const mouseSelectionStyle = /*@__PURE__*/Facet.define();
     const exceptionSink = /*@__PURE__*/Facet.define();
     const updateListener = /*@__PURE__*/Facet.define();
-    const inputHandler = /*@__PURE__*/Facet.define();
+    const inputHandler$1 = /*@__PURE__*/Facet.define();
     const perLineTextDirection = /*@__PURE__*/Facet.define({
         combine: values => values.some(x => x)
     });
@@ -10623,7 +10634,7 @@
                         dispatchKey(view.contentDOM, "Delete", 46))))
                 return true;
             let text = change.insert.toString();
-            if (view.state.facet(inputHandler).some(h => h(view, change.from, change.to, text)))
+            if (view.state.facet(inputHandler$1).some(h => h(view, change.from, change.to, text)))
                 return true;
             if (view.inputState.composing >= 0)
                 view.inputState.composing++;
@@ -11997,7 +12008,7 @@
     content. When one returns true, no further input handlers are
     called and the default behavior is prevented.
     */
-    EditorView.inputHandler = inputHandler;
+    EditorView.inputHandler = inputHandler$1;
     /**
     By default, the editor assumes all its content has the same
     [text direction](https://codemirror.net/6/docs/ref/#view.Direction). Configure this with a `true`
@@ -12720,7 +12731,7 @@
     in all gutters for the line).
     */
     const gutterLineClass = /*@__PURE__*/Facet.define();
-    const defaults = {
+    const defaults$1 = {
         class: "",
         renderEmptyElements: false,
         elementStyle: "",
@@ -12737,7 +12748,7 @@
     determined by their extension priority.
     */
     function gutter(config) {
-        return [gutters(), activeGutters.of(Object.assign(Object.assign({}, defaults), config))];
+        return [gutters(), activeGutters.of(Object.assign(Object.assign({}, defaults$1), config))];
     }
     const unfixGutters = /*@__PURE__*/Facet.define({
         combine: values => values.some(x => x)
@@ -16683,7 +16694,66 @@
         { tag: tags.invalid,
             color: "#f00" }
     ]);
+
+    const baseTheme = /*@__PURE__*/EditorView.baseTheme({
+        "&.cm-focused .cm-matchingBracket": { backgroundColor: "#328c8252" },
+        "&.cm-focused .cm-nonmatchingBracket": { backgroundColor: "#bb555544" }
+    });
     const DefaultScanDist = 10000, DefaultBrackets = "()[]{}";
+    const bracketMatchingConfig = /*@__PURE__*/Facet.define({
+        combine(configs) {
+            return combineConfig(configs, {
+                afterCursor: true,
+                brackets: DefaultBrackets,
+                maxScanDistance: DefaultScanDist,
+                renderMatch: defaultRenderMatch
+            });
+        }
+    });
+    const matchingMark = /*@__PURE__*/Decoration.mark({ class: "cm-matchingBracket" }), nonmatchingMark = /*@__PURE__*/Decoration.mark({ class: "cm-nonmatchingBracket" });
+    function defaultRenderMatch(match) {
+        let decorations = [];
+        let mark = match.matched ? matchingMark : nonmatchingMark;
+        decorations.push(mark.range(match.start.from, match.start.to));
+        if (match.end)
+            decorations.push(mark.range(match.end.from, match.end.to));
+        return decorations;
+    }
+    const bracketMatchingState = /*@__PURE__*/StateField.define({
+        create() { return Decoration.none; },
+        update(deco, tr) {
+            if (!tr.docChanged && !tr.selection)
+                return deco;
+            let decorations = [];
+            let config = tr.state.facet(bracketMatchingConfig);
+            for (let range of tr.state.selection.ranges) {
+                if (!range.empty)
+                    continue;
+                let match = matchBrackets(tr.state, range.head, -1, config)
+                    || (range.head > 0 && matchBrackets(tr.state, range.head - 1, 1, config))
+                    || (config.afterCursor &&
+                        (matchBrackets(tr.state, range.head, 1, config) ||
+                            (range.head < tr.state.doc.length && matchBrackets(tr.state, range.head + 1, -1, config))));
+                if (match)
+                    decorations = decorations.concat(config.renderMatch(match, tr.state));
+            }
+            return Decoration.set(decorations, true);
+        },
+        provide: f => EditorView.decorations.from(f)
+    });
+    const bracketMatchingUnique = [
+        bracketMatchingState,
+        baseTheme
+    ];
+    /**
+    Create an extension that enables bracket matching. Whenever the
+    cursor is next to a bracket, that bracket and the one it matches
+    are highlighted. Or, when no matching bracket is found, another
+    highlighting style is used to indicate this.
+    */
+    function bracketMatching(config = {}) {
+        return [bracketMatchingConfig.of(config), bracketMatchingUnique];
+    }
     /**
     When larger syntax nodes, such as HTML tags, are marked as
     opening/closing, it can be a bit messy to treat the whole node as
@@ -19892,10 +19962,223 @@
             return token || context.explicit ? { from: token ? token.from : context.pos, options, validFor } : null;
         };
     }
+
+    const defaults = {
+        brackets: ["(", "[", "{", "'", '"'],
+        before: ")]}:;>",
+        stringPrefixes: []
+    };
+    const closeBracketEffect = /*@__PURE__*/StateEffect.define({
+        map(value, mapping) {
+            let mapped = mapping.mapPos(value, -1, MapMode.TrackAfter);
+            return mapped == null ? undefined : mapped;
+        }
+    });
+    const skipBracketEffect = /*@__PURE__*/StateEffect.define({
+        map(value, mapping) { return mapping.mapPos(value); }
+    });
     const closedBracket = /*@__PURE__*/new class extends RangeValue {
     };
     closedBracket.startSide = 1;
     closedBracket.endSide = -1;
+    const bracketState = /*@__PURE__*/StateField.define({
+        create() { return RangeSet.empty; },
+        update(value, tr) {
+            if (tr.selection) {
+                let lineStart = tr.state.doc.lineAt(tr.selection.main.head).from;
+                let prevLineStart = tr.startState.doc.lineAt(tr.startState.selection.main.head).from;
+                if (lineStart != tr.changes.mapPos(prevLineStart, -1))
+                    value = RangeSet.empty;
+            }
+            value = value.map(tr.changes);
+            for (let effect of tr.effects) {
+                if (effect.is(closeBracketEffect))
+                    value = value.update({ add: [closedBracket.range(effect.value, effect.value + 1)] });
+                else if (effect.is(skipBracketEffect))
+                    value = value.update({ filter: from => from != effect.value });
+            }
+            return value;
+        }
+    });
+    /**
+    Extension to enable bracket-closing behavior. When a closeable
+    bracket is typed, its closing bracket is immediately inserted
+    after the cursor. When closing a bracket directly in front of a
+    closing bracket inserted by the extension, the cursor moves over
+    that bracket.
+    */
+    function closeBrackets() {
+        return [inputHandler, bracketState];
+    }
+    const definedClosing = "()[]{}<>";
+    function closing(ch) {
+        for (let i = 0; i < definedClosing.length; i += 2)
+            if (definedClosing.charCodeAt(i) == ch)
+                return definedClosing.charAt(i + 1);
+        return fromCodePoint(ch < 128 ? ch : ch + 1);
+    }
+    function config(state, pos) {
+        return state.languageDataAt("closeBrackets", pos)[0] || defaults;
+    }
+    const android = typeof navigator == "object" && /*@__PURE__*//Android\b/.test(navigator.userAgent);
+    const inputHandler = /*@__PURE__*/EditorView.inputHandler.of((view, from, to, insert) => {
+        if ((android ? view.composing : view.compositionStarted) || view.state.readOnly)
+            return false;
+        let sel = view.state.selection.main;
+        if (insert.length > 2 || insert.length == 2 && codePointSize(codePointAt(insert, 0)) == 1 ||
+            from != sel.from || to != sel.to)
+            return false;
+        let tr = insertBracket(view.state, insert);
+        if (!tr)
+            return false;
+        view.dispatch(tr);
+        return true;
+    });
+    /**
+    Implements the extension's behavior on text insertion. If the
+    given string counts as a bracket in the language around the
+    selection, and replacing the selection with it requires custom
+    behavior (inserting a closing version or skipping past a
+    previously-closed bracket), this function returns a transaction
+    representing that custom behavior. (You only need this if you want
+    to programmatically insert brackets—the
+    [`closeBrackets`](https://codemirror.net/6/docs/ref/#autocomplete.closeBrackets) extension will
+    take care of running this for user input.)
+    */
+    function insertBracket(state, bracket) {
+        let conf = config(state, state.selection.main.head);
+        let tokens = conf.brackets || defaults.brackets;
+        for (let tok of tokens) {
+            let closed = closing(codePointAt(tok, 0));
+            if (bracket == tok)
+                return closed == tok ? handleSame(state, tok, tokens.indexOf(tok + tok + tok) > -1, conf)
+                    : handleOpen(state, tok, closed, conf.before || defaults.before);
+            if (bracket == closed && closedBracketAt(state, state.selection.main.from))
+                return handleClose(state, tok, closed);
+        }
+        return null;
+    }
+    function closedBracketAt(state, pos) {
+        let found = false;
+        state.field(bracketState).between(0, state.doc.length, from => {
+            if (from == pos)
+                found = true;
+        });
+        return found;
+    }
+    function nextChar(doc, pos) {
+        let next = doc.sliceString(pos, pos + 2);
+        return next.slice(0, codePointSize(codePointAt(next, 0)));
+    }
+    function handleOpen(state, open, close, closeBefore) {
+        let dont = null, changes = state.changeByRange(range => {
+            if (!range.empty)
+                return { changes: [{ insert: open, from: range.from }, { insert: close, from: range.to }],
+                    effects: closeBracketEffect.of(range.to + open.length),
+                    range: EditorSelection.range(range.anchor + open.length, range.head + open.length) };
+            let next = nextChar(state.doc, range.head);
+            if (!next || /\s/.test(next) || closeBefore.indexOf(next) > -1)
+                return { changes: { insert: open + close, from: range.head },
+                    effects: closeBracketEffect.of(range.head + open.length),
+                    range: EditorSelection.cursor(range.head + open.length) };
+            return { range: dont = range };
+        });
+        return dont ? null : state.update(changes, {
+            scrollIntoView: true,
+            userEvent: "input.type"
+        });
+    }
+    function handleClose(state, _open, close) {
+        let dont = null, moved = state.selection.ranges.map(range => {
+            if (range.empty && nextChar(state.doc, range.head) == close)
+                return EditorSelection.cursor(range.head + close.length);
+            return dont = range;
+        });
+        return dont ? null : state.update({
+            selection: EditorSelection.create(moved, state.selection.mainIndex),
+            scrollIntoView: true,
+            effects: state.selection.ranges.map(({ from }) => skipBracketEffect.of(from))
+        });
+    }
+    // Handles cases where the open and close token are the same, and
+    // possibly triple quotes (as in `"""abc"""`-style quoting).
+    function handleSame(state, token, allowTriple, config) {
+        let stringPrefixes = config.stringPrefixes || defaults.stringPrefixes;
+        let dont = null, changes = state.changeByRange(range => {
+            if (!range.empty)
+                return { changes: [{ insert: token, from: range.from }, { insert: token, from: range.to }],
+                    effects: closeBracketEffect.of(range.to + token.length),
+                    range: EditorSelection.range(range.anchor + token.length, range.head + token.length) };
+            let pos = range.head, next = nextChar(state.doc, pos), start;
+            if (next == token) {
+                if (nodeStart(state, pos)) {
+                    return { changes: { insert: token + token, from: pos },
+                        effects: closeBracketEffect.of(pos + token.length),
+                        range: EditorSelection.cursor(pos + token.length) };
+                }
+                else if (closedBracketAt(state, pos)) {
+                    let isTriple = allowTriple && state.sliceDoc(pos, pos + token.length * 3) == token + token + token;
+                    return { range: EditorSelection.cursor(pos + token.length * (isTriple ? 3 : 1)),
+                        effects: skipBracketEffect.of(pos) };
+                }
+            }
+            else if (allowTriple && state.sliceDoc(pos - 2 * token.length, pos) == token + token &&
+                (start = canStartStringAt(state, pos - 2 * token.length, stringPrefixes)) > -1 &&
+                nodeStart(state, start)) {
+                return { changes: { insert: token + token + token + token, from: pos },
+                    effects: closeBracketEffect.of(pos + token.length),
+                    range: EditorSelection.cursor(pos + token.length) };
+            }
+            else if (state.charCategorizer(pos)(next) != CharCategory.Word) {
+                if (canStartStringAt(state, pos, stringPrefixes) > -1 && !probablyInString(state, pos, token, stringPrefixes))
+                    return { changes: { insert: token + token, from: pos },
+                        effects: closeBracketEffect.of(pos + token.length),
+                        range: EditorSelection.cursor(pos + token.length) };
+            }
+            return { range: dont = range };
+        });
+        return dont ? null : state.update(changes, {
+            scrollIntoView: true,
+            userEvent: "input.type"
+        });
+    }
+    function nodeStart(state, pos) {
+        let tree = syntaxTree(state).resolveInner(pos + 1);
+        return tree.parent && tree.from == pos;
+    }
+    function probablyInString(state, pos, quoteToken, prefixes) {
+        let node = syntaxTree(state).resolveInner(pos, -1);
+        let maxPrefix = prefixes.reduce((m, p) => Math.max(m, p.length), 0);
+        for (let i = 0; i < 5; i++) {
+            let start = state.sliceDoc(node.from, Math.min(node.to, node.from + quoteToken.length + maxPrefix));
+            let quotePos = start.indexOf(quoteToken);
+            if (!quotePos || quotePos > -1 && prefixes.indexOf(start.slice(0, quotePos)) > -1) {
+                let first = node.firstChild;
+                while (first && first.from == node.from && first.to - first.from > quoteToken.length + quotePos) {
+                    if (state.sliceDoc(first.to - quoteToken.length, first.to) == quoteToken)
+                        return false;
+                    first = first.firstChild;
+                }
+                return true;
+            }
+            let parent = node.to == pos && node.parent;
+            if (!parent)
+                break;
+            node = parent;
+        }
+        return false;
+    }
+    function canStartStringAt(state, pos, prefixes) {
+        let charCat = state.charCategorizer(pos);
+        if (charCat(state.sliceDoc(pos - 1, pos)) != CharCategory.Word)
+            return pos;
+        for (let prefix of prefixes) {
+            let start = pos - prefix.length;
+            if (state.sliceDoc(start, pos) == prefix && charCat(state.sliceDoc(start - 1, start)) != CharCategory.Word)
+                return start;
+        }
+        return -1;
+    }
 
     let javaWithContext = parser.configure({
         props: [
@@ -19908,9 +20191,9 @@
                 Identifier: tags.variableName,
                 Number: tags.integer
             }),
-            // indentNodeProp.add({
-            //     Block: context => context.column(context.node.parent.from) + context.unit,
-            //   }),           
+            indentNodeProp.add({
+                Block: context => context.column(context.node.parent.from) + context.unit,
+            }),
             foldNodeProp.add({
                 Block: foldInside
             })
@@ -19946,6 +20229,8 @@
                 lineNumbers(),
                 highlightActiveLine(),
                 foldGutter(),
+                bracketMatching(),
+                closeBrackets(),
                 tabSize.of(EditorState.tabSize.of(4)),
                 keymap.of([
                     indentWithTab,

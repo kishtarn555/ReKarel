@@ -18,9 +18,9 @@ let javaWithContext = javaparser.configure({
             Number: t.integer
 
         }),
-        // indentNodeProp.add({
-        //     Block: context => context.column(context.node.parent.from) + context.unit,
-        //   }),           
+        indentNodeProp.add({
+            Block: context => context.column(context.node.parent.from) + context.unit,
+          }),           
         foldNodeProp.add({
             Block: foldInside
         })
