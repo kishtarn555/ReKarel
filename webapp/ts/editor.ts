@@ -4,15 +4,19 @@ import {drawSelection, keymap, lineNumbers, highlightActiveLine} from "@codemirr
 import {indentWithTab} from "@codemirror/commands"
 import {undo, redo} from "@codemirror/commands"
 import {EditorView} from "@codemirror/view"
-import {Transaction, Annotation} from "@codemirror/state"
+import {Transaction, Annotation, Compartment} from "@codemirror/state"
+import { kjava } from "./javaCodeMirror"
 
+import {defaultHighlightStyle, syntaxHighlighting} from "@codemirror/language"
 
-
+let language = new Compartment
 
 function createEditors() : Array<EditorView> {
   let startState = EditorState.create({
     doc: "iniciar-programa\n\tinicia-ejecucion\n\t\t{ TODO poner codigo aqui }\n\t\tapagate;\n\ttermina-ejecucion\nfinalizar-programa",
     extensions: [
+      language.of(kjava()),
+      syntaxHighlighting(defaultHighlightStyle, {fallback: true}),
       history(),
       drawSelection(),
       lineNumbers(),

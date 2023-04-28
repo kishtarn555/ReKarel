@@ -22,6 +22,8 @@
   },
   "dependencies": {
     "@codemirror/history": "^0.19.2",
+    "@codemirror/lang-javascript": "^6.1.7",
+    "@lezer/highlight": "^1.1.4",
     "@types/bootstrap": "^5.2.6",
     "codemirror": "^6.0.1",
     "split.js": "^1.6.5",
