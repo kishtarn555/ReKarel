@@ -204,6 +204,10 @@ class DesktopController {
             } else {
                 this.PauseStep();
             }            
+        });
+        this.delayInput.on("change", () => {
+            let delay:number = parseInt(this.delayInput.val() as string);
+            this.karelController.ChangeAutoStepDelay(delay);
         })
     }
     

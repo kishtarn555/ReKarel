@@ -159,10 +159,11 @@ class KarelController {
         this.drawFrameRequest = requestAnimationFrame(this.FrameDraw.bind(this));
     }
 
-    private FrameDraw() {
-        this.desktopController.CheckUpdate();
-        this.drawFrameRequest = requestAnimationFrame(this.FrameDraw.bind(this));
-        
+    ChangeAutoStepDelay(delay:number) {
+        if (!this.IsAutoStepping()) {
+            return;
+        }
+        this.StartAutoStep(delay);
     }
 
     StopAutoStep() {
@@ -175,6 +176,12 @@ class KarelController {
             cancelAnimationFrame(this.drawFrameRequest);
             this.drawFrameRequest = 0;
         }
+    }
+
+    private FrameDraw() {
+        this.desktopController.CheckUpdate();
+        this.drawFrameRequest = requestAnimationFrame(this.FrameDraw.bind(this));
+        
     }
 
     EndedOnError() {

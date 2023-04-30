@@ -22473,6 +22473,10 @@
                     this.PauseStep();
                 }
             });
+            this.delayInput.on("change", () => {
+                let delay = parseInt(this.delayInput.val());
+                this.karelController.ChangeAutoStepDelay(delay);
+            });
         }
         UpdateBeeperBag() {
             this.beeperBagInput.val(this.worldController.GetBeepersInBag());
@@ -26243,9 +26247,11 @@
             }, delay);
             this.drawFrameRequest = requestAnimationFrame(this.FrameDraw.bind(this));
         }
-        FrameDraw() {
-            this.desktopController.CheckUpdate();
-            this.drawFrameRequest = requestAnimationFrame(this.FrameDraw.bind(this));
+        ChangeAutoStepDelay(delay) {
+            if (!this.IsAutoStepping()) {
+                return;
+            }
+            this.StartAutoStep(delay);
         }
         StopAutoStep() {
             this.autoStepping = false;
@@ -26257,6 +26263,10 @@
                 cancelAnimationFrame(this.drawFrameRequest);
                 this.drawFrameRequest = 0;
             }
+        }
+        FrameDraw() {
+            this.desktopController.CheckUpdate();
+            this.drawFrameRequest = requestAnimationFrame(this.FrameDraw.bind(this));
         }
         EndedOnError() {
             return this.endedOnError;
