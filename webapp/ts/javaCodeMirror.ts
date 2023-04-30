@@ -17,7 +17,11 @@ let javaWithContext = javaparser.configure({
             obr: t.bracket,
             cbr: t.bracket,
             Identifier: t.variableName,
-            Number: t.integer
+            Number: t.integer,
+            While: t.controlKeyword,
+            If: t.controlKeyword,
+            Else: t.controlKeyword,
+            Iterate: t.controlKeyword,
 
         }),
         indentNodeProp.add({

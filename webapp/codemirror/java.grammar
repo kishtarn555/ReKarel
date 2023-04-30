@@ -29,7 +29,7 @@ InnerBlock {
 }
 
 expression {
-    call | Block
+    call | Block | whileStatement | iterateStatement
 }
 
 call {
@@ -41,7 +41,13 @@ numeric {
 
 }
 
+whileStatement {
+    While "(" Identifier ")" expression
+}
 
+iterateStatement {
+    Iterate "(" numeric ")" expression
+}
 
 Start[closedBy="End"] {
     start
@@ -53,6 +59,12 @@ End[openedBy="Start"] {
 
 ProgramClass { program }
 ProgramMain { program }
+
+
+While { @specialize<Identifier, "while"> }
+If { @specialize<Identifier, "if"> }
+Else { @specialize<Identifier, "else"> }
+Iterate { @specialize<Identifier, "iterate"> }
 
 @tokens {
   space { @whitespace+ }

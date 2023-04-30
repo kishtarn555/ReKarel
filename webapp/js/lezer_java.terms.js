@@ -12,5 +12,7 @@ export const
   Block = 10,
   InnerBlock = 11,
   Number = 12,
-  End = 13,
-  ProgramMain = 14
+  While = 13,
+  Iterate = 14,
+  End = 15,
+  ProgramMain = 16
