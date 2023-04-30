@@ -22442,6 +22442,7 @@
             this.worldController = new WorldController(new WorldRenderer(this.worldCanvas[0].getContext("2d"), DefaultWRStyle, window.devicePixelRatio), elements.worldContainer[0], karelController.world, elements.gizmos);
             this.karelController.SetDesktopController(this.worldController);
             this.karelController.RegisterStateChangeObserver(this.OnKarelControllerStateChange.bind(this));
+            this.isControlInPlayMode = false;
         }
         Init() {
             $(window).on("resize", this.ResizeCanvas.bind(this));
@@ -22464,7 +22465,14 @@
             this.executionReset.on("click", () => this.ResetExecution());
             this.executionStep.on("click", () => this.Step());
             this.executionEnd.on("click", () => this.RunTillEnd());
-            this.executionRun.on("click", () => this.AutoStep());
+            this.executionRun.on("click", () => {
+                if (!this.isControlInPlayMode) {
+                    this.AutoStep();
+                }
+                else {
+                    this.PauseStep();
+                }
+            });
         }
         UpdateBeeperBag() {
             this.beeperBagInput.val(this.worldController.GetBeepersInBag());
@@ -22476,6 +22484,11 @@
         AutoStep() {
             let delay = parseInt(this.delayInput.val());
             this.karelController.StartAutoStep(delay);
+            this.SetPlayMode();
+        }
+        PauseStep() {
+            this.karelController.StopAutoStep();
+            this.SetPauseMode();
         }
         RunTillEnd() {
             this.karelController.RunTillEnd();
@@ -22498,6 +22511,24 @@
             this.executionStep.removeAttr("disabled");
             this.executionEnd.removeAttr("disabled");
             this.beeperBagInput.removeAttr("disabled");
+            this.executionRun.html('<i class="bi bi-play-fill"></i>');
+        }
+        SetPlayMode() {
+            this.isControlInPlayMode = true;
+            this.executionCompile.attr("disabled", "");
+            this.executionStep.attr("disabled", "");
+            this.executionEnd.attr("disabled", "");
+            this.beeperBagInput.attr("disabled", "");
+            this.executionRun.html('<i class="bi bi-pause-fill"></i>');
+        }
+        SetPauseMode() {
+            this.isControlInPlayMode = false;
+            this.executionCompile.attr("disabled", "");
+            this.beeperBagInput.attr("disabled", "");
+            this.executionStep.removeAttr("disabled");
+            this.executionEnd.removeAttr("disabled");
+            this.executionRun.removeAttr("disabled");
+            this.executionRun.html('<i class="bi bi-play-fill"></i>');
         }
         OnKarelControllerStateChange(sender, state) {
             if (state === "running") {
@@ -22505,6 +22536,7 @@
                 this.worldController.Lock();
             }
             if (state === "finished") {
+                this.isControlInPlayMode = false;
                 this.DisableControlBar();
                 if (this.karelController.EndedOnError()) {
                     this.worldController.ErrorMode();
@@ -22513,6 +22545,7 @@
                 this.worldController.Lock();
             }
             else if (state === "unstarted") {
+                this.isControlInPlayMode = false;
                 this.EnableControlBar();
                 unfreezeEditors(this.editor);
                 this.worldController.UnLock();
@@ -26104,6 +26137,7 @@
             this.endedOnError = false;
             this.autoStepInterval = 0;
             this.drawFrameRequest = 0;
+            this.autoStepping = false;
         }
         SetDesktopController(desktopController) {
             this.desktopController = desktopController;
@@ -26127,6 +26161,9 @@
         // FIXME This is code from karel.js that I'm not even sure if it's ever executed by the web app.
         validatorCallbacks(message) {
             console.log("validator said this: ", message);
+        }
+        IsAutoStepping() {
+            return this.autoStepping;
         }
         Reset() {
             this.endedOnError = false;
@@ -26186,16 +26223,17 @@
             }
         }
         StartAutoStep(delay) {
+            this.StopAutoStep(); //Avoid thread leak
             if (this.state === "finished") {
                 return;
             }
+            this.autoStepping = true;
             if (!this.running) {
                 if (!this.StartRun()) {
                     //Code Failed
                     return;
                 }
             }
-            this.StopAutoStep(); //Avoid thread leak
             this.autoStepInterval = setInterval(() => {
                 if (!this.running) {
                     this.StopAutoStep();
@@ -26210,6 +26248,7 @@
             this.drawFrameRequest = requestAnimationFrame(this.FrameDraw.bind(this));
         }
         StopAutoStep() {
+            this.autoStepping = false;
             if (this.autoStepInterval !== 0) {
                 clearInterval(this.autoStepInterval);
                 this.autoStepInterval = 0;

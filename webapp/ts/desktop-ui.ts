@@ -111,6 +111,8 @@ class DesktopController {
     karelController: KarelController;
 
     consoleTab: ConsoleTab;
+
+    private isControlInPlayMode: boolean
     
     constructor (elements: DesktopElements, karelController: KarelController) {
         this.editor = elements.desktopEditor;
@@ -157,6 +159,8 @@ class DesktopController {
         this.karelController.SetDesktopController(this.worldController);
         this.karelController.RegisterStateChangeObserver(this.OnKarelControllerStateChange.bind(this));
 
+        this.isControlInPlayMode = false;
+
     }
 
     Init() {
@@ -194,7 +198,13 @@ class DesktopController {
         this.executionReset.on("click", ()=>this.ResetExecution());
         this.executionStep.on("click", ()=>this.Step());
         this.executionEnd.on("click", ()=> this.RunTillEnd());
-        this.executionRun.on("click", ()=>this.AutoStep())
+        this.executionRun.on("click", ()=> {
+            if (!this.isControlInPlayMode) {
+                this.AutoStep();
+            } else {
+                this.PauseStep();
+            }            
+        })
     }
     
     private UpdateBeeperBag() {
@@ -209,8 +219,14 @@ class DesktopController {
     private AutoStep() {
         let delay:number = parseInt(this.delayInput.val() as string);
         this.karelController.StartAutoStep(delay);
+        this.SetPlayMode();
     }
     
+    private PauseStep() {
+        this.karelController.StopAutoStep();
+        this.SetPauseMode();
+    }
+
     private RunTillEnd() {
         this.karelController.RunTillEnd();        
         this.UpdateBeeperBag();
@@ -235,6 +251,35 @@ class DesktopController {
         this.executionStep.removeAttr("disabled");
         this.executionEnd.removeAttr("disabled");
         this.beeperBagInput.removeAttr("disabled");
+
+        
+        this.executionRun.html('<i class="bi bi-play-fill"></i>');
+    }
+
+    private SetPlayMode() {
+        this.isControlInPlayMode = true;
+
+        this.executionCompile.attr("disabled", "");
+        this.executionStep.attr("disabled", "");
+        this.executionEnd.attr("disabled", "");
+        this.beeperBagInput.attr("disabled", "");
+
+        
+        this.executionRun.html('<i class="bi bi-pause-fill"></i>');
+    }
+
+    
+    private SetPauseMode() {
+        this.isControlInPlayMode = false;
+
+        this.executionCompile.attr("disabled", "");
+        this.beeperBagInput.attr("disabled", "");
+
+        this.executionStep.removeAttr("disabled");
+        this.executionEnd.removeAttr("disabled");
+        this.executionRun.removeAttr("disabled");
+        
+        this.executionRun.html('<i class="bi bi-play-fill"></i>');
     }
 
     private OnKarelControllerStateChange(sender: KarelController, state: ControllerState) {
@@ -243,6 +288,7 @@ class DesktopController {
             this.worldController.Lock();
         }
         if (state === "finished") {
+            this.isControlInPlayMode = false;
             this.DisableControlBar();
             if (this.karelController.EndedOnError()) {
                 this.worldController.ErrorMode();
@@ -251,7 +297,9 @@ class DesktopController {
             
             this.worldController.Lock();
 
-        } else if (state === "unstarted") {
+        } else if (state === "unstarted") {            
+            this.isControlInPlayMode = false;
+
             this.EnableControlBar();
             unfreezeEditors(this.editor);
             this.worldController.UnLock();

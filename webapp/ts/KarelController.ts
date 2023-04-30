@@ -20,6 +20,7 @@ class KarelController {
     private endedOnError:boolean;
     private autoStepInterval:number;
     private drawFrameRequest : number;
+    private autoStepping: boolean;
 
     constructor(world: World, mainEditor: EditorView) {
         this.world = world;
@@ -31,6 +32,7 @@ class KarelController {
         this.endedOnError = false;
         this.autoStepInterval = 0;
         this.drawFrameRequest = 0;
+        this.autoStepping = false;
     }
     
     SetDesktopController(desktopController: WorldController) {
@@ -59,6 +61,10 @@ class KarelController {
         console.log("validator said this: ", message);
     }
     
+    IsAutoStepping(): boolean {
+        return this.autoStepping;
+    }
+
     Reset() {        
         this.endedOnError = false;
         this.running = false;
@@ -114,7 +120,7 @@ class KarelController {
                 return;
             }
         }
-
+        
         let runtime = this.desktopController.GetRuntime();
         runtime.step();
         this.HighlightCurrentLine();
@@ -127,17 +133,18 @@ class KarelController {
 
     }
 
-    StartAutoStep(delay:number) {
+    StartAutoStep(delay:number) {        
+        this.StopAutoStep(); //Avoid thread leak
         if (this.state === "finished") {
             return;
         }
+        this.autoStepping = true;
         if (!this.running) {
             if (!this.StartRun()) {
                 //Code Failed
                 return;
             }
         }
-        this.StopAutoStep(); //Avoid thread leak
         this.autoStepInterval = setInterval(
             ()=>{
                 if (!this.running) {
@@ -159,6 +166,7 @@ class KarelController {
     }
 
     StopAutoStep() {
+        this.autoStepping = false;
         if (this.autoStepInterval !== 0) {
             clearInterval(this.autoStepInterval);
             this.autoStepInterval = 0;
