@@ -22427,6 +22427,7 @@
             this.executionStep = elements.controlBar.execution.step;
             this.executionEnd = elements.controlBar.execution.future;
             this.beeperBagInput = elements.controlBar.beeperInput;
+            this.delayInput = elements.controlBar.delayInput;
             this.beeperToolbar = elements.toolbar.beepers;
             this.karelToolbar = elements.toolbar.karel;
             this.wallToolbar = elements.toolbar.wall;
@@ -22463,6 +22464,7 @@
             this.executionReset.on("click", () => this.ResetExecution());
             this.executionStep.on("click", () => this.Step());
             this.executionEnd.on("click", () => this.RunTillEnd());
+            this.executionRun.on("click", () => this.AutoStep());
         }
         UpdateBeeperBag() {
             this.beeperBagInput.val(this.worldController.GetBeepersInBag());
@@ -22470,6 +22472,10 @@
         ResetExecution() {
             this.karelController.Reset();
             this.UpdateBeeperBag();
+        }
+        AutoStep() {
+            let delay = parseInt(this.delayInput.val());
+            this.karelController.StartAutoStep(delay);
         }
         RunTillEnd() {
             this.karelController.RunTillEnd();
@@ -26096,6 +26102,8 @@
             this.onStateChange = [];
             this.state = "unstarted";
             this.endedOnError = false;
+            this.autoStepInterval = 0;
+            this.drawFrameRequest = 0;
         }
         SetDesktopController(desktopController) {
             this.desktopController = desktopController;
@@ -26175,6 +26183,40 @@
             if (!runtime.state.running) {
                 this.EndMessage();
                 this.ChangeState("finished");
+            }
+        }
+        StartAutoStep(delay) {
+            if (this.state === "finished") {
+                return;
+            }
+            if (!this.running) {
+                if (!this.StartRun()) {
+                    //Code Failed
+                    return;
+                }
+            }
+            this.StopAutoStep(); //Avoid thread leak
+            this.autoStepInterval = setInterval(() => {
+                if (!this.running) {
+                    this.StopAutoStep();
+                    return;
+                }
+                this.Step();
+            }, delay);
+            this.drawFrameRequest = requestAnimationFrame(this.FrameDraw.bind(this));
+        }
+        FrameDraw() {
+            this.desktopController.CheckUpdate();
+            this.drawFrameRequest = requestAnimationFrame(this.FrameDraw.bind(this));
+        }
+        StopAutoStep() {
+            if (this.autoStepInterval !== 0) {
+                clearInterval(this.autoStepInterval);
+                this.autoStepInterval = 0;
+            }
+            if (this.drawFrameRequest !== 0) {
+                cancelAnimationFrame(this.drawFrameRequest);
+                this.drawFrameRequest = 0;
             }
         }
         EndedOnError() {
@@ -26311,6 +26353,7 @@
                 future: $("#desktopFutureProgram"),
             },
             beeperInput: $("#beeperBag"),
+            delayInput: $("#delayPanel"),
         },
         toolbar: {
             karel: {

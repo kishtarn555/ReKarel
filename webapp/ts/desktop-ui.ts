@@ -60,6 +60,7 @@ interface DesktopElements {
     controlBar: {
         execution: ExecutionToolbar,
         beeperInput: JQuery,
+        delayInput: JQuery,
     },
     toolbar: {
         beepers: BeeperToolbar
@@ -92,6 +93,8 @@ class DesktopController {
 
     beeperBagInput: JQuery
 
+    delayInput: JQuery
+
     beeperToolbar: BeeperToolbar;
     karelToolbar: KarelToolbar;
     wallToolbar: WallToolbar;
@@ -122,6 +125,8 @@ class DesktopController {
         this.executionEnd = elements.controlBar.execution.future;
 
         this.beeperBagInput = elements.controlBar.beeperInput;
+
+        this.delayInput = elements.controlBar.delayInput;
 
         this.beeperToolbar = elements.toolbar.beepers;
         this.karelToolbar = elements.toolbar.karel;
@@ -189,6 +194,7 @@ class DesktopController {
         this.executionReset.on("click", ()=>this.ResetExecution());
         this.executionStep.on("click", ()=>this.Step());
         this.executionEnd.on("click", ()=> this.RunTillEnd());
+        this.executionRun.on("click", ()=>this.AutoStep())
     }
     
     private UpdateBeeperBag() {
@@ -199,7 +205,12 @@ class DesktopController {
         this.karelController.Reset();
         this.UpdateBeeperBag();
     }
-
+    
+    private AutoStep() {
+        let delay:number = parseInt(this.delayInput.val() as string);
+        this.karelController.StartAutoStep(delay);
+    }
+    
     private RunTillEnd() {
         this.karelController.RunTillEnd();        
         this.UpdateBeeperBag();

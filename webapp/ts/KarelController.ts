@@ -18,6 +18,8 @@ class KarelController {
     private onStateChange: StateChangeCallback[];
     private state : ControllerState;
     private endedOnError:boolean;
+    private autoStepInterval:number;
+    private drawFrameRequest : number;
 
     constructor(world: World, mainEditor: EditorView) {
         this.world = world;
@@ -27,6 +29,8 @@ class KarelController {
         this.onStateChange = [];
         this.state = "unstarted";
         this.endedOnError = false;
+        this.autoStepInterval = 0;
+        this.drawFrameRequest = 0;
     }
     
     SetDesktopController(desktopController: WorldController) {
@@ -121,6 +125,48 @@ class KarelController {
             this.ChangeState("finished");
         }
 
+    }
+
+    StartAutoStep(delay:number) {
+        if (this.state === "finished") {
+            return;
+        }
+        if (!this.running) {
+            if (!this.StartRun()) {
+                //Code Failed
+                return;
+            }
+        }
+        this.StopAutoStep(); //Avoid thread leak
+        this.autoStepInterval = setInterval(
+            ()=>{
+                if (!this.running) {
+                    this.StopAutoStep();
+                    return;
+                }
+                this.Step();
+
+            }, 
+            delay
+        );
+        this.drawFrameRequest = requestAnimationFrame(this.FrameDraw.bind(this));
+    }
+
+    private FrameDraw() {
+        this.desktopController.CheckUpdate();
+        this.drawFrameRequest = requestAnimationFrame(this.FrameDraw.bind(this));
+        
+    }
+
+    StopAutoStep() {
+        if (this.autoStepInterval !== 0) {
+            clearInterval(this.autoStepInterval);
+            this.autoStepInterval = 0;
+        }
+        if (this.drawFrameRequest !== 0) {
+            cancelAnimationFrame(this.drawFrameRequest);
+            this.drawFrameRequest = 0;
+        }
     }
 
     EndedOnError() {
