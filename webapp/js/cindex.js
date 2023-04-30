@@ -2868,7 +2868,7 @@
     const changeFilter = /*@__PURE__*/Facet.define();
     const transactionFilter = /*@__PURE__*/Facet.define();
     const transactionExtender = /*@__PURE__*/Facet.define();
-    const readOnly = /*@__PURE__*/Facet.define({
+    const readOnly$1 = /*@__PURE__*/Facet.define({
         combine: values => values.length ? values[0] : false
     });
 
@@ -3596,7 +3596,7 @@
         Returns true when the editor is
         [configured](https://codemirror.net/6/docs/ref/#state.EditorState^readOnly) to be read-only.
         */
-        get readOnly() { return this.facet(readOnly); }
+        get readOnly() { return this.facet(readOnly$1); }
         /**
         Look up a translation for the given phrase (via the
         [`phrases`](https://codemirror.net/6/docs/ref/#state.EditorState^phrases) facet), or return the
@@ -3727,7 +3727,7 @@
     controls whether the editor's DOM is set to be editable (and
     thus focusable).
     */
-    EditorState.readOnly = readOnly;
+    EditorState.readOnly = readOnly$1;
     /**
     Registers translation phrases. The
     [`phrase`](https://codemirror.net/6/docs/ref/#state.EditorState.phrase) method will look through
@@ -21749,6 +21749,7 @@
     }
 
     let language = new Compartment, tabSize = new Compartment;
+    let readOnly = new Compartment;
     function createEditors() {
         let startState = EditorState.create({
             doc: "iniciar-programa\n\tinicia-ejecucion\n\t\t{ TODO poner codigo aqui }\n\t\tapagate;\n\ttermina-ejecucion\nfinalizar-programa",
@@ -21764,6 +21765,7 @@
                 autocompletion(),
                 closeBrackets(),
                 indentUnit.of("\t"),
+                readOnly.of(EditorState.readOnly.of(false)),
                 tabSize.of(EditorState.tabSize.of(4)),
                 keymap.of([
                     indentWithTab,
@@ -21808,6 +21810,16 @@
             dispatch: tr => syncDispatch(tr, otherView, mainView)
         });
         return [mainView, otherView];
+    }
+    function freezeEditors(editor) {
+        editor.dispatch({
+            effects: readOnly.reconfigure(EditorState.readOnly.of(true))
+        });
+    }
+    function unfreezeEditors(editor) {
+        editor.dispatch({
+            effects: readOnly.reconfigure(EditorState.readOnly.of(false))
+        });
     }
 
     const DefaultWRStyle = {
@@ -22150,6 +22162,7 @@
             this.renderer = renderer;
             this.container = container;
             this.world = world;
+            this.lock = false;
             this.selection = {
                 r: 1,
                 c: 1,
@@ -22164,6 +22177,12 @@
             };
             this.gizmos = gizmos;
             this.scale = 1;
+        }
+        Lock() {
+            this.lock = true;
+        }
+        UnLock() {
+            this.lock = false;
         }
         Reset() {
             this.world.reset();
@@ -22252,6 +22271,8 @@
             console.log(this.selection.r, this.selection.c);
         }
         SetKarelOnSelection(direction = "north") {
+            if (this.lock)
+                return;
             this.world.move(this.selection.r, this.selection.c);
             switch (direction) {
                 case "north":
@@ -22270,6 +22291,8 @@
             this.Update();
         }
         ChangeBeepers(delta) {
+            if (this.lock)
+                return;
             if (delta === 0) {
                 return;
             }
@@ -22286,6 +22309,8 @@
             this.Update();
         }
         SetBeepers(ammount) {
+            if (this.lock)
+                return;
             if (this.world.buzzers(this.selection.r, this.selection.c) === ammount) {
                 return;
             }
@@ -22293,6 +22318,8 @@
             this.Update();
         }
         ToggleKarelPosition() {
+            if (this.lock)
+                return;
             this.world.move(this.selection.r, this.selection.c);
             this.world.rotate();
             this.Update();
@@ -22322,6 +22349,8 @@
             this.container.scrollTop = (1 - top) * (this.container.scrollHeight - this.container.clientHeight);
         }
         ToggleWall(which) {
+            if (this.lock)
+                return;
             switch (which) {
                 case "north":
                     for (let i = 0; i < this.selection.rows; i++) {
@@ -22388,6 +22417,7 @@
 
     class DesktopController {
         constructor(elements, karelController) {
+            this.editor = elements.desktopEditor;
             this.worldContainer = elements.worldContainer;
             this.worldCanvas = elements.worldCanvas;
             this.worldZoom = elements.worldZoom;
@@ -22464,14 +22494,22 @@
             this.beeperBagInput.removeAttr("disabled");
         }
         OnKarelControllerStateChange(sender, state) {
+            if (state === "running") {
+                freezeEditors(this.editor);
+                this.worldController.Lock();
+            }
             if (state === "finished") {
                 this.DisableControlBar();
                 if (this.karelController.EndedOnError()) {
                     this.worldController.ErrorMode();
                 }
+                freezeEditors(this.editor);
+                this.worldController.Lock();
             }
             else if (state === "unstarted") {
                 this.EnableControlBar();
+                unfreezeEditors(this.editor);
+                this.worldController.UnLock();
                 this.worldController.NormalMode();
             }
         }
@@ -26261,6 +26299,7 @@
     }
     // let DesktopUI = GetDesktopUIHelper(KarelWorld);
     let DesktopUI = new DesktopController({
+        desktopEditor,
         worldCanvas: $("#worldCanvas"),
         worldContainer: $("#worldContainer"),
         controlBar: {

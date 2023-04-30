@@ -97,6 +97,7 @@ function debugWorld () {
 // let DesktopUI = GetDesktopUIHelper(KarelWorld);
 let DesktopUI = new DesktopController(
     {
+        desktopEditor,
         worldCanvas: $("#worldCanvas"),
         worldContainer: $("#worldContainer"),
         controlBar: {

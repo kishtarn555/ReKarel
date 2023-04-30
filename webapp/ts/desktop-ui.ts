@@ -6,6 +6,7 @@ import { WorldController, Gizmos } from "./worldController";
 import { World } from '../../js/karel';
 import { ControllerState, KarelController } from './KarelController';
 import { GetOrCreateInstanceFactory } from 'bootstrap/js/dist/base-component';
+import { freezeEditors, unfreezeEditors } from './editor';
 
 type BeeperToolbar= {
     addOne: JQuery,
@@ -51,6 +52,7 @@ type ConsoleTab = {
 }
 
 interface DesktopElements {
+    desktopEditor: EditorView
     worldContainer: JQuery,
     worldCanvas: JQuery,
     gizmos: Gizmos,
@@ -76,6 +78,8 @@ interface DesktopElements {
 };
 
 class DesktopController {
+    editor: EditorView;
+
     worldContainer: JQuery;
     worldCanvas: JQuery;
     worldZoom: JQuery;
@@ -106,6 +110,7 @@ class DesktopController {
     consoleTab: ConsoleTab;
     
     constructor (elements: DesktopElements, karelController: KarelController) {
+        this.editor = elements.desktopEditor;
         this.worldContainer = elements.worldContainer;
         this.worldCanvas = elements.worldCanvas;
         this.worldZoom = elements.worldZoom;
@@ -222,14 +227,24 @@ class DesktopController {
     }
 
     private OnKarelControllerStateChange(sender: KarelController, state: ControllerState) {
+        if (state === "running") {            
+            freezeEditors(this.editor);
+            this.worldController.Lock();
+        }
         if (state === "finished") {
             this.DisableControlBar();
             if (this.karelController.EndedOnError()) {
                 this.worldController.ErrorMode();
             }
+            freezeEditors(this.editor);
+            
+            this.worldController.Lock();
+
         } else if (state === "unstarted") {
             this.EnableControlBar();
-            
+            unfreezeEditors(this.editor);
+            this.worldController.UnLock();
+
             this.worldController.NormalMode();
         }
     }

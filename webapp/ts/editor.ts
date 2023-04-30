@@ -12,6 +12,8 @@ import { closeBrackets, autocompletion } from "@codemirror/autocomplete"
 
 let language = new Compartment, tabSize = new Compartment
 
+let readOnly = new Compartment
+
 function createEditors() : Array<EditorView> {
   let startState = EditorState.create({
     doc: "iniciar-programa\n\tinicia-ejecucion\n\t\t{ TODO poner codigo aqui }\n\t\tapagate;\n\ttermina-ejecucion\nfinalizar-programa",
@@ -27,6 +29,7 @@ function createEditors() : Array<EditorView> {
       autocompletion(),
       closeBrackets(),
       indentUnit.of("\t"),
+      readOnly.of(EditorState.readOnly.of(false)),      
       tabSize.of(EditorState.tabSize.of(4)),
       keymap.of([
         indentWithTab,
@@ -76,4 +79,16 @@ function createEditors() : Array<EditorView> {
 }
 
 
-export {createEditors}
+function freezeEditors(editor : EditorView) {
+  editor.dispatch({
+    effects: readOnly.reconfigure(EditorState.readOnly.of(true))
+  });
+}
+
+function unfreezeEditors(editor : EditorView) {
+  editor.dispatch({
+    effects: readOnly.reconfigure(EditorState.readOnly.of(false))
+  });
+}
+
+export {createEditors, freezeEditors, unfreezeEditors}

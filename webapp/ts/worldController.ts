@@ -33,13 +33,15 @@ class WorldController {
         cursorX: number,
         cursorY: number,
     }
-    selection: CellSelection
+    selection: CellSelection;
+    private lock: boolean;
 
 
     constructor(renderer: WorldRenderer, container: HTMLElement, world: World, gizmos: Gizmos) {
         this.renderer = renderer;
         this.container = container;
         this.world = world;
+        this.lock = false;
         this.selection = {
             r: 1,
             c: 1,
@@ -54,6 +56,14 @@ class WorldController {
         }
         this.gizmos = gizmos;
         this.scale = 1;
+    }
+
+    Lock() {
+        this.lock = true;
+    }
+
+    UnLock() {
+        this.lock = false;
     }
 
     Reset() {
@@ -171,6 +181,7 @@ class WorldController {
     }
 
     SetKarelOnSelection(direction: "north" | "east" | "west" | "south" = "north") {
+        if (this.lock) return;
         this.world.move(this.selection.r, this.selection.c);
         switch (direction) {
             case "north":
@@ -191,6 +202,7 @@ class WorldController {
     }
 
     ChangeBeepers(delta: number) {
+        if (this.lock) return;
         if (delta === 0) {
             return;
         }
@@ -212,6 +224,7 @@ class WorldController {
     }
 
     SetBeepers(ammount: number) {
+        if (this.lock) return;
         if (this.world.buzzers(this.selection.r, this.selection.c) === ammount) {
             return;
         }
@@ -220,6 +233,7 @@ class WorldController {
     }
 
     ToggleKarelPosition() {
+        if (this.lock) return;
         this.world.move(this.selection.r, this.selection.c);
         this.world.rotate();
         this.Update();
@@ -259,6 +273,7 @@ class WorldController {
     }
 
     ToggleWall(which: "north" | "east" | "west" | "south" | "outer") {
+        if (this.lock) return;
         switch (which) {
             case "north":
                 for (let i = 0; i < this.selection.rows; i++) {
