@@ -306,13 +306,10 @@ function setSettings(event: Event) {
     return false;
 }
 $(document).ready(()=>{
-    debugWorld();
     $("#settingsForm").on("submit", setSettings)
     responsiveHack();
     applySettings(appSettings);    
     DesktopUI.Init();
-
-    DesktopUI.ConsoleMessage("Test", "info");
 })
 
 

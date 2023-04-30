@@ -26382,18 +26382,6 @@
     });
     let KarelWorld = new World(100, 100);
     let karelController = new KarelController(KarelWorld, desktopEditor);
-    function debugWorld() {
-        KarelWorld.resize(90, 105);
-        KarelWorld.move(12, 19);
-        KarelWorld.rotate('OESTE');
-        for (let k = 0; k < 4; k++) {
-            KarelWorld.addWall(5 + k, 5 + k * 2, k);
-            KarelWorld.addWall(2, 2, k);
-            KarelWorld.setDumpCell(1, k + 1, true);
-        }
-        KarelWorld.setBuzzers(9, 12, 13);
-        console.log("test");
-    }
     // let DesktopUI = GetDesktopUIHelper(KarelWorld);
     let DesktopUI = new DesktopController({
         desktopEditor,
@@ -26582,12 +26570,10 @@
         return false;
     }
     $(document).ready(() => {
-        debugWorld();
         $("#settingsForm").on("submit", setSettings);
         responsiveHack();
         applySettings(appSettings);
         DesktopUI.Init();
-        DesktopUI.ConsoleMessage("Test", "info");
     });
     $(document).on("keydown", (e) => {
         if (e.ctrlKey && e.which === 75) {
