@@ -22489,6 +22489,7 @@
                 this.karelController.ChangeAutoStepDelay(delay);
             });
             this.beeperBagInput.on("change", () => this.OnBeeperInputChange());
+            this.karelController.RegisterStepController((_ctr, _state) => { this.UpdateBeeperBag(); });
         }
         UpdateBeeperBag() {
             this.beeperBagInput.val(this.worldController.GetBeepersInBag());
@@ -26156,6 +26157,7 @@
             this.mainEditor = mainEditor;
             this.onMessage = [];
             this.onStateChange = [];
+            this.onStep = [];
             this.state = "unstarted";
             this.endedOnError = false;
             this.autoStepInterval = 0;
@@ -26247,6 +26249,7 @@
                 this.EndMessage();
                 this.ChangeState("finished");
             }
+            this.NotifyStep();
         }
         StartAutoStep(delay) {
             this.StopAutoStep(); //Avoid thread leak
@@ -26317,11 +26320,17 @@
         RegisterStateChangeObserver(callback) {
             this.onStateChange.push(callback);
         }
+        RegisterStepController(callback) {
+            this.onStep.push(callback);
+        }
         SendMessage(message, type) {
             this.onMessage.forEach((callback) => callback(message, type));
         }
         NotifyStateChange() {
             this.onStateChange.forEach((callback) => callback(this, this.state));
+        }
+        NotifyStep() {
+            this.onStep.forEach((callback) => callback(this, this.state));
         }
         ChangeState(nextState) {
             this.state = nextState;

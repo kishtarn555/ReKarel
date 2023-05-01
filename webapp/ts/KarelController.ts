@@ -9,6 +9,7 @@ type messageType = "info"|"success"|"error";
 type MessageCallback = (message:string, type:messageType)=>void;
 type ControllerState = "unstarted"| "running" | "finished";
 type StateChangeCallback = (caller:KarelController, newState:ControllerState)=>void;
+type StepCallback = (caller:KarelController, newState:ControllerState)=>void;
 class KarelController {
     world: World;
     desktopController: WorldController;
@@ -16,6 +17,7 @@ class KarelController {
     mainEditor: EditorView;
     private onMessage: MessageCallback[];
     private onStateChange: StateChangeCallback[];
+    private onStep: StepCallback[];
     private state : ControllerState;
     private endedOnError:boolean;
     private autoStepInterval:number;
@@ -28,10 +30,10 @@ class KarelController {
         this.mainEditor = mainEditor;
         this.onMessage = [];
         this.onStateChange = [];
+        this.onStep = [];
         this.state = "unstarted";
         this.endedOnError = false;
         this.autoStepInterval = 0;
-        this.drawFrameRequest = 0;
         this.autoStepping = false;
     }
     
@@ -135,6 +137,8 @@ class KarelController {
             this.ChangeState("finished");
         }
 
+        this.NotifyStep();
+
     }
 
     StartAutoStep(delay:number) {        
@@ -156,11 +160,10 @@ class KarelController {
                     return;
                 }
                 this.Step();
-
+                this.desktopController.CheckUpdate();
             }, 
             delay
         );
-        this.drawFrameRequest = requestAnimationFrame(this.FrameDraw.bind(this));
     }
 
     ChangeAutoStepDelay(delay:number) {
@@ -176,17 +179,8 @@ class KarelController {
             clearInterval(this.autoStepInterval);
             this.autoStepInterval = 0;
         }
-        if (this.drawFrameRequest !== 0) {
-            cancelAnimationFrame(this.drawFrameRequest);
-            this.drawFrameRequest = 0;
-        }
     }
 
-    private FrameDraw() {
-        this.desktopController.CheckUpdate();
-        this.drawFrameRequest = requestAnimationFrame(this.FrameDraw.bind(this));
-        
-    }
 
     EndedOnError() {
         return this.endedOnError;
@@ -218,12 +212,19 @@ class KarelController {
         this.onStateChange.push(callback);
     }
 
+    RegisterStepController(callback: StepCallback) {
+        this.onStep.push(callback);
+    }
+
     private SendMessage(message: string, type: messageType) {
         this.onMessage.forEach((callback) => callback(message, type));
     }
 
     private NotifyStateChange() {
         this.onStateChange.forEach((callback) => callback(this, this.state));
+    }
+    private NotifyStep() {
+        this.onStep.forEach((callback) => callback(this, this.state));
     }
 
     

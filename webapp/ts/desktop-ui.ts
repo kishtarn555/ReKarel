@@ -211,6 +211,7 @@ class DesktopController {
             this.karelController.ChangeAutoStepDelay(delay);
         });
         this.beeperBagInput.on("change", () => this.OnBeeperInputChange());
+        this.karelController.RegisterStepController((_ctr, _state)=> {this.UpdateBeeperBag()})
     }
     
     private UpdateBeeperBag() {
