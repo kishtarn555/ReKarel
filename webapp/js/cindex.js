@@ -22335,13 +22335,13 @@
             this.container.scrollTop = this.container.scrollHeight - this.container.clientHeight;
         }
         FocusKarel() {
-            let r = Math.max(1, this.world.i - 2);
-            let c = Math.max(1, this.world.j - 2);
+            let r = this.world.i - 2;
+            let c = this.world.j - 2;
             this.FocusTo(r, c);
         }
         FocusSelection() {
-            let r = Math.max(1, this.selection.r - 2);
-            let c = Math.max(1, this.selection.c - 2);
+            let r = this.selection.r - 2;
+            let c = this.selection.c - 2;
             this.FocusTo(r, c);
         }
         FocusTo(r, c) {
@@ -22351,6 +22351,7 @@
             let top = r / (this.world.h - this.renderer.GetRowCount("floor") + 1);
             top = top < 0 ? 0 : top;
             top = top > 1 ? 1 : top;
+            console.log(top);
             this.container.scrollLeft = left * (this.container.scrollWidth - this.container.clientWidth);
             this.container.scrollTop = (1 - top) * (this.container.scrollHeight - this.container.clientHeight);
         }
