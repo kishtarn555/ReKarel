@@ -22469,6 +22469,7 @@
             this.ConnectConsole();
         }
         ConnectExecutionButtonGroup() {
+            this.executionCompile.on("click", () => this.karelController.Compile());
             this.executionReset.on("click", () => this.ResetExecution());
             this.executionStep.on("click", () => this.Step());
             this.executionEnd.on("click", () => this.RunTillEnd());
