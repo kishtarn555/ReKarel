@@ -65,6 +65,10 @@ class KarelController {
         return this.autoStepping;
     }
 
+    GetState(): ControllerState {
+        return this.state;
+    }
+
     Reset() {        
         this.endedOnError = false;
         this.running = false;

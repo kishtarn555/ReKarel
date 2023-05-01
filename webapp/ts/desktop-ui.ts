@@ -209,13 +209,22 @@ class DesktopController {
         this.delayInput.on("change", () => {
             let delay:number = parseInt(this.delayInput.val() as string);
             this.karelController.ChangeAutoStepDelay(delay);
-        })
+        });
+        this.beeperBagInput.on("change", () => this.OnBeeperInputChange());
     }
     
     private UpdateBeeperBag() {
         this.beeperBagInput.val(this.worldController.GetBeepersInBag());
     }
     
+    private OnBeeperInputChange() {
+        if (this.karelController.GetState() !== "unstarted") {
+            return;
+        }
+        let beeperAmmount = parseInt(this.beeperBagInput.val() as string);
+        this.worldController.SetBeepersInBag(beeperAmmount);
+    }
+
     private ResetExecution() {
         this.karelController.Reset();
         this.UpdateBeeperBag();

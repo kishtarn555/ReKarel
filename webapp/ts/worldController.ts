@@ -80,6 +80,10 @@ class WorldController {
         return this.world.bagBuzzers;
     }
 
+    SetBeepersInBag(ammount : number) {
+        this.world.setBagBuzzers(ammount);
+    }
+
     SetWorld(world: World) {
         this.world = world;
         this.Update();

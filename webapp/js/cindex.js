@@ -22200,6 +22200,9 @@
         GetBeepersInBag() {
             return this.world.bagBuzzers;
         }
+        SetBeepersInBag(ammount) {
+            this.world.setBagBuzzers(ammount);
+        }
         SetWorld(world) {
             this.world = world;
             this.Update();
@@ -22485,9 +22488,17 @@
                 let delay = parseInt(this.delayInput.val());
                 this.karelController.ChangeAutoStepDelay(delay);
             });
+            this.beeperBagInput.on("change", () => this.OnBeeperInputChange());
         }
         UpdateBeeperBag() {
             this.beeperBagInput.val(this.worldController.GetBeepersInBag());
+        }
+        OnBeeperInputChange() {
+            if (this.karelController.GetState() !== "unstarted") {
+                return;
+            }
+            let beeperAmmount = parseInt(this.beeperBagInput.val());
+            this.worldController.SetBeepersInBag(beeperAmmount);
         }
         ResetExecution() {
             this.karelController.Reset();
@@ -26176,6 +26187,9 @@
         }
         IsAutoStepping() {
             return this.autoStepping;
+        }
+        GetState() {
+            return this.state;
         }
         Reset() {
             this.endedOnError = false;
