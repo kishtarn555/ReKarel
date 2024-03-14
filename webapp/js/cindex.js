@@ -22423,6 +22423,11 @@
             this.world.dirty = false;
             this.renderer.Draw(this.world);
         }
+        Resize(w, h) {
+            this.Select(1, 1, 1, 1);
+            this.world.resize(w, h);
+            this.Update();
+        }
     }
 
     class DesktopController {
@@ -22839,7 +22844,7 @@
         $(resizeModel.confirmBtn).on('click', () => {
             let w = parseInt($(resizeModel.columnField).val());
             let h = parseInt($(resizeModel.rowField).val());
-            karelController.world.resize(w, h);
+            karelController.desktopController.Resize(w, h);
         });
     }
 

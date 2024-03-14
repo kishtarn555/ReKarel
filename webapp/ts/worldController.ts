@@ -377,6 +377,12 @@ class WorldController {
         this.world.dirty=false;
         this.renderer.Draw(this.world);
     }
+
+    Resize(w:number, h:number) {
+        this.Select(1,1,1,1);
+        this.world.resize(w, h);
+        this.Update();
+    }
 }
 
 export { WorldController, Gizmos };
