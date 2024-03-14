@@ -8,6 +8,14 @@ type DownloadModal = {
     wrongCodeWarning: string
 }
 
+
+type ResizeModal = {
+    modal:string,
+    confirmBtn:string,
+    rowField:string,
+    columnField: string
+}
+
 type ConfirmModal = {
     modal: string,
     confirmBtn: string,
@@ -31,6 +39,7 @@ type ConfimModalBtn = {
 interface UiData {
     editor: EditorView,
     downloadModal: DownloadModal,
+    resizeModal:ResizeModal,
     confirmModal: ConfirmModal,
     confirmCallers: Array<ConfimModalBtn>,
     

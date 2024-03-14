@@ -48,6 +48,12 @@ HookUpCommonUI(
             inputField: "#codeName",
             wrongCodeWarning:"#wrongCodeName",
         },
+        resizeModal: {
+            modal: "#resizeWorldModal",
+            confirmBtn: "#resizeBtn",
+            rowField: "#rowField",
+            columnField: "#columnField",
+        },
         confirmModal: {
             modal: "#confirmModal",
             titleField: "#confirmModalTitle",

@@ -26161,7 +26161,6 @@
             this.state = "unstarted";
             this.endedOnError = false;
             this.autoStepInterval = 0;
-            this.drawFrameRequest = 0;
             this.autoStepping = false;
         }
         SetDesktopController(desktopController) {
@@ -26269,8 +26268,8 @@
                     return;
                 }
                 this.Step();
+                this.desktopController.CheckUpdate();
             }, delay);
-            this.drawFrameRequest = requestAnimationFrame(this.FrameDraw.bind(this));
         }
         ChangeAutoStepDelay(delay) {
             if (!this.IsAutoStepping()) {
@@ -26284,14 +26283,6 @@
                 clearInterval(this.autoStepInterval);
                 this.autoStepInterval = 0;
             }
-            if (this.drawFrameRequest !== 0) {
-                cancelAnimationFrame(this.drawFrameRequest);
-                this.drawFrameRequest = 0;
-            }
-        }
-        FrameDraw() {
-            this.desktopController.CheckUpdate();
-            this.drawFrameRequest = requestAnimationFrame(this.FrameDraw.bind(this));
         }
         EndedOnError() {
             return this.endedOnError;
@@ -26378,6 +26369,12 @@
             confirmBtn: "#downloadCodeBtn",
             inputField: "#codeName",
             wrongCodeWarning: "#wrongCodeName",
+        },
+        resizeModal: {
+            modal: "#resizeWorldModal",
+            confirmBtn: "#resizeBtn",
+            rowField: "#rowField",
+            columnField: "#columnField",
         },
         confirmModal: {
             modal: "#confirmModal",
