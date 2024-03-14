@@ -22819,6 +22819,7 @@
         $(data.uiData.confirmModal.confirmBtn).off("click", data.modalData.accept);
         $(data.uiData.confirmModal.rejectBtn).off("click", data.modalData.reject);
     }
+
     const fileRegex = /^[a-zA-Z0-9._]+$/;
     function setFileNameLink(modal, editor) {
         let newFilename = $(modal.inputField).val();
@@ -22833,6 +22834,15 @@
         $(modal.confirmBtn).attr("href", window.URL.createObjectURL(blob));
         $(modal.confirmBtn).attr("download", newFilename);
     }
+
+    function HookResizeModal(resizeModel, karelController) {
+        $(resizeModel.confirmBtn).on('click', () => {
+            let w = parseInt($(resizeModel.columnField).val());
+            let h = parseInt($(resizeModel.rowField).val());
+            karelController.world.resize(w, h);
+        });
+    }
+
     function HookUpCommonUI(uiData) {
         $(uiData.downloadModal.modal).on('show.bs.modal', () => setFileNameLink(uiData.downloadModal, uiData.editor));
         $(uiData.downloadModal.inputField).change(() => setFileNameLink(uiData.downloadModal, uiData.editor));
@@ -22845,6 +22855,7 @@
             $(confirmCaller.button).on('click', null, confirmArgs, confirmPrompt);
             $(uiData.confirmModal.modal).on('hidden.bs.modal', null, confirmArgs, confirmPromptEnd);
         });
+        HookResizeModal(uiData.resizeModal, uiData.karelController);
     }
     function SetText(editor, message) {
         let transaction = editor.state.update({
@@ -26362,6 +26373,8 @@
         title: "Nuevo código Java",
         reject: () => { },
     };
+    let KarelWorld = new World(100, 100);
+    let karelController = new KarelController(KarelWorld, desktopEditor);
     HookUpCommonUI({
         editor: desktopEditor,
         downloadModal: {
@@ -26400,10 +26413,9 @@
                 button: "#newPascalCodeBtn",
                 data: pascalConfirm
             },
-        ]
+        ],
+        karelController: karelController
     });
-    let KarelWorld = new World(100, 100);
-    let karelController = new KarelController(KarelWorld, desktopEditor);
     // let DesktopUI = GetDesktopUIHelper(KarelWorld);
     let DesktopUI = new DesktopController({
         desktopEditor,

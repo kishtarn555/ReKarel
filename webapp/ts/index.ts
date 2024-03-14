@@ -11,42 +11,46 @@ import { KarelController } from "./KarelController";
 
 var [desktopEditor, phoneEditor] = createEditors();
 //TODO: ThisShouldnt be here
-function hideElement(element:string) {
+function hideElement(element: string) {
     $(element).addClass("d-none");
 }
-function showElement(element:string) {
-    $(element).removeClass("d-none");    
+function showElement(element: string) {
+    $(element).removeClass("d-none");
 }
 const pascalConfirm = {
-    accept: ()=>{
+    accept: () => {
         SetText(
-            desktopEditor, 
+            desktopEditor,
             "iniciar-programa\n\tinicia-ejecucion\n\t\t{ TODO poner codigo aqui }\n\t\tapagate;\n\ttermina-ejecucion\nfinalizar-programa"
-        ); 
+        );
     },
-    message:"¡Perderás todo el código no guardado!",
+    message: "¡Perderás todo el código no guardado!",
     title: "Nuevo código Pascal",
-    reject: ()=>{ },
+    reject: () => { },
 };
 const javaConfirm = {
-    accept: ()=>{
+    accept: () => {
         SetText(
-            desktopEditor, 
+            desktopEditor,
             "class program {\n\tprogram () {\n\t\t// TODO poner codigo aqui \n\t\tturnoff();\n\t}\n}"
-        ); 
+        );
     },
-    message:"¡Perderás todo el código no guardado!",
+    message: "¡Perderás todo el código no guardado!",
     title: "Nuevo código Java",
-    reject: ()=>{ },
+    reject: () => { },
 };
+
+let KarelWorld: World = new World(100, 100);
+let karelController = new KarelController(KarelWorld, desktopEditor);
+
 HookUpCommonUI(
     {
-        editor:desktopEditor,
+        editor: desktopEditor,
         downloadModal: {
             modal: "#saveCodeModal",
             confirmBtn: "#downloadCodeBtn",
             inputField: "#codeName",
-            wrongCodeWarning:"#wrongCodeName",
+            wrongCodeWarning: "#wrongCodeName",
         },
         resizeModal: {
             modal: "#resizeWorldModal",
@@ -65,7 +69,7 @@ HookUpCommonUI(
             {
                 button: "#newJavaCodeNavBtn",
                 data: javaConfirm
-            },            
+            },
             {
                 button: "#newPascalCodeNavBtn",
                 data: pascalConfirm
@@ -78,25 +82,24 @@ HookUpCommonUI(
                 button: "#newPascalCodeBtn",
                 data: pascalConfirm
             },
-        ]
+        ],
+        karelController: karelController
     }
 )
 
-let KarelWorld: World = new World(100, 100);
-let karelController = new  KarelController(KarelWorld, desktopEditor);
 
-function debugWorld () {
+function debugWorld() {
     KarelWorld.resize(90, 105);
     KarelWorld.move(12, 19);
     KarelWorld.rotate('OESTE');
-    for (let k =0; k < 4; k++) {
-        KarelWorld.addWall(5+k, 5+k*2, k);
+    for (let k = 0; k < 4; k++) {
+        KarelWorld.addWall(5 + k, 5 + k * 2, k);
         KarelWorld.addWall(2, 2, k);
         KarelWorld.setDumpCell(
-            1, k+1, true
+            1, k + 1, true
         )
     }
-    KarelWorld.setBuzzers(9,12, 13);
+    KarelWorld.setBuzzers(9, 12, 13);
     console.log("test");
 }
 
@@ -128,9 +131,9 @@ let DesktopUI = new DesktopController(
                 addOne: $("#desktopAddBeeper"),
                 removeOne: $("#desktopDecrementBeeper"),
                 infinite: $("#desktopSetInfinite"),
-                ammount: $("#desktopSetAmmount"),                
+                ammount: $("#desktopSetAmmount"),
                 clear: $("#desktopRemoveAll"),
-            },            
+            },
             wall: {
                 north: $("#desktopNorthWall"),
                 east: $("#desktopEastWall"),
@@ -138,7 +141,7 @@ let DesktopUI = new DesktopController(
                 west: $("#desktopWestWall"),
                 outside: $("#desktopOuterWall"),
             },
-            focus:  {
+            focus: {
                 karel: $("#desktopGoKarel"),
                 origin: $("#desktopGoHome"),
                 selector: $("#desktopGoSelection"),
@@ -151,16 +154,16 @@ let DesktopUI = new DesktopController(
                 addOne: $("#contextAddBeeper"),
                 removeOne: $("#contextDecrementBeeper"),
                 infinite: $("#contextSetInfinite"),
-                ammount: $("#contextSetAmmount"),                
+                ammount: $("#contextSetAmmount"),
                 clear: $("#contextRemoveAll"),
-            },            
+            },
             karel: {
                 north: $("#contextKarelNorth"),
                 east: $("#contextKarelEast"),
                 south: $("#contextKarelSouth"),
                 west: $("#contextKarelWest"),
             },
-            wall: {                
+            wall: {
                 north: $("#contextNorthWall"),
                 east: $("#contextEastWall"),
                 south: $("#contextSouthWall"),
@@ -194,50 +197,50 @@ let PhoneUI = GetPhoneUIHelper({
         undo: "#codeUndo",
         redo: "#codeRedo",
         toolbar: {
-            "#codeEdit": () => {                        
+            "#codeEdit": () => {
                 hideElement("#editToolbar");
                 hideElement("#pascalAction");
                 hideElement("#pascalFlow");
                 hideElement("#pascalKeyword");
-    
+
                 showElement("#editToolbar");
                 return "";
             },
-            "#codeAction": () => {                        
+            "#codeAction": () => {
                 hideElement("#editToolbar");
                 hideElement("#pascalAction");
                 hideElement("#pascalFlow");
                 hideElement("#pascalKeyword");
-    
+
                 showElement("#pascalAction");
                 return "";
             },
-            "#codeFlow": () => {            
+            "#codeFlow": () => {
                 hideElement("#editToolbar");
                 hideElement("#pascalAction");
                 hideElement("#pascalFlow");
                 hideElement("#pascalKeyword");
-                
+
                 showElement("#pascalFlow");
                 return "";
             },
-            "#codeKeyword": () => {            
+            "#codeKeyword": () => {
                 hideElement("#editToolbar");
                 hideElement("#pascalAction");
                 hideElement("#pascalFlow");
                 hideElement("#pascalKeyword");
-    
+
                 showElement("#pascalKeyword");
                 return "";
             }
         },
         simpleCodeInputs: {
-            "#pAvanza":()=>"avanza;",
-            "#pGira":()=>"gira-izquierda;",
-            "#pCoge":()=>"coge-zumbador;",
-            "#pDeja":()=>"deja-zumbador;",
-            "#pApagate":()=>"apagate;",
-            "#pSalir":()=>"sal-de-instruccion;",
+            "#pAvanza": () => "avanza;",
+            "#pGira": () => "gira-izquierda;",
+            "#pCoge": () => "coge-zumbador;",
+            "#pDeja": () => "deja-zumbador;",
+            "#pApagate": () => "apagate;",
+            "#pSalir": () => "sal-de-instruccion;",
         }
     },
     navToolbar: {
@@ -245,7 +248,7 @@ let PhoneUI = GetPhoneUIHelper({
         "#worldTabBtn": () => "",
         "#execTabBtn": () => ""
     },
-    
+
 });
 
 
@@ -259,12 +262,12 @@ type fontSizes = number;
 type responsiveInterfaces = "auto" | "desktop" | "mobile";
 
 type AppSettings = {
-    interface : responsiveInterfaces,
+    interface: responsiveInterfaces,
     editorFontSize: fontSizes,
 }
 
 let appSettings: AppSettings = {
-    interface : "auto",
+    interface: "auto",
     editorFontSize: 12
 }
 
@@ -272,7 +275,7 @@ function isFontSize(str: number): str is fontSizes {
     return 6 < str && str < 31;
 }
 function isResponsiveInterfaces(str: string): str is responsiveInterfaces {
-    return ["auto" , "desktop" , "mobile"].indexOf(str)>-1;
+    return ["auto", "desktop", "mobile"].indexOf(str) > -1;
 }
 
 function applySettings(settings: AppSettings) {
@@ -291,7 +294,7 @@ function applySettings(settings: AppSettings) {
             break;
     }
     $(":root")[0].style.setProperty("--editor-font-size", `${settings.editorFontSize}pt`);
-    if (settings.interface== "desktop")
+    if (settings.interface == "desktop")
         DesktopUI.ResizeCanvas();
 }
 
@@ -300,31 +303,31 @@ function setSettings(event: Event) {
     let fontSize = <number>$("#settingsForm input[name=fontSize]").val();
     console.log(fontSize);
     if (isResponsiveInterfaces(interfaceType)) {
-        appSettings.interface= interfaceType;
+        appSettings.interface = interfaceType;
     }
     if (isFontSize(fontSize)) {
-        appSettings.editorFontSize= fontSize;
+        appSettings.editorFontSize = fontSize;
     }
-    
+
     console.log(appSettings);
     applySettings(appSettings);
     event.preventDefault();
     return false;
 }
-$(document).ready(()=>{
+$(document).ready(() => {
     $("#settingsForm").on("submit", setSettings)
     responsiveHack();
-    applySettings(appSettings);    
+    applySettings(appSettings);
     DesktopUI.Init();
 })
 
 
-$(document).on("keydown", (e)=> {
+$(document).on("keydown", (e) => {
     if (e.ctrlKey && e.which === 75) {
         let fontSize = appSettings.editorFontSize;
         fontSize--;
-        if (fontSize < 7) fontSize=7;
-        appSettings.editorFontSize= fontSize;
+        if (fontSize < 7) fontSize = 7;
+        appSettings.editorFontSize = fontSize;
         applySettings(appSettings);
         e.preventDefault();
         return false;
@@ -332,12 +335,12 @@ $(document).on("keydown", (e)=> {
     if (e.ctrlKey && e.which === 76) {
         let fontSize = appSettings.editorFontSize;
         fontSize++;
-        if (fontSize > 30) fontSize=30;
-        appSettings.editorFontSize= fontSize;        
+        if (fontSize > 30) fontSize = 30;
+        appSettings.editorFontSize = fontSize;
         applySettings(appSettings);
         e.preventDefault();
         return false;
     }
-    
+
 });
 
