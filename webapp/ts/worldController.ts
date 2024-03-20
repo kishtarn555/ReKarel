@@ -107,6 +107,16 @@ class WorldController {
     }
 
     Select(r: number, c: number, r2: number, c2: number) {
+        if (
+            r > this.world.h ||
+            c > this.world.w ||
+            r < 1 ||
+            c < 1
+
+        ) {
+            return;
+        }
+
         this.selection = {
             r: r,
             c: c,
@@ -382,6 +392,7 @@ class WorldController {
         this.Select(1,1,1,1);
         this.world.resize(w, h);
         this.Update();
+        this.FocusOrigin();
     }
 }
 

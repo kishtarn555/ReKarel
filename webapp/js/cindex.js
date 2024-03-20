@@ -22222,6 +22222,12 @@
             this.Update();
         }
         Select(r, c, r2, c2) {
+            if (r > this.world.h ||
+                c > this.world.w ||
+                r < 1 ||
+                c < 1) {
+                return;
+            }
             this.selection = {
                 r: r,
                 c: c,
@@ -22427,6 +22433,7 @@
             this.Select(1, 1, 1, 1);
             this.world.resize(w, h);
             this.Update();
+            this.FocusOrigin();
         }
     }
 
