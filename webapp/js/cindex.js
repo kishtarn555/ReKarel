@@ -22707,12 +22707,17 @@
             this.consoleTab.console.empty();
         }
         SendMessageToConsole(message, style) {
-            const currentDate = new Date();
-            const hour = currentDate.getHours() % 12 || 12;
-            const minute = currentDate.getMinutes();
-            const second = currentDate.getSeconds();
-            const amOrPm = currentDate.getHours() < 12 ? "AM" : "PM";
-            const html = `<div><span class="text-${style}">[${hour}:${minute}:${second} ${amOrPm}]</span> ${message}</div>`;
+            if (style !== "raw") {
+                const currentDate = new Date();
+                const hour = currentDate.getHours() % 12 || 12;
+                const minute = currentDate.getMinutes();
+                const second = currentDate.getSeconds();
+                const amOrPm = currentDate.getHours() < 12 ? "AM" : "PM";
+                const html = `<div><span class="text-${style}">[${hour}:${minute}:${second} ${amOrPm}]</span> ${message}</div>`;
+                this.consoleTab.console.prepend(html);
+                return;
+            }
+            const html = `<div>${message}</div>`;
             this.consoleTab.console.prepend(html);
         }
         ConsoleMessage(message, type = "info") {
@@ -22726,6 +22731,9 @@
                     break;
                 case "error":
                     style = "danger";
+                    break;
+                case "raw":
+                    style = "raw";
                     break;
             }
             this.SendMessageToConsole(message, style);
@@ -26258,7 +26266,7 @@
             let response = null;
             try {
                 response = compile(code);
-                //TODO: expand message            
+                //TODO: expand message  
                 this.SendMessage("Programa compilado correctamente", "info");
             }
             catch (e) {
@@ -26317,6 +26325,9 @@
                 let hasBreakpoint = false;
                 breakpoints.between(codeLine.from, codeLine.from, () => { hasBreakpoint = true; });
                 console.log(codeLine.number, hasBreakpoint);
+                if (hasBreakpoint) {
+                    this.BreakPointMessage(codeLine.number);
+                }
                 return hasBreakpoint;
             }
             return false;
@@ -26457,6 +26468,9 @@
                 return;
             }
             this.SendMessage("Ejecucion terminada exitosamente!", "success");
+        }
+        BreakPointMessage(line) {
+            this.SendMessage(`🔴 ${line}) Breakpoint `, "info");
         }
     }
 

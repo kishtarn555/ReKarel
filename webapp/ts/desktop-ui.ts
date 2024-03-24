@@ -405,17 +405,22 @@ class DesktopController {
     } 
 
     private SendMessageToConsole(message: string, style:string) {
-        const currentDate = new Date();
-        const hour = currentDate.getHours() % 12 || 12;
-        const minute = currentDate.getMinutes();
-        const second = currentDate.getSeconds();
-        const amOrPm = currentDate.getHours() < 12 ? "AM" : "PM";
-
-        const html = `<div><span class="text-${style}">[${hour}:${minute}:${second} ${amOrPm}]</span> ${message}</div>`;
+        if (style !== "raw") {
+            const currentDate = new Date();
+            const hour = currentDate.getHours() % 12 || 12;
+            const minute = currentDate.getMinutes();
+            const second = currentDate.getSeconds();
+            const amOrPm = currentDate.getHours() < 12 ? "AM" : "PM";
+            
+            const html = `<div><span class="text-${style}">[${hour}:${minute}:${second} ${amOrPm}]</span> ${message}</div>`;
+            this.consoleTab.console.prepend(html);
+            return;
+        }
+        const html = `<div>${message}</div>`;
         this.consoleTab.console.prepend(html);
     }
 
-    public ConsoleMessage(message: string, type:"info"|"success"|"error" = "info") {
+    public ConsoleMessage(message: string, type:"info"|"success"|"error"|"raw" = "info") {
         let style="info";
         switch (type) {
             case "info":
@@ -424,8 +429,11 @@ class DesktopController {
             case "success":
                 style = "success";
                 break;
-            case  "error":
-                style="danger";
+                case  "error":
+                    style="danger";
+                    break;
+            case "raw":
+                style="raw";
                 break;
         }        
         this.SendMessageToConsole(message, style);

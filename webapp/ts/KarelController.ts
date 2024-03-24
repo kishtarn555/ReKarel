@@ -6,7 +6,7 @@ import { DesktopController } from "./desktop-ui";
 import { ERRORCODES } from "./common-ui";
 import { breakpointState } from "./editor";
 
-type messageType = "info"|"success"|"error";
+type messageType = "info"|"success"|"error"|"raw";
 type MessageCallback = (message:string, type:messageType)=>void;
 type ControllerState = "unstarted"| "running" | "finished" | "paused";
 type StateChangeCallback = (caller:KarelController, newState:ControllerState)=>void;
@@ -118,6 +118,9 @@ class KarelController {
                 let hasBreakpoint = false
                 breakpoints.between(codeLine.from,codeLine.from, () => {hasBreakpoint = true})
                 console.log(codeLine.number,hasBreakpoint);
+                if (hasBreakpoint) {                    
+                    this.BreakPointMessage(codeLine.number);
+                }
                 return hasBreakpoint;
         }
         return false;
@@ -284,6 +287,10 @@ class KarelController {
             return;
         }
         this.SendMessage("Ejecucion terminada exitosamente!", "success");
+    }
+
+    private BreakPointMessage(line:number) {
+        this.SendMessage(`🔴 ${line}) Breakpoint `, "info");
     }
 }
 
