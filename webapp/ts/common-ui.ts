@@ -1,7 +1,7 @@
 import bootstrap from 'bootstrap'
 import {EditorView} from "@codemirror/view"
 import { ConfirmData, ConfirmModal, ConfirmPromptArgs, confirmPrompt, confirmPromptEnd, ConfirmModalBtn } from './commonUI/confirmPrompt'
-import { DownloadModal,setFileNameLink } from './commonUI/downloadModel'
+import { DownloadModal,hookDownloadModel,setFileNameLink } from './commonUI/downloadModel'
 import { HookResizeModal, ResizeModal } from './commonUI/resizeModel'
 import { KarelController } from './KarelController'
 
@@ -19,8 +19,7 @@ interface UiData {
 
 function HookUpCommonUI(uiData: UiData) {
     
-    $(uiData.downloadModal.modal).on('show.bs.modal', ()=>setFileNameLink(uiData.downloadModal, uiData.editor));
-    $(uiData.downloadModal.inputField).change(()=>setFileNameLink(uiData.downloadModal, uiData.editor));
+    hookDownloadModel(uiData.downloadModal, uiData.editor);
 
     //Hook ConfirmCallers
     uiData.confirmCallers.forEach((confirmCaller)=> {

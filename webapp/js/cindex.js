@@ -22846,6 +22846,10 @@
         $(modal.confirmBtn).attr("href", window.URL.createObjectURL(blob));
         $(modal.confirmBtn).attr("download", newFilename);
     }
+    function hookDownloadModel(modal, editor) {
+        $(modal.modal).on('show.bs.modal', () => setFileNameLink(modal, editor));
+        $(modal.inputField).change(() => setFileNameLink(modal, editor));
+    }
 
     function HookResizeModal(resizeModel, karelController) {
         $(resizeModel.modal).on('show.bs.modal', () => {
@@ -22860,8 +22864,7 @@
     }
 
     function HookUpCommonUI(uiData) {
-        $(uiData.downloadModal.modal).on('show.bs.modal', () => setFileNameLink(uiData.downloadModal, uiData.editor));
-        $(uiData.downloadModal.inputField).change(() => setFileNameLink(uiData.downloadModal, uiData.editor));
+        hookDownloadModel(uiData.downloadModal, uiData.editor);
         //Hook ConfirmCallers
         uiData.confirmCallers.forEach((confirmCaller) => {
             let confirmArgs = {

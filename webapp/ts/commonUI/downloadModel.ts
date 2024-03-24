@@ -21,3 +21,8 @@ export function setFileNameLink(modal: DownloadModal, editor:EditorView) {
     $(modal.confirmBtn).attr("href", window.URL.createObjectURL(blob));
     $(modal.confirmBtn).attr("download", newFilename);
 }
+
+export function hookDownloadModel(modal:DownloadModal, editor:EditorView) {
+    $(modal.modal).on('show.bs.modal', ()=>setFileNameLink(modal, editor));
+    $(modal.inputField).change(()=>setFileNameLink(modal, editor));
+}
