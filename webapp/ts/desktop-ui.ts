@@ -238,8 +238,7 @@ class DesktopController {
     }
     
     private PauseStep() {
-        this.karelController.StopAutoStep();
-        this.SetPauseMode();
+        this.karelController.Pause();
     }
 
     private RunTillEnd() {
@@ -320,6 +319,8 @@ class DesktopController {
             this.worldController.UnLock();
 
             this.worldController.NormalMode();
+        } else if (state === "paused") {
+            this.SetPauseMode();
         }
     }
 

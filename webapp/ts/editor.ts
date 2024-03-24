@@ -1,10 +1,10 @@
 import {EditorState} from "@codemirror/state"
 import {defaultKeymap, historyKeymap, history} from "@codemirror/commands"
-import {drawSelection, keymap, lineNumbers, highlightActiveLine} from "@codemirror/view"
+import {drawSelection, keymap, lineNumbers, highlightActiveLine, GutterMarker,gutter} from "@codemirror/view"
 import {indentWithTab} from "@codemirror/commands"
 import {undo, redo} from "@codemirror/commands"
 import {EditorView} from "@codemirror/view"
-import {Transaction, Annotation, Compartment} from "@codemirror/state"
+import {Transaction, Annotation, Compartment, StateField, StateEffect, RangeSet} from "@codemirror/state"
 import { kjava } from "./javaCodeMirror"
 
 import {defaultHighlightStyle, syntaxHighlighting, foldGutter, bracketMatching, indentUnit} from "@codemirror/language"
@@ -14,6 +14,61 @@ let language = new Compartment, tabSize = new Compartment
 
 let readOnly = new Compartment
 
+const breakpointEffect = StateEffect.define<{pos:number, on:boolean}>({
+  map:(val, mapping)=> ({pos:mapping.mapPos(val.pos), on:val.on})
+});
+const breakpointMarker = new class extends GutterMarker {
+  toDOM() { return document.createTextNode("🔴") }
+}
+
+export const breakpointState = StateField.define<RangeSet<GutterMarker>>({
+  create() { return RangeSet.empty },
+  update(set, transaction) {
+    set = set.map(transaction.changes)
+    for (let e of transaction.effects) {
+      if (e.is(breakpointEffect)) {
+        if (e.value.on)
+          set = set.update({add: [breakpointMarker.range(e.value.pos)]})
+        else
+          set = set.update({filter: from => from != e.value.pos})
+      }
+    }
+    return set
+  }
+});
+
+function toggleBreakpoint(view: EditorView, pos: number) {
+  let breakpoints = view.state.field(breakpointState)
+  let hasBreakpoint = false
+  breakpoints.between(pos, pos, () => {hasBreakpoint = true})
+  view.dispatch({
+    effects: breakpointEffect.of({pos, on: !hasBreakpoint})
+  })
+}
+const breakpointGutter = [
+  breakpointState,
+  gutter({
+    class: "cm-breakpoint-gutter",
+    markers: v => v.state.field(breakpointState),
+    initialSpacer: () => breakpointMarker,
+    domEventHandlers: {
+      mousedown(view, line) {
+        toggleBreakpoint(view, line.from)
+        return true
+      }
+    }
+  }),
+  EditorView.baseTheme({
+    ".cm-breakpoint-gutter .cm-gutterElement": {
+      color: "red",
+      paddingLeft: "2px",
+      paddingTop: "0.15em",
+      cursor: "default",
+      fontSize: "small"
+    }
+  })
+]
+
 function createEditors() : Array<EditorView> {
   let startState = EditorState.create({
     doc: "iniciar-programa\n\tinicia-ejecucion\n\t\t{ TODO poner codigo aqui }\n\t\tapagate;\n\ttermina-ejecucion\nfinalizar-programa",
@@ -21,6 +76,7 @@ function createEditors() : Array<EditorView> {
       language.of(kjava()),
       syntaxHighlighting(defaultHighlightStyle, {fallback: true}),
       history(),
+      breakpointGutter,
       drawSelection(),
       lineNumbers(),
       highlightActiveLine(),

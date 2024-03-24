@@ -4,10 +4,11 @@ import { EditorView } from "codemirror";
 import { EditorState, StateEffect } from "@codemirror/state"
 import { DesktopController } from "./desktop-ui";
 import { ERRORCODES } from "./common-ui";
+import { breakpointState } from "./editor";
 
 type messageType = "info"|"success"|"error";
 type MessageCallback = (message:string, type:messageType)=>void;
-type ControllerState = "unstarted"| "running" | "finished";
+type ControllerState = "unstarted"| "running" | "finished" | "paused";
 type StateChangeCallback = (caller:KarelController, newState:ControllerState)=>void;
 type StepCallback = (caller:KarelController, newState:ControllerState)=>void;
 class KarelController {
@@ -95,6 +96,34 @@ class KarelController {
         return true;        
     }
 
+    Pause() {
+        if (this.state !== "running") return;
+        this.StopAutoStep();
+        this.ChangeState("paused")
+    }
+
+    CheckForBreakPointOnCurrentLine():boolean {
+        let runtime= this.desktopController.GetRuntime();
+        if (runtime.state.line >= 0) {          
+            
+            let codeLine = this
+                .mainEditor
+                .state
+                .doc
+                .line(
+                    runtime.state.line+1
+                );
+                codeLine.from
+                let breakpoints = this.mainEditor.state.field(breakpointState)
+                let hasBreakpoint = false
+                breakpoints.between(codeLine.from,codeLine.from, () => {hasBreakpoint = true})
+                console.log(codeLine.number,hasBreakpoint);
+                return hasBreakpoint;
+        }
+        return false;
+      }
+    
+
     HighlightCurrentLine() {
         let runtime= this.desktopController.GetRuntime();
         if (runtime.state.line >= 0) {          
@@ -136,6 +165,11 @@ class KarelController {
             this.EndMessage();
             this.ChangeState("finished");
         }
+        if (this.CheckForBreakPointOnCurrentLine()) {
+            this.Pause();
+            this.NotifyStep();
+            return;
+        }
 
         this.NotifyStep();
 
@@ -152,6 +186,9 @@ class KarelController {
                 //Code Failed
                 return;
             }
+        }
+        if (this.state !== "running") {
+            this.ChangeState("running");
         }
         this.autoStepInterval = setInterval(
             ()=>{
@@ -197,11 +234,17 @@ class KarelController {
 
         let runtime = this.desktopController.GetRuntime();
         runtime.disableStackEvents= true; // FIXME: This should only be done when no breakpoints
-        while (runtime.step());
+        while ( runtime.step() && !this.CheckForBreakPointOnCurrentLine());
         runtime.disableStackEvents= false; // FIXME: This should only be done when no breakpoints
         this.desktopController.CheckUpdate();
-        this.EndMessage();
-        this.ChangeState("finished");
+        this.HighlightCurrentLine();
+
+        if (!runtime.state.running) {
+            this.EndMessage();
+            this.ChangeState("finished");
+        } else {
+            this.Pause();
+        }
     }
 
     RegisterMessageCallback(callback: MessageCallback) {
