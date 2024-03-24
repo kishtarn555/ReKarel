@@ -81,6 +81,7 @@ class KarelController {
 
     StartRun(): boolean {        
         this.endedOnError = false;
+        this.SendMessage("<hr>", "raw");
         let compiled = this.Compile();
         if (compiled == null) {
             return false;
@@ -117,7 +118,6 @@ class KarelController {
                 let breakpoints = this.mainEditor.state.field(breakpointState)
                 let hasBreakpoint = false
                 breakpoints.between(codeLine.from,codeLine.from, () => {hasBreakpoint = true})
-                console.log(codeLine.number,hasBreakpoint);
                 if (hasBreakpoint) {                    
                     this.BreakPointMessage(codeLine.number);
                 }
