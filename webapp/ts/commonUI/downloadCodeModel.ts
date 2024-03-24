@@ -1,6 +1,6 @@
 import { EditorView } from "codemirror";
 
-export type DownloadModal = {
+export type DownloadCodeModal = {
     modal:string,
     confirmBtn:string,
     inputField:string,
@@ -9,7 +9,7 @@ export type DownloadModal = {
 
 
 const fileRegex = /^[a-zA-Z0-9._]+$/;
-export function setFileNameLink(modal: DownloadModal, editor:EditorView) {
+function setFileNameLink(modal: DownloadCodeModal, editor:EditorView) {
     let newFilename: string = <string>$(modal.inputField).val();    
     if (!fileRegex.test(newFilename)) {
         $(modal.wrongCodeWarning).removeAttr("hidden");
@@ -22,7 +22,7 @@ export function setFileNameLink(modal: DownloadModal, editor:EditorView) {
     $(modal.confirmBtn).attr("download", newFilename);
 }
 
-export function hookDownloadModel(modal:DownloadModal, editor:EditorView) {
+export function hookDownloadModel(modal:DownloadCodeModal, editor:EditorView) {
     $(modal.modal).on('show.bs.modal', ()=>setFileNameLink(modal, editor));
     $(modal.inputField).change(()=>setFileNameLink(modal, editor));
 }

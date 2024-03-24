@@ -46,7 +46,7 @@ let karelController = new KarelController(KarelWorld, desktopEditor);
 HookUpCommonUI(
     {
         editor: desktopEditor,
-        downloadModal: {
+        downloadCodeModal: {
             modal: "#saveCodeModal",
             confirmBtn: "#downloadCodeBtn",
             inputField: "#codeName",

@@ -1,14 +1,14 @@
 import bootstrap from 'bootstrap'
 import {EditorView} from "@codemirror/view"
 import { ConfirmData, ConfirmModal, ConfirmPromptArgs, confirmPrompt, confirmPromptEnd, ConfirmModalBtn } from './commonUI/confirmPrompt'
-import { DownloadModal,hookDownloadModel,setFileNameLink } from './commonUI/downloadModel'
+import { DownloadCodeModal,hookDownloadModel } from './commonUI/downloadCodeModel'
 import { HookResizeModal, ResizeModal } from './commonUI/resizeModel'
 import { KarelController } from './KarelController'
 
 
 interface UiData {
     editor: EditorView,
-    downloadModal: DownloadModal,
+    downloadCodeModal: DownloadCodeModal,
     resizeModal:ResizeModal,
     confirmModal: ConfirmModal,
     confirmCallers: Array<ConfirmModalBtn>,
@@ -19,7 +19,7 @@ interface UiData {
 
 function HookUpCommonUI(uiData: UiData) {
     
-    hookDownloadModel(uiData.downloadModal, uiData.editor);
+    hookDownloadModel(uiData.downloadCodeModal, uiData.editor);
 
     //Hook ConfirmCallers
     uiData.confirmCallers.forEach((confirmCaller)=> {

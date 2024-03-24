@@ -22864,7 +22864,7 @@
     }
 
     function HookUpCommonUI(uiData) {
-        hookDownloadModel(uiData.downloadModal, uiData.editor);
+        hookDownloadModel(uiData.downloadCodeModal, uiData.editor);
         //Hook ConfirmCallers
         uiData.confirmCallers.forEach((confirmCaller) => {
             let confirmArgs = {
@@ -26396,7 +26396,7 @@
     let karelController = new KarelController(KarelWorld, desktopEditor);
     HookUpCommonUI({
         editor: desktopEditor,
-        downloadModal: {
+        downloadCodeModal: {
             modal: "#saveCodeModal",
             confirmBtn: "#downloadCodeBtn",
             inputField: "#codeName",
