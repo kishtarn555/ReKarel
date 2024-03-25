@@ -21802,9 +21802,8 @@
             ".cm-breakpoint-gutter .cm-gutterElement": {
                 color: "red",
                 paddingLeft: "2px",
-                paddingTop: "0.15em",
                 cursor: "default",
-                fontSize: "small"
+                fontSize: "var(--editor-font-size)"
             }
         })
     ];
@@ -26259,6 +26258,7 @@
         SetDesktopController(desktopController) {
             this.desktopController = desktopController;
             this.desktopController.SetWorld(this.world);
+            this.OnStackChanges();
         }
         Compile() {
             let code = this.mainEditor.state.doc.toString();
@@ -26471,6 +26471,28 @@
         }
         BreakPointMessage(line) {
             this.SendMessage(`🔴 ${line}) Breakpoint `, "info");
+        }
+        OnStackChanges() {
+            //FIXME: Don't hardcode the id. #pilaTab
+            let runtime = this.desktopController.GetRuntime();
+            // @ts-ignore
+            runtime.addEventListener('call', function (evt) {
+                $('#pilaTab').prepend('<div class="well well-small">' +
+                    evt.function +
+                    '(' +
+                    evt.param +
+                    ') Línea <span class="badge badge-info">' +
+                    (evt.line + 1) +
+                    '</span></div>');
+            });
+            // @ts-ignore
+            runtime.addEventListener('return', function (evt) {
+                $('#pilaTab > div:first-child').remove();
+            });
+            // @ts-ignore
+            runtime.addEventListener('start', function (evt) {
+                $('#pilaTab > div:first-child').remove();
+            });
         }
     }
 
