@@ -412,7 +412,7 @@ class DesktopController {
             const second = currentDate.getSeconds();
             const amOrPm = currentDate.getHours() < 12 ? "AM" : "PM";
             
-            const html = `<div><span class="text-${style}">[${hour}:${minute}:${second} ${amOrPm}]</span> ${message}</div>`;
+            const html = `<div style="text-wrap: wrap;"><span class="text-${style}">[${hour}:${minute}:${second} ${amOrPm}]</span> ${message}</div>`;
             this.consoleTab.console.prepend(html);
             return;
         }

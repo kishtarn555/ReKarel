@@ -53,9 +53,10 @@ class KarelController {
             response = compile(code);
             //TODO: expand message            
             this.SendMessage("Programa compilado correctamente", "info");
-        } catch (e) {
+        } catch (e) {            
             //TODO: Expand error
-            this.SendMessage("Error de compilacion", "error");
+            let language = detectLanguage(code) as "java" | "pascal" | "ruby" | "none";
+            this.SendMessage(decodeError(e, language), "error");
         }
         
         return response;
@@ -320,6 +321,126 @@ class KarelController {
             var arreglo = $('#pilaTab > div:first-child').remove();
           });
     }
+}
+const ERROR_TOKENS = {
+    pascal: {
+      BEGINPROG: '"iniciar-programa"',
+      BEGINEXEC: '"inicia-ejecución"',
+      ENDEXEC: '"termina-ejecución"',
+      ENDPROG: '"finalizar-programa"',
+      DEF: '"define-nueva-instrucción"',
+      PROTO: '"define-prototipo-instrucción"',
+      RET: '"sal-de-instrucción"',
+      AS: '"como"',
+      HALT: '"apágate"',
+      LEFT: '"gira-izquierda"',
+      FORWARD: '"avanza"',
+      PICKBUZZER: '"coge-zumbador"',
+      LEAVEBUZZER: '"deja-zumbador"',
+      BEGIN: '"inicio"',
+      END: '"fin"',
+      THEN: '"entonces"',
+      WHILE: '"mientras"',
+      DO: '"hacer"',
+      REPEAT: '"repetir"',
+      TIMES: '"veces"',
+      DEC: '"precede"',
+      INC: '"sucede"',
+      IFZ: '"si-es-cero"',
+      IFNFWALL: '"frente-libre"',
+      IFFWALL: '"frente-bloqueado"',
+      IFNLWALL: '"izquierda-libre"',
+      IFLWALL: '"izquierda-bloqueada"',
+      IFNRWALL: '"derecha-libre"',
+      IFRWALL: '"derecha-bloqueada"',
+      IFWBUZZER: '"junto-a-zumbador"',
+      IFNWBUZZER: '"no-junto-a-zumbador"',
+      IFBBUZZER: '"algún-zumbador-en-la-mochila"',
+      IFNBBUZZER: '"ningún-zumbador-en-la-mochila"',
+      IFN: '"orientado-al-norte"',
+      IFS: '"orientado-al-sur"',
+      IFE: '"orientado-al-este"',
+      IFW: '"orientado-al-oeste"',
+      IFNN: '"no-orientado-al-norte"',
+      IFNS: '"no-orientado-al-sur"',
+      IFNE: '"no-orientado-al-este"',
+      IFNW: '"no-orientado-al-oeste"',
+      ELSE: '"si-no"',
+      IF: '"si"',
+      NOT: '"no"',
+      OR: '"o"',
+      AND: '"y"',
+      '(': '"("',
+      ')': '")"',
+      ';': '";"',
+      NUM: 'un número',
+      VAR: 'un nombre',
+      EOF: 'el final del programa',
+    },
+    java: {
+      CLASS: '"class"',
+      PROG: '"program"',
+      DEF: '"define"',
+      RET: '"return"',
+      HALT: '"turnoff"',
+      LEFT: '"turnleft"',
+      FORWARD: '"move"',
+      PICKBUZZER: '"pickbeeper"',
+      LEAVEBUZZER: '"putbeeper"',
+      WHILE: '"while"',
+      REPEAT: '"iterate"',
+      DEC: '"pred"',
+      INC: '"succ"',
+      IFZ: '"iszero"',
+      IFNFWALL: '"frontIsClear"',
+      IFFWALL: '"frontIsBlocked"',
+      IFNLWALL: '"leftIsClear"',
+      IFLWALL: '"leftIsBlocked"',
+      IFNRWALL: '"rightIsClear"',
+      IFRWALL: '"rightIsBlocked"',
+      IFWBUZZER: '"nextToABeeper"',
+      IFNWBUZZER: '"notNextToABeeper"',
+      IFBBUZZER: '"anyBeepersInBeeperBag"',
+      IFNBBUZZER: '"noBeepersInBeeperBag"',
+      IFN: '"facingNorth"',
+      IFS: '"facingSouth"',
+      IFE: '"facingEast"',
+      IFW: '"facingWest"',
+      IFNN: '"notFacingNorth"',
+      IFNS: '"notFacingSouth"',
+      IFNE: '"notFacingEast"',
+      IFNW: '"notFacingWest"',
+      ELSE: '"else"',
+      IF: '"if"',
+      NOT: '"!"',
+      OR: '"||"',
+      AND: '"&&"',
+      '(': '"("',
+      ')': '")"',
+      BEGIN: '"{"',
+      END: '"}"',
+      ';': '";"',
+      NUM: 'un número',
+      VAR: 'un nombre',
+      EOF: 'el final del programa',
+    },
+  };
+
+function decodeError(e, lan : "java"|"pascal"|"ruby"|"none") : string {
+    if (lan === "ruby" || lan === "none") {
+        return "Error de compilación, no se puede reconocer el lenguaje";
+    }
+    let status = e.hash;
+    if (status == null) {
+        return "Error de compilación";
+    }
+    let message = `Error de compilación en la línea ${status.line +1}`
+    if (status.expected) {
+        message += "\n<br>\n"
+        let expectations = status.expected.map((x=>ERROR_TOKENS[lan][x.replace(/^'+/,"").replace(/'+$/,"") ]))        
+        message += `Se encontró "${status.text}" cuando se esperaba ${ expectations.join(", ")}`
+    }
+    return message;
 }
 
 export {KarelController, ControllerState};
