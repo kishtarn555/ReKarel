@@ -1,0 +1,67 @@
+@top Script {
+    StartProgram Execution EndProgram
+}
+
+
+Execution {
+    StartExecution expressionList EndExecution
+}
+
+whileStatement {
+    While "(" boolStatement ")" Do
+    expression
+}
+
+iterateStatement {
+    Iterate "(" numberStatement ")" Times
+    expression
+}
+
+ifStatement {
+    If "(" boolStatement ")" Then expression
+    
+}
+
+expression {
+    call |  whileStatement | iterateStatement | ifStatement |
+    Begin expressionList End
+}
+
+expressionList {
+    expression | expressionList ";"  expression?
+}
+
+
+call {
+    Identifier | Identifier "(" numberStatement ")"
+}
+
+numberStatement { Number }
+boolStatement { Identifier }
+
+
+While { @specialize<Identifier, "mientras"> }
+Do { @specialize<Identifier, "hacer"> }
+Then { @specialize<Identifier, "entonces"> }
+Times { @specialize<Identifier, "veces"> }
+If { @specialize<Identifier, "si"> }
+Else { @specialize<Identifier, "sino"> |  @specialize<Identifier, "si-no"> }
+Iterate { @specialize<Identifier, "repetir"> }
+Begin { @specialize<Identifier, "inicio"> }
+End { @specialize<Identifier, "fin"> }
+StartProgram { @specialize<Identifier, "iniciar-programa"> }
+EndProgram { @specialize<Identifier, "finalizar-programa"> }
+StartExecution { @specialize<Identifier, "inicia-ejecucion"> }
+EndExecution { @specialize<Identifier, "finaliza-ejecucion"> }
+
+@tokens {
+    space { @whitespace+ }
+    Define { "define-nueva-instruccion" }
+    Prototipo { "define-nuevo-prototipo" }
+    Identifier { $[A-Za-zÀ-ÖØ-öø-ÿ_]$[A-Za-zÀ-ÖØ-öø-ÿ0-9_-]*}
+    Number { $[0-9]+}
+}
+
+
+
+@skip { space  }

@@ -4,7 +4,7 @@ import { EditorView } from "codemirror";
 import { EditorState, StateEffect } from "@codemirror/state"
 import { DesktopController } from "./desktop-ui";
 import { ERRORCODES } from "./common-ui";
-import { breakpointState } from "./editor";
+import { breakpointState, setLanguage } from "./editor";
 
 type messageType = "info"|"success"|"error"|"raw";
 type MessageCallback = (message:string, type:messageType)=>void;
@@ -48,6 +48,11 @@ class KarelController {
     Compile() {
         let code = this.mainEditor.state.doc.toString();
         // let language: string = detectLanguage(code);
+        let language = detectLanguage(code) as "java" | "pascal" | "ruby" | "none";
+            
+        if (language === "java" || language === "pascal") {
+            setLanguage(this.mainEditor, language);
+        }
         let response = null;
         try {
             response = compile(code);
@@ -55,7 +60,6 @@ class KarelController {
             this.SendMessage("Programa compilado correctamente", "info");
         } catch (e) {            
             //TODO: Expand error
-            let language = detectLanguage(code) as "java" | "pascal" | "ruby" | "none";
             this.SendMessage(decodeError(e, language), "error");
         }
         
@@ -442,5 +446,6 @@ function decodeError(e, lan : "java"|"pascal"|"ruby"|"none") : string {
     }
     return message;
 }
+
 
 export {KarelController, ControllerState};

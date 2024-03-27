@@ -6,6 +6,7 @@ import {undo, redo} from "@codemirror/commands"
 import {EditorView} from "@codemirror/view"
 import {Transaction, Annotation, Compartment, StateField, StateEffect, RangeSet} from "@codemirror/state"
 import { kjava } from "./javaCodeMirror"
+import { kpascal } from "./pascalCodeMirror"
 
 import {defaultHighlightStyle, syntaxHighlighting, foldGutter, bracketMatching, indentUnit} from "@codemirror/language"
 import { closeBrackets, autocompletion } from "@codemirror/autocomplete"
@@ -72,7 +73,7 @@ function createEditors() : Array<EditorView> {
   let startState = EditorState.create({
     doc: "iniciar-programa\n\tinicia-ejecucion\n\t\t{ TODO poner codigo aqui }\n\t\tapagate;\n\ttermina-ejecucion\nfinalizar-programa",
     extensions: [
-      language.of(kjava()),
+      language.of(kpascal()),
       syntaxHighlighting(defaultHighlightStyle, {fallback: true}),
       history(),
       breakpointGutter,
@@ -146,4 +147,17 @@ function unfreezeEditors(editor : EditorView) {
   });
 }
 
-export {createEditors, freezeEditors, unfreezeEditors}
+function setLanguage(editor:EditorView, lan:"java"|"pascal") {
+  if (lan === "java") {
+    editor.dispatch({
+      effects: language.reconfigure(kjava())
+    })
+  } else {
+    
+    editor.dispatch({
+      effects: language.reconfigure(kpascal())
+    })
+  }
+}
+
+export {createEditors, freezeEditors, unfreezeEditors, setLanguage}
