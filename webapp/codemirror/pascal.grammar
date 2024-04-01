@@ -52,7 +52,7 @@ End { @specialize<Identifier, "fin"> }
 StartProgram { @specialize<Identifier, "iniciar-programa"> }
 EndProgram { @specialize<Identifier, "finalizar-programa"> }
 StartExecution { @specialize<Identifier, "inicia-ejecucion"> }
-EndExecution { @specialize<Identifier, "finaliza-ejecucion"> }
+EndExecution { @specialize<Identifier, "termina-ejecucion"> }
 
 @tokens {
     space { @whitespace+ }
