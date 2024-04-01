@@ -52,21 +52,23 @@ const pascalLanguage = LRLanguage.define({
 
   const pascalCompletion = pascalLanguage.data.of({
     autocomplete: completeFromList([
-        {label: "class", type: "keyword"},
-        {label: "program", type: "keyword"},
-        {label: "define", type: "keyword"},
-        {label: "void", type: "keyword"},
-        {label: "return", type: "keyword"},
-        {label: "if", type: "keyword"},
-        {label: "else", type: "keyword"},
-        {label: "iterate", type: "keyword"},
-        {label: "while", type: "keyword"},
-        {label: "succ", type: "function"},
-        {label: "pred", type: "function"},
-        {label: "move", type: "function"},
-        {label: "turnleft", type: "function"},
-        {label: "turnoff", type: "function"},
-        {label: "putbeeper", type: "function"},
+        {label: "define-nuevo-prototipo", type: "keyword"},
+        {label: "define-nueva-instruccion", type: "keyword"},
+        {label: "salir-de-instruccion", type: "keyword"},
+        {label: "si", type: "keyword"},
+        {label: "entonces", type: "keyword"},
+        {label: "sino", type: "keyword"},
+        {label: "si-no", type: "keyword"},
+        {label: "repetir", type: "keyword"},
+        {label: "veces", type: "keyword"},
+        {label: "mientras", type: "keyword"},
+        {label: "hacer", type: "keyword"},
+        {label: "sucede", type: "function"},
+        {label: "precede", type: "function"},
+        {label: "avanza", type: "function"},
+        {label: "gira-izquierda", type: "function"},
+        {label: "apagate", type: "function"},
+        {label: "deja-zumbador", type: "function"},
     ])
   })
 
