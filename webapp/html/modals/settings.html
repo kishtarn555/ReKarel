@@ -1,0 +1,68 @@
+<div id="settingsModal" class="modal fade" tabindex="-1" aria-labelledby="settingsModal" aria-hidden="true">
+    <form id="settingsForm">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Configuración</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="container ">
+
+                        <h5>General</h5>
+                        <div class="row m-2">
+                            <div class="col-sm-12 col-md-4 col-lg-3">
+                                <label>Vista:</label>
+                            </div>
+                            <div class="col-sm-12 col-md-8 col-lg-6">
+                                <select class="form-select" aria-label="Tipo de interfaz" name="interface">
+                                    <option value="auto">Automático (Responsivo)</option>
+                                    <option value="desktop">Vista de escritorio</option>
+                                    <option value="mobile">Vista de celular</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="row m-2">
+                            <div class="col-sm-12 col-md-4 col-lg-3">
+                                <label>Lenguaje:</label>
+                            </div>
+                            <div class="col-sm-12 col-md-8 col-lg-6">
+                                <select class="form-select" aria-label="Tipo de interfaz">
+                                    <option value="auto">Automático</option>
+                                    <option value="desktop">Siempre Java</option>
+                                    <option value="desktop">Siempre Pascal</option>
+                                </select>
+                            </div>
+                        </div>
+                        <h5>Editor</h5>
+                        <div class="row m-2">
+                            <div class="col-sm-12 col-md-4 col-lg-3">
+                                <label>Tamaño de fuente:</label>
+                            </div>
+                            <div class="col-sm-12 col-md-8 col-lg-6">
+                                <div class="input-group mb-3">
+                                    <input type="number" class="form-control" placeholder="12 pts..."
+                                        aria-label="Username" aria-describedby="basic-addon1" name="fontSize"
+                                        min="7" max="30" value="12">
+                                    <span class="input-group-text" id="basic-addon1">pt</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+
+                    <button type="submit" class="btn btn-warning">
+                        Aplicar
+                    </button>
+                    <button type="submit" class="btn btn-primary" data-bs-dismiss="modal" data-bs-dialog="none">
+                        Aceptar
+                    </button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" data-bs-dialog="none">
+                        Cancelar
+                    </button>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
