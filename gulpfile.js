@@ -1,7 +1,7 @@
 import gulp from "gulp"
 import fileInclude from "gulp-file-include"
 
-const mainPath = "webapp/html/main.html"
+const mainPath = "webapp/html/index.html"
 const mainPathDist = "webapp/"
 
 gulp.task('bundle-html', ()=> {
