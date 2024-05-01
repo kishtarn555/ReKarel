@@ -22412,6 +22412,7 @@
             this.gizmos.selectionBox.right.style.left = `${this.renderer.CellSize * scale}px`;
             this.UpdateWaffle();
             this.Update();
+            this.UpdateScrollElements();
         }
         TrackMouse(e) {
             let canvas = this.renderer.canvasContext.canvas;
@@ -22533,15 +22534,47 @@
             this.FocusTo(tr, tc);
         }
         FocusTo(r, c) {
-            let left = (c - 0.5) / (this.world.w - this.renderer.GetColCount("floor") + 1);
+            let left = (c - 1 + 0.1) / (this.world.w - this.renderer.GetColCount("floor") + 1);
             left = left < 0 ? 0 : left;
             left = left > 1 ? 1 : left;
-            let top = (r - 0.5) / (this.world.h - this.renderer.GetRowCount("floor") + 1);
+            let top = (r - 1 + 0.01) / (this.world.h - this.renderer.GetRowCount("floor") + 1);
             top = top < 0 ? 0 : top;
             top = top > 1 ? 1 : top;
-            console.log(top);
+            // let la =0, lb = 1;
+            // let ta =0, tb = 1;
+            // let left = (la+lb)/2.0;
+            // let top = (ta+tb)/2.0;
+            // for (let iter = 0; iter < 60; iter++) {
+            //     let lm = (la+lb)/2.0;
+            //     let tm = (ta+tb)/2.0;
+            //     this.ChangeOriginFromScroll( lm, tm);
+            //     if (this.renderer.origin.c < c) {
+            //         la = lm;
+            //     } else if (this.renderer.origin.c > c) {
+            //         lb = lm;
+            //     } else {
+            //         left = lm;
+            //         la=lb=lm;
+            //     }
+            //     if (this.renderer.origin.f < r) {
+            //         ta = tm;
+            //     } else if (this.renderer.origin.f > r) {
+            //         tb = tm;
+            //     } else {
+            //         top = tm;
+            //         ta=tb=tm;
+            //     }
+            // }
+            this.renderer.origin = {
+                c: c,
+                f: r,
+            };
+            // this.lockScroll=true;
+            console.log("Set as", left, top);
             this.container.scrollLeft = left * (this.container.scrollWidth - this.container.clientWidth);
             this.container.scrollTop = (1 - top) * (this.container.scrollHeight - this.container.clientHeight);
+            // this.Update();        
+            // this.UpdateWaffle(); 
         }
         ToggleWall(which) {
             if (this.lock)
@@ -22594,13 +22627,17 @@
             }
             this.Update();
         }
-        UpdateScroll(left, top) {
+        ChangeOriginFromScroll(left, top) {
             let worldWidth = this.world.w;
             let worldHeight = this.world.h;
             this.renderer.origin = {
                 f: Math.floor(1 + Math.max(0, (worldHeight - this.renderer.GetRowCount("floor") + 1) * top)),
                 c: Math.floor(1 + Math.max(0, (worldWidth - this.renderer.GetColCount("floor") + 1) * left)),
             };
+        }
+        UpdateScroll(left, top) {
+            console.log("Change to", left, top);
+            this.ChangeOriginFromScroll(left, top);
             this.Update();
             this.UpdateWaffle();
         }
@@ -22613,6 +22650,14 @@
             this.world.resize(w, h);
             this.Update();
             this.FocusOrigin();
+            this.UpdateScrollElements();
+        }
+        UpdateScrollElements() {
+            let c = this.renderer.CellSize;
+            let h = this.world.h * this.scale * c;
+            let w = this.world.w * this.scale * c;
+            this.gizmos.HorizontalScrollElement.css("width", `${w}px`);
+            this.gizmos.VerticalScrollElement.css("height", `${h}px`);
         }
     }
 
@@ -26905,7 +26950,9 @@
                 top: $("#desktopBoxSelect [name='top']")[0],
                 left: $("#desktopBoxSelect [name='left']")[0],
                 right: $("#desktopBoxSelect [name='right']")[0],
-            }
+            },
+            HorizontalScrollElement: $("#worldScrolledContainerHorizontal"),
+            VerticalScrollElement: $("#worldScrolledContainerVertical"),
         },
         worldZoom: $("#zoomDekstop"),
         console: {
