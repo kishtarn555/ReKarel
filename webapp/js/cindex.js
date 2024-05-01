@@ -22497,11 +22497,46 @@
             let c = this.selection.c - 2;
             this.FocusTo(r, c);
         }
+        TrackFocusToKarel() {
+            let origin = this.renderer.origin;
+            let rows = this.renderer.GetRowCount("floor");
+            let cols = this.renderer.GetColCount("floor");
+            console.log("Karel @" + `${this.world.i} ,${this.world.j} `);
+            console.log("Origin @" + `${origin.f} ,${origin.c} `);
+            console.log("sz @" + `${rows} ,${cols} `);
+            if (rows * cols === 0) {
+                this.FocusKarel();
+                return;
+            }
+            if (origin.c <= this.world.j
+                && this.world.j < origin.c + cols
+                && origin.f <= this.world.i
+                && this.world.i < origin.f + rows) {
+                //Karel is already on focus.
+                return;
+            }
+            let tr = origin.f;
+            let tc = origin.c;
+            if (this.world.i < tr) {
+                tr = this.world.i;
+            }
+            else if (this.world.i >= tr + rows) {
+                tr = this.world.i - rows;
+            }
+            if (this.world.j < tc) {
+                tc = this.world.j;
+            }
+            else if (this.world.j >= tc + cols) {
+                tc = this.world.j - cols;
+            }
+            console.log("New Focus @" + `${tr} ,${tc} `);
+            this.FocusTo(tr, tc);
+        }
         FocusTo(r, c) {
-            let left = c / (this.world.w - this.renderer.GetColCount("floor") + 1);
+            let left = (c - 0.5) / (this.world.w - this.renderer.GetColCount("floor") + 1);
             left = left < 0 ? 0 : left;
             left = left > 1 ? 1 : left;
-            let top = r / (this.world.h - this.renderer.GetRowCount("floor") + 1);
+            let top = (r - 0.5) / (this.world.h - this.renderer.GetRowCount("floor") + 1);
             top = top < 0 ? 0 : top;
             top = top > 1 ? 1 : top;
             console.log(top);
@@ -26516,6 +26551,7 @@
             let runtime = this.desktopController.GetRuntime();
             runtime.step();
             this.HighlightCurrentLine();
+            this.desktopController.TrackFocusToKarel();
             this.desktopController.CheckUpdate();
             if (!runtime.state.running) {
                 this.EndMessage();

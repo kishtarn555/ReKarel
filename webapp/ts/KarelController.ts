@@ -169,6 +169,7 @@ class KarelController {
         let runtime = this.desktopController.GetRuntime();
         runtime.step();
         this.HighlightCurrentLine();
+        this.desktopController.TrackFocusToKarel();
         this.desktopController.CheckUpdate();
 
         if (!runtime.state.running) {            
