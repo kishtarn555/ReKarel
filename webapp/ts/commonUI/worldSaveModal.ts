@@ -11,20 +11,34 @@ export type WorldSaveModal = {
 
 let defaultFileName = "world.in"
 
-function setWorldData(data:string, fileName:string, modal:WorldSaveModal) {
+function setWorldData(data:string, modal:WorldSaveModal) {
     $(modal.worldData).val(data)
     let blob = new Blob([data], { type: 'text/plain'});
     $(modal.confirmBtn).attr("href", window.URL.createObjectURL(blob));
-    $(modal.confirmBtn).attr("download", fileName);
 
 }
 
 function setInputWorld(modal:WorldSaveModal, worldController: WorldController) {
-    defaultFileName = "world.in"
-    const filename = $(modal.inputField).val() as string
+    defaultFileName = "world.in";
+    const filename = $(modal.inputField).val() as string;
     $(modal.inputField).val(filename.replace(/\.out$/, ".in"));
-    const input = `${worldController.world}`
+    setFileNameLink(modal);
 
+    const input = worldController.world.save();
+    $(modal.worldData).val(input);
+    setWorldData(input, modal);
+}
+
+
+function setOutputWorld(modal:WorldSaveModal, worldController: WorldController) {
+    defaultFileName = "world.out";
+    const filename = $(modal.inputField).val() as string;
+    $(modal.inputField).val(filename.replace(/\.in$/, ".out"));
+    setFileNameLink(modal);
+
+    const output = worldController.world.output();
+    $(modal.worldData).val(output);
+    setWorldData(output, modal);
 }
 
 const fileRegex = /^[a-zA-Z0-9._]+$/;
@@ -42,4 +56,5 @@ function setFileNameLink(modal: WorldSaveModal) {
 
 export function HookWorldSaveModal(modal:WorldSaveModal, worldController:WorldController) {
     $(modal.inputBtn).on("click", ()=>setInputWorld(modal,worldController) );
+    $(modal.outputBtn).on("click", ()=>setOutputWorld(modal,worldController) );
 }

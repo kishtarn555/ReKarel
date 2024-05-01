@@ -254,8 +254,15 @@ HookUpCommonUI(
             confirmBtn: "#btnSetAmount",
             inputField: "#beeperCountInput",
 
-        }
-        ,
+        },
+        wordSaveModal: {
+            inputBtn:"#downloadWorldIn",
+            outputBtn:"#downloadWorldOut",
+            confirmBtn:"#saveWorldBtn",
+            inputField:"#worldName",
+            worldData:"#worldData",
+            wrongWorldWaring:"#wrongWorldName",
+        },
         karelController: karelController,
         worldController: DesktopUI.worldController
     }

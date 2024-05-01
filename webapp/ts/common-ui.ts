@@ -6,6 +6,7 @@ import { HookResizeModal, ResizeModal } from './commonUI/resizeModel'
 import { KarelController } from './KarelController'
 import { AmountModal, HookAmountModal } from './commonUI/amountModal'
 import { WorldController } from './worldController'
+import { HookWorldSaveModal, WorldSaveModal } from './commonUI/worldSaveModal'
 
 
 interface UiData {
@@ -13,6 +14,7 @@ interface UiData {
     downloadCodeModal: DownloadCodeModal,
     resizeModal:ResizeModal,
     confirmModal: ConfirmModal,
+    wordSaveModal:WorldSaveModal,
     amountModal: AmountModal,
     confirmCallers: Array<ConfirmModalBtn>,
     karelController:KarelController,
@@ -26,6 +28,7 @@ function HookUpCommonUI(uiData: UiData) {
     
     hookDownloadModel(uiData.downloadCodeModal, uiData.editor);
     HookAmountModal(uiData.amountModal, uiData.worldController);
+    HookWorldSaveModal(uiData.wordSaveModal, uiData.worldController);
 
     //Hook ConfirmCallers
     uiData.confirmCallers.forEach((confirmCaller)=> {

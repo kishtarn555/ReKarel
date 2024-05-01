@@ -22986,10 +22986,10 @@
         $(data.uiData.confirmModal.rejectBtn).off("click", data.modalData.reject);
     }
 
-    const fileRegex = /^[a-zA-Z0-9._]+$/;
-    function setFileNameLink(modal, editor) {
+    const fileRegex$1 = /^[a-zA-Z0-9._]+$/;
+    function setFileNameLink$1(modal, editor) {
         let newFilename = $(modal.inputField).val();
-        if (!fileRegex.test(newFilename)) {
+        if (!fileRegex$1.test(newFilename)) {
             $(modal.wrongCodeWarning).removeAttr("hidden");
             newFilename = "code.txt";
         }
@@ -23001,8 +23001,8 @@
         $(modal.confirmBtn).attr("download", newFilename);
     }
     function hookDownloadModel(modal, editor) {
-        $(modal.modal).on('show.bs.modal', () => setFileNameLink(modal, editor));
-        $(modal.inputField).change(() => setFileNameLink(modal, editor));
+        $(modal.modal).on('show.bs.modal', () => setFileNameLink$1(modal, editor));
+        $(modal.inputField).change(() => setFileNameLink$1(modal, editor));
     }
 
     function HookResizeModal(resizeModel, karelController) {
@@ -23032,9 +23032,51 @@
         });
     }
 
+    let defaultFileName = "world.in";
+    function setWorldData(data, modal) {
+        $(modal.worldData).val(data);
+        let blob = new Blob([data], { type: 'text/plain' });
+        $(modal.confirmBtn).attr("href", window.URL.createObjectURL(blob));
+    }
+    function setInputWorld(modal, worldController) {
+        defaultFileName = "world.in";
+        const filename = $(modal.inputField).val();
+        $(modal.inputField).val(filename.replace(/\.out$/, ".in"));
+        setFileNameLink(modal);
+        const input = worldController.world.save();
+        $(modal.worldData).val(input);
+        setWorldData(input, modal);
+    }
+    function setOutputWorld(modal, worldController) {
+        defaultFileName = "world.out";
+        const filename = $(modal.inputField).val();
+        $(modal.inputField).val(filename.replace(/\.in$/, ".out"));
+        setFileNameLink(modal);
+        const output = worldController.world.output();
+        $(modal.worldData).val(output);
+        setWorldData(output, modal);
+    }
+    const fileRegex = /^[a-zA-Z0-9._]+$/;
+    function setFileNameLink(modal) {
+        let newFilename = $(modal.inputField).val();
+        if (!fileRegex.test(newFilename)) {
+            $(modal.wrongWorldWaring).removeAttr("hidden");
+            newFilename = defaultFileName;
+        }
+        else {
+            $(modal.wrongWorldWaring).attr("hidden", "");
+        }
+        $(modal.confirmBtn).attr("download", newFilename);
+    }
+    function HookWorldSaveModal(modal, worldController) {
+        $(modal.inputBtn).on("click", () => setInputWorld(modal, worldController));
+        $(modal.outputBtn).on("click", () => setOutputWorld(modal, worldController));
+    }
+
     function HookUpCommonUI(uiData) {
         hookDownloadModel(uiData.downloadCodeModal, uiData.editor);
         HookAmountModal(uiData.amountModal, uiData.worldController);
+        HookWorldSaveModal(uiData.wordSaveModal, uiData.worldController);
         //Hook ConfirmCallers
         uiData.confirmCallers.forEach((confirmCaller) => {
             let confirmArgs = {
@@ -26935,6 +26977,14 @@
             modal: "#ammountModal",
             confirmBtn: "#btnSetAmount",
             inputField: "#beeperCountInput",
+        },
+        wordSaveModal: {
+            inputBtn: "#downloadWorldIn",
+            outputBtn: "#downloadWorldOut",
+            confirmBtn: "#saveWorldBtn",
+            inputField: "#worldName",
+            worldData: "#worldData",
+            wrongWorldWaring: "#wrongWorldName",
         },
         karelController: karelController,
         worldController: DesktopUI.worldController
