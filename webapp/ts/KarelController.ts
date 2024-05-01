@@ -256,6 +256,7 @@ class KarelController {
         } else {
             this.Pause();
         }
+        this.desktopController.TrackFocusToKarel();
     }
 
     RegisterMessageCallback(callback: MessageCallback) {
