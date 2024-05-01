@@ -67,7 +67,7 @@
                         </li>
                         <li>
                             <button class="dropdown-item" data-bs-toggle="modal"
-                                data-bs-target="#downloadWorldModal">
+                                data-bs-target="#saveWorldModal">
                                 <i class="bi bi-box-arrow-down"></i>
                                 Descargar mundo
                             </button>
@@ -796,7 +796,6 @@
             
         </div>
     </div>
-    <!-- Save Code Menu -->
     <div id="saveCodeModal" class="modal fade" tabindex="-1" aria-labelledby="saveCodeModal" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
@@ -818,8 +817,6 @@
     </div>
 
 </div>
-    
-    <!-- Confirm Modal Menu -->
     <div id="confirmModal" class="modal fade" tabindex="-1" aria-labelledby="confirmModal" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
@@ -842,9 +839,6 @@
         </div>
     </div>
 </div>
-    
-
-    <!-- Download World Menu -->
     <div id="downloadWorldModal" class="modal fade" tabindex="-1" aria-labelledby="downloadWorldModal"
         aria-hidden="true">
         <div class="modal-dialog">
@@ -876,8 +870,6 @@
             </div>
         </div>
     </div>
-    
-    <!-- Resize World menu -->
     <div id="resizeWorldModal" class="modal fade" tabindex="-1" aria-labelledby="resizeWorldModal" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
@@ -903,9 +895,6 @@
     </div>
 
 </div>
-    
-    
-    <!--  Settings Menu-->
     <div id="settingsModal" class="modal fade" tabindex="-1" aria-labelledby="settingsModal" aria-hidden="true">
     <form id="settingsForm">
         <div class="modal-dialog modal-lg">
@@ -974,9 +963,6 @@
         </div>
     </form>
 </div>
-    
-    
-    <!-- About modal -->
     <div id="aboutModal" class="modal fade" tabindex="-1" aria-labelledby="aboutModal" aria-hidden="true">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
@@ -1014,8 +1000,6 @@
         </div>
     </div>
 </div>
-    
-    <!-- Set Ammound Modal -->
     <div id="ammountModal" class="modal fade" tabindex="-1" aria-labelledby="ammountModal" aria-hidden="true">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
@@ -1038,15 +1022,30 @@
                 </button>
 
                 <button type="button" class="btn btn-primary" data-bs-dismiss="modal" data-bs-dialog="none"
-                    id="btnSetAmmount">
+                    id="btnSetAmount">
                     Colocar
                 </button>
             </div>
         </div>
     </div>
 </div>
-    
-    <!-- Context menu -->
+    <div id="saveWorldModal" class="modal fade" tabindex="-1" aria-labelledby="saveWorldModal" aria-hidden="true">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Guardar Mundo</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <textarea id="worldData" class="form-control" rows="10" readonly></textarea>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                <button type="button" class="btn btn-primary" id="saveWorldBtn">Guardar</button>
+            </div>
+        </div>
+    </div>
+</div>
     <div id="contextMenuDiv" class="dropend position-absolute" style="top:680px; left:630px; width: 0px; height: 0px;">
     <button id="contextMenuToggler" type="button" class="p-0 m-0 h-0 w-0 position-absolute"
         data-bs-toggle="dropdown" aria-expanded="false" data-bs-auto-close="outside"

@@ -23017,8 +23017,24 @@
         });
     }
 
+    function HookAmountModal(modal, worldController) {
+        console.log(modal.confirmBtn);
+        $(modal.confirmBtn).on("click", () => {
+            const inputValue = $(modal.inputField).val();
+            if (inputValue === "") {
+                return;
+            }
+            const amount = parseFloat(inputValue);
+            if (amount < -1) {
+                return;
+            }
+            worldController.SetBeepers(amount);
+        });
+    }
+
     function HookUpCommonUI(uiData) {
         hookDownloadModel(uiData.downloadCodeModal, uiData.editor);
+        HookAmountModal(uiData.amountModal, uiData.worldController);
         //Hook ConfirmCallers
         uiData.confirmCallers.forEach((confirmCaller) => {
             let confirmArgs = {
@@ -26737,47 +26753,6 @@
     };
     let KarelWorld = new World(100, 100);
     let karelController = new KarelController(KarelWorld, desktopEditor);
-    HookUpCommonUI({
-        editor: desktopEditor,
-        downloadCodeModal: {
-            modal: "#saveCodeModal",
-            confirmBtn: "#downloadCodeBtn",
-            inputField: "#codeName",
-            wrongCodeWarning: "#wrongCodeName",
-        },
-        resizeModal: {
-            modal: "#resizeWorldModal",
-            confirmBtn: "#resizeBtn",
-            rowField: "#rowField",
-            columnField: "#columnField",
-        },
-        confirmModal: {
-            modal: "#confirmModal",
-            titleField: "#confirmModalTitle",
-            messageField: "#confirmModalMessage",
-            confirmBtn: "#confirmModalYes",
-            rejectBtn: "#confirmModalNo",
-        },
-        confirmCallers: [
-            {
-                button: "#newJavaCodeNavBtn",
-                data: javaConfirm
-            },
-            {
-                button: "#newPascalCodeNavBtn",
-                data: pascalConfirm
-            },
-            {
-                button: "#newJavaCodeBtn",
-                data: javaConfirm
-            },
-            {
-                button: "#newPascalCodeBtn",
-                data: pascalConfirm
-            },
-        ],
-        karelController: karelController
-    });
     // let DesktopUI = GetDesktopUIHelper(KarelWorld);
     let DesktopUI = new DesktopController({
         desktopEditor,
@@ -26916,6 +26891,53 @@
             "#worldTabBtn": () => "",
             "#execTabBtn": () => ""
         },
+    });
+    HookUpCommonUI({
+        editor: desktopEditor,
+        downloadCodeModal: {
+            modal: "#saveCodeModal",
+            confirmBtn: "#downloadCodeBtn",
+            inputField: "#codeName",
+            wrongCodeWarning: "#wrongCodeName",
+        },
+        resizeModal: {
+            modal: "#resizeWorldModal",
+            confirmBtn: "#resizeBtn",
+            rowField: "#rowField",
+            columnField: "#columnField",
+        },
+        confirmModal: {
+            modal: "#confirmModal",
+            titleField: "#confirmModalTitle",
+            messageField: "#confirmModalMessage",
+            confirmBtn: "#confirmModalYes",
+            rejectBtn: "#confirmModalNo",
+        },
+        confirmCallers: [
+            {
+                button: "#newJavaCodeNavBtn",
+                data: javaConfirm
+            },
+            {
+                button: "#newPascalCodeNavBtn",
+                data: pascalConfirm
+            },
+            {
+                button: "#newJavaCodeBtn",
+                data: javaConfirm
+            },
+            {
+                button: "#newPascalCodeBtn",
+                data: pascalConfirm
+            },
+        ],
+        amountModal: {
+            modal: "#ammountModal",
+            confirmBtn: "#btnSetAmount",
+            inputField: "#beeperCountInput",
+        },
+        karelController: karelController,
+        worldController: DesktopUI.worldController
     });
     splitPanels(DesktopUI.ResizeCanvas.bind(DesktopUI));
     //Activate default states
