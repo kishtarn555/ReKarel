@@ -22522,13 +22522,13 @@
                 tr = this.world.i;
             }
             else if (this.world.i >= tr + rows) {
-                tr = this.world.i - rows;
+                tr = this.world.i - rows - 1;
             }
             if (this.world.j < tc) {
                 tc = this.world.j;
             }
             else if (this.world.j >= tc + cols) {
-                tc = this.world.j - cols;
+                tc = this.world.j - cols - 1;
             }
             console.log("New Focus @" + `${tr} ,${tc} `);
             this.FocusTo(tr, tc);
