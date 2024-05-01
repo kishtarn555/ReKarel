@@ -22489,13 +22489,13 @@
             this.container.scrollTop = this.container.scrollHeight - this.container.clientHeight;
         }
         FocusKarel() {
-            let r = this.world.i - 2;
-            let c = this.world.j - 2;
+            let r = this.world.i;
+            let c = this.world.j;
             this.FocusTo(r, c);
         }
         FocusSelection() {
-            let r = this.selection.r - 2;
-            let c = this.selection.c - 2;
+            let r = this.selection.r - 1;
+            let c = this.selection.c - 1;
             this.FocusTo(r, c);
         }
         TrackFocusToKarel() {
