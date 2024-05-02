@@ -18,13 +18,17 @@ iterateStatement {
 }
 
 ifStatement {
-    If "(" boolStatement ")" Then expression
+    If boolStatement Then expression
     
+}
+
+Block {
+     Begin End | Begin expressionList End
 }
 
 expression {
     call |  whileStatement | iterateStatement | ifStatement |
-    Begin expressionList End
+    Block
 }
 
 expressionList {
@@ -40,6 +44,16 @@ numberStatement { Number }
 boolStatement { Identifier }
 
 
+Begin[closedBy="End"] {
+    start
+}
+
+End[openedBy="Begin"] {
+    end
+}
+
+
+
 While { @specialize<Identifier, "mientras"> }
 Do { @specialize<Identifier, "hacer"> }
 Then { @specialize<Identifier, "entonces"> }
@@ -47,8 +61,8 @@ Times { @specialize<Identifier, "veces"> }
 If { @specialize<Identifier, "si"> }
 Else { @specialize<Identifier, "sino"> |  @specialize<Identifier, "si-no"> }
 Iterate { @specialize<Identifier, "repetir"> }
-Begin { @specialize<Identifier, "inicio"> }
-End { @specialize<Identifier, "fin"> }
+start { @specialize<Identifier, "inicio"> }
+end { @specialize<Identifier, "fin"> }
 StartProgram { @specialize<Identifier, "iniciar-programa"> }
 EndProgram { @specialize<Identifier, "finalizar-programa"> }
 StartExecution { @specialize<Identifier, "inicia-ejecucion"> }

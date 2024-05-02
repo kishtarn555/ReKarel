@@ -27,6 +27,8 @@ let pascalWithContext = pascalparser.configure({
             Then: t.controlKeyword,
             Do: t.controlKeyword,
             Times: t.controlKeyword,
+            Begin: t.keyword,
+            End: t.keyword,
 
         }),
         indentNodeProp.add({
@@ -34,7 +36,8 @@ let pascalWithContext = pascalparser.configure({
             Script: continuedIndent({}),
           }),           
         foldNodeProp.add({
-            Block: foldInside
+            Block: foldInside,
+            Execution : foldInside
         })
     ]
 }
@@ -49,6 +52,7 @@ const pascalLanguage = LRLanguage.define({
 
 
   import {completeFromList} from "@codemirror/autocomplete"
+import { Begin } from "../js/lezer_pascal.terms";
 
   const pascalCompletion = pascalLanguage.data.of({
     autocomplete: completeFromList([
@@ -69,6 +73,8 @@ const pascalLanguage = LRLanguage.define({
         {label: "gira-izquierda", type: "function"},
         {label: "apagate", type: "function"},
         {label: "deja-zumbador", type: "function"},
+        {label: "inicio", type: "keyword"},
+        {label: "fin", type: "keyword"},
     ])
   })
 
