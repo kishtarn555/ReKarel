@@ -30,7 +30,10 @@
                     aria-selected="false">Condiciones</button>
                 <button class="nav-link" id="v-pills-repetir-tab" data-bs-toggle="pill"
                     data-bs-target="#v-pills-repetir" type="button" role="tab" aria-controls="v-pills-repetir"
-                    aria-selected="false">Sentencia Repetir</button>
+                    aria-selected="false">Sentencia Repetir</button>                
+                <button class="nav-link" id="v-pills-mientras-tab" data-bs-toggle="pill"
+                    data-bs-target="#v-pills-mientras" type="button" role="tab" aria-controls="v-pills-mientras"
+                    aria-selected="false">Sentencia Mientras</button>
             </div>
             <div class="tab-content" id="v-pills-tabContent">
                 <div class="tab-pane fade show active" id="v-pills-introduction" role="tabpanel"
@@ -38,8 +41,8 @@
                     @@include('./introduction.html')
                 </div>
                 <div class="tab-pane fade" id="v-pills-instructions" role="tabpanel"
-                aria-labelledby="v-pills-instructions-tab" tabindex="0">
-                    @@include('./instructions.html')                
+                    aria-labelledby="v-pills-instructions-tab" tabindex="0">
+                    @@include('./instructions.html')
                 </div>
                 <div class="tab-pane fade" id="v-pills-conditional" role="tabpanel"
                     aria-labelledby="v-pills-conditional-tab" tabindex="0">
@@ -52,6 +55,10 @@
 
                 </div>
                 <div class="tab-pane fade" id="v-pills-repetir" role="tabpanel" aria-labelledby="v-pills-repetir-tab"
+                    tabindex="0">
+                    @@include('./repetir.html')
+                </div>
+                <div class="tab-pane fade" id="v-pills-mientras" role="tabpanel" aria-labelledby="v-pills-mientras-tab"
                     tabindex="0">...</div>
             </div>
         </div>
