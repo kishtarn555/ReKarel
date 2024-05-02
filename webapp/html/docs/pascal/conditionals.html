@@ -1,0 +1,61 @@
+<h2>Condicionales</h2>
+<p>Las condicionales permiten a Karel ejecutar cierto código dependiendo de una condición.</p>
+
+<h3>Condicional sencillo</h3>
+<p>El primer condicional es el sencillo, este ejecuta una <span class="text-info-emphasis">INSTRUCCION</span>
+    dependiendo si se cumple una <span class="text-warning-emphasis">CONDICION</span>. Si la condición no se cumple, la
+    instrucción
+    es simplemente saltada.</p>
+<div class="border p-2">
+    <span class="text-primary-emphasis">si</span> <span class="text-warning-emphasis">CONDICION</span> <span
+        class="text-primary-emphasis">entonces</span>
+    <br>
+    <pre style="display: inline;">    </pre><span class="text-info-emphasis">INSTRUCCION</span>
+</div>
+<p>Por ejemplo, el siguiente código solo avanza si enfrente de Karel no hay una pared, si el frente
+    de Karel esta libre:</p>
+<div class="border p-2">
+
+    <span class="text-primary-emphasis">si</span> <span class="text-warning-emphasis">frente-libre</span> <span
+        class="text-primary-emphasis">entonces</span>
+    <br>
+    <pre style="display: inline;">    </pre><span class="text-info-emphasis">avanza;</span>
+</div>
+<p>Puedes revisar la lista completa de condiciones completa <a class="text-info" href="#"
+        onclick="showNav('v-pills-conditions')">aqui</a></p>
+<h3>Si-no</h3>
+<p>Podemos hacer que la sentencia ejecute una instrucción si se cumple la condicion y si no, que
+    ejecute otra. Esto lo hacemo usando el sino</p>
+<div class="border p-2">
+    <span class="text-primary-emphasis">si</span> <span class="text-warning-emphasis">CONDICION</span> <span
+        class="text-primary-emphasis">entonces</span>
+    <br>
+    <pre style="display: inline;">    </pre><span class="text-info-emphasis">INSTRUCCION</span>
+    <br>
+    <span class="text-primary-emphasis">sino</span>
+    <br>
+    <pre style="display: inline;">    </pre><span class="text-info-emphasis">INSTRUCCION</span>
+</div>
+<p>Por ejemplo, el siguiente código solo avanza si enfrente de Karel no hay una pared, si no da
+    media vuelta:</p>
+<div class="border p-2">
+
+    <span class="text-primary-emphasis">si</span> <span class="text-warning-emphasis">frente-libre</span> <span
+        class="text-primary-emphasis">entonces</span>
+    <br>
+    <pre style="display: inline;">    </pre><span class="text-info-emphasis">avanza</span>
+    <br>
+    <span class="text-primary-emphasis">sino</span>
+    <br>
+    <span class="text-danger-emphasis">inicio</span>
+    <br>
+    <pre style="display: inline;">    </pre><span class="text-info-emphasis">gira-izquierda;</span>
+    <br>
+    <pre style="display: inline;">    </pre><span class="text-info-emphasis">gira-izquierda;</span>
+    <br>
+    <span class="text-danger-emphasis">fin;</span>
+</div>
+<div class="alert alert-warning mt-2" role="alert">
+    ¡Cuidado! La instrucción antes del sino <b>no</b> debe llevar punto y coma <b>;</b>
+    De lo contrario, tendremos un error de compilación
+</div>

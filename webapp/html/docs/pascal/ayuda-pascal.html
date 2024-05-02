@@ -1,0 +1,74 @@
+<html lang="es" data-bs-theme="dark">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ayuda Karel.js</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous">
+
+</head>
+
+<body>
+    <div class="container">
+        <h1 class="m-5 mb-1">Documentación Karel Pascal</h1>
+        <hr>
+        <div class="d-flex align-items-start">
+            <div class="nav flex-column nav-pills me-3" id="v-pills-tab" role="tablist" aria-orientation="vertical">
+                <button class="nav-link active" id="v-pills-introduction-tab" data-bs-toggle="pill"
+                    data-bs-target="#v-pills-introduction" type="button" role="tab" aria-controls="v-pills-introduction"
+                    aria-selected="true">Introducción</button>
+                <button class="nav-link " id="v-pills-instructions-tab" data-bs-toggle="pill"
+                    data-bs-target="#v-pills-instructions" type="button" role="tab" aria-controls="v-pills-instructions"
+                    aria-selected="false">Instrucciones</button>
+                <button class="nav-link" id="v-pills-conditional-tab" data-bs-toggle="pill"
+                    data-bs-target="#v-pills-conditional" type="button" role="tab" aria-controls="v-pills-conditional"
+                    aria-selected="false">Sentencia Si</button>
+                <button class="nav-link" id="v-pills-conditions-tab" data-bs-toggle="pill"
+                    data-bs-target="#v-pills-conditions" type="button" role="tab" aria-controls="v-pills-conditions"
+                    aria-selected="false">Condiciones</button>
+                <button class="nav-link" id="v-pills-repetir-tab" data-bs-toggle="pill"
+                    data-bs-target="#v-pills-repetir" type="button" role="tab" aria-controls="v-pills-repetir"
+                    aria-selected="false">Sentencia Repetir</button>
+            </div>
+            <div class="tab-content" id="v-pills-tabContent">
+                <div class="tab-pane fade show active" id="v-pills-introduction" role="tabpanel"
+                    aria-labelledby="v-pills-introduction-tab" tabindex="0">
+                    @@include('./introduction.html')
+                </div>
+                <div class="tab-pane fade" id="v-pills-instructions" role="tabpanel"
+                aria-labelledby="v-pills-instructions-tab" tabindex="0">
+                    @@include('./instructions.html')                
+                </div>
+                <div class="tab-pane fade" id="v-pills-conditional" role="tabpanel"
+                    aria-labelledby="v-pills-conditional-tab" tabindex="0">
+                    @@include('./conditionals.html')
+                </div>
+                <!-- Conditions that Karel can check -->
+                <div class="tab-pane fade" id="v-pills-conditions" role="tabpanel"
+                    aria-labelledby="v-pills-conditions-tab" tabindex="0">
+                    @@include('./conditions.html')
+
+                </div>
+                <div class="tab-pane fade" id="v-pills-repetir" role="tabpanel" aria-labelledby="v-pills-repetir-tab"
+                    tabindex="0">...</div>
+            </div>
+        </div>
+
+    </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-w76AqPfDkMBDXo30jS1Sgez6pr3x5MlQ1ZAGC+nuZB+EYdgRZgiwxhTBTkF7CXvN"
+        crossorigin="anonymous"></script>
+    <script>
+        function showNav(tab) {
+            const triggerEl = document.querySelector('#v-pills-tab button[data-bs-target="#' + tab + '"]')
+            bootstrap.Tab.getInstance(triggerEl).show() // Select tab by name
+
+        }
+    </script>
+</body>
+
+</html>
