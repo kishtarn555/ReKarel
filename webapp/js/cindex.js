@@ -23106,6 +23106,7 @@
             let w = parseInt($(resizeModel.columnField).val());
             let h = parseInt($(resizeModel.rowField).val());
             karelController.desktopController.Resize(w, h);
+            karelController.Reset();
         });
     }
 
