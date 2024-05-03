@@ -60,6 +60,7 @@ interface DesktopElements {
     controlBar: {
         execution: ExecutionToolbar,
         beeperInput: JQuery,
+        infiniteBeeperInput: JQuery,
         delayInput: JQuery,
     },
     toolbar: {
@@ -92,6 +93,7 @@ class DesktopController {
     executionEnd : JQuery;
 
     beeperBagInput: JQuery
+    infiniteBeeperInput: JQuery
 
     delayInput: JQuery
 
@@ -127,6 +129,7 @@ class DesktopController {
         this.executionEnd = elements.controlBar.execution.future;
 
         this.beeperBagInput = elements.controlBar.beeperInput;
+        this.infiniteBeeperInput = elements.controlBar.infiniteBeeperInput;
 
         this.delayInput = elements.controlBar.delayInput;
 
@@ -215,7 +218,10 @@ class DesktopController {
     }
     
     private UpdateBeeperBag() {
-        this.beeperBagInput.val(this.worldController.GetBeepersInBag());
+        const amount = this.worldController.GetBeepersInBag()
+        
+        this.beeperBagInput.val(amount);
+        // if (amount)
     }
     
     private OnBeeperInputChange() {
@@ -297,8 +303,10 @@ class DesktopController {
     }
 
     private OnKarelControllerStateChange(sender: KarelController, state: ControllerState) {
+        console.log(state);
         if (state === "running") {            
             freezeEditors(this.editor);
+            this.SetPauseMode();
             this.worldController.Lock();
         }
         if (state === "finished") {

@@ -74,6 +74,7 @@ let DesktopUI = new DesktopController(
                 future: $("#desktopFutureProgram"),
             },
             beeperInput: $("#beeperBag"),
+            infiniteBeeperInput: $("#infiniteBeepersBtn"),
             delayInput: $("#delayPanel"),
         },
         toolbar: {

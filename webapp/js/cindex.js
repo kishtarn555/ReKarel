@@ -22685,6 +22685,7 @@
             this.executionStep = elements.controlBar.execution.step;
             this.executionEnd = elements.controlBar.execution.future;
             this.beeperBagInput = elements.controlBar.beeperInput;
+            this.infiniteBeeperInput = elements.controlBar.infiniteBeeperInput;
             this.delayInput = elements.controlBar.delayInput;
             this.beeperToolbar = elements.toolbar.beepers;
             this.karelToolbar = elements.toolbar.karel;
@@ -22740,7 +22741,9 @@
             this.karelController.RegisterStepController((_ctr, _state) => { this.UpdateBeeperBag(); });
         }
         UpdateBeeperBag() {
-            this.beeperBagInput.val(this.worldController.GetBeepersInBag());
+            const amount = this.worldController.GetBeepersInBag();
+            this.beeperBagInput.val(amount);
+            // if (amount)
         }
         OnBeeperInputChange() {
             if (this.karelController.GetState() !== "unstarted") {
@@ -22802,8 +22805,10 @@
             this.executionRun.html('<i class="bi bi-play-fill"></i>');
         }
         OnKarelControllerStateChange(sender, state) {
+            console.log(state);
             if (state === "running") {
                 freezeEditors(this.editor);
+                this.SetPauseMode();
                 this.worldController.Lock();
             }
             if (state === "finished") {
@@ -26957,6 +26962,7 @@
                 future: $("#desktopFutureProgram"),
             },
             beeperInput: $("#beeperBag"),
+            infiniteBeeperInput: $("#infiniteBeepersBtn"),
             delayInput: $("#delayPanel"),
         },
         toolbar: {
