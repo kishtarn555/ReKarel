@@ -10,7 +10,6 @@ export type AmountModal = {
 
 
 export function HookAmountModal(modal: AmountModal, worldController:WorldController) {
-    console.log(modal.confirmBtn);
     $(modal.confirmBtn).on("click", ()=> {
         const inputValue = $(modal.inputField).val();
         if (inputValue === "") {

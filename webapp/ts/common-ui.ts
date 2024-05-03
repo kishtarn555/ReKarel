@@ -7,6 +7,8 @@ import { KarelController } from './KarelController'
 import { AmountModal, HookAmountModal } from './commonUI/amountModal'
 import { WorldController } from './worldController'
 import { HookWorldSaveModal, WorldSaveModal } from './commonUI/worldSaveModal'
+import { HookNavbar, NavbarData } from './commonUI/codeOpen'
+
 
 
 interface UiData {
@@ -19,6 +21,7 @@ interface UiData {
     confirmCallers: Array<ConfirmModalBtn>,
     karelController:KarelController,
     worldController: WorldController,
+    navbar:NavbarData
     
 }
 
@@ -29,7 +32,7 @@ function HookUpCommonUI(uiData: UiData) {
     hookDownloadModel(uiData.downloadCodeModal, uiData.editor);
     HookAmountModal(uiData.amountModal, uiData.worldController);
     HookWorldSaveModal(uiData.wordSaveModal, uiData.worldController);
-
+    HookNavbar(uiData.navbar, uiData.editor);
     //Hook ConfirmCallers
     uiData.confirmCallers.forEach((confirmCaller)=> {
         let confirmArgs: ConfirmPromptArgs = {            
@@ -53,16 +56,7 @@ function HookUpCommonUI(uiData: UiData) {
 
     HookResizeModal(uiData.resizeModal, uiData.karelController);
 }
-function SetText(editor: EditorView, message:string) {
-    let transaction = editor.state.update({
-        changes: {
-            from: 0,
-            to: editor.state.doc.length,
-            insert:message
-        }
-    })
-    editor.dispatch(transaction);
-}
+
 
 const ERRORCODES = {
     WALL: 'Karel ha chocado con un muro!',
@@ -74,4 +68,4 @@ const ERRORCODES = {
     STACK: 'La pila de karel se ha desbordado!',
 };
 
-export {HookUpCommonUI,SetText, ERRORCODES, UiData};
+export {HookUpCommonUI, ERRORCODES, UiData};

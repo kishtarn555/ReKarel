@@ -192,7 +192,6 @@ class WorldController {
             return;
         }
         this.Select(cell.r, cell.c, cell.r, cell.c);
-        console.log(this.selection.r, this.selection.c);
 
 
     }
@@ -281,9 +280,7 @@ class WorldController {
         let rows = this.renderer.GetRowCount("floor");
         let cols = this.renderer.GetColCount("floor");
 
-        console.log("Karel @" + `${this.world.i} ,${this.world.j} `)
-        console.log("Origin @" + `${origin.f} ,${origin.c} `)
-        console.log("sz @" + `${rows} ,${cols} `)
+        
         if (rows*cols === 0) {
             this.FocusKarel();
             return;
@@ -313,9 +310,6 @@ class WorldController {
         } else if (this.world.j >= tc + cols ) {
             tc = this.world.j -  cols + 1;
         }
-
-        
-        console.log("New Focus @" + `${tr} ,${tc} `)
 
         this.FocusTo(tr,tc);
     }
@@ -364,7 +358,6 @@ class WorldController {
             f:r,
         }
         // this.lockScroll=true;
-        console.log("Set as", left, top);
         this.container.scrollLeft = left * (this.container.scrollWidth - this.container.clientWidth);        
         this.container.scrollTop = (1 - top) * (this.container.scrollHeight - this.container.clientHeight);       
         // this.Update();        
@@ -467,7 +460,6 @@ class WorldController {
     }
 
     UpdateScroll(left: number, top: number): void {
-        console.log("Change to", left, top);
         this.ChangeOriginFromScroll(left, top);
         this.Update();
         this.UpdateWaffle();

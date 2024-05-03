@@ -1,9 +1,9 @@
 import { splitPanels } from "./split";
 import { responsiveHack, SetResponsiveness, SetDesktopView, SetPhoneView } from "./responsive-load";
-import { createEditors } from "./editor";
+import { createEditors, SetText } from "./editor";
 import { DesktopController } from "./desktop-ui";
 import { GetPhoneUIHelper } from "./phone-ui";
-import { HookUpCommonUI, SetText } from "./common-ui";
+import { HookUpCommonUI } from "./common-ui";
 import { World } from "../../js/karel";
 import { karel } from "../../js";
 import { KarelController } from "./KarelController";
@@ -57,7 +57,6 @@ function debugWorld() {
         )
     }
     KarelWorld.setBuzzers(9, 12, 13);
-    console.log("test");
 }
 
 // let DesktopUI = GetDesktopUIHelper(KarelWorld);
@@ -264,6 +263,9 @@ HookUpCommonUI(
             inputField:"#worldName",
             worldData:"#worldData",
             wrongWorldWaring:"#wrongWorldName",
+        },
+        navbar: {
+            openCode: "#openCodeBtn"
         },
         karelController: karelController,
         worldController: DesktopUI.worldController

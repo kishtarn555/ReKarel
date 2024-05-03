@@ -160,4 +160,16 @@ function setLanguage(editor:EditorView, lan:"java"|"pascal") {
   }
 }
 
-export {createEditors, freezeEditors, unfreezeEditors, setLanguage}
+
+function SetText(editor: EditorView, message:string) {
+  let transaction = editor.state.update({
+      changes: {
+          from: 0,
+          to: editor.state.doc.length,
+          insert:message
+      }
+  })
+  editor.dispatch(transaction);
+}
+
+export {createEditors, freezeEditors, unfreezeEditors, setLanguage, SetText}

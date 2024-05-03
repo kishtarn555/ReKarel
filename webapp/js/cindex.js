@@ -21980,6 +21980,16 @@
             });
         }
     }
+    function SetText(editor, message) {
+        let transaction = editor.state.update({
+            changes: {
+                from: 0,
+                to: editor.state.doc.length,
+                insert: message
+            }
+        });
+        editor.dispatch(transaction);
+    }
 
     const DefaultWRStyle = {
         disabled: '#4f4f4f',
@@ -23162,10 +23172,41 @@
         $(modal.outputBtn).on("click", () => setOutputWorld(modal, worldController));
     }
 
+    function getCode(editor) {
+        var file = document.createElement('input');
+        file.type = 'file';
+        file.addEventListener('change', function (evt) {
+            //@ts-ignore
+            var files = evt.target.files; // @ts-ignore FileList object 
+            // Loop through the FileList and render image files as thumbnails.
+            for (var i = 0, f; (f = files[i]); i++) {
+                // Only process text files.
+                if (f.type &&
+                    !(f.type.match('text.*') || f.type == 'application/javascript')) {
+                    continue;
+                }
+                var reader = new FileReader();
+                // Closure to capture the file information.
+                reader.onload = (function (theFile) {
+                    return function (e) {
+                        SetText(editor, reader.result);
+                    };
+                })();
+                // Read in the file as a data URL.
+                reader.readAsText(f);
+            }
+        });
+        file.click();
+    }
+    function HookNavbar(navbar, editor) {
+        $(navbar.openCode).on("click", () => getCode(editor));
+    }
+
     function HookUpCommonUI(uiData) {
         hookDownloadModel(uiData.downloadCodeModal, uiData.editor);
         HookAmountModal(uiData.amountModal, uiData.worldController);
         HookWorldSaveModal(uiData.wordSaveModal, uiData.worldController);
+        HookNavbar(uiData.navbar, uiData.editor);
         //Hook ConfirmCallers
         uiData.confirmCallers.forEach((confirmCaller) => {
             let confirmArgs = {
@@ -23176,16 +23217,6 @@
             $(uiData.confirmModal.modal).on('hidden.bs.modal', null, confirmArgs, confirmPromptEnd);
         });
         HookResizeModal(uiData.resizeModal, uiData.karelController);
-    }
-    function SetText(editor, message) {
-        let transaction = editor.state.update({
-            changes: {
-                from: 0,
-                to: editor.state.doc.length,
-                insert: message
-            }
-        });
-        editor.dispatch(transaction);
     }
     const ERRORCODES = {
         WALL: 'Karel ha chocado con un muro!',
@@ -27078,6 +27109,9 @@
             inputField: "#worldName",
             worldData: "#worldData",
             wrongWorldWaring: "#wrongWorldName",
+        },
+        navbar: {
+            openCode: "#openCodeBtn"
         },
         karelController: karelController,
         worldController: DesktopUI.worldController
