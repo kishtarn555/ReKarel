@@ -22738,12 +22738,39 @@
                 this.karelController.ChangeAutoStepDelay(delay);
             });
             this.beeperBagInput.on("change", () => this.OnBeeperInputChange());
+            this.infiniteBeeperInput.on("click", () => this.ToggleInfiniteBeepers());
             this.karelController.RegisterStepController((_ctr, _state) => { this.UpdateBeeperBag(); });
         }
         UpdateBeeperBag() {
             const amount = this.worldController.GetBeepersInBag();
             this.beeperBagInput.val(amount);
-            // if (amount)
+            if (amount === -1) {
+                this.ActivateInfiniteBeepers();
+            }
+            else {
+                this.DeactivateInfiniteBeepers();
+            }
+        }
+        ActivateInfiniteBeepers() {
+            this.beeperBagInput.hide();
+            this.infiniteBeeperInput.removeClass("btn-light");
+            this.infiniteBeeperInput.addClass("btn-info");
+        }
+        DeactivateInfiniteBeepers() {
+            this.beeperBagInput.show();
+            this.infiniteBeeperInput.removeClass("btn-info");
+            this.infiniteBeeperInput.addClass("btn-light");
+        }
+        ToggleInfiniteBeepers() {
+            if (this.worldController.GetBeepersInBag() !== -1) {
+                this.ActivateInfiniteBeepers();
+                this.worldController.SetBeepersInBag(-1);
+            }
+            else {
+                this.DeactivateInfiniteBeepers();
+                this.worldController.SetBeepersInBag(0);
+                this.UpdateBeeperBag();
+            }
         }
         OnBeeperInputChange() {
             if (this.karelController.GetState() !== "unstarted") {
@@ -22778,6 +22805,7 @@
             this.executionStep.attr("disabled", "");
             this.executionEnd.attr("disabled", "");
             this.beeperBagInput.attr("disabled", "");
+            this.infiniteBeeperInput.attr("disabled", "");
         }
         EnableControlBar() {
             this.executionCompile.removeAttr("disabled");
@@ -22785,6 +22813,7 @@
             this.executionStep.removeAttr("disabled");
             this.executionEnd.removeAttr("disabled");
             this.beeperBagInput.removeAttr("disabled");
+            this.infiniteBeeperInput.removeAttr("disabled");
             this.executionRun.html('<i class="bi bi-play-fill"></i>');
         }
         SetPlayMode() {
@@ -22793,19 +22822,20 @@
             this.executionStep.attr("disabled", "");
             this.executionEnd.attr("disabled", "");
             this.beeperBagInput.attr("disabled", "");
+            this.infiniteBeeperInput.attr("disabled", "");
             this.executionRun.html('<i class="bi bi-pause-fill"></i>');
         }
         SetPauseMode() {
             this.isControlInPlayMode = false;
             this.executionCompile.attr("disabled", "");
             this.beeperBagInput.attr("disabled", "");
+            this.infiniteBeeperInput.attr("disabled", "");
             this.executionStep.removeAttr("disabled");
             this.executionEnd.removeAttr("disabled");
             this.executionRun.removeAttr("disabled");
             this.executionRun.html('<i class="bi bi-play-fill"></i>');
         }
         OnKarelControllerStateChange(sender, state) {
-            console.log(state);
             if (state === "running") {
                 freezeEditors(this.editor);
                 this.SetPauseMode();
@@ -22826,6 +22856,7 @@
                 unfreezeEditors(this.editor);
                 this.worldController.UnLock();
                 this.worldController.NormalMode();
+                this.UpdateBeeperBag();
             }
             else if (state === "paused") {
                 this.SetPauseMode();
