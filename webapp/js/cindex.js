@@ -22447,7 +22447,6 @@
                 return;
             }
             this.Select(cell.r, cell.c, cell.r, cell.c);
-            console.log(this.selection.r, this.selection.c);
         }
         SetKarelOnSelection(direction = "north") {
             if (this.lock)
@@ -22521,9 +22520,6 @@
             let origin = this.renderer.origin;
             let rows = this.renderer.GetRowCount("floor");
             let cols = this.renderer.GetColCount("floor");
-            console.log("Karel @" + `${this.world.i} ,${this.world.j} `);
-            console.log("Origin @" + `${origin.f} ,${origin.c} `);
-            console.log("sz @" + `${rows} ,${cols} `);
             if (rows * cols === 0) {
                 this.FocusKarel();
                 return;
@@ -22549,7 +22545,6 @@
             else if (this.world.j >= tc + cols) {
                 tc = this.world.j - cols + 1;
             }
-            console.log("New Focus @" + `${tr} ,${tc} `);
             this.FocusTo(tr, tc);
         }
         FocusTo(r, c) {
@@ -22589,7 +22584,6 @@
                 f: r,
             };
             // this.lockScroll=true;
-            console.log("Set as", left, top);
             this.container.scrollLeft = left * (this.container.scrollWidth - this.container.clientWidth);
             this.container.scrollTop = (1 - top) * (this.container.scrollHeight - this.container.clientHeight);
             // this.Update();        
@@ -22655,7 +22649,6 @@
             };
         }
         UpdateScroll(left, top) {
-            console.log("Change to", left, top);
             this.ChangeOriginFromScroll(left, top);
             this.Update();
             this.UpdateWaffle();
@@ -23117,7 +23110,6 @@
     }
 
     function HookAmountModal(modal, worldController) {
-        console.log(modal.confirmBtn);
         $(modal.confirmBtn).on("click", () => {
             const inputValue = $(modal.inputField).val();
             if (inputValue === "") {
@@ -23198,15 +23190,47 @@
         });
         file.click();
     }
-    function HookNavbar(navbar, editor) {
+    function parseWorld(xml) {
+        // Parses the xml and returns a document object.
+        return new DOMParser().parseFromString(xml, 'text/xml');
+    }
+    function getWorldIn(karelController) {
+        var file = document.createElement('input');
+        file.type = 'file';
+        file.addEventListener('change', function (evt) {
+            //@ts-ignore
+            var files = evt.target.files; // FileList object
+            // Loop through the FileList and render image files as thumbnails.
+            for (var i = 0, f; (f = files[i]); i++) {
+                // Only process text files.
+                if (f.type && !f.type.match('text.*')) {
+                    continue;
+                }
+                var reader = new FileReader();
+                // Closure to capture the file information.
+                reader.onload = (function (theFile) {
+                    return function (e) {
+                        const result = reader.result;
+                        karelController.world.load(parseWorld(result));
+                        karelController.Reset();
+                    };
+                })();
+                // Read in the file as a data URL.
+                reader.readAsText(f);
+            }
+        });
+        file.click();
+    }
+    function HookNavbar(navbar, editor, karelController) {
         $(navbar.openCode).on("click", () => getCode(editor));
+        $(navbar.openWorldIn).on("click", () => getWorldIn(karelController));
     }
 
     function HookUpCommonUI(uiData) {
         hookDownloadModel(uiData.downloadCodeModal, uiData.editor);
         HookAmountModal(uiData.amountModal, uiData.worldController);
         HookWorldSaveModal(uiData.wordSaveModal, uiData.worldController);
-        HookNavbar(uiData.navbar, uiData.editor);
+        HookNavbar(uiData.navbar, uiData.editor, uiData.karelController);
         //Hook ConfirmCallers
         uiData.confirmCallers.forEach((confirmCaller) => {
             let confirmArgs = {
@@ -27111,7 +27135,8 @@
             wrongWorldWaring: "#wrongWorldName",
         },
         navbar: {
-            openCode: "#openCodeBtn"
+            openCode: "#openCodeBtn",
+            openWorldIn: "#openWorldInBtn"
         },
         karelController: karelController,
         worldController: DesktopUI.worldController

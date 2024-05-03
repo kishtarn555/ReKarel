@@ -265,7 +265,8 @@ HookUpCommonUI(
             wrongWorldWaring:"#wrongWorldName",
         },
         navbar: {
-            openCode: "#openCodeBtn"
+            openCode: "#openCodeBtn",
+            openWorldIn: "#openWorldInBtn"
         },
         karelController: karelController,
         worldController: DesktopUI.worldController
