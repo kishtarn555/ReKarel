@@ -26643,7 +26643,8 @@
                     selection: {
                         anchor: codeLine.from,
                         head: codeLine.from
-                    }
+                    },
+                    scrollIntoView: true,
                 });
             }
         }
