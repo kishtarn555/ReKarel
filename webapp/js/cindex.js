@@ -26582,6 +26582,7 @@
             this.endedOnError = false;
             this.autoStepInterval = 0;
             this.autoStepping = false;
+            this.OnStackChanges();
         }
         // SetDesktopController(desktopController: WorldViewController) {
         //     this.desktopController = desktopController;
@@ -26797,6 +26798,14 @@
             this.world.resize(w, h);
             this.NotifyNewWorld();
         }
+        NewWorld() {
+            this.Reset();
+            const w = this.world.w;
+            const h = this.world.h;
+            this.world = new World(w, h);
+            this.NotifyNewWorld();
+            // this.OnStackChanges(); // This causes a bug where the pile is double
+        }
         SendMessage(message, type) {
             this.onMessage.forEach((callback) => callback(message, type));
         }
@@ -26979,6 +26988,8 @@
     function showElement(element) {
         $(element).removeClass("d-none");
     }
+    let KarelWorld = new World(100, 100);
+    let karelController = new KarelController(KarelWorld, desktopEditor);
     const pascalConfirm = {
         accept: () => {
             SetText(desktopEditor, "iniciar-programa\n\tinicia-ejecucion\n\t\t{ TODO poner codigo aqui }\n\t\tapagate;\n\ttermina-ejecucion\nfinalizar-programa");
@@ -26995,8 +27006,14 @@
         title: "Nuevo código Java",
         reject: () => { },
     };
-    let KarelWorld = new World(100, 100);
-    let karelController = new KarelController(KarelWorld, desktopEditor);
+    const newWorldConfirm = {
+        accept: () => {
+            karelController.NewWorld();
+        },
+        message: "¡Perderás todo lo del mundo no guardado!",
+        title: "Nuevo mundo",
+        reject: () => { },
+    };
     // let DesktopUI = GetDesktopUIHelper(KarelWorld);
     let DesktopUI = new DesktopController({
         desktopEditor,
@@ -27176,6 +27193,10 @@
             {
                 button: "#newPascalCodeBtn",
                 data: pascalConfirm
+            },
+            {
+                button: "#newWorldBtn",
+                data: newWorldConfirm
             },
         ],
         amountModal: {

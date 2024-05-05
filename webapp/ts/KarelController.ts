@@ -40,6 +40,7 @@ class KarelController {
         this.endedOnError = false;
         this.autoStepInterval = 0;
         this.autoStepping = false;
+        this.OnStackChanges();
     }
     
     // SetDesktopController(desktopController: WorldViewController) {
@@ -296,6 +297,15 @@ class KarelController {
         this.Reset();
         this.world.resize(w, h);    
         this.NotifyNewWorld();
+    }
+
+    NewWorld() {
+        this.Reset();
+        const w = this.world.w;
+        const h = this.world.h;
+        this.world = new World(w, h);
+        this.NotifyNewWorld();
+        // this.OnStackChanges(); // This causes a bug where the pile is double
     }
 
     private SendMessage(message: string, type: messageType) {

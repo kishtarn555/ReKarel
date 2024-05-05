@@ -17,6 +17,11 @@ function hideElement(element: string) {
 function showElement(element: string) {
     $(element).removeClass("d-none");
 }
+
+
+let KarelWorld: World = new World(100, 100);
+let karelController = new KarelController(KarelWorld, desktopEditor);
+
 const pascalConfirm = {
     accept: () => {
         SetText(
@@ -40,8 +45,15 @@ const javaConfirm = {
     reject: () => { },
 };
 
-let KarelWorld: World = new World(100, 100);
-let karelController = new KarelController(KarelWorld, desktopEditor);
+const newWorldConfirm = {
+    accept: () => {
+        karelController.NewWorld();
+    },
+    message: "¡Perderás todo lo del mundo no guardado!",
+    title: "Nuevo mundo",
+    reject: () => { },
+};
+
 
 
 
@@ -249,6 +261,10 @@ HookUpCommonUI(
             {
                 button: "#newPascalCodeBtn",
                 data: pascalConfirm
+            },
+            {
+                button: "#newWorldBtn",
+                data: newWorldConfirm
             },
         ],
         amountModal: {
