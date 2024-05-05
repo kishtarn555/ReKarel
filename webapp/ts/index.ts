@@ -305,7 +305,7 @@ type AppSettings = {
 }
 
 let appSettings: AppSettings = {
-    interface: "auto",
+    interface: "desktop",
     editorFontSize: 12
 }
 

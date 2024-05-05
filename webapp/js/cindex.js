@@ -25721,7 +25721,7 @@
     PhoneUI.changeCodeToolbar("#codeAction");
     PhoneUI.changeNavToolbar("#codeTabBtn");
     let appSettings = {
-        interface: "auto",
+        interface: "desktop",
         editorFontSize: 12
     };
     function isFontSize(str) {
