@@ -784,39 +784,6 @@
         });
     }
 
-    function clearAllDisplayClasses(element) {
-        $(element).removeClass("d-none");
-        $(element).removeClass("d-lg-block");
-        $(element).removeClass("d-lg-none");
-    }
-    function hideElement$1(element) {
-        $(element).addClass("d-none");
-    }
-    function SetResponsiveness() {
-        clearAllDisplayClasses("#desktopView");
-        clearAllDisplayClasses("#phoneView");
-        $("#phoneView").addClass("d-lg-none");
-        $("#desktopView").addClass("d-none");
-        $("#desktopView").addClass("d-lg-block");
-    }
-    function SetDesktopView() {
-        clearAllDisplayClasses("#phoneView");
-        clearAllDisplayClasses("#desktopView");
-        hideElement$1("#phoneView");
-    }
-    function SetPhoneView() {
-        clearAllDisplayClasses("#phoneView");
-        clearAllDisplayClasses("#desktopView");
-        hideElement$1("#desktopView");
-    }
-    function responsiveHack() {
-        $("#phoneView").removeClass("position-absolute");
-        {
-            $("#phoneView").addClass("d-none");
-        }
-        $("#loadingModal").remove();
-    }
-
     /**
     The data structure for documents. @nonabstract
     */
@@ -25477,6 +25444,131 @@
         return message;
     }
 
+    function clearAllDisplayClasses(element) {
+        $(element).removeClass("d-none");
+        $(element).removeClass("d-lg-block");
+        $(element).removeClass("d-lg-none");
+    }
+    function hideElement$1(element) {
+        $(element).addClass("d-none");
+    }
+    function SetResponsiveness() {
+        clearAllDisplayClasses("#desktopView");
+        clearAllDisplayClasses("#phoneView");
+        $("#phoneView").addClass("d-lg-none");
+        $("#desktopView").addClass("d-none");
+        $("#desktopView").addClass("d-lg-block");
+    }
+    function SetDesktopView() {
+        clearAllDisplayClasses("#phoneView");
+        clearAllDisplayClasses("#desktopView");
+        hideElement$1("#phoneView");
+    }
+    function SetPhoneView() {
+        clearAllDisplayClasses("#phoneView");
+        clearAllDisplayClasses("#desktopView");
+        hideElement$1("#desktopView");
+    }
+    function responsiveHack() {
+        $("#phoneView").removeClass("position-absolute");
+        {
+            $("#phoneView").addClass("d-none");
+        }
+        $("#loadingModal").remove();
+    }
+
+    const APP_SETTING = 'appSettings';
+    let appSettings = {
+        interface: "desktop",
+        editorFontSize: 12
+    };
+    function isFontSize(str) {
+        return 6 < str && str < 31;
+    }
+    function isResponsiveInterfaces(str) {
+        return ["auto", "desktop", "mobile"].indexOf(str) > -1;
+    }
+    function applySettings(settings, desktopUI) {
+        switch (settings.interface) {
+            case "auto":
+                SetResponsiveness();
+                break;
+            case "desktop":
+                SetDesktopView();
+                break;
+            case "mobile":
+                SetPhoneView();
+                break;
+            default:
+                SetDesktopView();
+                break;
+        }
+        $(":root")[0].style.setProperty("--editor-font-size", `${settings.editorFontSize}pt`);
+        if (settings.interface == "desktop")
+            desktopUI.ResizeCanvas();
+        localStorage.setItem(APP_SETTING, JSON.stringify(appSettings));
+    }
+    function setSettings(event, desktopUI) {
+        let interfaceType = $("#settingsForm select[name=interface]").val();
+        let fontSize = $("#settingsForm input[name=fontSize]").val();
+        console.log(fontSize);
+        if (isResponsiveInterfaces(interfaceType)) {
+            appSettings.interface = interfaceType;
+        }
+        if (isFontSize(fontSize)) {
+            appSettings.editorFontSize = fontSize;
+        }
+        console.log(appSettings);
+        applySettings(appSettings, desktopUI);
+        event.preventDefault();
+        return false;
+    }
+    function loadSettingsFromMemory() {
+        const jsonString = localStorage.getItem(APP_SETTING);
+        if (jsonString) {
+            appSettings = JSON.parse(jsonString);
+        }
+    }
+    function loadSettingsToModal() {
+        console.log("show", appSettings);
+        $("#settingsInterface").val(appSettings.interface);
+        $("#settingsFontSize").val(appSettings.editorFontSize);
+    }
+    function InitSettings(desktopUI) {
+        loadSettingsFromMemory();
+        $("#settingsModal").on("show.bs.modal", (e) => {
+            loadSettingsToModal();
+        });
+        $("#settingsForm").on("submit", (e) => {
+            setSettings(e, desktopUI);
+        });
+    }
+    function StartSettings(desktopUI) {
+        applySettings(appSettings, desktopUI);
+        $(document).on("keydown", (e) => {
+            if (e.ctrlKey && e.which === 75) {
+                let fontSize = appSettings.editorFontSize;
+                fontSize--;
+                if (fontSize < 7)
+                    fontSize = 7;
+                appSettings.editorFontSize = fontSize;
+                applySettings(appSettings, desktopUI);
+                e.preventDefault();
+                return false;
+            }
+            if (e.ctrlKey && e.which === 76) {
+                let fontSize = appSettings.editorFontSize;
+                fontSize++;
+                if (fontSize > 30)
+                    fontSize = 30;
+                appSettings.editorFontSize = fontSize;
+                applySettings(appSettings, desktopUI);
+                e.preventDefault();
+                return false;
+            }
+        });
+    }
+
     var [desktopEditor, phoneEditor] = createEditors();
     //TODO: ThisShouldnt be here
     function hideElement(element) {
@@ -25720,77 +25812,11 @@
     //Activate default states
     PhoneUI.changeCodeToolbar("#codeAction");
     PhoneUI.changeNavToolbar("#codeTabBtn");
-    let appSettings = {
-        interface: "desktop",
-        editorFontSize: 12
-    };
-    function isFontSize(str) {
-        return 6 < str && str < 31;
-    }
-    function isResponsiveInterfaces(str) {
-        return ["auto", "desktop", "mobile"].indexOf(str) > -1;
-    }
-    function applySettings(settings) {
-        switch (settings.interface) {
-            case "auto":
-                SetResponsiveness();
-                break;
-            case "desktop":
-                SetDesktopView();
-                break;
-            case "mobile":
-                SetPhoneView();
-                break;
-            default:
-                SetDesktopView();
-                break;
-        }
-        $(":root")[0].style.setProperty("--editor-font-size", `${settings.editorFontSize}pt`);
-        if (settings.interface == "desktop")
-            DesktopUI.ResizeCanvas();
-    }
-    function setSettings(event) {
-        let interfaceType = $("#settingsForm select[name=interface]").val();
-        let fontSize = $("#settingsForm input[name=fontSize]").val();
-        console.log(fontSize);
-        if (isResponsiveInterfaces(interfaceType)) {
-            appSettings.interface = interfaceType;
-        }
-        if (isFontSize(fontSize)) {
-            appSettings.editorFontSize = fontSize;
-        }
-        console.log(appSettings);
-        applySettings(appSettings);
-        event.preventDefault();
-        return false;
-    }
     $(document).ready(() => {
-        $("#settingsForm").on("submit", setSettings);
+        InitSettings(DesktopUI);
         responsiveHack();
-        applySettings(appSettings);
         DesktopUI.Init();
-    });
-    $(document).on("keydown", (e) => {
-        if (e.ctrlKey && e.which === 75) {
-            let fontSize = appSettings.editorFontSize;
-            fontSize--;
-            if (fontSize < 7)
-                fontSize = 7;
-            appSettings.editorFontSize = fontSize;
-            applySettings(appSettings);
-            e.preventDefault();
-            return false;
-        }
-        if (e.ctrlKey && e.which === 76) {
-            let fontSize = appSettings.editorFontSize;
-            fontSize++;
-            if (fontSize > 30)
-                fontSize = 30;
-            appSettings.editorFontSize = fontSize;
-            applySettings(appSettings);
-            e.preventDefault();
-            return false;
-        }
+        StartSettings(DesktopUI);
     });
 
 })(bootstrap);

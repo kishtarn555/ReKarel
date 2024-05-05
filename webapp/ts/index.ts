@@ -1,5 +1,4 @@
 import { splitPanels } from "./split";
-import { responsiveHack, SetResponsiveness, SetDesktopView, SetPhoneView } from "./responsive-load";
 import { createEditors, SetText } from "./editor";
 import { DesktopController } from "./desktop-ui";
 import { GetPhoneUIHelper } from "./phone-ui";
@@ -7,6 +6,8 @@ import { HookUpCommonUI } from "./common-ui";
 import { World } from "../../js/karel";
 import { karel } from "../../js";
 import { KarelController } from "./KarelController";
+import { responsiveHack } from "./responsive-load";
+import { InitSettings, StartSettings } from "./settings";
 
 
 var [desktopEditor, phoneEditor] = createEditors();
@@ -296,89 +297,10 @@ splitPanels(DesktopUI.ResizeCanvas.bind(DesktopUI));
 PhoneUI.changeCodeToolbar("#codeAction");
 PhoneUI.changeNavToolbar("#codeTabBtn");
 
-type fontSizes = number;
-type responsiveInterfaces = "auto" | "desktop" | "mobile";
 
-type AppSettings = {
-    interface: responsiveInterfaces,
-    editorFontSize: fontSizes,
-}
-
-let appSettings: AppSettings = {
-    interface: "desktop",
-    editorFontSize: 12
-}
-
-function isFontSize(str: number): str is fontSizes {
-    return 6 < str && str < 31;
-}
-function isResponsiveInterfaces(str: string): str is responsiveInterfaces {
-    return ["auto", "desktop", "mobile"].indexOf(str) > -1;
-}
-
-function applySettings(settings: AppSettings) {
-    switch (settings.interface) {
-        case "auto":
-            SetResponsiveness();
-            break;
-        case "desktop":
-            SetDesktopView();
-            break;
-        case "mobile":
-            SetPhoneView();
-            break;
-        default:
-            SetDesktopView();
-            break;
-    }
-    $(":root")[0].style.setProperty("--editor-font-size", `${settings.editorFontSize}pt`);
-    if (settings.interface == "desktop")
-        DesktopUI.ResizeCanvas();
-}
-
-function setSettings(event: Event) {
-    let interfaceType = <string>$("#settingsForm select[name=interface]").val();
-    let fontSize = <number>$("#settingsForm input[name=fontSize]").val();
-    console.log(fontSize);
-    if (isResponsiveInterfaces(interfaceType)) {
-        appSettings.interface = interfaceType;
-    }
-    if (isFontSize(fontSize)) {
-        appSettings.editorFontSize = fontSize;
-    }
-
-    console.log(appSettings);
-    applySettings(appSettings);
-    event.preventDefault();
-    return false;
-}
 $(document).ready(() => {
-    $("#settingsForm").on("submit", setSettings)
+    InitSettings(DesktopUI);
     responsiveHack();
-    applySettings(appSettings);
     DesktopUI.Init();
+    StartSettings(DesktopUI);
 })
-
-
-$(document).on("keydown", (e) => {
-    if (e.ctrlKey && e.which === 75) {
-        let fontSize = appSettings.editorFontSize;
-        fontSize--;
-        if (fontSize < 7) fontSize = 7;
-        appSettings.editorFontSize = fontSize;
-        applySettings(appSettings);
-        e.preventDefault();
-        return false;
-    }
-    if (e.ctrlKey && e.which === 76) {
-        let fontSize = appSettings.editorFontSize;
-        fontSize++;
-        if (fontSize > 30) fontSize = 30;
-        appSettings.editorFontSize = fontSize;
-        applySettings(appSettings);
-        e.preventDefault();
-        return false;
-    }
-
-});
-
