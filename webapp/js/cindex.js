@@ -22326,12 +22326,12 @@
         }
     }
 
-    class WorldController {
-        constructor(renderer, container, world, gizmos) {
+    class WorldViewController {
+        constructor(renderer, karelController, container, gizmos) {
             this.renderer = renderer;
             this.container = container;
-            this.world = world;
             this.lock = false;
+            this.karelController = karelController;
             this.selection = {
                 r: 1,
                 c: 1,
@@ -22346,6 +22346,9 @@
             };
             this.gizmos = gizmos;
             this.scale = 1;
+            this.karelController.RegisterResetObserver(this.OnReset.bind(this));
+            this.karelController.RegisterNewWorldObserver(this.OnNewWorld.bind(this));
+            this.karelController.RegisterStepController(this.onStep.bind(this));
         }
         Lock() {
             this.lock = true;
@@ -22353,26 +22356,14 @@
         UnLock() {
             this.lock = false;
         }
-        Reset() {
-            this.world.reset();
-            this.Update();
-        }
-        GetRuntime() {
-            return this.world.runtime;
-        }
         GetBeepersInBag() {
-            return this.world.bagBuzzers;
+            return this.karelController.world.bagBuzzers;
         }
         SetBeepersInBag(ammount) {
-            this.world.setBagBuzzers(ammount);
-        }
-        SetWorld(world) {
-            this.world = world;
-            this.Update();
-            this.Select(1, 1, 1, 1);
+            this.karelController.world.setBagBuzzers(ammount);
         }
         CheckUpdate() {
-            if (this.world.dirty) {
+            if (this.karelController.world.dirty) {
                 this.Update();
             }
         }
@@ -22385,8 +22376,8 @@
             this.Update();
         }
         Select(r, c, r2, c2) {
-            if (r > this.world.h ||
-                c > this.world.w ||
+            if (r > this.karelController.world.h ||
+                c > this.karelController.world.w ||
                 r < 1 ||
                 c < 1) {
                 return;
@@ -22404,7 +22395,7 @@
         MoveSelection(dr, dc) {
             let r = this.selection.r + dr;
             let c = this.selection.c + dc;
-            if (r < 1 || c < 1 || r > this.world.h || c > this.world.w) {
+            if (r < 1 || c < 1 || r > this.karelController.world.h || c > this.karelController.world.w) {
                 return;
             }
             this.Select(this.selection.r + dr, this.selection.c + dc, this.selection.r + dr, this.selection.c + dc);
@@ -22451,19 +22442,19 @@
         SetKarelOnSelection(direction = "north") {
             if (this.lock)
                 return;
-            this.world.move(this.selection.r, this.selection.c);
+            this.karelController.world.move(this.selection.r, this.selection.c);
             switch (direction) {
                 case "north":
-                    this.world.rotate('NORTE');
+                    this.karelController.world.rotate('NORTE');
                     break;
                 case "east":
-                    this.world.rotate('ESTE');
+                    this.karelController.world.rotate('ESTE');
                     break;
                 case "south":
-                    this.world.rotate('SUR');
+                    this.karelController.world.rotate('SUR');
                     break;
                 case "west":
-                    this.world.rotate('OESTE');
+                    this.karelController.world.rotate('OESTE');
                     break;
             }
             this.Update();
@@ -22474,7 +22465,7 @@
             if (delta === 0) {
                 return;
             }
-            let buzzers = this.world.buzzers(this.selection.r, this.selection.c);
+            let buzzers = this.karelController.world.buzzers(this.selection.r, this.selection.c);
             if (buzzers < 0 && delta < 0) {
                 //Do nothing
                 return;
@@ -22483,23 +22474,23 @@
             if (buzzers < 0) {
                 buzzers = 0;
             }
-            this.world.setBuzzers(this.selection.r, this.selection.c, buzzers);
+            this.karelController.world.setBuzzers(this.selection.r, this.selection.c, buzzers);
             this.Update();
         }
         SetBeepers(ammount) {
             if (this.lock)
                 return;
-            if (this.world.buzzers(this.selection.r, this.selection.c) === ammount) {
+            if (this.karelController.world.buzzers(this.selection.r, this.selection.c) === ammount) {
                 return;
             }
-            this.world.setBuzzers(this.selection.r, this.selection.c, ammount);
+            this.karelController.world.setBuzzers(this.selection.r, this.selection.c, ammount);
             this.Update();
         }
         ToggleKarelPosition() {
             if (this.lock)
                 return;
-            this.world.move(this.selection.r, this.selection.c);
-            this.world.rotate();
+            this.karelController.world.move(this.selection.r, this.selection.c);
+            this.karelController.world.rotate();
             this.Update();
         }
         FocusOrigin() {
@@ -22507,8 +22498,8 @@
             this.container.scrollTop = this.container.scrollHeight - this.container.clientHeight;
         }
         FocusKarel() {
-            let r = this.world.i;
-            let c = this.world.j;
+            let r = this.karelController.world.i;
+            let c = this.karelController.world.j;
             this.FocusTo(r, c);
         }
         FocusSelection() {
@@ -22524,34 +22515,34 @@
                 this.FocusKarel();
                 return;
             }
-            if (origin.c <= this.world.j
-                && this.world.j < origin.c + cols
-                && origin.f <= this.world.i
-                && this.world.i < origin.f + rows) {
+            if (origin.c <= this.karelController.world.j
+                && this.karelController.world.j < origin.c + cols
+                && origin.f <= this.karelController.world.i
+                && this.karelController.world.i < origin.f + rows) {
                 //Karel is already on focus.
                 return;
             }
             let tr = origin.f;
             let tc = origin.c;
-            if (this.world.i < tr) {
-                tr = this.world.i;
+            if (this.karelController.world.i < tr) {
+                tr = this.karelController.world.i;
             }
-            else if (this.world.i >= tr + rows) {
-                tr = this.world.i - rows + 1;
+            else if (this.karelController.world.i >= tr + rows) {
+                tr = this.karelController.world.i - rows + 1;
             }
-            if (this.world.j < tc) {
-                tc = this.world.j;
+            if (this.karelController.world.j < tc) {
+                tc = this.karelController.world.j;
             }
-            else if (this.world.j >= tc + cols) {
-                tc = this.world.j - cols + 1;
+            else if (this.karelController.world.j >= tc + cols) {
+                tc = this.karelController.world.j - cols + 1;
             }
             this.FocusTo(tr, tc);
         }
         FocusTo(r, c) {
-            let left = (c - 1 + 0.1) / (this.world.w - this.renderer.GetColCount("floor") + 1);
+            let left = (c - 1 + 0.1) / (this.karelController.world.w - this.renderer.GetColCount("floor") + 1);
             left = left < 0 ? 0 : left;
             left = left > 1 ? 1 : left;
-            let top = (r - 1 + 0.01) / (this.world.h - this.renderer.GetRowCount("floor") + 1);
+            let top = (r - 1 + 0.01) / (this.karelController.world.h - this.renderer.GetRowCount("floor") + 1);
             top = top < 0 ? 0 : top;
             top = top > 1 ? 1 : top;
             // let la =0, lb = 1;
@@ -22597,28 +22588,28 @@
                     for (let i = 0; i < this.selection.rows; i++) {
                         let r = this.selection.r + i * this.selection.dr;
                         let c = Math.min(this.selection.c, this.selection.c + (this.selection.cols - 1) * this.selection.dc);
-                        this.world.toggleWall(r, c, 1);
+                        this.karelController.world.toggleWall(r, c, 1);
                     }
                     break;
                 case "south":
                     for (let i = 0; i < this.selection.rows; i++) {
                         let r = this.selection.r + i * this.selection.dr;
                         let c = Math.max(this.selection.c, this.selection.c + (this.selection.cols - 1) * this.selection.dc);
-                        this.world.toggleWall(r, c, 3);
+                        this.karelController.world.toggleWall(r, c, 3);
                     }
                     break;
                 case "west":
                     for (let i = 0; i < this.selection.cols; i++) {
                         let r = Math.min(this.selection.r, this.selection.r + (this.selection.rows - 1) * this.selection.dr);
                         let c = this.selection.c + i * this.selection.dc;
-                        this.world.toggleWall(r, c, 0);
+                        this.karelController.world.toggleWall(r, c, 0);
                     }
                     break;
                 case "east":
                     for (let i = 0; i < this.selection.cols; i++) {
                         let r = Math.max(this.selection.r, this.selection.r + (this.selection.rows - 1) * this.selection.dr);
                         let c = this.selection.c + i * this.selection.dc;
-                        this.world.toggleWall(r, c, 2);
+                        this.karelController.world.toggleWall(r, c, 2);
                     }
                     break;
                 case "outer":
@@ -22626,23 +22617,23 @@
                         let rmin = Math.min(this.selection.r, this.selection.r + (this.selection.rows - 1) * this.selection.dr);
                         let rmax = Math.max(this.selection.r, this.selection.r + (this.selection.rows - 1) * this.selection.dr);
                         let c = this.selection.c + i * this.selection.dc;
-                        this.world.toggleWall(rmin, c, 2);
-                        this.world.toggleWall(rmax, c, 0);
+                        this.karelController.world.toggleWall(rmin, c, 2);
+                        this.karelController.world.toggleWall(rmax, c, 0);
                     }
                     for (let i = 0; i < this.selection.rows; i++) {
                         let r = this.selection.r + i * this.selection.dr;
                         let cmin = Math.min(this.selection.c, this.selection.c + (this.selection.cols - 1) * this.selection.dc);
                         let cmax = Math.max(this.selection.c, this.selection.c + (this.selection.cols - 1) * this.selection.dc);
-                        this.world.toggleWall(r, cmin, 1);
-                        this.world.toggleWall(r, cmax, 3);
+                        this.karelController.world.toggleWall(r, cmin, 1);
+                        this.karelController.world.toggleWall(r, cmax, 3);
                     }
                     break;
             }
             this.Update();
         }
         ChangeOriginFromScroll(left, top) {
-            let worldWidth = this.world.w;
-            let worldHeight = this.world.h;
+            let worldWidth = this.karelController.world.w;
+            let worldHeight = this.karelController.world.h;
             this.renderer.origin = {
                 f: Math.floor(1 + Math.max(0, (worldHeight - this.renderer.GetRowCount("floor") + 1) * top)),
                 c: Math.floor(1 + Math.max(0, (worldWidth - this.renderer.GetColCount("floor") + 1) * left)),
@@ -22654,22 +22645,27 @@
             this.UpdateWaffle();
         }
         Update() {
-            this.world.dirty = false;
-            this.renderer.Draw(this.world);
-        }
-        Resize(w, h) {
-            this.Select(1, 1, 1, 1);
-            this.world.resize(w, h);
-            this.Update();
-            this.FocusOrigin();
-            this.UpdateScrollElements();
+            this.karelController.world.dirty = false;
+            this.renderer.Draw(this.karelController.world);
         }
         UpdateScrollElements() {
             let c = this.renderer.CellSize;
-            let h = this.world.h * this.scale * c;
-            let w = this.world.w * this.scale * c;
+            let h = this.karelController.world.h * this.scale * c;
+            let w = this.karelController.world.w * this.scale * c;
             this.gizmos.HorizontalScrollElement.css("width", `${w}px`);
             this.gizmos.VerticalScrollElement.css("height", `${h}px`);
+        }
+        onStep(caller, state) {
+            this.Update();
+        }
+        OnReset(caller) {
+            this.Update();
+        }
+        OnNewWorld(caller, world) {
+            this.Select(1, 1, 1, 1);
+            this.Update();
+            this.FocusOrigin();
+            this.UpdateScrollElements();
         }
     }
 
@@ -22698,8 +22694,7 @@
             this.contextWall = elements.context.wall;
             this.consoleTab = elements.console;
             this.karelController = karelController;
-            this.worldController = new WorldController(new WorldRenderer(this.worldCanvas[0].getContext("2d"), DefaultWRStyle, window.devicePixelRatio), elements.worldContainer[0], karelController.world, elements.gizmos);
-            this.karelController.SetDesktopController(this.worldController);
+            this.worldController = new WorldViewController(new WorldRenderer(this.worldCanvas[0].getContext("2d"), DefaultWRStyle, window.devicePixelRatio), karelController, elements.worldContainer[0], elements.gizmos);
             this.karelController.RegisterStateChangeObserver(this.OnKarelControllerStateChange.bind(this));
             this.isControlInPlayMode = false;
         }
@@ -23141,7 +23136,7 @@
         $(resizeModel.confirmBtn).on('click', () => {
             let w = parseInt($(resizeModel.columnField).val());
             let h = parseInt($(resizeModel.rowField).val());
-            karelController.desktopController.Resize(w, h);
+            karelController.Resize(w, h);
             karelController.Reset();
         });
     }
@@ -23166,21 +23161,21 @@
         let blob = new Blob([data], { type: 'text/plain' });
         $(modal.confirmBtn).attr("href", window.URL.createObjectURL(blob));
     }
-    function setInputWorld(modal, worldController) {
+    function setInputWorld(modal, karelController) {
         defaultFileName = "world.in";
         const filename = $(modal.inputField).val();
         $(modal.inputField).val(filename.replace(/\.out$/, ".in"));
         setFileNameLink(modal);
-        const input = worldController.world.save();
+        const input = karelController.world.save();
         $(modal.worldData).val(input);
         setWorldData(input, modal);
     }
-    function setOutputWorld(modal, worldController) {
+    function setOutputWorld(modal, karelController) {
         defaultFileName = "world.out";
         const filename = $(modal.inputField).val();
         $(modal.inputField).val(filename.replace(/\.in$/, ".out"));
         setFileNameLink(modal);
-        const output = worldController.world.output();
+        const output = karelController.world.output();
         $(modal.worldData).val(output);
         setWorldData(output, modal);
     }
@@ -23196,9 +23191,9 @@
         }
         $(modal.confirmBtn).attr("download", newFilename);
     }
-    function HookWorldSaveModal(modal, worldController) {
-        $(modal.inputBtn).on("click", () => setInputWorld(modal, worldController));
-        $(modal.outputBtn).on("click", () => setOutputWorld(modal, worldController));
+    function HookWorldSaveModal(modal, karelController) {
+        $(modal.inputBtn).on("click", () => setInputWorld(modal, karelController));
+        $(modal.outputBtn).on("click", () => setOutputWorld(modal, karelController));
     }
 
     function getCode(editor) {
@@ -23266,7 +23261,7 @@
     function HookUpCommonUI(uiData) {
         hookDownloadModel(uiData.downloadCodeModal, uiData.editor);
         HookAmountModal(uiData.amountModal, uiData.worldController);
-        HookWorldSaveModal(uiData.wordSaveModal, uiData.worldController);
+        HookWorldSaveModal(uiData.wordSaveModal, uiData.karelController);
         HookNavbar(uiData.navbar, uiData.editor, uiData.karelController);
         //Hook ConfirmCallers
         uiData.confirmCallers.forEach((confirmCaller) => {
@@ -26581,16 +26576,18 @@
             this.onMessage = [];
             this.onStateChange = [];
             this.onStep = [];
+            this.onReset = [];
+            this.onNewWorld = [];
             this.state = "unstarted";
             this.endedOnError = false;
             this.autoStepInterval = 0;
             this.autoStepping = false;
         }
-        SetDesktopController(desktopController) {
-            this.desktopController = desktopController;
-            this.desktopController.SetWorld(this.world);
-            this.OnStackChanges();
-        }
+        // SetDesktopController(desktopController: WorldViewController) {
+        //     this.desktopController = desktopController;
+        //     this.desktopController.SetWorld(this.world);
+        //     this.OnStackChanges();
+        // }
         Compile() {
             let code = this.mainEditor.state.doc.toString();
             // let language: string = detectLanguage(code);
@@ -26622,9 +26619,13 @@
         }
         Reset() {
             this.endedOnError = false;
+            this.world.reset();
             this.running = false;
             this.ChangeState("unstarted");
-            this.desktopController.Reset();
+            this.NotifyReset();
+        }
+        GetRuntime() {
+            return this.world.runtime;
         }
         StartRun() {
             this.endedOnError = false;
@@ -26634,7 +26635,7 @@
                 return false;
             }
             this.Reset();
-            let runtime = this.desktopController.GetRuntime();
+            let runtime = this.GetRuntime();
             runtime.load(compiled);
             // FIXME: We skip validators, they seem useless, but I'm unsure
             runtime.start();
@@ -26649,7 +26650,7 @@
             this.ChangeState("paused");
         }
         CheckForBreakPointOnCurrentLine() {
-            let runtime = this.desktopController.GetRuntime();
+            let runtime = this.GetRuntime();
             if (runtime.state.line >= 0) {
                 let codeLine = this
                     .mainEditor
@@ -26668,7 +26669,7 @@
             return false;
         }
         HighlightCurrentLine() {
-            let runtime = this.desktopController.GetRuntime();
+            let runtime = this.GetRuntime();
             if (runtime.state.line >= 0) {
                 let codeLine = this
                     .mainEditor
@@ -26695,11 +26696,12 @@
                     return;
                 }
             }
-            let runtime = this.desktopController.GetRuntime();
+            let runtime = this.GetRuntime();
             runtime.step();
             this.HighlightCurrentLine();
-            this.desktopController.TrackFocusToKarel();
-            this.desktopController.CheckUpdate();
+            // TODO: Move this to notify step!
+            // this.desktopController.TrackFocusToKarel();
+            // this.desktopController.CheckUpdate();
             if (!runtime.state.running) {
                 this.EndMessage();
                 this.ChangeState("finished");
@@ -26732,7 +26734,6 @@
                     return;
                 }
                 this.Step();
-                this.desktopController.CheckUpdate();
             }, delay);
         }
         ChangeAutoStepDelay(delay) {
@@ -26760,12 +26761,12 @@
                     return;
                 }
             }
-            let runtime = this.desktopController.GetRuntime();
+            let runtime = this.GetRuntime();
             runtime.disableStackEvents = true; // FIXME: This should only be done when no breakpoints
             while (runtime.step() && !this.CheckForBreakPointOnCurrentLine())
                 ;
             runtime.disableStackEvents = false; // FIXME: This should only be done when no breakpoints
-            this.desktopController.CheckUpdate();
+            // this.desktopController.CheckUpdate();
             this.HighlightCurrentLine();
             if (!runtime.state.running) {
                 this.EndMessage();
@@ -26774,7 +26775,7 @@
             else {
                 this.Pause();
             }
-            this.desktopController.TrackFocusToKarel();
+            this.NotifyStep();
         }
         RegisterMessageCallback(callback) {
             this.onMessage.push(callback);
@@ -26782,14 +26783,31 @@
         RegisterStateChangeObserver(callback) {
             this.onStateChange.push(callback);
         }
+        RegisterResetObserver(callback) {
+            this.onReset.push(callback);
+        }
+        RegisterNewWorldObserver(callback) {
+            this.onNewWorld.push(callback);
+        }
         RegisterStepController(callback) {
             this.onStep.push(callback);
+        }
+        Resize(w, h) {
+            this.Reset();
+            this.world.resize(w, h);
+            this.NotifyNewWorld();
         }
         SendMessage(message, type) {
             this.onMessage.forEach((callback) => callback(message, type));
         }
         NotifyStateChange() {
             this.onStateChange.forEach((callback) => callback(this, this.state));
+        }
+        NotifyReset() {
+            this.onReset.forEach((callback) => callback(this));
+        }
+        NotifyNewWorld() {
+            this.onNewWorld.forEach((callback) => callback(this, this.world));
         }
         NotifyStep() {
             this.onStep.forEach((callback) => callback(this, this.state));
@@ -26799,7 +26817,7 @@
             this.NotifyStateChange();
         }
         EndMessage() {
-            let runtime = this.desktopController.GetRuntime();
+            let runtime = this.GetRuntime();
             if (runtime.state.error) {
                 this.SendMessage(ERRORCODES[runtime.state.error], "error");
                 this.endedOnError = true;
@@ -26812,7 +26830,7 @@
         }
         OnStackChanges() {
             //FIXME: Don't hardcode the id. #pilaTab
-            let runtime = this.desktopController.GetRuntime();
+            let runtime = this.GetRuntime();
             // @ts-ignore
             runtime.addEventListener('call', function (evt) {
                 $('#pilaTab').prepend('<div class="well well-small">' +

@@ -1,8 +1,6 @@
 import { World, compile, detectLanguage } from "../../js/karel";
-import { WorldController } from "./worldController";
+// import { WorldViewController } from "./worldViewController";
 import { EditorView } from "codemirror";
-import { EditorState, StateEffect } from "@codemirror/state"
-import { DesktopController } from "./desktop-ui";
 import { ERRORCODES } from "./common-ui";
 import { breakpointState, setLanguage } from "./editor";
 
@@ -11,14 +9,18 @@ type MessageCallback = (message:string, type:messageType)=>void;
 type ControllerState = "unstarted"| "running" | "finished" | "paused";
 type StateChangeCallback = (caller:KarelController, newState:ControllerState)=>void;
 type StepCallback = (caller:KarelController, newState:ControllerState)=>void;
+type ResetCallback = (caller:KarelController)=>void;
+type NewWorldCallback = (caller:KarelController, world:World)=>void;
 class KarelController {
     world: World;
-    desktopController: WorldController;
+    // desktopController: WorldViewController;
     running: boolean;
     mainEditor: EditorView;
     private onMessage: MessageCallback[];
     private onStateChange: StateChangeCallback[];
     private onStep: StepCallback[];
+    private onReset: ResetCallback[];
+    private onNewWorld: NewWorldCallback[];
     private state : ControllerState;
     private endedOnError:boolean;
     private autoStepInterval:number;
@@ -32,18 +34,20 @@ class KarelController {
         this.onMessage = [];
         this.onStateChange = [];
         this.onStep = [];
+        this.onReset= [];
+        this.onNewWorld= [];
         this.state = "unstarted";
         this.endedOnError = false;
         this.autoStepInterval = 0;
         this.autoStepping = false;
     }
     
-    SetDesktopController(desktopController: WorldController) {
-        this.desktopController = desktopController;
-        this.desktopController.SetWorld(this.world);
+    // SetDesktopController(desktopController: WorldViewController) {
+    //     this.desktopController = desktopController;
+    //     this.desktopController.SetWorld(this.world);
         
-        this.OnStackChanges();
-    }
+    //     this.OnStackChanges();
+    // }
 
     Compile() {
         let code = this.mainEditor.state.doc.toString();
@@ -81,9 +85,14 @@ class KarelController {
 
     Reset() {        
         this.endedOnError = false;
+        this.world.reset();
         this.running = false;
         this.ChangeState("unstarted");
-        this.desktopController.Reset();
+        this.NotifyReset();
+    }
+
+    GetRuntime() {
+        return this.world.runtime;
     }
 
     StartRun(): boolean {        
@@ -94,7 +103,7 @@ class KarelController {
             return false;
         }
         this.Reset();
-        let runtime = this.desktopController.GetRuntime();        
+        let runtime = this.GetRuntime();        
         runtime.load(compiled);
         // FIXME: We skip validators, they seem useless, but I'm unsure
         
@@ -111,7 +120,7 @@ class KarelController {
     }
 
     CheckForBreakPointOnCurrentLine():boolean {
-        let runtime= this.desktopController.GetRuntime();
+        let runtime= this.GetRuntime();
         if (runtime.state.line >= 0) {          
             
             let codeLine = this
@@ -135,7 +144,7 @@ class KarelController {
     
 
     HighlightCurrentLine() {
-        let runtime= this.desktopController.GetRuntime();
+        let runtime= this.GetRuntime();
         if (runtime.state.line >= 0) {          
             
             let codeLine = this
@@ -167,11 +176,12 @@ class KarelController {
             }
         }
         
-        let runtime = this.desktopController.GetRuntime();
+        let runtime = this.GetRuntime();
         runtime.step();
         this.HighlightCurrentLine();
-        this.desktopController.TrackFocusToKarel();
-        this.desktopController.CheckUpdate();
+        // TODO: Move this to notify step!
+        // this.desktopController.TrackFocusToKarel();
+        // this.desktopController.CheckUpdate();
 
         if (!runtime.state.running) {            
             this.EndMessage();
@@ -209,7 +219,6 @@ class KarelController {
                     return;
                 }
                 this.Step();
-                this.desktopController.CheckUpdate();
             }, 
             delay
         );
@@ -244,11 +253,13 @@ class KarelController {
             }
         }
 
-        let runtime = this.desktopController.GetRuntime();
+        let runtime = this.GetRuntime();
         runtime.disableStackEvents= true; // FIXME: This should only be done when no breakpoints
         while ( runtime.step() && !this.CheckForBreakPointOnCurrentLine());
         runtime.disableStackEvents= false; // FIXME: This should only be done when no breakpoints
-        this.desktopController.CheckUpdate();
+
+        // this.desktopController.CheckUpdate();
+        
         this.HighlightCurrentLine();
 
         if (!runtime.state.running) {
@@ -257,7 +268,8 @@ class KarelController {
         } else {
             this.Pause();
         }
-        this.desktopController.TrackFocusToKarel();
+
+        this.NotifyStep();
     }
 
     RegisterMessageCallback(callback: MessageCallback) {
@@ -268,8 +280,22 @@ class KarelController {
         this.onStateChange.push(callback);
     }
 
+    RegisterResetObserver(callback: ResetCallback) {
+        this.onReset.push(callback);
+    }
+
+    RegisterNewWorldObserver(callback: NewWorldCallback) {
+        this.onNewWorld.push(callback);
+    }
+
     RegisterStepController(callback: StepCallback) {
         this.onStep.push(callback);
+    }
+
+    Resize(w:number, h:number) {
+        this.Reset();
+        this.world.resize(w, h);    
+        this.NotifyNewWorld();
     }
 
     private SendMessage(message: string, type: messageType) {
@@ -279,6 +305,15 @@ class KarelController {
     private NotifyStateChange() {
         this.onStateChange.forEach((callback) => callback(this, this.state));
     }
+
+    private NotifyReset() {
+        this.onReset.forEach((callback) => callback(this));
+    }
+
+    private NotifyNewWorld() {
+        this.onNewWorld.forEach((callback) => callback(this, this.world));
+    }
+
     private NotifyStep() {
         this.onStep.forEach((callback) => callback(this, this.state));
     }
@@ -290,7 +325,7 @@ class KarelController {
     }
 
     private EndMessage() {
-        let runtime = this.desktopController.GetRuntime();
+        let runtime = this.GetRuntime();
         if (runtime.state.error) {
             this.SendMessage(ERRORCODES[runtime.state.error], "error");            
             this.endedOnError = true;
@@ -302,11 +337,12 @@ class KarelController {
     private BreakPointMessage(line:number) {
         this.SendMessage(`🔴 ${line}) Breakpoint `, "info");
     }
+    
 
 
     private OnStackChanges() {
         //FIXME: Don't hardcode the id. #pilaTab
-        let runtime = this.desktopController.GetRuntime();
+        let runtime = this.GetRuntime();
         // @ts-ignore
         runtime.addEventListener('call', function (evt) {   
             $('#pilaTab').prepend(

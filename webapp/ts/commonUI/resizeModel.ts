@@ -17,7 +17,7 @@ export function HookResizeModal(resizeModel: ResizeModal, karelController: Karel
     $(resizeModel.confirmBtn).on('click', () => {
         let w = parseInt($(resizeModel.columnField).val() as string);
         let h = parseInt($(resizeModel.rowField).val() as string);
-        karelController.desktopController.Resize(w,h);
+        karelController.Resize(w,h);
         karelController.Reset();
     })
 }

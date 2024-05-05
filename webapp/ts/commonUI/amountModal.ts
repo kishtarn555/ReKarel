@@ -1,4 +1,4 @@
-import { WorldController } from "../worldController";
+import { WorldViewController } from "../worldViewController";
 
 export type AmountModal = {
     modal:string,
@@ -9,7 +9,7 @@ export type AmountModal = {
 
 
 
-export function HookAmountModal(modal: AmountModal, worldController:WorldController) {
+export function HookAmountModal(modal: AmountModal, worldController:WorldViewController) {
     $(modal.confirmBtn).on("click", ()=> {
         const inputValue = $(modal.inputField).val();
         if (inputValue === "") {

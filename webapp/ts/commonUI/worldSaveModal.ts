@@ -1,4 +1,4 @@
-import { WorldController } from "../worldController";
+import { KarelController } from "../KarelController";
 
 export type WorldSaveModal = {
     inputBtn:string,
@@ -18,25 +18,25 @@ function setWorldData(data:string, modal:WorldSaveModal) {
 
 }
 
-function setInputWorld(modal:WorldSaveModal, worldController: WorldController) {
+function setInputWorld(modal:WorldSaveModal, karelController: KarelController) {
     defaultFileName = "world.in";
     const filename = $(modal.inputField).val() as string;
     $(modal.inputField).val(filename.replace(/\.out$/, ".in"));
     setFileNameLink(modal);
 
-    const input = worldController.world.save();
+    const input = karelController.world.save();
     $(modal.worldData).val(input);
     setWorldData(input, modal);
 }
 
 
-function setOutputWorld(modal:WorldSaveModal, worldController: WorldController) {
+function setOutputWorld(modal:WorldSaveModal, karelController: KarelController) {
     defaultFileName = "world.out";
     const filename = $(modal.inputField).val() as string;
     $(modal.inputField).val(filename.replace(/\.in$/, ".out"));
     setFileNameLink(modal);
 
-    const output = worldController.world.output();
+    const output = karelController.world.output();
     $(modal.worldData).val(output);
     setWorldData(output, modal);
 }
@@ -54,7 +54,7 @@ function setFileNameLink(modal: WorldSaveModal) {
     $(modal.confirmBtn).attr("download", newFilename);
 }
 
-export function HookWorldSaveModal(modal:WorldSaveModal, worldController:WorldController) {
-    $(modal.inputBtn).on("click", ()=>setInputWorld(modal,worldController) );
-    $(modal.outputBtn).on("click", ()=>setOutputWorld(modal,worldController) );
+export function HookWorldSaveModal(modal:WorldSaveModal, karelController:KarelController) {
+    $(modal.inputBtn).on("click", ()=>setInputWorld(modal,karelController) );
+    $(modal.outputBtn).on("click", ()=>setOutputWorld(modal,karelController) );
 }

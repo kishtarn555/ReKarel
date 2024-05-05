@@ -2,7 +2,7 @@ import { EditorView } from 'codemirror'
 import { Compartment } from '@codemirror/state'
 import bootstrap from 'bootstrap';
 import { WorldRenderer, WRStyle, DefaultWRStyle } from './worldRenderer';
-import { WorldController, Gizmos } from "./worldController";
+import { WorldViewController, Gizmos } from "./worldViewController";
 import { World } from '../../js/karel';
 import { ControllerState, KarelController } from './KarelController';
 import { GetOrCreateInstanceFactory } from 'bootstrap/js/dist/base-component';
@@ -109,7 +109,7 @@ class DesktopController {
     contextKarel: KarelToolbar;
     contextWall: WallToolbar;
 
-    worldController: WorldController;
+    worldController: WorldViewController;
     karelController: KarelController;
 
     consoleTab: ConsoleTab;
@@ -149,17 +149,16 @@ class DesktopController {
 
         this.karelController = karelController;
 
-        this.worldController = new WorldController(
+        this.worldController = new WorldViewController(
             new WorldRenderer(
                 (this.worldCanvas[0] as HTMLCanvasElement).getContext("2d"),
                 DefaultWRStyle,
                 window.devicePixelRatio
             ),
+            karelController,
             elements.worldContainer[0],
-            karelController.world,
             elements.gizmos
         );
-        this.karelController.SetDesktopController(this.worldController);
         this.karelController.RegisterStateChangeObserver(this.OnKarelControllerStateChange.bind(this));
 
         this.isControlInPlayMode = false;
