@@ -21722,11 +21722,36 @@
         $(navbar.openWorldIn).on("click", () => getWorldIn(karelController));
     }
 
+    function parseFormData() {
+        return {
+            disabled: $('#disabledColor').val(),
+            exportCellBackground: $('#exportCellBackgroundColor').val(),
+            karelColor: $('#karelColor').val(),
+            gridBackgroundColor: $('#gridBackgroundColor').val(),
+            errorGridBackgroundColor: $('#errorGridBackgroundColor').val(),
+            gridBorderColor: $('#gridBorderColor').val(),
+            errorGridBorderColor: $('#errorGridBorderColor').val(),
+            gutterBackgroundColor: $('#gutterBackgroundColor').val(),
+            gutterColor: $('#gutterColor').val(),
+            beeperBackgroundColor: $('#beeperBackgroundColor').val(),
+            beeperColor: $('#beeperColor').val(),
+        };
+    }
+    function HookStyleModal(view) {
+        $("#setKarelStyleBtn").on("click", () => {
+            const style = parseFormData();
+            console.log(style);
+            view.renderer.style = style;
+            view.Update();
+        });
+    }
+
     function HookUpCommonUI(uiData) {
         hookDownloadModel(uiData.downloadCodeModal, uiData.editor);
         HookAmountModal(uiData.amountModal, uiData.worldController);
         HookWorldSaveModal(uiData.wordSaveModal, uiData.karelController);
         HookNavbar(uiData.navbar, uiData.editor, uiData.karelController);
+        HookStyleModal(uiData.worldController);
         //Hook ConfirmCallers
         uiData.confirmCallers.forEach((confirmCaller) => {
             let confirmArgs = {
