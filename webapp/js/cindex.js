@@ -20467,7 +20467,32 @@
         gutterColor: "#444444",
         beeperBackgroundColor: "#0ADB23",
         beeperColor: "#000000",
+        wallColor: "#000000"
     };
+    function isWRStyle(obj) {
+        if (!obj || typeof obj !== 'object')
+            return false;
+        const requiredKeys = [
+            'disabled',
+            'exportCellBackground',
+            'karelColor',
+            'gridBackgroundColor',
+            'errorGridBackgroundColor',
+            'gridBorderColor',
+            'errorGridBorderColor',
+            'gutterBackgroundColor',
+            'gutterColor',
+            'beeperBackgroundColor',
+            'beeperColor',
+            'wallColor'
+        ];
+        for (const key of requiredKeys) {
+            if (!(key in obj) || typeof obj[key] !== 'string') {
+                return false;
+            }
+        }
+        return true;
+    }
     // FIXME: Change f coords to r (so it's all in english)
     class WorldRenderer {
         constructor(canvasContext, style, scale) {
@@ -20698,7 +20723,7 @@
                     break;
             }
             let lineOr = this.canvasContext.lineWidth;
-            this.canvasContext.strokeStyle = "#000";
+            this.canvasContext.strokeStyle = this.style.wallColor;
             this.canvasContext.lineWidth = 2;
             this.canvasContext.beginPath();
             this.canvasContext.moveTo(-this.CellSize / 2, -this.CellSize / 2 + 0.5);
@@ -21722,11 +21747,283 @@
         $(navbar.openWorldIn).on("click", () => getWorldIn(karelController));
     }
 
+    const WR_CLEAN = {
+        disabled: '#4f4f4f',
+        exportCellBackground: '#f5f7a8',
+        karelColor: '#3E6AC1',
+        gridBackgroundColor: '#f8f9fA',
+        errorGridBackgroundColor: "#f5d5d5",
+        gridBorderColor: '#c4c4c4',
+        errorGridBorderColor: '#a8838f',
+        gutterBackgroundColor: '#e6e6e6',
+        gutterColor: "#444444",
+        beeperBackgroundColor: "#ffffff",
+        beeperColor: "#000000",
+        wallColor: "#000000"
+    };
+    const WR_DARK = {
+        disabled: '#4f4f4f',
+        exportCellBackground: '#f5f7a8',
+        karelColor: '#328EAD',
+        gridBackgroundColor: '#282828',
+        errorGridBackgroundColor: "#5D3D3D",
+        gridBorderColor: '#565656',
+        errorGridBorderColor: '#565656',
+        gutterBackgroundColor: '#3B3B3B',
+        gutterColor: "#E8E8E8",
+        beeperBackgroundColor: "#005608",
+        beeperColor: "#ffffff",
+        wallColor: "#f1f1f1"
+    };
+    const WR_CONTRAST = {
+        disabled: '#4f4f4f',
+        exportCellBackground: '#f5f7a8',
+        karelColor: '#3F69DB',
+        gridBackgroundColor: '#f3f3f3',
+        errorGridBackgroundColor: "#5D3D3D",
+        gridBorderColor: '#565656',
+        errorGridBorderColor: '#565656',
+        gutterBackgroundColor: '#e3e3e3',
+        gutterColor: "#000000",
+        beeperBackgroundColor: "#000000",
+        beeperColor: "#ffffff",
+        wallColor: "#000000"
+    };
+
+    function clearAllDisplayClasses(element) {
+        $(element).removeClass("d-none");
+        $(element).removeClass("d-lg-block");
+        $(element).removeClass("d-lg-none");
+    }
+    function hideElement$1(element) {
+        $(element).addClass("d-none");
+    }
+    function SetResponsiveness() {
+        clearAllDisplayClasses("#desktopView");
+        clearAllDisplayClasses("#phoneView");
+        $("#phoneView").addClass("d-lg-none");
+        $("#desktopView").addClass("d-none");
+        $("#desktopView").addClass("d-lg-block");
+    }
+    function SetDesktopView() {
+        clearAllDisplayClasses("#phoneView");
+        clearAllDisplayClasses("#desktopView");
+        hideElement$1("#phoneView");
+    }
+    function SetPhoneView() {
+        clearAllDisplayClasses("#phoneView");
+        clearAllDisplayClasses("#desktopView");
+        hideElement$1("#desktopView");
+    }
+    function responsiveHack() {
+        $("#phoneView").removeClass("position-absolute");
+        {
+            $("#phoneView").addClass("d-none");
+        }
+        $("#loadingModal").remove();
+    }
+
+    const APP_SETTING = 'appSettings';
+    let appSettings = {
+        interface: "desktop",
+        editorFontSize: 12,
+        worldRendererStyle: DefaultWRStyle
+    };
+    function isFontSize(str) {
+        return 6 < str && str < 31;
+    }
+    function isResponsiveInterfaces(str) {
+        return ["auto", "desktop", "mobile"].indexOf(str) > -1;
+    }
+    let DesktopUI$1;
+    function applySettings(settings, desktopUI) {
+        switch (settings.interface) {
+            case "auto":
+                SetResponsiveness();
+                break;
+            case "desktop":
+                SetDesktopView();
+                break;
+            case "mobile":
+                SetPhoneView();
+                break;
+            default:
+                SetDesktopView();
+                break;
+        }
+        $(":root")[0].style.setProperty("--editor-font-size", `${settings.editorFontSize}pt`);
+        if (settings.interface == "desktop")
+            desktopUI.ResizeCanvas();
+        desktopUI.worldController.renderer.style = settings.worldRendererStyle;
+        desktopUI.worldController.Update();
+        localStorage.setItem(APP_SETTING, JSON.stringify(appSettings));
+    }
+    function setSettings(event, desktopUI) {
+        let interfaceType = $("#settingsForm select[name=interface]").val();
+        let fontSize = $("#settingsForm input[name=fontSize]").val();
+        console.log(fontSize);
+        if (isResponsiveInterfaces(interfaceType)) {
+            appSettings.interface = interfaceType;
+        }
+        if (isFontSize(fontSize)) {
+            appSettings.editorFontSize = fontSize;
+        }
+        console.log(appSettings);
+        applySettings(appSettings, desktopUI);
+        event.preventDefault();
+        return false;
+    }
+    function loadSettingsFromMemory() {
+        const jsonString = localStorage.getItem(APP_SETTING);
+        if (jsonString) {
+            appSettings = JSON.parse(jsonString);
+        }
+    }
+    function loadSettingsToModal() {
+        console.log("show", appSettings);
+        $("#settingsInterface").val(appSettings.interface);
+        $("#settingsFontSize").val(appSettings.editorFontSize);
+    }
+    function InitSettings(desktopUI) {
+        DesktopUI$1 = desktopUI;
+        loadSettingsFromMemory();
+        $("#settingsModal").on("show.bs.modal", (e) => {
+            loadSettingsToModal();
+        });
+        $("#settingsForm").on("submit", (e) => {
+            setSettings(e, desktopUI);
+        });
+    }
+    function StartSettings(desktopUI) {
+        applySettings(appSettings, desktopUI);
+        $(document).on("keydown", (e) => {
+            if (e.ctrlKey && e.which === 75) {
+                let fontSize = appSettings.editorFontSize;
+                fontSize--;
+                if (fontSize < 7)
+                    fontSize = 7;
+                appSettings.editorFontSize = fontSize;
+                applySettings(appSettings, desktopUI);
+                e.preventDefault();
+                return false;
+            }
+            if (e.ctrlKey && e.which === 76) {
+                let fontSize = appSettings.editorFontSize;
+                fontSize++;
+                if (fontSize > 30)
+                    fontSize = 30;
+                appSettings.editorFontSize = fontSize;
+                applySettings(appSettings, desktopUI);
+                e.preventDefault();
+                return false;
+            }
+        });
+    }
+    function SetWorldRendererStyle(style) {
+        appSettings.worldRendererStyle = style;
+        applySettings(appSettings, DesktopUI$1);
+    }
+    function GetCurrentSetting() { return appSettings; }
+
+    function parseFormData() {
+        return {
+            disabled: $('#disabledColor').val(),
+            exportCellBackground: $('#exportCellBackgroundColor').val(),
+            karelColor: $('#karelColor').val(),
+            gridBackgroundColor: $('#gridBackgroundColor').val(),
+            errorGridBackgroundColor: $('#errorGridBackgroundColor').val(),
+            gridBorderColor: $('#gridBorderColor').val(),
+            errorGridBorderColor: $('#errorGridBorderColor').val(),
+            gutterBackgroundColor: $('#gutterBackgroundColor').val(),
+            gutterColor: $('#gutterColor').val(),
+            beeperBackgroundColor: $('#beeperBackgroundColor').val(),
+            beeperColor: $('#beeperColor').val(),
+            wallColor: $('#wallColor').val(),
+        };
+    }
+    function setFormData(style) {
+        $('#disabledColor').val(style.disabled);
+        $('#exportCellBackgroundColor').val(style.exportCellBackground);
+        $('#karelColor').val(style.karelColor);
+        $('#gridBackgroundColor').val(style.gridBackgroundColor);
+        $('#errorGridBackgroundColor').val(style.errorGridBackgroundColor);
+        $('#gridBorderColor').val(style.gridBorderColor);
+        $('#errorGridBorderColor').val(style.errorGridBorderColor);
+        $('#gutterBackgroundColor').val(style.gutterBackgroundColor);
+        $('#gutterColor').val(style.gutterColor);
+        $('#beeperBackgroundColor').val(style.beeperBackgroundColor);
+        $('#beeperColor').val(style.beeperColor);
+        $('#wallColor').val(style.wallColor);
+    }
+    function loadPreset() {
+        const val = $("#karelStylePreset").val();
+        if (val === "current") {
+            setFormData(GetCurrentSetting().worldRendererStyle);
+            return;
+        }
+        if (val === "default") {
+            setFormData(DefaultWRStyle);
+            return;
+        }
+        if (val === "clean") {
+            setFormData(WR_CLEAN);
+            return;
+        }
+        if (val === "dark") {
+            setFormData(WR_DARK);
+            return;
+        }
+        if (val === "contrast") {
+            setFormData(WR_CONTRAST);
+            return;
+        }
+    }
+    function exportStyle() {
+        const style = GetCurrentSetting().worldRendererStyle;
+        const val = JSON.stringify(style);
+        $("#karelStyleJSON").val(val);
+    }
+    function importStyle() {
+        const val = $("#karelStyleJSON").val();
+        try {
+            const style = JSON.parse(val);
+            if (!isWRStyle(style)) {
+                return;
+            }
+            setFormData(style);
+        }
+        catch (error) {
+            return;
+        }
+    }
+    function HookStyleModal(view) {
+        $("#setKarelStyleBtn").on("click", () => {
+            const style = parseFormData();
+            console.log(style);
+            view.renderer.style = style;
+            view.Update();
+            SetWorldRendererStyle(style);
+        });
+        $("#karelStyleModal").on("show.bs.modal", () => {
+            setFormData(view.renderer.style);
+        });
+        $("#karelStyleLoadPresetBtn").on("click", () => {
+            loadPreset();
+        });
+        $("#karelStyleExport").on("click", () => {
+            exportStyle();
+        });
+        $("#karelStyleImport").on("click", () => {
+            importStyle();
+        });
+    }
+
     function HookUpCommonUI(uiData) {
         hookDownloadModel(uiData.downloadCodeModal, uiData.editor);
         HookAmountModal(uiData.amountModal, uiData.worldController);
         HookWorldSaveModal(uiData.wordSaveModal, uiData.karelController);
         HookNavbar(uiData.navbar, uiData.editor, uiData.karelController);
+        HookStyleModal(uiData.worldController);
         //Hook ConfirmCallers
         uiData.confirmCallers.forEach((confirmCaller) => {
             let confirmArgs = {
@@ -25442,131 +25739,6 @@
             message += `Se encontró "${status.text}" cuando se esperaba ${expectations.join(", ")}`;
         }
         return message;
-    }
-
-    function clearAllDisplayClasses(element) {
-        $(element).removeClass("d-none");
-        $(element).removeClass("d-lg-block");
-        $(element).removeClass("d-lg-none");
-    }
-    function hideElement$1(element) {
-        $(element).addClass("d-none");
-    }
-    function SetResponsiveness() {
-        clearAllDisplayClasses("#desktopView");
-        clearAllDisplayClasses("#phoneView");
-        $("#phoneView").addClass("d-lg-none");
-        $("#desktopView").addClass("d-none");
-        $("#desktopView").addClass("d-lg-block");
-    }
-    function SetDesktopView() {
-        clearAllDisplayClasses("#phoneView");
-        clearAllDisplayClasses("#desktopView");
-        hideElement$1("#phoneView");
-    }
-    function SetPhoneView() {
-        clearAllDisplayClasses("#phoneView");
-        clearAllDisplayClasses("#desktopView");
-        hideElement$1("#desktopView");
-    }
-    function responsiveHack() {
-        $("#phoneView").removeClass("position-absolute");
-        {
-            $("#phoneView").addClass("d-none");
-        }
-        $("#loadingModal").remove();
-    }
-
-    const APP_SETTING = 'appSettings';
-    let appSettings = {
-        interface: "desktop",
-        editorFontSize: 12
-    };
-    function isFontSize(str) {
-        return 6 < str && str < 31;
-    }
-    function isResponsiveInterfaces(str) {
-        return ["auto", "desktop", "mobile"].indexOf(str) > -1;
-    }
-    function applySettings(settings, desktopUI) {
-        switch (settings.interface) {
-            case "auto":
-                SetResponsiveness();
-                break;
-            case "desktop":
-                SetDesktopView();
-                break;
-            case "mobile":
-                SetPhoneView();
-                break;
-            default:
-                SetDesktopView();
-                break;
-        }
-        $(":root")[0].style.setProperty("--editor-font-size", `${settings.editorFontSize}pt`);
-        if (settings.interface == "desktop")
-            desktopUI.ResizeCanvas();
-        localStorage.setItem(APP_SETTING, JSON.stringify(appSettings));
-    }
-    function setSettings(event, desktopUI) {
-        let interfaceType = $("#settingsForm select[name=interface]").val();
-        let fontSize = $("#settingsForm input[name=fontSize]").val();
-        console.log(fontSize);
-        if (isResponsiveInterfaces(interfaceType)) {
-            appSettings.interface = interfaceType;
-        }
-        if (isFontSize(fontSize)) {
-            appSettings.editorFontSize = fontSize;
-        }
-        console.log(appSettings);
-        applySettings(appSettings, desktopUI);
-        event.preventDefault();
-        return false;
-    }
-    function loadSettingsFromMemory() {
-        const jsonString = localStorage.getItem(APP_SETTING);
-        if (jsonString) {
-            appSettings = JSON.parse(jsonString);
-        }
-    }
-    function loadSettingsToModal() {
-        console.log("show", appSettings);
-        $("#settingsInterface").val(appSettings.interface);
-        $("#settingsFontSize").val(appSettings.editorFontSize);
-    }
-    function InitSettings(desktopUI) {
-        loadSettingsFromMemory();
-        $("#settingsModal").on("show.bs.modal", (e) => {
-            loadSettingsToModal();
-        });
-        $("#settingsForm").on("submit", (e) => {
-            setSettings(e, desktopUI);
-        });
-    }
-    function StartSettings(desktopUI) {
-        applySettings(appSettings, desktopUI);
-        $(document).on("keydown", (e) => {
-            if (e.ctrlKey && e.which === 75) {
-                let fontSize = appSettings.editorFontSize;
-                fontSize--;
-                if (fontSize < 7)
-                    fontSize = 7;
-                appSettings.editorFontSize = fontSize;
-                applySettings(appSettings, desktopUI);
-                e.preventDefault();
-                return false;
-            }
-            if (e.ctrlKey && e.which === 76) {
-                let fontSize = appSettings.editorFontSize;
-                fontSize++;
-                if (fontSize > 30)
-                    fontSize = 30;
-                appSettings.editorFontSize = fontSize;
-                applySettings(appSettings, desktopUI);
-                e.preventDefault();
-                return false;
-            }
-        });
     }
 
     var [desktopEditor, phoneEditor] = createEditors();

@@ -8,6 +8,7 @@ import { AmountModal, HookAmountModal } from './commonUI/amountModal'
 import { WorldViewController } from './worldViewController'
 import { HookWorldSaveModal, WorldSaveModal } from './commonUI/worldSaveModal'
 import { HookNavbar, NavbarData } from './commonUI/navbar'
+import { HookStyleModal } from './commonUI/karelStyleModal'
 
 
 
@@ -33,6 +34,7 @@ function HookUpCommonUI(uiData: UiData) {
     HookAmountModal(uiData.amountModal, uiData.worldController);
     HookWorldSaveModal(uiData.wordSaveModal, uiData.karelController);
     HookNavbar(uiData.navbar, uiData.editor, uiData.karelController);
+    HookStyleModal(uiData.worldController);
     //Hook ConfirmCallers
     uiData.confirmCallers.forEach((confirmCaller)=> {
         let confirmArgs: ConfirmPromptArgs = {            
