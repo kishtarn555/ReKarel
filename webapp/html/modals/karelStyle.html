@@ -8,6 +8,7 @@
             <div class="modal-body">
                 <form>
                     <div class="mb-3">
+                        <h3>Estilos predefinidos</h3>
                         <div class="row">
                             <div class="col">
 
@@ -20,6 +21,22 @@
                                 <a href="#" class="btn btn-info" id="karelStyleLoadPresetBtn">Cargar</a>
                             </div>
                         </div>
+                    </div>
+                    <div class="mb-3">
+                        <h3><label for="karelStyleJSON">Importar/exportar estilos</label></h3>
+                        <div class="row me-2 ms-2">
+                        <input type="text" name="form-control" id="karelStyleJSON">
+                        </div>
+                        <div class="row p-2">
+                            <div class="input-group">
+                                <a href="#" class="btn btn-info" id="karelStyleImport">Importar</a>
+                                <a href="#" class="btn btn-danger" id="karelStyleExport">Exportar</a>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <h3>Editar el Estilo</h3>
                     </div>
                     <div class="mb-3">
                         <label for="disabledColor" class="form-label">Disabled Color</label>
@@ -64,6 +81,10 @@
                     <div class="mb-3">
                         <label for="beeperColor" class="form-label">Beeper Color</label>
                         <input type="color" id="beeperColor" class="form-control color-input" value="#000000">
+                    </div>
+                    <div class="mb-3">
+                        <label for="wallColor" class="form-label">Wall Color</label>
+                        <input type="color" id="wallColor" class="form-control color-input" value="#000000">
                     </div>
                 </form>
 

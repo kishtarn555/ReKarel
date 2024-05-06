@@ -12,7 +12,10 @@ type WRStyle = {
     errorGridBorderColor:string,
     gutterBackgroundColor: string,
     gutterColor: string,
+    wallColor:string,
 }
+
+
 
 
 const DefaultWRStyle: WRStyle = {
@@ -27,8 +30,35 @@ const DefaultWRStyle: WRStyle = {
     gutterColor: "#444444",
     beeperBackgroundColor: "#0ADB23",    
     beeperColor: "#000000",
+    wallColor:"#000000"
 }
 
+export function isWRStyle(obj: any): obj is WRStyle {
+    if (!obj || typeof obj !== 'object') return false;
+
+    const requiredKeys = [
+        'disabled',
+        'exportCellBackground',
+        'karelColor',
+        'gridBackgroundColor',
+        'errorGridBackgroundColor',
+        'gridBorderColor',
+        'errorGridBorderColor',
+        'gutterBackgroundColor',
+        'gutterColor',
+        'beeperBackgroundColor',
+        'beeperColor',
+        'wallColor'
+    ];
+
+    for (const key of requiredKeys) {
+        if (!(key in obj) || typeof obj[key] !== 'string') {
+            return false;
+        }
+    }
+
+    return true;
+}
 // FIXME: Change f coords to r (so it's all in english)
 class WorldRenderer {
     GutterSize: number;
@@ -321,7 +351,7 @@ class WorldRenderer {
                 break;
         }
         let lineOr = this.canvasContext.lineWidth;
-        this.canvasContext.strokeStyle = "#000";
+        this.canvasContext.strokeStyle = this.style.wallColor;
         this.canvasContext.lineWidth = 2;
         this.canvasContext.beginPath();
         this.canvasContext.moveTo(-this.CellSize/2, -this.CellSize/2+0.5);

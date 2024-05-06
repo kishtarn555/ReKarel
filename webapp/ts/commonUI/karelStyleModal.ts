@@ -1,5 +1,5 @@
 import { GetCurrentSetting, SetWorldRendererStyle } from "../settings";
-import { DefaultWRStyle, WRStyle } from "../worldRenderer";
+import { DefaultWRStyle, WRStyle, isWRStyle } from "../worldRenderer";
 import { WorldViewController } from "../worldViewController";
 
 function parseFormData(): WRStyle {
@@ -15,6 +15,7 @@ function parseFormData(): WRStyle {
         gutterColor: $('#gutterColor').val() as string,
         beeperBackgroundColor: $('#beeperBackgroundColor').val() as string,
         beeperColor: $('#beeperColor').val() as string,
+        wallColor: $('#wallColor').val() as string,
     };
 }
 
@@ -30,6 +31,7 @@ function setFormData(style: WRStyle): void {
     $('#gutterColor').val(style.gutterColor);
     $('#beeperBackgroundColor').val(style.beeperBackgroundColor);
     $('#beeperColor').val(style.beeperColor);
+    $('#wallColor').val(style.wallColor);
 }
 
 
@@ -44,6 +46,30 @@ function loadPreset() {
         return;
     }
     
+}
+
+function exportStyle() {
+    const style = GetCurrentSetting().worldRendererStyle;
+    const val = JSON.stringify(style);
+    $("#karelStyleJSON").val(val);
+}
+
+
+function importStyle() {
+    const val = $("#karelStyleJSON").val() as string;
+    try {
+        const style = JSON.parse(val);
+    
+        if (!isWRStyle(style)) {
+           return;
+        }
+
+        setFormData(style);
+
+    } catch (error) {
+        return;
+    }
+
 }
 
 
@@ -62,4 +88,10 @@ export function HookStyleModal(view:WorldViewController) {
     $("#karelStyleLoadPresetBtn").on("click",()=> {
         loadPreset();
     })
+    $("#karelStyleExport").on("click",()=> {
+        exportStyle();
+    });
+    $("#karelStyleImport").on("click",()=> {
+        importStyle();
+    });
 }

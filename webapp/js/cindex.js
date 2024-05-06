@@ -20467,7 +20467,32 @@
         gutterColor: "#444444",
         beeperBackgroundColor: "#0ADB23",
         beeperColor: "#000000",
+        wallColor: "#000000"
     };
+    function isWRStyle(obj) {
+        if (!obj || typeof obj !== 'object')
+            return false;
+        const requiredKeys = [
+            'disabled',
+            'exportCellBackground',
+            'karelColor',
+            'gridBackgroundColor',
+            'errorGridBackgroundColor',
+            'gridBorderColor',
+            'errorGridBorderColor',
+            'gutterBackgroundColor',
+            'gutterColor',
+            'beeperBackgroundColor',
+            'beeperColor',
+            'wallColor'
+        ];
+        for (const key of requiredKeys) {
+            if (!(key in obj) || typeof obj[key] !== 'string') {
+                return false;
+            }
+        }
+        return true;
+    }
     // FIXME: Change f coords to r (so it's all in english)
     class WorldRenderer {
         constructor(canvasContext, style, scale) {
@@ -20698,7 +20723,7 @@
                     break;
             }
             let lineOr = this.canvasContext.lineWidth;
-            this.canvasContext.strokeStyle = "#000";
+            this.canvasContext.strokeStyle = this.style.wallColor;
             this.canvasContext.lineWidth = 2;
             this.canvasContext.beginPath();
             this.canvasContext.moveTo(-this.CellSize / 2, -this.CellSize / 2 + 0.5);
@@ -21870,6 +21895,7 @@
             gutterColor: $('#gutterColor').val(),
             beeperBackgroundColor: $('#beeperBackgroundColor').val(),
             beeperColor: $('#beeperColor').val(),
+            wallColor: $('#wallColor').val(),
         };
     }
     function setFormData(style) {
@@ -21884,6 +21910,7 @@
         $('#gutterColor').val(style.gutterColor);
         $('#beeperBackgroundColor').val(style.beeperBackgroundColor);
         $('#beeperColor').val(style.beeperColor);
+        $('#wallColor').val(style.wallColor);
     }
     function loadPreset() {
         const val = $("#karelStylePreset").val();
@@ -21893,6 +21920,24 @@
         }
         if (val === "default") {
             setFormData(DefaultWRStyle);
+            return;
+        }
+    }
+    function exportStyle() {
+        const style = GetCurrentSetting().worldRendererStyle;
+        const val = JSON.stringify(style);
+        $("#karelStyleJSON").val(val);
+    }
+    function importStyle() {
+        const val = $("#karelStyleJSON").val();
+        try {
+            const style = JSON.parse(val);
+            if (!isWRStyle(style)) {
+                return;
+            }
+            setFormData(style);
+        }
+        catch (error) {
             return;
         }
     }
@@ -21909,6 +21954,12 @@
         });
         $("#karelStyleLoadPresetBtn").on("click", () => {
             loadPreset();
+        });
+        $("#karelStyleExport").on("click", () => {
+            exportStyle();
+        });
+        $("#karelStyleImport").on("click", () => {
+            importStyle();
         });
     }
 
