@@ -1,3 +1,4 @@
+import { WR_CLEAN, WR_CONTRAST, WR_DARK } from "../KarelStyles";
 import { GetCurrentSetting, SetWorldRendererStyle } from "../settings";
 import { DefaultWRStyle, WRStyle, isWRStyle } from "../worldRenderer";
 import { WorldViewController } from "../worldViewController";
@@ -43,6 +44,18 @@ function loadPreset() {
     }
     if (val==="default") {
         setFormData(DefaultWRStyle);
+        return;
+    }
+    if (val==="clean") {
+        setFormData(WR_CLEAN);
+        return;
+    }
+    if (val==="dark") {
+        setFormData(WR_DARK);
+        return;
+    }
+    if (val==="contrast") {
+        setFormData(WR_CONTRAST);
         return;
     }
     
