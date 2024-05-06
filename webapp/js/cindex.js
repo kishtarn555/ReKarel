@@ -21145,6 +21145,7 @@
             this.gizmos.VerticalScrollElement.css("height", `${h}px`);
         }
         onStep(caller, state) {
+            this.TrackFocusToKarel();
             this.Update();
         }
         OnReset(caller) {

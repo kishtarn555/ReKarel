@@ -473,6 +473,7 @@ class WorldViewController {
     }
 
     private onStep(caller:KarelController, state) {
+        this.TrackFocusToKarel();
         this.Update();
     }
 
