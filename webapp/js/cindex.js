@@ -21722,6 +21722,141 @@
         $(navbar.openWorldIn).on("click", () => getWorldIn(karelController));
     }
 
+    function clearAllDisplayClasses(element) {
+        $(element).removeClass("d-none");
+        $(element).removeClass("d-lg-block");
+        $(element).removeClass("d-lg-none");
+    }
+    function hideElement$1(element) {
+        $(element).addClass("d-none");
+    }
+    function SetResponsiveness() {
+        clearAllDisplayClasses("#desktopView");
+        clearAllDisplayClasses("#phoneView");
+        $("#phoneView").addClass("d-lg-none");
+        $("#desktopView").addClass("d-none");
+        $("#desktopView").addClass("d-lg-block");
+    }
+    function SetDesktopView() {
+        clearAllDisplayClasses("#phoneView");
+        clearAllDisplayClasses("#desktopView");
+        hideElement$1("#phoneView");
+    }
+    function SetPhoneView() {
+        clearAllDisplayClasses("#phoneView");
+        clearAllDisplayClasses("#desktopView");
+        hideElement$1("#desktopView");
+    }
+    function responsiveHack() {
+        $("#phoneView").removeClass("position-absolute");
+        {
+            $("#phoneView").addClass("d-none");
+        }
+        $("#loadingModal").remove();
+    }
+
+    const APP_SETTING = 'appSettings';
+    let appSettings = {
+        interface: "desktop",
+        editorFontSize: 12,
+        worldRendererStyle: DefaultWRStyle
+    };
+    function isFontSize(str) {
+        return 6 < str && str < 31;
+    }
+    function isResponsiveInterfaces(str) {
+        return ["auto", "desktop", "mobile"].indexOf(str) > -1;
+    }
+    let DesktopUI$1;
+    function applySettings(settings, desktopUI) {
+        switch (settings.interface) {
+            case "auto":
+                SetResponsiveness();
+                break;
+            case "desktop":
+                SetDesktopView();
+                break;
+            case "mobile":
+                SetPhoneView();
+                break;
+            default:
+                SetDesktopView();
+                break;
+        }
+        $(":root")[0].style.setProperty("--editor-font-size", `${settings.editorFontSize}pt`);
+        if (settings.interface == "desktop")
+            desktopUI.ResizeCanvas();
+        desktopUI.worldController.renderer.style = settings.worldRendererStyle;
+        desktopUI.worldController.Update();
+        localStorage.setItem(APP_SETTING, JSON.stringify(appSettings));
+    }
+    function setSettings(event, desktopUI) {
+        let interfaceType = $("#settingsForm select[name=interface]").val();
+        let fontSize = $("#settingsForm input[name=fontSize]").val();
+        console.log(fontSize);
+        if (isResponsiveInterfaces(interfaceType)) {
+            appSettings.interface = interfaceType;
+        }
+        if (isFontSize(fontSize)) {
+            appSettings.editorFontSize = fontSize;
+        }
+        console.log(appSettings);
+        applySettings(appSettings, desktopUI);
+        event.preventDefault();
+        return false;
+    }
+    function loadSettingsFromMemory() {
+        const jsonString = localStorage.getItem(APP_SETTING);
+        if (jsonString) {
+            appSettings = JSON.parse(jsonString);
+        }
+    }
+    function loadSettingsToModal() {
+        console.log("show", appSettings);
+        $("#settingsInterface").val(appSettings.interface);
+        $("#settingsFontSize").val(appSettings.editorFontSize);
+    }
+    function InitSettings(desktopUI) {
+        DesktopUI$1 = desktopUI;
+        loadSettingsFromMemory();
+        $("#settingsModal").on("show.bs.modal", (e) => {
+            loadSettingsToModal();
+        });
+        $("#settingsForm").on("submit", (e) => {
+            setSettings(e, desktopUI);
+        });
+    }
+    function StartSettings(desktopUI) {
+        applySettings(appSettings, desktopUI);
+        $(document).on("keydown", (e) => {
+            if (e.ctrlKey && e.which === 75) {
+                let fontSize = appSettings.editorFontSize;
+                fontSize--;
+                if (fontSize < 7)
+                    fontSize = 7;
+                appSettings.editorFontSize = fontSize;
+                applySettings(appSettings, desktopUI);
+                e.preventDefault();
+                return false;
+            }
+            if (e.ctrlKey && e.which === 76) {
+                let fontSize = appSettings.editorFontSize;
+                fontSize++;
+                if (fontSize > 30)
+                    fontSize = 30;
+                appSettings.editorFontSize = fontSize;
+                applySettings(appSettings, desktopUI);
+                e.preventDefault();
+                return false;
+            }
+        });
+    }
+    function SetWorldRendererStyle(style) {
+        appSettings.worldRendererStyle = style;
+        applySettings(appSettings, DesktopUI$1);
+    }
+    function GetCurrentSetting() { return appSettings; }
+
     function parseFormData() {
         return {
             disabled: $('#disabledColor').val(),
@@ -21737,12 +21872,43 @@
             beeperColor: $('#beeperColor').val(),
         };
     }
+    function setFormData(style) {
+        $('#disabledColor').val(style.disabled);
+        $('#exportCellBackgroundColor').val(style.exportCellBackground);
+        $('#karelColor').val(style.karelColor);
+        $('#gridBackgroundColor').val(style.gridBackgroundColor);
+        $('#errorGridBackgroundColor').val(style.errorGridBackgroundColor);
+        $('#gridBorderColor').val(style.gridBorderColor);
+        $('#errorGridBorderColor').val(style.errorGridBorderColor);
+        $('#gutterBackgroundColor').val(style.gutterBackgroundColor);
+        $('#gutterColor').val(style.gutterColor);
+        $('#beeperBackgroundColor').val(style.beeperBackgroundColor);
+        $('#beeperColor').val(style.beeperColor);
+    }
+    function loadPreset() {
+        const val = $("#karelStylePreset").val();
+        if (val === "current") {
+            setFormData(GetCurrentSetting().worldRendererStyle);
+            return;
+        }
+        if (val === "default") {
+            setFormData(DefaultWRStyle);
+            return;
+        }
+    }
     function HookStyleModal(view) {
         $("#setKarelStyleBtn").on("click", () => {
             const style = parseFormData();
             console.log(style);
             view.renderer.style = style;
             view.Update();
+            SetWorldRendererStyle(style);
+        });
+        $("#karelStyleModal").on("show.bs.modal", () => {
+            setFormData(view.renderer.style);
+        });
+        $("#karelStyleLoadPresetBtn").on("click", () => {
+            loadPreset();
         });
     }
 
@@ -25467,131 +25633,6 @@
             message += `Se encontró "${status.text}" cuando se esperaba ${expectations.join(", ")}`;
         }
         return message;
-    }
-
-    function clearAllDisplayClasses(element) {
-        $(element).removeClass("d-none");
-        $(element).removeClass("d-lg-block");
-        $(element).removeClass("d-lg-none");
-    }
-    function hideElement$1(element) {
-        $(element).addClass("d-none");
-    }
-    function SetResponsiveness() {
-        clearAllDisplayClasses("#desktopView");
-        clearAllDisplayClasses("#phoneView");
-        $("#phoneView").addClass("d-lg-none");
-        $("#desktopView").addClass("d-none");
-        $("#desktopView").addClass("d-lg-block");
-    }
-    function SetDesktopView() {
-        clearAllDisplayClasses("#phoneView");
-        clearAllDisplayClasses("#desktopView");
-        hideElement$1("#phoneView");
-    }
-    function SetPhoneView() {
-        clearAllDisplayClasses("#phoneView");
-        clearAllDisplayClasses("#desktopView");
-        hideElement$1("#desktopView");
-    }
-    function responsiveHack() {
-        $("#phoneView").removeClass("position-absolute");
-        {
-            $("#phoneView").addClass("d-none");
-        }
-        $("#loadingModal").remove();
-    }
-
-    const APP_SETTING = 'appSettings';
-    let appSettings = {
-        interface: "desktop",
-        editorFontSize: 12
-    };
-    function isFontSize(str) {
-        return 6 < str && str < 31;
-    }
-    function isResponsiveInterfaces(str) {
-        return ["auto", "desktop", "mobile"].indexOf(str) > -1;
-    }
-    function applySettings(settings, desktopUI) {
-        switch (settings.interface) {
-            case "auto":
-                SetResponsiveness();
-                break;
-            case "desktop":
-                SetDesktopView();
-                break;
-            case "mobile":
-                SetPhoneView();
-                break;
-            default:
-                SetDesktopView();
-                break;
-        }
-        $(":root")[0].style.setProperty("--editor-font-size", `${settings.editorFontSize}pt`);
-        if (settings.interface == "desktop")
-            desktopUI.ResizeCanvas();
-        localStorage.setItem(APP_SETTING, JSON.stringify(appSettings));
-    }
-    function setSettings(event, desktopUI) {
-        let interfaceType = $("#settingsForm select[name=interface]").val();
-        let fontSize = $("#settingsForm input[name=fontSize]").val();
-        console.log(fontSize);
-        if (isResponsiveInterfaces(interfaceType)) {
-            appSettings.interface = interfaceType;
-        }
-        if (isFontSize(fontSize)) {
-            appSettings.editorFontSize = fontSize;
-        }
-        console.log(appSettings);
-        applySettings(appSettings, desktopUI);
-        event.preventDefault();
-        return false;
-    }
-    function loadSettingsFromMemory() {
-        const jsonString = localStorage.getItem(APP_SETTING);
-        if (jsonString) {
-            appSettings = JSON.parse(jsonString);
-        }
-    }
-    function loadSettingsToModal() {
-        console.log("show", appSettings);
-        $("#settingsInterface").val(appSettings.interface);
-        $("#settingsFontSize").val(appSettings.editorFontSize);
-    }
-    function InitSettings(desktopUI) {
-        loadSettingsFromMemory();
-        $("#settingsModal").on("show.bs.modal", (e) => {
-            loadSettingsToModal();
-        });
-        $("#settingsForm").on("submit", (e) => {
-            setSettings(e, desktopUI);
-        });
-    }
-    function StartSettings(desktopUI) {
-        applySettings(appSettings, desktopUI);
-        $(document).on("keydown", (e) => {
-            if (e.ctrlKey && e.which === 75) {
-                let fontSize = appSettings.editorFontSize;
-                fontSize--;
-                if (fontSize < 7)
-                    fontSize = 7;
-                appSettings.editorFontSize = fontSize;
-                applySettings(appSettings, desktopUI);
-                e.preventDefault();
-                return false;
-            }
-            if (e.ctrlKey && e.which === 76) {
-                let fontSize = appSettings.editorFontSize;
-                fontSize++;
-                if (fontSize > 30)
-                    fontSize = 30;
-                appSettings.editorFontSize = fontSize;
-                applySettings(appSettings, desktopUI);
-                e.preventDefault();
-                return false;
-            }
-        });
     }
 
     var [desktopEditor, phoneEditor] = createEditors();

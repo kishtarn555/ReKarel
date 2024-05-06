@@ -1,5 +1,6 @@
 import { DesktopController } from "./desktop-ui";
 import { responsiveHack, SetResponsiveness, SetDesktopView, SetPhoneView } from "./responsive-load";
+import { DefaultWRStyle, WRStyle } from "./worldRenderer";
 
 const APP_SETTING = 'appSettings';
 
@@ -9,11 +10,14 @@ type responsiveInterfaces = "auto" | "desktop" | "mobile";
 type AppSettings = {
     interface: responsiveInterfaces,
     editorFontSize: fontSizes,
+    worldRendererStyle: WRStyle
+    
 }
 
 let appSettings: AppSettings = {
     interface: "desktop",
-    editorFontSize: 12
+    editorFontSize: 12,
+    worldRendererStyle: DefaultWRStyle
 }
 
 function isFontSize(str: number): str is fontSizes {
@@ -22,6 +26,7 @@ function isFontSize(str: number): str is fontSizes {
 function isResponsiveInterfaces(str: string): str is responsiveInterfaces {
     return ["auto", "desktop", "mobile"].indexOf(str) > -1;
 }
+let DesktopUI: DesktopController
 
 function applySettings(settings: AppSettings, desktopUI:DesktopController) {
     switch (settings.interface) {
@@ -41,7 +46,8 @@ function applySettings(settings: AppSettings, desktopUI:DesktopController) {
     $(":root")[0].style.setProperty("--editor-font-size", `${settings.editorFontSize}pt`);
     if (settings.interface == "desktop")
         desktopUI.ResizeCanvas();
-
+    desktopUI.worldController.renderer.style = settings.worldRendererStyle;
+    desktopUI.worldController.Update();
     localStorage.setItem(APP_SETTING, JSON.stringify(appSettings))
 
     
@@ -84,6 +90,7 @@ function loadSettingsToModal() {
 }
 
 export function InitSettings(desktopUI:DesktopController) {    
+    DesktopUI = desktopUI;
     loadSettingsFromMemory();
     $("#settingsModal").on("show.bs.modal", (e)=> {
         loadSettingsToModal();
@@ -124,3 +131,12 @@ export function StartSettings(desktopUI:DesktopController) {
 
     });
 }
+
+
+export function SetWorldRendererStyle(style :WRStyle) {
+    appSettings.worldRendererStyle = style;
+    applySettings(appSettings, DesktopUI);
+}
+
+
+export function GetCurrentSetting(){ return appSettings;}
