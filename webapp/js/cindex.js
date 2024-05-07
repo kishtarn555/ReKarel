@@ -21159,6 +21159,55 @@
         }
     }
 
+    class DesktopContextMenu {
+        constructor(data, worldCanvas, worldController) {
+            this.toggler = data.toggler;
+            this.container = data.container;
+            this.beepers = data.beepers;
+            this.karel = data.karel;
+            this.wall = data.wall;
+            this.Hook(worldCanvas, worldController);
+        }
+        Hook(worldCanvas, worldController) {
+            worldCanvas.on("contextmenu", (e) => {
+                const dropmenu = new bootstrap.Dropdown(this.toggler[0]);
+                dropmenu.hide();
+                this.container[0].style.setProperty("top", `${e.pageY}px`);
+                this.container[0].style.setProperty("left", `${e.pageX}px`);
+                this.ToggleContextMenu();
+                e.preventDefault();
+            });
+            const ContextAction = (target, method) => {
+                target.on("click", (() => {
+                    this.ToggleContextMenu();
+                    method();
+                }).bind(this));
+            };
+            ContextAction(this.beepers.addOne, () => worldController.ChangeBeepers(1));
+            ContextAction(this.beepers.removeOne, () => worldController.ChangeBeepers(-1));
+            ContextAction(this.beepers.infinite, () => worldController.SetBeepers(-1));
+            ContextAction(this.beepers.clear, () => worldController.SetBeepers(0));
+            ContextAction(this.karel.north, () => worldController.SetKarelOnSelection("north"));
+            ContextAction(this.karel.east, () => worldController.SetKarelOnSelection("east"));
+            ContextAction(this.karel.south, () => worldController.SetKarelOnSelection("south"));
+            ContextAction(this.karel.west, () => worldController.SetKarelOnSelection("west"));
+            ContextAction(this.wall.north, () => worldController.ToggleWall("north"));
+            ContextAction(this.wall.east, () => worldController.ToggleWall("east"));
+            ContextAction(this.wall.south, () => worldController.ToggleWall("south"));
+            ContextAction(this.wall.west, () => worldController.ToggleWall("west"));
+            ContextAction(this.wall.outside, () => worldController.ToggleWall("outer"));
+        }
+        ToggleContextMenu() {
+            const dropmenu = new bootstrap.Dropdown(this.toggler[0]);
+            if (this.toggler.attr("aria-expanded") === "false") {
+                dropmenu.show();
+            }
+            else {
+                dropmenu.hide();
+            }
+        }
+    }
+
     class DesktopController {
         constructor(elements, karelController) {
             this.editor = elements.desktopEditor;
@@ -21177,14 +21226,15 @@
             this.karelToolbar = elements.toolbar.karel;
             this.wallToolbar = elements.toolbar.wall;
             this.focusToolbar = elements.toolbar.focus;
-            this.contextToggler = elements.context.toggler;
-            this.contextContainer = elements.context.container;
-            this.contextBeepers = elements.context.beepers;
-            this.contextKarel = elements.context.karel;
-            this.contextWall = elements.context.wall;
+            // this.contextToggler = elements.context.toggler;
+            // this.contextContainer = elements.context.container;
+            // this.contextBeepers = elements.context.beepers;
+            // this.contextKarel = elements.context.karel;        
+            // this.contextWall = elements.context.wall;
             this.consoleTab = elements.console;
             this.karelController = karelController;
             this.worldController = new WorldViewController(new WorldRenderer(this.worldCanvas[0].getContext("2d"), DefaultWRStyle, window.devicePixelRatio), karelController, elements.worldContainer[0], elements.gizmos);
+            this.contextMenu = new DesktopContextMenu(elements.context, elements.worldCanvas, this.worldController);
             this.karelController.RegisterStateChangeObserver(this.OnKarelControllerStateChange.bind(this));
             this.isControlInPlayMode = false;
         }
@@ -21200,7 +21250,6 @@
             });
             this.ConnectExecutionButtonGroup();
             this.ConnectToolbar();
-            this.ConnectContextMenu();
             this.ResizeCanvas();
             this.worldController.FocusOrigin();
             this.ConnectConsole();
@@ -21364,35 +21413,6 @@
             this.focusToolbar.karel.on("click", () => this.worldController.FocusKarel());
             this.focusToolbar.origin.on("click", () => this.worldController.FocusOrigin());
             this.focusToolbar.selector.on("click", () => this.worldController.FocusSelection());
-        }
-        ConnectContextMenu() {
-            this.worldCanvas.on("contextmenu", (e) => {
-                const dropmenu = new bootstrap.Dropdown(this.contextToggler[0]);
-                dropmenu.hide();
-                this.contextContainer[0].style.setProperty("top", `${e.pageY}px`);
-                this.contextContainer[0].style.setProperty("left", `${e.pageX}px`);
-                this.ToggleContextMenu();
-                e.preventDefault();
-            });
-            const ContextAction = (target, method) => {
-                target.on("click", (() => {
-                    this.ToggleContextMenu();
-                    method();
-                }).bind(this));
-            };
-            ContextAction(this.contextBeepers.addOne, () => this.worldController.ChangeBeepers(1));
-            ContextAction(this.contextBeepers.removeOne, () => this.worldController.ChangeBeepers(-1));
-            ContextAction(this.contextBeepers.infinite, () => this.worldController.SetBeepers(-1));
-            ContextAction(this.contextBeepers.clear, () => this.worldController.SetBeepers(0));
-            ContextAction(this.contextKarel.north, () => this.worldController.SetKarelOnSelection("north"));
-            ContextAction(this.contextKarel.east, () => this.worldController.SetKarelOnSelection("east"));
-            ContextAction(this.contextKarel.south, () => this.worldController.SetKarelOnSelection("south"));
-            ContextAction(this.contextKarel.west, () => this.worldController.SetKarelOnSelection("west"));
-            ContextAction(this.contextWall.north, () => this.worldController.ToggleWall("north"));
-            ContextAction(this.contextWall.east, () => this.worldController.ToggleWall("east"));
-            ContextAction(this.contextWall.south, () => this.worldController.ToggleWall("south"));
-            ContextAction(this.contextWall.west, () => this.worldController.ToggleWall("west"));
-            ContextAction(this.contextWall.outside, () => this.worldController.ToggleWall("outer"));
         }
         ConnectConsole() {
             this.karelController.RegisterMessageCallback(this.ConsoleMessage.bind(this));

@@ -1,6 +1,6 @@
 import { splitPanels } from "./split";
 import { createEditors, SetText } from "./editor";
-import { DesktopController } from "./desktop-ui";
+import { DesktopController } from "./desktop/desktop-ui";
 import { GetPhoneUIHelper } from "./phone-ui";
 import { HookUpCommonUI } from "./common-ui";
 import { World } from "../../js/karel";

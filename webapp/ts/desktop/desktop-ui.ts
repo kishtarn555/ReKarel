@@ -1,35 +1,15 @@
 import { EditorView } from 'codemirror'
 import { Compartment } from '@codemirror/state'
 import bootstrap from 'bootstrap';
-import { WorldRenderer, WRStyle, DefaultWRStyle } from './worldRenderer';
-import { WorldViewController, Gizmos } from "./worldViewController";
-import { World } from '../../js/karel';
-import { ControllerState, KarelController } from './KarelController';
+import { WorldRenderer, WRStyle, DefaultWRStyle } from '../worldRenderer';
+import { WorldViewController, Gizmos } from "../worldViewController";
+import { World } from '../../../js/karel';
+import { ControllerState, KarelController } from '../KarelController';
 import { GetOrCreateInstanceFactory } from 'bootstrap/js/dist/base-component';
-import { freezeEditors, unfreezeEditors } from './editor';
+import { freezeEditors, unfreezeEditors } from '../editor';
+import { ContextMenuData, DesktopContextMenu } from './contextMenu';
+import { BeeperToolbar, KarelToolbar, WallToolbar } from './commonTypes';
 
-type BeeperToolbar= {
-    addOne: JQuery,
-    removeOne: JQuery,
-    ammount: JQuery,
-    infinite: JQuery,
-    clear: JQuery,    
-}
-type KarelToolbar= {
-    north: JQuery,
-    east: JQuery,
-    south: JQuery,
-    west: JQuery,
-}
-
-
-type WallToolbar= {
-    north: JQuery,
-    east: JQuery,
-    south: JQuery,
-    west: JQuery,
-    outside: JQuery,
-}
 
 type FocusToolbar = {
     origin: JQuery,
@@ -69,13 +49,7 @@ interface DesktopElements {
         wall: WallToolbar
         focus: FocusToolbar
     },
-    context: {
-        toggler: JQuery,
-        container: JQuery
-        beepers: BeeperToolbar,
-        karel: KarelToolbar,
-        wall: WallToolbar
-    },
+    context: ContextMenuData,
     console: ConsoleTab,
 };
 
@@ -109,6 +83,8 @@ class DesktopController {
     contextKarel: KarelToolbar;
     contextWall: WallToolbar;
 
+    contextMenu: DesktopContextMenu
+
     worldController: WorldViewController;
     karelController: KarelController;
 
@@ -139,16 +115,17 @@ class DesktopController {
 
         this.focusToolbar = elements.toolbar.focus;
 
-        this.contextToggler = elements.context.toggler;
-        this.contextContainer = elements.context.container;
-        this.contextBeepers = elements.context.beepers;
-        this.contextKarel = elements.context.karel;        
-        this.contextWall = elements.context.wall;
+        // this.contextToggler = elements.context.toggler;
+        // this.contextContainer = elements.context.container;
+        // this.contextBeepers = elements.context.beepers;
+        // this.contextKarel = elements.context.karel;        
+        // this.contextWall = elements.context.wall;
 
+        
         this.consoleTab = elements.console;
-
+        
         this.karelController = karelController;
-
+        
         this.worldController = new WorldViewController(
             new WorldRenderer(
                 (this.worldCanvas[0] as HTMLCanvasElement).getContext("2d"),
@@ -159,6 +136,7 @@ class DesktopController {
             elements.worldContainer[0],
             elements.gizmos
         );
+        this.contextMenu = new DesktopContextMenu(elements.context, elements.worldCanvas, this.worldController);
         this.karelController.RegisterStateChangeObserver(this.OnKarelControllerStateChange.bind(this));
 
         this.isControlInPlayMode = false;
@@ -188,7 +166,6 @@ class DesktopController {
         this.ConnectExecutionButtonGroup();
 
         this.ConnectToolbar();        
-        this.ConnectContextMenu();
         
         this.ResizeCanvas();
         this.worldController.FocusOrigin();
@@ -388,44 +365,6 @@ class DesktopController {
         this.focusToolbar.selector.on("click", ()=>this.worldController.FocusSelection());
     }
 
-    
-
-    private ConnectContextMenu() {
-        this.worldCanvas.on("contextmenu", (e)=>{
-            const dropmenu =new bootstrap.Dropdown(this.contextToggler[0]);
-            dropmenu.hide();
-            this.contextContainer[0].style.setProperty("top", `${e.pageY}px`);
-            this.contextContainer[0].style.setProperty("left", `${e.pageX}px`);      
-            this.ToggleContextMenu();
-            e.preventDefault();
-        })
-        const ContextAction = (target: JQuery, method:()=> void) => {
-            target.on(
-                "click",
-                (()=> {
-                    this.ToggleContextMenu();
-                    method();
-                }).bind(this)
-            );
-        }
-        ContextAction(this.contextBeepers.addOne, ()=>this.worldController.ChangeBeepers(1));
-        ContextAction(this.contextBeepers.removeOne, ()=>this.worldController.ChangeBeepers(-1));        
-        ContextAction(this.contextBeepers.infinite, ()=>this.worldController.SetBeepers(-1));
-        ContextAction(this.contextBeepers.clear, ()=>this.worldController.SetBeepers(0));
-
-        
-        ContextAction(this.contextKarel.north, ()=>this.worldController.SetKarelOnSelection("north"));
-        ContextAction(this.contextKarel.east, ()=>this.worldController.SetKarelOnSelection("east"));
-        ContextAction(this.contextKarel.south, ()=>this.worldController.SetKarelOnSelection("south"));
-        ContextAction(this.contextKarel.west, ()=>this.worldController.SetKarelOnSelection("west"));
-        
-        ContextAction(this.contextWall.north, ()=>this.worldController.ToggleWall("north"));
-        ContextAction(this.contextWall.east, ()=>this.worldController.ToggleWall("east"));
-        ContextAction(this.contextWall.south, ()=>this.worldController.ToggleWall("south"));
-        ContextAction(this.contextWall.west, ()=>this.worldController.ToggleWall("west"));
-        ContextAction(this.contextWall.outside, ()=>this.worldController.ToggleWall("outer"));
-
-    }
 
     private ConnectConsole() {        
         this.karelController.RegisterMessageCallback(this.ConsoleMessage.bind(this));

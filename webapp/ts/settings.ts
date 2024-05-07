@@ -1,4 +1,4 @@
-import { DesktopController } from "./desktop-ui";
+import { DesktopController } from "./desktop/desktop-ui";
 import { responsiveHack, SetResponsiveness, SetDesktopView, SetPhoneView } from "./responsive-load";
 import { DefaultWRStyle, WRStyle } from "./worldRenderer";
 
