@@ -86,9 +86,29 @@ var Runtime = function (world) {
   self.disableStackEvents = false;
 
   self.load([['HALT']]);
+  self.events = new EventTarget() //REKAREL
 };
 
-Runtime.prototype = new EventTarget();
+
+//ADDED BY REKAREL
+
+Runtime.prototype.addEventListener= function (type, listener){
+  this.events.addEventListener(type,listener);
+}
+
+Runtime.prototype.removeEventListener= function (type, listener){
+  this.events.removeEventListener(type,listener);
+}
+
+Runtime.prototype.dispatchEvent = function (evt) {
+  this.events.dispatchEvent(evt);
+}
+
+Runtime.prototype.fireEvent = function (type, properties) {
+  this.events.fireEvent(type, properties);
+}
+
+//END OF REKAREL
 
 Runtime.HALT = 0;
 Runtime.LINE = 1;
