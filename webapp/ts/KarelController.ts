@@ -43,7 +43,6 @@ class KarelController {
         this.endedOnError = false;
         this.autoStepInterval = 0;
         this.autoStepping = false;
-        this.OnStackChanges();
 
         KarelController.instance = this;
     }
@@ -359,30 +358,7 @@ class KarelController {
     
 
 
-    private OnStackChanges() {
-        //FIXME: Don't hardcode the id. #pilaTab
-        let runtime = this.GetRuntime();
-        // @ts-ignore
-        runtime.addEventListener('call', function (evt) {   
-            $('#pilaTab').prepend(
-              '<div class="well well-small">' +
-                evt.function +
-                '(' +
-                evt.param +
-                ') Línea <span class="badge badge-info">' +
-                (evt.line + 1) +
-                '</span></div>',
-            );
-          });
-          // @ts-ignore
-          runtime.addEventListener('return', function (evt) {
-            var arreglo = $('#pilaTab > div:first-child').remove();
-          });
-          // @ts-ignore
-          runtime.addEventListener('start', function (evt) {
-            var arreglo = $('#pilaTab > div:first-child').remove();
-          });
-    }
+    
 }
 const ERROR_TOKENS = {
     pascal: {

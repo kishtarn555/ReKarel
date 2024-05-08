@@ -9,6 +9,7 @@ import { GetOrCreateInstanceFactory } from 'bootstrap/js/dist/base-component';
 import { freezeEditors, unfreezeEditors } from '../editor';
 import { ContextMenuData, DesktopContextMenu } from './contextMenu';
 import { BeeperToolbar, KarelToolbar, WallToolbar } from './commonTypes';
+import { CallStack, CallStackUI } from './callStack';
 
 
 type FocusToolbar = {
@@ -51,6 +52,7 @@ interface DesktopElements {
     },
     context: ContextMenuData,
     console: ConsoleTab,
+    callStack: CallStackUI
 };
 
 class DesktopController {
@@ -89,6 +91,7 @@ class DesktopController {
     karelController: KarelController;
 
     consoleTab: ConsoleTab;
+    callStack: CallStack
 
     private isControlInPlayMode: boolean
     
@@ -140,6 +143,7 @@ class DesktopController {
         this.karelController.RegisterStateChangeObserver(this.OnKarelControllerStateChange.bind(this));
 
         this.isControlInPlayMode = false;
+        this.callStack = new CallStack(elements.callStack);
 
     }
 

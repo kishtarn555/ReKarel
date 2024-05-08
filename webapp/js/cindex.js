@@ -21208,862 +21208,6 @@
         }
     }
 
-    class DesktopController {
-        constructor(elements, karelController) {
-            this.editor = elements.desktopEditor;
-            this.worldContainer = elements.worldContainer;
-            this.worldCanvas = elements.worldCanvas;
-            this.worldZoom = elements.worldZoom;
-            this.executionReset = elements.controlBar.execution.reset;
-            this.executionCompile = elements.controlBar.execution.compile;
-            this.executionRun = elements.controlBar.execution.run;
-            this.executionStep = elements.controlBar.execution.step;
-            this.executionEnd = elements.controlBar.execution.future;
-            this.beeperBagInput = elements.controlBar.beeperInput;
-            this.infiniteBeeperInput = elements.controlBar.infiniteBeeperInput;
-            this.delayInput = elements.controlBar.delayInput;
-            this.beeperToolbar = elements.toolbar.beepers;
-            this.karelToolbar = elements.toolbar.karel;
-            this.wallToolbar = elements.toolbar.wall;
-            this.focusToolbar = elements.toolbar.focus;
-            // this.contextToggler = elements.context.toggler;
-            // this.contextContainer = elements.context.container;
-            // this.contextBeepers = elements.context.beepers;
-            // this.contextKarel = elements.context.karel;        
-            // this.contextWall = elements.context.wall;
-            this.consoleTab = elements.console;
-            this.karelController = karelController;
-            this.worldController = new WorldViewController(new WorldRenderer(this.worldCanvas[0].getContext("2d"), DefaultWRStyle, window.devicePixelRatio), karelController, elements.worldContainer[0], elements.gizmos);
-            this.contextMenu = new DesktopContextMenu(elements.context, elements.worldCanvas, this.worldController);
-            this.karelController.RegisterStateChangeObserver(this.OnKarelControllerStateChange.bind(this));
-            this.isControlInPlayMode = false;
-        }
-        Init() {
-            $(window).on("resize", this.ResizeCanvas.bind(this));
-            $(window).on("keydown", this.HotKeys.bind(this));
-            this.worldContainer.on("scroll", this.calculateScroll.bind(this));
-            this.worldCanvas.on("mouseup", this.worldController.ClickUp.bind(this.worldController));
-            this.worldCanvas.on("mousemove", this.worldController.TrackMouse.bind(this.worldController));
-            this.worldZoom.on("change", () => {
-                let scale = parseFloat(String(this.worldZoom.val()));
-                this.worldController.SetScale(scale);
-            });
-            this.ConnectExecutionButtonGroup();
-            this.ConnectToolbar();
-            this.ResizeCanvas();
-            this.worldController.FocusOrigin();
-            this.ConnectConsole();
-        }
-        ConnectExecutionButtonGroup() {
-            this.executionCompile.on("click", () => this.karelController.Compile());
-            this.executionReset.on("click", () => this.ResetExecution());
-            this.executionStep.on("click", () => this.Step());
-            this.executionEnd.on("click", () => this.RunTillEnd());
-            this.executionRun.on("click", () => {
-                if (!this.isControlInPlayMode) {
-                    this.AutoStep();
-                }
-                else {
-                    this.PauseStep();
-                }
-            });
-            this.delayInput.on("change", () => {
-                let delay = parseInt(this.delayInput.val());
-                this.karelController.ChangeAutoStepDelay(delay);
-            });
-            this.beeperBagInput.on("change", () => this.OnBeeperInputChange());
-            this.infiniteBeeperInput.on("click", () => this.ToggleInfiniteBeepers());
-            this.karelController.RegisterStepController((_ctr, _state) => { this.UpdateBeeperBag(); });
-        }
-        UpdateBeeperBag() {
-            const amount = this.worldController.GetBeepersInBag();
-            this.beeperBagInput.val(amount);
-            if (amount === -1) {
-                this.ActivateInfiniteBeepers();
-            }
-            else {
-                this.DeactivateInfiniteBeepers();
-            }
-        }
-        ActivateInfiniteBeepers() {
-            this.beeperBagInput.hide();
-            this.infiniteBeeperInput.removeClass("btn-light");
-            this.infiniteBeeperInput.addClass("btn-info");
-        }
-        DeactivateInfiniteBeepers() {
-            this.beeperBagInput.show();
-            this.infiniteBeeperInput.removeClass("btn-info");
-            this.infiniteBeeperInput.addClass("btn-light");
-        }
-        ToggleInfiniteBeepers() {
-            if (this.worldController.GetBeepersInBag() !== -1) {
-                this.ActivateInfiniteBeepers();
-                this.worldController.SetBeepersInBag(-1);
-            }
-            else {
-                this.DeactivateInfiniteBeepers();
-                this.worldController.SetBeepersInBag(0);
-                this.UpdateBeeperBag();
-            }
-        }
-        OnBeeperInputChange() {
-            if (this.karelController.GetState() !== "unstarted") {
-                return;
-            }
-            let beeperAmmount = parseInt(this.beeperBagInput.val());
-            this.worldController.SetBeepersInBag(beeperAmmount);
-        }
-        ResetExecution() {
-            this.karelController.Reset();
-            this.UpdateBeeperBag();
-        }
-        AutoStep() {
-            let delay = parseInt(this.delayInput.val());
-            this.karelController.StartAutoStep(delay);
-            this.SetPlayMode();
-        }
-        PauseStep() {
-            this.karelController.Pause();
-        }
-        RunTillEnd() {
-            this.karelController.RunTillEnd();
-            this.UpdateBeeperBag();
-        }
-        Step() {
-            this.karelController.Step();
-            this.UpdateBeeperBag();
-        }
-        DisableControlBar() {
-            this.executionCompile.attr("disabled", "");
-            this.executionRun.attr("disabled", "");
-            this.executionStep.attr("disabled", "");
-            this.executionEnd.attr("disabled", "");
-            this.beeperBagInput.attr("disabled", "");
-            this.infiniteBeeperInput.attr("disabled", "");
-        }
-        EnableControlBar() {
-            this.executionCompile.removeAttr("disabled");
-            this.executionRun.removeAttr("disabled");
-            this.executionStep.removeAttr("disabled");
-            this.executionEnd.removeAttr("disabled");
-            this.beeperBagInput.removeAttr("disabled");
-            this.infiniteBeeperInput.removeAttr("disabled");
-            this.executionRun.html('<i class="bi bi-play-fill"></i>');
-        }
-        SetPlayMode() {
-            this.isControlInPlayMode = true;
-            this.executionCompile.attr("disabled", "");
-            this.executionStep.attr("disabled", "");
-            this.executionEnd.attr("disabled", "");
-            this.beeperBagInput.attr("disabled", "");
-            this.infiniteBeeperInput.attr("disabled", "");
-            this.executionRun.html('<i class="bi bi-pause-fill"></i>');
-        }
-        SetPauseMode() {
-            this.isControlInPlayMode = false;
-            this.executionCompile.attr("disabled", "");
-            this.beeperBagInput.attr("disabled", "");
-            this.infiniteBeeperInput.attr("disabled", "");
-            this.executionStep.removeAttr("disabled");
-            this.executionEnd.removeAttr("disabled");
-            this.executionRun.removeAttr("disabled");
-            this.executionRun.html('<i class="bi bi-play-fill"></i>');
-        }
-        OnKarelControllerStateChange(sender, state) {
-            if (state === "running") {
-                freezeEditors(this.editor);
-                this.SetPauseMode();
-                this.worldController.Lock();
-            }
-            if (state === "finished") {
-                this.isControlInPlayMode = false;
-                this.DisableControlBar();
-                if (this.karelController.EndedOnError()) {
-                    this.worldController.ErrorMode();
-                }
-                freezeEditors(this.editor);
-                this.worldController.Lock();
-            }
-            else if (state === "unstarted") {
-                this.isControlInPlayMode = false;
-                this.EnableControlBar();
-                unfreezeEditors(this.editor);
-                this.worldController.UnLock();
-                this.worldController.NormalMode();
-                this.UpdateBeeperBag();
-            }
-            else if (state === "paused") {
-                this.SetPauseMode();
-            }
-        }
-        ConnectToolbar() {
-            this.beeperToolbar.addOne.on("click", () => this.worldController.ChangeBeepers(1));
-            this.beeperToolbar.removeOne.on("click", () => this.worldController.ChangeBeepers(-1));
-            this.beeperToolbar.infinite.on("click", () => this.worldController.SetBeepers(-1));
-            this.beeperToolbar.clear.on("click", () => this.worldController.SetBeepers(0));
-            this.karelToolbar.north.on("click", () => this.worldController.SetKarelOnSelection("north"));
-            this.karelToolbar.east.on("click", () => this.worldController.SetKarelOnSelection("east"));
-            this.karelToolbar.south.on("click", () => this.worldController.SetKarelOnSelection("south"));
-            this.karelToolbar.west.on("click", () => this.worldController.SetKarelOnSelection("west"));
-            this.wallToolbar.north.on("click", () => this.worldController.ToggleWall("north"));
-            this.wallToolbar.east.on("click", () => this.worldController.ToggleWall("east"));
-            this.wallToolbar.south.on("click", () => this.worldController.ToggleWall("south"));
-            this.wallToolbar.west.on("click", () => this.worldController.ToggleWall("west"));
-            this.wallToolbar.outside.on("click", () => this.worldController.ToggleWall("outer"));
-            this.focusToolbar.karel.on("click", () => this.worldController.FocusKarel());
-            this.focusToolbar.origin.on("click", () => this.worldController.FocusOrigin());
-            this.focusToolbar.selector.on("click", () => this.worldController.FocusSelection());
-        }
-        ConnectConsole() {
-            this.karelController.RegisterMessageCallback(this.ConsoleMessage.bind(this));
-            this.consoleTab.clear.on("click", () => this.ClearConsole());
-        }
-        ToggleContextMenu() {
-            const dropmenu = new bootstrap.Dropdown(this.contextToggler[0]);
-            if (this.contextToggler.attr("aria-expanded") === "false") {
-                dropmenu.show();
-            }
-            else {
-                dropmenu.hide();
-            }
-        }
-        ClearConsole() {
-            this.consoleTab.console.empty();
-        }
-        SendMessageToConsole(message, style) {
-            if (style !== "raw") {
-                const currentDate = new Date();
-                const hour = currentDate.getHours() % 12 || 12;
-                const minute = currentDate.getMinutes();
-                const second = currentDate.getSeconds();
-                const amOrPm = currentDate.getHours() < 12 ? "AM" : "PM";
-                const html = `<div style="text-wrap: wrap;"><span class="text-${style}">[${hour}:${minute}:${second} ${amOrPm}]</span> ${message}</div>`;
-                this.consoleTab.console.prepend(html);
-                return;
-            }
-            const html = `<div>${message}</div>`;
-            this.consoleTab.console.prepend(html);
-        }
-        ConsoleMessage(message, type = "info") {
-            let style = "info";
-            switch (type) {
-                case "info":
-                    style = "info";
-                    break;
-                case "success":
-                    style = "success";
-                    break;
-                case "error":
-                    style = "danger";
-                    break;
-                case "raw":
-                    style = "raw";
-                    break;
-            }
-            this.SendMessageToConsole(message, style);
-        }
-        HotKeys(e) {
-            let tag = e.target.tagName.toLowerCase();
-            if (document.activeElement.getAttribute("role") == "textbox" || tag == "input") {
-                return;
-            }
-            let hotkeys = new Map([
-                [71, () => { this.worldController.ToggleKarelPosition(); }],
-                [82, () => { this.worldController.SetBeepers(0); }],
-                [81, () => { this.worldController.ChangeBeepers(-1); }],
-                [69, () => { this.worldController.ChangeBeepers(1); }],
-                [48, () => { this.worldController.SetBeepers(0); }],
-                [49, () => { this.worldController.SetBeepers(1); }],
-                [50, () => { this.worldController.SetBeepers(2); }],
-                [51, () => { this.worldController.SetBeepers(3); }],
-                [52, () => { this.worldController.SetBeepers(4); }],
-                [53, () => { this.worldController.SetBeepers(5); }],
-                [54, () => { this.worldController.SetBeepers(6); }],
-                [55, () => { this.worldController.SetBeepers(7); }],
-                [56, () => { this.worldController.SetBeepers(8); }],
-                [57, () => { this.worldController.SetBeepers(9); }],
-                [87, () => { this.worldController.ToggleWall("north"); }],
-                [68, () => { this.worldController.ToggleWall("east"); }],
-                [83, () => { this.worldController.ToggleWall("south"); }],
-                [65, () => { this.worldController.ToggleWall("west"); }],
-                [88, () => { this.worldController.ToggleWall("outer"); }],
-                [37, () => { this.worldController.MoveSelection(0, -1); }],
-                [38, () => { this.worldController.MoveSelection(1, 0); }],
-                [39, () => { this.worldController.MoveSelection(0, 1); }],
-                [40, () => { this.worldController.MoveSelection(-1, 0); }],
-                [84, () => { this.worldController.SetBeepers(-1); }],
-            ]);
-            if (hotkeys.has(e.which) === false) {
-                return;
-            }
-            if (e.shiftKey) {
-                let dummy = new MouseEvent("", {
-                    clientX: e.clientX,
-                    clientY: e.clientY,
-                });
-                this.worldController.ClickUp(dummy);
-            }
-            hotkeys.get(e.which)();
-            e.preventDefault();
-        }
-        calculateScroll() {
-            let left = 1, top = 1;
-            const container = this.worldContainer[0];
-            if (container.scrollWidth !== container.clientWidth) {
-                left = container.scrollLeft / (container.scrollWidth - container.clientWidth);
-            }
-            if (container.scrollHeight !== container.clientHeight) {
-                top =
-                    1 - container.scrollTop
-                        / (container.scrollHeight - container.clientHeight);
-            }
-            this.worldController.UpdateScroll(left, top);
-        }
-        ResizeCanvas() {
-            this.worldCanvas[0].style.width = `${this.worldContainer[0].clientWidth}px`;
-            this.worldCanvas[0].style.height = `${this.worldContainer[0].clientHeight}px`;
-            let scale = window.devicePixelRatio;
-            this.worldCanvas.attr("width", Math.floor(this.worldContainer[0].clientWidth * scale));
-            this.worldCanvas.attr("height", Math.floor(this.worldContainer[0].clientHeight * scale));
-            this.worldController.Update();
-            this.calculateScroll();
-        }
-    }
-
-    function activateButton(toolbar, buttonPressed) {
-        for (const element in toolbar) {
-            $(element).removeClass("text-primary");
-        }
-        $(buttonPressed).addClass("text-primary");
-        toolbar[buttonPressed]();
-    }
-    function indent(elements) {
-        let editor = elements.editor;
-        let state = editor.state;
-        let head = state.selection.main.head;
-        let transaction = state.update({
-            changes: {
-                from: state.doc.lineAt(head).from,
-                insert: "\t"
-            }
-        });
-        editor.dispatch(transaction);
-    }
-    function unindent(elements) {
-        let state = elements.editor.state;
-        let head = state.selection.main.head;
-        let line = state.doc.lineAt(head);
-        let stringOutpt = line.text.replace(/^((\t)|( {0,4}))/, "");
-        let transaction = state.update({
-            changes: {
-                from: line.from,
-                to: line.to,
-                insert: stringOutpt
-            }
-        });
-        elements.editor.dispatch(transaction);
-    }
-    function replaceWithIndetation(elements, txt) {
-        let state = elements.editor.state;
-        let head = state.selection.main.head;
-        let line = state.doc.lineAt(head);
-        let indentation = line.text.match(/\s*/g)[0];
-        let text = indentation + txt;
-        let transaction = state.update({
-            changes: {
-                from: line.from,
-                to: line.to,
-                insert: text
-            }
-        });
-        elements.editor.dispatch(transaction);
-    }
-    //TODO: Add support for states
-    function GetPhoneUIHelper(elements) {
-        let response = {
-            changeCodeToolbar: (button) => activateButton(elements.codeTab.toolbar, button),
-            changeNavToolbar: (button) => activateButton(elements.navToolbar, button),
-            indent: () => indent(elements),
-            unindent: () => unindent(elements),
-            btnSimpleCodeInput: (btn) => replaceWithIndetation(elements, elements.codeTab.simpleCodeInputs[btn]()),
-            replaceWithIndetation: (txt) => replaceWithIndetation(elements, txt),
-        };
-        for (const btn in elements.navToolbar) {
-            $(btn).click(() => response.changeNavToolbar(btn));
-        }
-        for (const btn in elements.codeTab.toolbar) {
-            $(btn).click(() => response.changeCodeToolbar(btn));
-        }
-        for (const btn in elements.codeTab.simpleCodeInputs) {
-            $(btn).click(() => response.btnSimpleCodeInput(btn));
-        }
-        $(elements.codeTab.indent).click(response.indent);
-        $(elements.codeTab.unindent).click(response.unindent);
-        $(elements.codeTab.undo).on("click", () => { undo(elements.mainEdtior); });
-        $(elements.codeTab.redo).on("click", () => { redo(elements.mainEdtior); });
-        return response;
-    }
-
-    function confirmPrompt(evenet) {
-        let data = evenet.data;
-        $(data.uiData.confirmModal.titleField).html(data.modalData.title);
-        $(data.uiData.confirmModal.messageField).html(data.modalData.message);
-        $(data.uiData.confirmModal.confirmBtn).on("click", data.modalData.accept);
-        $(data.uiData.confirmModal.rejectBtn).on("click", data.modalData.reject);
-        let modal = new bootstrap.Modal($(data.uiData.confirmModal.modal).get(0));
-        modal.show();
-    }
-    function confirmPromptEnd(event) {
-        let data = event.data;
-        $(data.uiData.confirmModal.confirmBtn).off("click", data.modalData.accept);
-        $(data.uiData.confirmModal.rejectBtn).off("click", data.modalData.reject);
-    }
-
-    const fileRegex$1 = /^[a-zA-Z0-9._]+$/;
-    function setFileNameLink$1(modal, editor) {
-        let newFilename = $(modal.inputField).val();
-        if (!fileRegex$1.test(newFilename)) {
-            $(modal.wrongCodeWarning).removeAttr("hidden");
-            newFilename = "code.txt";
-        }
-        else {
-            $(modal.wrongCodeWarning).attr("hidden", "");
-        }
-        let blob = new Blob([editor.state.doc.toString()], { type: 'text/plain' });
-        $(modal.confirmBtn).attr("href", window.URL.createObjectURL(blob));
-        $(modal.confirmBtn).attr("download", newFilename);
-    }
-    function hookDownloadModel(modal, editor) {
-        $(modal.modal).on('show.bs.modal', () => setFileNameLink$1(modal, editor));
-        $(modal.inputField).change(() => setFileNameLink$1(modal, editor));
-    }
-
-    function HookResizeModal(resizeModel, karelController) {
-        $(resizeModel.modal).on('show.bs.modal', () => {
-            $(resizeModel.rowField).val(karelController.world.h);
-            $(resizeModel.columnField).val(karelController.world.w);
-        });
-        $(resizeModel.confirmBtn).on('click', () => {
-            let w = parseInt($(resizeModel.columnField).val());
-            let h = parseInt($(resizeModel.rowField).val());
-            karelController.Resize(w, h);
-            karelController.Reset();
-        });
-    }
-
-    function HookAmountModal(modal, worldController) {
-        $(modal.confirmBtn).on("click", () => {
-            const inputValue = $(modal.inputField).val();
-            if (inputValue === "") {
-                return;
-            }
-            const amount = parseFloat(inputValue);
-            if (amount < -1) {
-                return;
-            }
-            worldController.SetBeepers(amount);
-        });
-    }
-
-    let defaultFileName = "world.in";
-    function setWorldData(data, modal) {
-        $(modal.worldData).val(data);
-        let blob = new Blob([data], { type: 'text/plain' });
-        $(modal.confirmBtn).attr("href", window.URL.createObjectURL(blob));
-    }
-    function setInputWorld(modal, karelController) {
-        defaultFileName = "world.in";
-        const filename = $(modal.inputField).val();
-        $(modal.inputField).val(filename.replace(/\.out$/, ".in"));
-        setFileNameLink(modal);
-        const input = karelController.world.save();
-        $(modal.worldData).val(input);
-        setWorldData(input, modal);
-    }
-    function setOutputWorld(modal, karelController) {
-        defaultFileName = "world.out";
-        const filename = $(modal.inputField).val();
-        $(modal.inputField).val(filename.replace(/\.in$/, ".out"));
-        setFileNameLink(modal);
-        const output = karelController.world.output();
-        $(modal.worldData).val(output);
-        setWorldData(output, modal);
-    }
-    const fileRegex = /^[a-zA-Z0-9._]+$/;
-    function setFileNameLink(modal) {
-        let newFilename = $(modal.inputField).val();
-        if (!fileRegex.test(newFilename)) {
-            $(modal.wrongWorldWaring).removeAttr("hidden");
-            newFilename = defaultFileName;
-        }
-        else {
-            $(modal.wrongWorldWaring).attr("hidden", "");
-        }
-        $(modal.confirmBtn).attr("download", newFilename);
-    }
-    function HookWorldSaveModal(modal, karelController) {
-        $(modal.inputBtn).on("click", () => setInputWorld(modal, karelController));
-        $(modal.outputBtn).on("click", () => setOutputWorld(modal, karelController));
-    }
-
-    function getCode(editor) {
-        var file = document.createElement('input');
-        file.type = 'file';
-        file.addEventListener('change', function (evt) {
-            //@ts-ignore
-            var files = evt.target.files; // @ts-ignore FileList object 
-            // Loop through the FileList and render image files as thumbnails.
-            for (var i = 0, f; (f = files[i]); i++) {
-                // Only process text files.
-                if (f.type &&
-                    !(f.type.match('text.*') || f.type == 'application/javascript')) {
-                    continue;
-                }
-                var reader = new FileReader();
-                // Closure to capture the file information.
-                reader.onload = (function (theFile) {
-                    return function (e) {
-                        SetText(editor, reader.result);
-                    };
-                })();
-                // Read in the file as a data URL.
-                reader.readAsText(f);
-            }
-        });
-        file.click();
-    }
-    function parseWorld(xml) {
-        // Parses the xml and returns a document object.
-        return new DOMParser().parseFromString(xml, 'text/xml');
-    }
-    function getWorldIn(karelController) {
-        var file = document.createElement('input');
-        file.type = 'file';
-        file.addEventListener('change', function (evt) {
-            //@ts-ignore
-            var files = evt.target.files; // FileList object
-            // Loop through the FileList and render image files as thumbnails.
-            for (var i = 0, f; (f = files[i]); i++) {
-                // Only process text files.
-                if (f.type && !f.type.match('text.*')) {
-                    continue;
-                }
-                var reader = new FileReader();
-                // Closure to capture the file information.
-                reader.onload = (function (theFile) {
-                    return function (e) {
-                        const result = reader.result;
-                        karelController.world.load(parseWorld(result));
-                        karelController.Reset();
-                    };
-                })();
-                // Read in the file as a data URL.
-                reader.readAsText(f);
-            }
-        });
-        file.click();
-    }
-    function HookNavbar(navbar, editor, karelController) {
-        $(navbar.openCode).on("click", () => getCode(editor));
-        $(navbar.openWorldIn).on("click", () => getWorldIn(karelController));
-    }
-
-    const WR_CLEAN = {
-        disabled: '#4f4f4f',
-        exportCellBackground: '#f5f7a8',
-        karelColor: '#3E6AC1',
-        gridBackgroundColor: '#f8f9fA',
-        errorGridBackgroundColor: "#f5d5d5",
-        gridBorderColor: '#c4c4c4',
-        errorGridBorderColor: '#a8838f',
-        gutterBackgroundColor: '#e6e6e6',
-        gutterColor: "#444444",
-        beeperBackgroundColor: "#ffffff",
-        beeperColor: "#000000",
-        wallColor: "#000000"
-    };
-    const WR_DARK = {
-        disabled: '#4f4f4f',
-        exportCellBackground: '#f5f7a8',
-        karelColor: '#328EAD',
-        gridBackgroundColor: '#282828',
-        errorGridBackgroundColor: "#5D3D3D",
-        gridBorderColor: '#565656',
-        errorGridBorderColor: '#565656',
-        gutterBackgroundColor: '#3B3B3B',
-        gutterColor: "#E8E8E8",
-        beeperBackgroundColor: "#005608",
-        beeperColor: "#ffffff",
-        wallColor: "#f1f1f1"
-    };
-    const WR_CONTRAST = {
-        disabled: '#4f4f4f',
-        exportCellBackground: '#f5f7a8',
-        karelColor: '#3F69DB',
-        gridBackgroundColor: '#f3f3f3',
-        errorGridBackgroundColor: "#5D3D3D",
-        gridBorderColor: '#565656',
-        errorGridBorderColor: '#565656',
-        gutterBackgroundColor: '#e3e3e3',
-        gutterColor: "#000000",
-        beeperBackgroundColor: "#000000",
-        beeperColor: "#ffffff",
-        wallColor: "#000000"
-    };
-
-    function clearAllDisplayClasses(element) {
-        $(element).removeClass("d-none");
-        $(element).removeClass("d-lg-block");
-        $(element).removeClass("d-lg-none");
-    }
-    function hideElement$1(element) {
-        $(element).addClass("d-none");
-    }
-    function SetResponsiveness() {
-        clearAllDisplayClasses("#desktopView");
-        clearAllDisplayClasses("#phoneView");
-        $("#phoneView").addClass("d-lg-none");
-        $("#desktopView").addClass("d-none");
-        $("#desktopView").addClass("d-lg-block");
-    }
-    function SetDesktopView() {
-        clearAllDisplayClasses("#phoneView");
-        clearAllDisplayClasses("#desktopView");
-        hideElement$1("#phoneView");
-    }
-    function SetPhoneView() {
-        clearAllDisplayClasses("#phoneView");
-        clearAllDisplayClasses("#desktopView");
-        hideElement$1("#desktopView");
-    }
-    function responsiveHack() {
-        $("#phoneView").removeClass("position-absolute");
-        {
-            $("#phoneView").addClass("d-none");
-        }
-        $("#loadingModal").remove();
-    }
-
-    const APP_SETTING = 'appSettings';
-    let appSettings = {
-        interface: "desktop",
-        editorFontSize: 12,
-        worldRendererStyle: DefaultWRStyle
-    };
-    function isFontSize(str) {
-        return 6 < str && str < 31;
-    }
-    function isResponsiveInterfaces(str) {
-        return ["auto", "desktop", "mobile"].indexOf(str) > -1;
-    }
-    let DesktopUI$1;
-    function applySettings(settings, desktopUI) {
-        switch (settings.interface) {
-            case "auto":
-                SetResponsiveness();
-                break;
-            case "desktop":
-                SetDesktopView();
-                break;
-            case "mobile":
-                SetPhoneView();
-                break;
-            default:
-                SetDesktopView();
-                break;
-        }
-        $(":root")[0].style.setProperty("--editor-font-size", `${settings.editorFontSize}pt`);
-        if (settings.interface == "desktop")
-            desktopUI.ResizeCanvas();
-        desktopUI.worldController.renderer.style = settings.worldRendererStyle;
-        desktopUI.worldController.Update();
-        localStorage.setItem(APP_SETTING, JSON.stringify(appSettings));
-    }
-    function setSettings(event, desktopUI) {
-        let interfaceType = $("#settingsForm select[name=interface]").val();
-        let fontSize = $("#settingsForm input[name=fontSize]").val();
-        console.log(fontSize);
-        if (isResponsiveInterfaces(interfaceType)) {
-            appSettings.interface = interfaceType;
-        }
-        if (isFontSize(fontSize)) {
-            appSettings.editorFontSize = fontSize;
-        }
-        console.log(appSettings);
-        applySettings(appSettings, desktopUI);
-        event.preventDefault();
-        return false;
-    }
-    function loadSettingsFromMemory() {
-        const jsonString = localStorage.getItem(APP_SETTING);
-        if (jsonString) {
-            appSettings = JSON.parse(jsonString);
-        }
-    }
-    function loadSettingsToModal() {
-        console.log("show", appSettings);
-        $("#settingsInterface").val(appSettings.interface);
-        $("#settingsFontSize").val(appSettings.editorFontSize);
-    }
-    function InitSettings(desktopUI) {
-        DesktopUI$1 = desktopUI;
-        loadSettingsFromMemory();
-        $("#settingsModal").on("show.bs.modal", (e) => {
-            loadSettingsToModal();
-        });
-        $("#settingsForm").on("submit", (e) => {
-            setSettings(e, desktopUI);
-        });
-    }
-    function StartSettings(desktopUI) {
-        applySettings(appSettings, desktopUI);
-        $(document).on("keydown", (e) => {
-            if (e.ctrlKey && e.which === 75) {
-                let fontSize = appSettings.editorFontSize;
-                fontSize--;
-                if (fontSize < 7)
-                    fontSize = 7;
-                appSettings.editorFontSize = fontSize;
-                applySettings(appSettings, desktopUI);
-                e.preventDefault();
-                return false;
-            }
-            if (e.ctrlKey && e.which === 76) {
-                let fontSize = appSettings.editorFontSize;
-                fontSize++;
-                if (fontSize > 30)
-                    fontSize = 30;
-                appSettings.editorFontSize = fontSize;
-                applySettings(appSettings, desktopUI);
-                e.preventDefault();
-                return false;
-            }
-        });
-    }
-    function SetWorldRendererStyle(style) {
-        appSettings.worldRendererStyle = style;
-        applySettings(appSettings, DesktopUI$1);
-    }
-    function GetCurrentSetting() { return appSettings; }
-
-    function parseFormData() {
-        return {
-            disabled: $('#disabledColor').val(),
-            exportCellBackground: $('#exportCellBackgroundColor').val(),
-            karelColor: $('#karelColor').val(),
-            gridBackgroundColor: $('#gridBackgroundColor').val(),
-            errorGridBackgroundColor: $('#errorGridBackgroundColor').val(),
-            gridBorderColor: $('#gridBorderColor').val(),
-            errorGridBorderColor: $('#errorGridBorderColor').val(),
-            gutterBackgroundColor: $('#gutterBackgroundColor').val(),
-            gutterColor: $('#gutterColor').val(),
-            beeperBackgroundColor: $('#beeperBackgroundColor').val(),
-            beeperColor: $('#beeperColor').val(),
-            wallColor: $('#wallColor').val(),
-        };
-    }
-    function setFormData(style) {
-        $('#disabledColor').val(style.disabled);
-        $('#exportCellBackgroundColor').val(style.exportCellBackground);
-        $('#karelColor').val(style.karelColor);
-        $('#gridBackgroundColor').val(style.gridBackgroundColor);
-        $('#errorGridBackgroundColor').val(style.errorGridBackgroundColor);
-        $('#gridBorderColor').val(style.gridBorderColor);
-        $('#errorGridBorderColor').val(style.errorGridBorderColor);
-        $('#gutterBackgroundColor').val(style.gutterBackgroundColor);
-        $('#gutterColor').val(style.gutterColor);
-        $('#beeperBackgroundColor').val(style.beeperBackgroundColor);
-        $('#beeperColor').val(style.beeperColor);
-        $('#wallColor').val(style.wallColor);
-    }
-    function loadPreset() {
-        const val = $("#karelStylePreset").val();
-        if (val === "current") {
-            setFormData(GetCurrentSetting().worldRendererStyle);
-            return;
-        }
-        if (val === "default") {
-            setFormData(DefaultWRStyle);
-            return;
-        }
-        if (val === "clean") {
-            setFormData(WR_CLEAN);
-            return;
-        }
-        if (val === "dark") {
-            setFormData(WR_DARK);
-            return;
-        }
-        if (val === "contrast") {
-            setFormData(WR_CONTRAST);
-            return;
-        }
-    }
-    function exportStyle() {
-        const style = GetCurrentSetting().worldRendererStyle;
-        const val = JSON.stringify(style);
-        $("#karelStyleJSON").val(val);
-    }
-    function importStyle() {
-        const val = $("#karelStyleJSON").val();
-        try {
-            const style = JSON.parse(val);
-            if (!isWRStyle(style)) {
-                return;
-            }
-            setFormData(style);
-        }
-        catch (error) {
-            return;
-        }
-    }
-    function HookStyleModal(view) {
-        $("#setKarelStyleBtn").on("click", () => {
-            const style = parseFormData();
-            console.log(style);
-            view.renderer.style = style;
-            view.Update();
-            SetWorldRendererStyle(style);
-        });
-        $("#karelStyleModal").on("show.bs.modal", () => {
-            setFormData(view.renderer.style);
-        });
-        $("#karelStyleLoadPresetBtn").on("click", () => {
-            loadPreset();
-        });
-        $("#karelStyleExport").on("click", () => {
-            exportStyle();
-        });
-        $("#karelStyleImport").on("click", () => {
-            importStyle();
-        });
-    }
-
-    function HookUpCommonUI(uiData) {
-        hookDownloadModel(uiData.downloadCodeModal, uiData.editor);
-        HookAmountModal(uiData.amountModal, uiData.worldController);
-        HookWorldSaveModal(uiData.wordSaveModal, uiData.karelController);
-        HookNavbar(uiData.navbar, uiData.editor, uiData.karelController);
-        HookStyleModal(uiData.worldController);
-        //Hook ConfirmCallers
-        uiData.confirmCallers.forEach((confirmCaller) => {
-            let confirmArgs = {
-                uiData: uiData,
-                modalData: confirmCaller.data,
-            };
-            $(confirmCaller.button).on('click', null, confirmArgs, confirmPrompt);
-            $(uiData.confirmModal.modal).on('hidden.bs.modal', null, confirmArgs, confirmPromptEnd);
-        });
-        HookResizeModal(uiData.resizeModal, uiData.karelController);
-    }
-    const ERRORCODES = {
-        WALL: 'Karel ha chocado con un muro!',
-        WORLDUNDERFLOW: 'Karel intentó tomar zumbadores en una posición donde no había!',
-        BAGUNDERFLOW: 'Karel intentó dejar un zumbador pero su mochila estaba vacía!',
-        INSTRUCTION: 'Karel ha superado el límite de instrucciones!',
-        STACK: 'La pila de karel se ha desbordado!',
-    };
-
     /* parser generated by jison 0.4.17 */
     /*
       Returns a Parser object of the following structure:
@@ -23988,8 +23132,22 @@
         self.world = world;
         self.disableStackEvents = false;
         self.load([['HALT']]);
+        self.events = new EventTarget(); //REKAREL
     };
-    Runtime.prototype = new EventTarget();
+    //ADDED BY REKAREL
+    Runtime.prototype.addEventListener = function (type, listener) {
+        this.events.addEventListener(type, listener);
+    };
+    Runtime.prototype.removeEventListener = function (type, listener) {
+        this.events.removeEventListener(type, listener);
+    };
+    Runtime.prototype.dispatchEvent = function (evt) {
+        this.events.dispatchEvent(evt);
+    };
+    Runtime.prototype.fireEvent = function (type, properties) {
+        this.events.fireEvent(type, properties);
+    };
+    //END OF REKAREL
     Runtime.HALT = 0;
     Runtime.LINE = 1;
     Runtime.LEFT = 2;
@@ -25350,6 +24508,466 @@
     }
     // vim: set noexpandtab:ts=2:sw=2
 
+    function confirmPrompt(evenet) {
+        let data = evenet.data;
+        $(data.uiData.confirmModal.titleField).html(data.modalData.title);
+        $(data.uiData.confirmModal.messageField).html(data.modalData.message);
+        $(data.uiData.confirmModal.confirmBtn).on("click", data.modalData.accept);
+        $(data.uiData.confirmModal.rejectBtn).on("click", data.modalData.reject);
+        let modal = new bootstrap.Modal($(data.uiData.confirmModal.modal).get(0));
+        modal.show();
+    }
+    function confirmPromptEnd(event) {
+        let data = event.data;
+        $(data.uiData.confirmModal.confirmBtn).off("click", data.modalData.accept);
+        $(data.uiData.confirmModal.rejectBtn).off("click", data.modalData.reject);
+    }
+
+    const fileRegex$1 = /^[a-zA-Z0-9._]+$/;
+    function setFileNameLink$1(modal, editor) {
+        let newFilename = $(modal.inputField).val();
+        if (!fileRegex$1.test(newFilename)) {
+            $(modal.wrongCodeWarning).removeAttr("hidden");
+            newFilename = "code.txt";
+        }
+        else {
+            $(modal.wrongCodeWarning).attr("hidden", "");
+        }
+        let blob = new Blob([editor.state.doc.toString()], { type: 'text/plain' });
+        $(modal.confirmBtn).attr("href", window.URL.createObjectURL(blob));
+        $(modal.confirmBtn).attr("download", newFilename);
+    }
+    function hookDownloadModel(modal, editor) {
+        $(modal.modal).on('show.bs.modal', () => setFileNameLink$1(modal, editor));
+        $(modal.inputField).change(() => setFileNameLink$1(modal, editor));
+    }
+
+    function HookResizeModal(resizeModel, karelController) {
+        $(resizeModel.modal).on('show.bs.modal', () => {
+            $(resizeModel.rowField).val(karelController.world.h);
+            $(resizeModel.columnField).val(karelController.world.w);
+        });
+        $(resizeModel.confirmBtn).on('click', () => {
+            let w = parseInt($(resizeModel.columnField).val());
+            let h = parseInt($(resizeModel.rowField).val());
+            karelController.Resize(w, h);
+            karelController.Reset();
+        });
+    }
+
+    function HookAmountModal(modal, worldController) {
+        $(modal.confirmBtn).on("click", () => {
+            const inputValue = $(modal.inputField).val();
+            if (inputValue === "") {
+                return;
+            }
+            const amount = parseFloat(inputValue);
+            if (amount < -1) {
+                return;
+            }
+            worldController.SetBeepers(amount);
+        });
+    }
+
+    let defaultFileName = "world.in";
+    function setWorldData(data, modal) {
+        $(modal.worldData).val(data);
+        let blob = new Blob([data], { type: 'text/plain' });
+        $(modal.confirmBtn).attr("href", window.URL.createObjectURL(blob));
+    }
+    function setInputWorld(modal, karelController) {
+        defaultFileName = "world.in";
+        const filename = $(modal.inputField).val();
+        $(modal.inputField).val(filename.replace(/\.out$/, ".in"));
+        setFileNameLink(modal);
+        const input = karelController.world.save();
+        $(modal.worldData).val(input);
+        setWorldData(input, modal);
+    }
+    function setOutputWorld(modal, karelController) {
+        defaultFileName = "world.out";
+        const filename = $(modal.inputField).val();
+        $(modal.inputField).val(filename.replace(/\.in$/, ".out"));
+        setFileNameLink(modal);
+        const output = karelController.world.output();
+        $(modal.worldData).val(output);
+        setWorldData(output, modal);
+    }
+    const fileRegex = /^[a-zA-Z0-9._]+$/;
+    function setFileNameLink(modal) {
+        let newFilename = $(modal.inputField).val();
+        if (!fileRegex.test(newFilename)) {
+            $(modal.wrongWorldWaring).removeAttr("hidden");
+            newFilename = defaultFileName;
+        }
+        else {
+            $(modal.wrongWorldWaring).attr("hidden", "");
+        }
+        $(modal.confirmBtn).attr("download", newFilename);
+    }
+    function HookWorldSaveModal(modal, karelController) {
+        $(modal.inputBtn).on("click", () => setInputWorld(modal, karelController));
+        $(modal.outputBtn).on("click", () => setOutputWorld(modal, karelController));
+    }
+
+    function getCode(editor) {
+        var file = document.createElement('input');
+        file.type = 'file';
+        file.addEventListener('change', function (evt) {
+            //@ts-ignore
+            var files = evt.target.files; // @ts-ignore FileList object 
+            // Loop through the FileList and render image files as thumbnails.
+            for (var i = 0, f; (f = files[i]); i++) {
+                // Only process text files.
+                if (f.type &&
+                    !(f.type.match('text.*') || f.type == 'application/javascript')) {
+                    continue;
+                }
+                var reader = new FileReader();
+                // Closure to capture the file information.
+                reader.onload = (function (theFile) {
+                    return function (e) {
+                        SetText(editor, reader.result);
+                    };
+                })();
+                // Read in the file as a data URL.
+                reader.readAsText(f);
+            }
+        });
+        file.click();
+    }
+    function parseWorld(xml) {
+        // Parses the xml and returns a document object.
+        return new DOMParser().parseFromString(xml, 'text/xml');
+    }
+    function getWorldIn(karelController) {
+        var file = document.createElement('input');
+        file.type = 'file';
+        file.addEventListener('change', function (evt) {
+            //@ts-ignore
+            var files = evt.target.files; // FileList object
+            // Loop through the FileList and render image files as thumbnails.
+            for (var i = 0, f; (f = files[i]); i++) {
+                // Only process text files.
+                if (f.type && !f.type.match('text.*')) {
+                    continue;
+                }
+                var reader = new FileReader();
+                // Closure to capture the file information.
+                reader.onload = (function (theFile) {
+                    return function (e) {
+                        const result = reader.result;
+                        karelController.world.load(parseWorld(result));
+                        karelController.Reset();
+                    };
+                })();
+                // Read in the file as a data URL.
+                reader.readAsText(f);
+            }
+        });
+        file.click();
+    }
+    function HookNavbar(navbar, editor, karelController) {
+        $(navbar.openCode).on("click", () => getCode(editor));
+        $(navbar.openWorldIn).on("click", () => getWorldIn(karelController));
+    }
+
+    const WR_CLEAN = {
+        disabled: '#4f4f4f',
+        exportCellBackground: '#f5f7a8',
+        karelColor: '#3E6AC1',
+        gridBackgroundColor: '#f8f9fA',
+        errorGridBackgroundColor: "#f5d5d5",
+        gridBorderColor: '#c4c4c4',
+        errorGridBorderColor: '#a8838f',
+        gutterBackgroundColor: '#e6e6e6',
+        gutterColor: "#444444",
+        beeperBackgroundColor: "#ffffff",
+        beeperColor: "#000000",
+        wallColor: "#000000"
+    };
+    const WR_DARK = {
+        disabled: '#4f4f4f',
+        exportCellBackground: '#f5f7a8',
+        karelColor: '#328EAD',
+        gridBackgroundColor: '#282828',
+        errorGridBackgroundColor: "#5D3D3D",
+        gridBorderColor: '#565656',
+        errorGridBorderColor: '#565656',
+        gutterBackgroundColor: '#3B3B3B',
+        gutterColor: "#E8E8E8",
+        beeperBackgroundColor: "#005608",
+        beeperColor: "#ffffff",
+        wallColor: "#f1f1f1"
+    };
+    const WR_CONTRAST = {
+        disabled: '#4f4f4f',
+        exportCellBackground: '#f5f7a8',
+        karelColor: '#3F69DB',
+        gridBackgroundColor: '#f3f3f3',
+        errorGridBackgroundColor: "#5D3D3D",
+        gridBorderColor: '#565656',
+        errorGridBorderColor: '#565656',
+        gutterBackgroundColor: '#e3e3e3',
+        gutterColor: "#000000",
+        beeperBackgroundColor: "#000000",
+        beeperColor: "#ffffff",
+        wallColor: "#000000"
+    };
+
+    function clearAllDisplayClasses(element) {
+        $(element).removeClass("d-none");
+        $(element).removeClass("d-lg-block");
+        $(element).removeClass("d-lg-none");
+    }
+    function hideElement$1(element) {
+        $(element).addClass("d-none");
+    }
+    function SetResponsiveness() {
+        clearAllDisplayClasses("#desktopView");
+        clearAllDisplayClasses("#phoneView");
+        $("#phoneView").addClass("d-lg-none");
+        $("#desktopView").addClass("d-none");
+        $("#desktopView").addClass("d-lg-block");
+    }
+    function SetDesktopView() {
+        clearAllDisplayClasses("#phoneView");
+        clearAllDisplayClasses("#desktopView");
+        hideElement$1("#phoneView");
+    }
+    function SetPhoneView() {
+        clearAllDisplayClasses("#phoneView");
+        clearAllDisplayClasses("#desktopView");
+        hideElement$1("#desktopView");
+    }
+    function responsiveHack() {
+        $("#phoneView").removeClass("position-absolute");
+        {
+            $("#phoneView").addClass("d-none");
+        }
+        $("#loadingModal").remove();
+    }
+
+    const APP_SETTING = 'appSettings';
+    let appSettings = {
+        interface: "desktop",
+        editorFontSize: 12,
+        worldRendererStyle: DefaultWRStyle
+    };
+    function isFontSize(str) {
+        return 6 < str && str < 31;
+    }
+    function isResponsiveInterfaces(str) {
+        return ["auto", "desktop", "mobile"].indexOf(str) > -1;
+    }
+    let DesktopUI$1;
+    function applySettings(settings, desktopUI) {
+        switch (settings.interface) {
+            case "auto":
+                SetResponsiveness();
+                break;
+            case "desktop":
+                SetDesktopView();
+                break;
+            case "mobile":
+                SetPhoneView();
+                break;
+            default:
+                SetDesktopView();
+                break;
+        }
+        $(":root")[0].style.setProperty("--editor-font-size", `${settings.editorFontSize}pt`);
+        if (settings.interface == "desktop")
+            desktopUI.ResizeCanvas();
+        desktopUI.worldController.renderer.style = settings.worldRendererStyle;
+        desktopUI.worldController.Update();
+        localStorage.setItem(APP_SETTING, JSON.stringify(appSettings));
+    }
+    function setSettings(event, desktopUI) {
+        let interfaceType = $("#settingsForm select[name=interface]").val();
+        let fontSize = $("#settingsForm input[name=fontSize]").val();
+        console.log(fontSize);
+        if (isResponsiveInterfaces(interfaceType)) {
+            appSettings.interface = interfaceType;
+        }
+        if (isFontSize(fontSize)) {
+            appSettings.editorFontSize = fontSize;
+        }
+        console.log(appSettings);
+        applySettings(appSettings, desktopUI);
+        event.preventDefault();
+        return false;
+    }
+    function loadSettingsFromMemory() {
+        const jsonString = localStorage.getItem(APP_SETTING);
+        if (jsonString) {
+            appSettings = JSON.parse(jsonString);
+        }
+    }
+    function loadSettingsToModal() {
+        console.log("show", appSettings);
+        $("#settingsInterface").val(appSettings.interface);
+        $("#settingsFontSize").val(appSettings.editorFontSize);
+    }
+    function InitSettings(desktopUI) {
+        DesktopUI$1 = desktopUI;
+        loadSettingsFromMemory();
+        $("#settingsModal").on("show.bs.modal", (e) => {
+            loadSettingsToModal();
+        });
+        $("#settingsForm").on("submit", (e) => {
+            setSettings(e, desktopUI);
+        });
+    }
+    function StartSettings(desktopUI) {
+        applySettings(appSettings, desktopUI);
+        $(document).on("keydown", (e) => {
+            if (e.ctrlKey && e.which === 75) {
+                let fontSize = appSettings.editorFontSize;
+                fontSize--;
+                if (fontSize < 7)
+                    fontSize = 7;
+                appSettings.editorFontSize = fontSize;
+                applySettings(appSettings, desktopUI);
+                e.preventDefault();
+                return false;
+            }
+            if (e.ctrlKey && e.which === 76) {
+                let fontSize = appSettings.editorFontSize;
+                fontSize++;
+                if (fontSize > 30)
+                    fontSize = 30;
+                appSettings.editorFontSize = fontSize;
+                applySettings(appSettings, desktopUI);
+                e.preventDefault();
+                return false;
+            }
+        });
+    }
+    function SetWorldRendererStyle(style) {
+        appSettings.worldRendererStyle = style;
+        applySettings(appSettings, DesktopUI$1);
+    }
+    function GetCurrentSetting() { return appSettings; }
+
+    function parseFormData() {
+        return {
+            disabled: $('#disabledColor').val(),
+            exportCellBackground: $('#exportCellBackgroundColor').val(),
+            karelColor: $('#karelColor').val(),
+            gridBackgroundColor: $('#gridBackgroundColor').val(),
+            errorGridBackgroundColor: $('#errorGridBackgroundColor').val(),
+            gridBorderColor: $('#gridBorderColor').val(),
+            errorGridBorderColor: $('#errorGridBorderColor').val(),
+            gutterBackgroundColor: $('#gutterBackgroundColor').val(),
+            gutterColor: $('#gutterColor').val(),
+            beeperBackgroundColor: $('#beeperBackgroundColor').val(),
+            beeperColor: $('#beeperColor').val(),
+            wallColor: $('#wallColor').val(),
+        };
+    }
+    function setFormData(style) {
+        $('#disabledColor').val(style.disabled);
+        $('#exportCellBackgroundColor').val(style.exportCellBackground);
+        $('#karelColor').val(style.karelColor);
+        $('#gridBackgroundColor').val(style.gridBackgroundColor);
+        $('#errorGridBackgroundColor').val(style.errorGridBackgroundColor);
+        $('#gridBorderColor').val(style.gridBorderColor);
+        $('#errorGridBorderColor').val(style.errorGridBorderColor);
+        $('#gutterBackgroundColor').val(style.gutterBackgroundColor);
+        $('#gutterColor').val(style.gutterColor);
+        $('#beeperBackgroundColor').val(style.beeperBackgroundColor);
+        $('#beeperColor').val(style.beeperColor);
+        $('#wallColor').val(style.wallColor);
+    }
+    function loadPreset() {
+        const val = $("#karelStylePreset").val();
+        if (val === "current") {
+            setFormData(GetCurrentSetting().worldRendererStyle);
+            return;
+        }
+        if (val === "default") {
+            setFormData(DefaultWRStyle);
+            return;
+        }
+        if (val === "clean") {
+            setFormData(WR_CLEAN);
+            return;
+        }
+        if (val === "dark") {
+            setFormData(WR_DARK);
+            return;
+        }
+        if (val === "contrast") {
+            setFormData(WR_CONTRAST);
+            return;
+        }
+    }
+    function exportStyle() {
+        const style = GetCurrentSetting().worldRendererStyle;
+        const val = JSON.stringify(style);
+        $("#karelStyleJSON").val(val);
+    }
+    function importStyle() {
+        const val = $("#karelStyleJSON").val();
+        try {
+            const style = JSON.parse(val);
+            if (!isWRStyle(style)) {
+                return;
+            }
+            setFormData(style);
+        }
+        catch (error) {
+            return;
+        }
+    }
+    function HookStyleModal(view) {
+        $("#setKarelStyleBtn").on("click", () => {
+            const style = parseFormData();
+            console.log(style);
+            view.renderer.style = style;
+            view.Update();
+            SetWorldRendererStyle(style);
+        });
+        $("#karelStyleModal").on("show.bs.modal", () => {
+            setFormData(view.renderer.style);
+        });
+        $("#karelStyleLoadPresetBtn").on("click", () => {
+            loadPreset();
+        });
+        $("#karelStyleExport").on("click", () => {
+            exportStyle();
+        });
+        $("#karelStyleImport").on("click", () => {
+            importStyle();
+        });
+    }
+
+    function HookUpCommonUI(uiData) {
+        hookDownloadModel(uiData.downloadCodeModal, uiData.editor);
+        HookAmountModal(uiData.amountModal, uiData.worldController);
+        HookWorldSaveModal(uiData.wordSaveModal, uiData.karelController);
+        HookNavbar(uiData.navbar, uiData.editor, uiData.karelController);
+        HookStyleModal(uiData.worldController);
+        //Hook ConfirmCallers
+        uiData.confirmCallers.forEach((confirmCaller) => {
+            let confirmArgs = {
+                uiData: uiData,
+                modalData: confirmCaller.data,
+            };
+            $(confirmCaller.button).on('click', null, confirmArgs, confirmPrompt);
+            $(uiData.confirmModal.modal).on('hidden.bs.modal', null, confirmArgs, confirmPromptEnd);
+        });
+        HookResizeModal(uiData.resizeModal, uiData.karelController);
+    }
+    const ERRORCODES = {
+        WALL: 'Karel ha chocado con un muro!',
+        WORLDUNDERFLOW: 'Karel intentó tomar zumbadores en una posición donde no había!',
+        BAGUNDERFLOW: 'Karel intentó dejar un zumbador pero su mochila estaba vacía!',
+        INSTRUCTION: 'Karel ha superado el límite de instrucciones!',
+        STACK: 'La pila de karel se ha desbordado!',
+    };
+
     class KarelController {
         constructor(world, mainEditor) {
             this.world = world;
@@ -25364,7 +24982,6 @@
             this.endedOnError = false;
             this.autoStepInterval = 0;
             this.autoStepping = false;
-            this.OnStackChanges();
             KarelController.instance = this;
         }
         static GetInstance() {
@@ -25623,28 +25240,6 @@
         BreakPointMessage(line) {
             this.SendMessage(`🔴 ${line}) Breakpoint `, "info");
         }
-        OnStackChanges() {
-            //FIXME: Don't hardcode the id. #pilaTab
-            let runtime = this.GetRuntime();
-            // @ts-ignore
-            runtime.addEventListener('call', function (evt) {
-                $('#pilaTab').prepend('<div class="well well-small">' +
-                    evt.function +
-                    '(' +
-                    evt.param +
-                    ') Línea <span class="badge badge-info">' +
-                    (evt.line + 1) +
-                    '</span></div>');
-            });
-            // @ts-ignore
-            runtime.addEventListener('return', function (evt) {
-                $('#pilaTab > div:first-child').remove();
-            });
-            // @ts-ignore
-            runtime.addEventListener('start', function (evt) {
-                $('#pilaTab > div:first-child').remove();
-            });
-        }
     }
     const ERROR_TOKENS = {
         pascal: {
@@ -25766,6 +25361,454 @@
         return message;
     }
 
+    let MAX_STACK_SIZE = 650;
+    class CallStack {
+        constructor(data) {
+            this.panel = data.panel;
+            KarelController.GetInstance().RegisterNewWorldObserver((a, _) => this.OnStackChanges());
+            // this.OnStackChanges();
+            KarelController.GetInstance().RegisterResetObserver((_) => this.clearStack());
+        }
+        OnStackChanges() {
+            //FIXME: Don't hardcode the id. #pilaTab
+            const karelController = KarelController.GetInstance();
+            let runtime = karelController.GetRuntime();
+            // @ts-ignore
+            runtime.addEventListener('call', evt => {
+                if (runtime.state.stackSize == MAX_STACK_SIZE + 1) {
+                    this.panel.prepend('<div class="well well-small">' +
+                        `<span class="text-secondary">${MAX_STACK_SIZE + 1} - ${runtime.state.stackSize}</span>` +
+                        '<span class="text-danger"> Hay demasiadas funciones en la pila, las más recientes no se muestran en la interfaz, pero estan ahí </span></div>');
+                    return;
+                }
+                if (runtime.state.stackSize > MAX_STACK_SIZE) {
+                    this.panel.find('>:first-child').html('<div class="well well-small">' +
+                        `<span class="text-secondary">${MAX_STACK_SIZE + 1} - ${runtime.state.stackSize}</span>` +
+                        '<span class="text-danger"> Hay demasiadas funciones en la pila, las más recientes no se muestran en la interfaz, pero estan ahí </span></div>');
+                    return;
+                }
+                this.panel.prepend('<div class="well well-small">' +
+                    `<span class="text-info">${runtime.state.stackSize}</span> - ` +
+                    evt.function +
+                    ' (' +
+                    `<span class="text-warning">${evt.param}</span>` +
+                    ') <span class="badge bg-info"> Desde línea ' +
+                    (evt.line + 1) +
+                    '</span></div>');
+            });
+            // @ts-ignore
+            runtime.addEventListener('return', evt => {
+                if (runtime.state.stackSize > MAX_STACK_SIZE)
+                    return;
+                this.panel.find('>:first-child').remove();
+            });
+            // @ts-ignore
+            runtime.addEventListener('start', evt => {
+                this.clearStack();
+            });
+        }
+        clearStack() {
+            this.panel.empty();
+        }
+    }
+
+    class DesktopController {
+        constructor(elements, karelController) {
+            this.editor = elements.desktopEditor;
+            this.worldContainer = elements.worldContainer;
+            this.worldCanvas = elements.worldCanvas;
+            this.worldZoom = elements.worldZoom;
+            this.executionReset = elements.controlBar.execution.reset;
+            this.executionCompile = elements.controlBar.execution.compile;
+            this.executionRun = elements.controlBar.execution.run;
+            this.executionStep = elements.controlBar.execution.step;
+            this.executionEnd = elements.controlBar.execution.future;
+            this.beeperBagInput = elements.controlBar.beeperInput;
+            this.infiniteBeeperInput = elements.controlBar.infiniteBeeperInput;
+            this.delayInput = elements.controlBar.delayInput;
+            this.beeperToolbar = elements.toolbar.beepers;
+            this.karelToolbar = elements.toolbar.karel;
+            this.wallToolbar = elements.toolbar.wall;
+            this.focusToolbar = elements.toolbar.focus;
+            // this.contextToggler = elements.context.toggler;
+            // this.contextContainer = elements.context.container;
+            // this.contextBeepers = elements.context.beepers;
+            // this.contextKarel = elements.context.karel;        
+            // this.contextWall = elements.context.wall;
+            this.consoleTab = elements.console;
+            this.karelController = karelController;
+            this.worldController = new WorldViewController(new WorldRenderer(this.worldCanvas[0].getContext("2d"), DefaultWRStyle, window.devicePixelRatio), karelController, elements.worldContainer[0], elements.gizmos);
+            this.contextMenu = new DesktopContextMenu(elements.context, elements.worldCanvas, this.worldController);
+            this.karelController.RegisterStateChangeObserver(this.OnKarelControllerStateChange.bind(this));
+            this.isControlInPlayMode = false;
+            this.callStack = new CallStack(elements.callStack);
+        }
+        Init() {
+            $(window).on("resize", this.ResizeCanvas.bind(this));
+            $(window).on("keydown", this.HotKeys.bind(this));
+            this.worldContainer.on("scroll", this.calculateScroll.bind(this));
+            this.worldCanvas.on("mouseup", this.worldController.ClickUp.bind(this.worldController));
+            this.worldCanvas.on("mousemove", this.worldController.TrackMouse.bind(this.worldController));
+            this.worldZoom.on("change", () => {
+                let scale = parseFloat(String(this.worldZoom.val()));
+                this.worldController.SetScale(scale);
+            });
+            this.ConnectExecutionButtonGroup();
+            this.ConnectToolbar();
+            this.ResizeCanvas();
+            this.worldController.FocusOrigin();
+            this.ConnectConsole();
+        }
+        ConnectExecutionButtonGroup() {
+            this.executionCompile.on("click", () => this.karelController.Compile());
+            this.executionReset.on("click", () => this.ResetExecution());
+            this.executionStep.on("click", () => this.Step());
+            this.executionEnd.on("click", () => this.RunTillEnd());
+            this.executionRun.on("click", () => {
+                if (!this.isControlInPlayMode) {
+                    this.AutoStep();
+                }
+                else {
+                    this.PauseStep();
+                }
+            });
+            this.delayInput.on("change", () => {
+                let delay = parseInt(this.delayInput.val());
+                this.karelController.ChangeAutoStepDelay(delay);
+            });
+            this.beeperBagInput.on("change", () => this.OnBeeperInputChange());
+            this.infiniteBeeperInput.on("click", () => this.ToggleInfiniteBeepers());
+            this.karelController.RegisterStepController((_ctr, _state) => { this.UpdateBeeperBag(); });
+        }
+        UpdateBeeperBag() {
+            const amount = this.worldController.GetBeepersInBag();
+            this.beeperBagInput.val(amount);
+            if (amount === -1) {
+                this.ActivateInfiniteBeepers();
+            }
+            else {
+                this.DeactivateInfiniteBeepers();
+            }
+        }
+        ActivateInfiniteBeepers() {
+            this.beeperBagInput.hide();
+            this.infiniteBeeperInput.removeClass("btn-light");
+            this.infiniteBeeperInput.addClass("btn-info");
+        }
+        DeactivateInfiniteBeepers() {
+            this.beeperBagInput.show();
+            this.infiniteBeeperInput.removeClass("btn-info");
+            this.infiniteBeeperInput.addClass("btn-light");
+        }
+        ToggleInfiniteBeepers() {
+            if (this.worldController.GetBeepersInBag() !== -1) {
+                this.ActivateInfiniteBeepers();
+                this.worldController.SetBeepersInBag(-1);
+            }
+            else {
+                this.DeactivateInfiniteBeepers();
+                this.worldController.SetBeepersInBag(0);
+                this.UpdateBeeperBag();
+            }
+        }
+        OnBeeperInputChange() {
+            if (this.karelController.GetState() !== "unstarted") {
+                return;
+            }
+            let beeperAmmount = parseInt(this.beeperBagInput.val());
+            this.worldController.SetBeepersInBag(beeperAmmount);
+        }
+        ResetExecution() {
+            this.karelController.Reset();
+            this.UpdateBeeperBag();
+        }
+        AutoStep() {
+            let delay = parseInt(this.delayInput.val());
+            this.karelController.StartAutoStep(delay);
+            this.SetPlayMode();
+        }
+        PauseStep() {
+            this.karelController.Pause();
+        }
+        RunTillEnd() {
+            this.karelController.RunTillEnd();
+            this.UpdateBeeperBag();
+        }
+        Step() {
+            this.karelController.Step();
+            this.UpdateBeeperBag();
+        }
+        DisableControlBar() {
+            this.executionCompile.attr("disabled", "");
+            this.executionRun.attr("disabled", "");
+            this.executionStep.attr("disabled", "");
+            this.executionEnd.attr("disabled", "");
+            this.beeperBagInput.attr("disabled", "");
+            this.infiniteBeeperInput.attr("disabled", "");
+        }
+        EnableControlBar() {
+            this.executionCompile.removeAttr("disabled");
+            this.executionRun.removeAttr("disabled");
+            this.executionStep.removeAttr("disabled");
+            this.executionEnd.removeAttr("disabled");
+            this.beeperBagInput.removeAttr("disabled");
+            this.infiniteBeeperInput.removeAttr("disabled");
+            this.executionRun.html('<i class="bi bi-play-fill"></i>');
+        }
+        SetPlayMode() {
+            this.isControlInPlayMode = true;
+            this.executionCompile.attr("disabled", "");
+            this.executionStep.attr("disabled", "");
+            this.executionEnd.attr("disabled", "");
+            this.beeperBagInput.attr("disabled", "");
+            this.infiniteBeeperInput.attr("disabled", "");
+            this.executionRun.html('<i class="bi bi-pause-fill"></i>');
+        }
+        SetPauseMode() {
+            this.isControlInPlayMode = false;
+            this.executionCompile.attr("disabled", "");
+            this.beeperBagInput.attr("disabled", "");
+            this.infiniteBeeperInput.attr("disabled", "");
+            this.executionStep.removeAttr("disabled");
+            this.executionEnd.removeAttr("disabled");
+            this.executionRun.removeAttr("disabled");
+            this.executionRun.html('<i class="bi bi-play-fill"></i>');
+        }
+        OnKarelControllerStateChange(sender, state) {
+            if (state === "running") {
+                freezeEditors(this.editor);
+                this.SetPauseMode();
+                this.worldController.Lock();
+            }
+            if (state === "finished") {
+                this.isControlInPlayMode = false;
+                this.DisableControlBar();
+                if (this.karelController.EndedOnError()) {
+                    this.worldController.ErrorMode();
+                }
+                freezeEditors(this.editor);
+                this.worldController.Lock();
+            }
+            else if (state === "unstarted") {
+                this.isControlInPlayMode = false;
+                this.EnableControlBar();
+                unfreezeEditors(this.editor);
+                this.worldController.UnLock();
+                this.worldController.NormalMode();
+                this.UpdateBeeperBag();
+            }
+            else if (state === "paused") {
+                this.SetPauseMode();
+            }
+        }
+        ConnectToolbar() {
+            this.beeperToolbar.addOne.on("click", () => this.worldController.ChangeBeepers(1));
+            this.beeperToolbar.removeOne.on("click", () => this.worldController.ChangeBeepers(-1));
+            this.beeperToolbar.infinite.on("click", () => this.worldController.SetBeepers(-1));
+            this.beeperToolbar.clear.on("click", () => this.worldController.SetBeepers(0));
+            this.karelToolbar.north.on("click", () => this.worldController.SetKarelOnSelection("north"));
+            this.karelToolbar.east.on("click", () => this.worldController.SetKarelOnSelection("east"));
+            this.karelToolbar.south.on("click", () => this.worldController.SetKarelOnSelection("south"));
+            this.karelToolbar.west.on("click", () => this.worldController.SetKarelOnSelection("west"));
+            this.wallToolbar.north.on("click", () => this.worldController.ToggleWall("north"));
+            this.wallToolbar.east.on("click", () => this.worldController.ToggleWall("east"));
+            this.wallToolbar.south.on("click", () => this.worldController.ToggleWall("south"));
+            this.wallToolbar.west.on("click", () => this.worldController.ToggleWall("west"));
+            this.wallToolbar.outside.on("click", () => this.worldController.ToggleWall("outer"));
+            this.focusToolbar.karel.on("click", () => this.worldController.FocusKarel());
+            this.focusToolbar.origin.on("click", () => this.worldController.FocusOrigin());
+            this.focusToolbar.selector.on("click", () => this.worldController.FocusSelection());
+        }
+        ConnectConsole() {
+            this.karelController.RegisterMessageCallback(this.ConsoleMessage.bind(this));
+            this.consoleTab.clear.on("click", () => this.ClearConsole());
+        }
+        ToggleContextMenu() {
+            const dropmenu = new bootstrap.Dropdown(this.contextToggler[0]);
+            if (this.contextToggler.attr("aria-expanded") === "false") {
+                dropmenu.show();
+            }
+            else {
+                dropmenu.hide();
+            }
+        }
+        ClearConsole() {
+            this.consoleTab.console.empty();
+        }
+        SendMessageToConsole(message, style) {
+            if (style !== "raw") {
+                const currentDate = new Date();
+                const hour = currentDate.getHours() % 12 || 12;
+                const minute = currentDate.getMinutes();
+                const second = currentDate.getSeconds();
+                const amOrPm = currentDate.getHours() < 12 ? "AM" : "PM";
+                const html = `<div style="text-wrap: wrap;"><span class="text-${style}">[${hour}:${minute}:${second} ${amOrPm}]</span> ${message}</div>`;
+                this.consoleTab.console.prepend(html);
+                return;
+            }
+            const html = `<div>${message}</div>`;
+            this.consoleTab.console.prepend(html);
+        }
+        ConsoleMessage(message, type = "info") {
+            let style = "info";
+            switch (type) {
+                case "info":
+                    style = "info";
+                    break;
+                case "success":
+                    style = "success";
+                    break;
+                case "error":
+                    style = "danger";
+                    break;
+                case "raw":
+                    style = "raw";
+                    break;
+            }
+            this.SendMessageToConsole(message, style);
+        }
+        HotKeys(e) {
+            let tag = e.target.tagName.toLowerCase();
+            if (document.activeElement.getAttribute("role") == "textbox" || tag == "input") {
+                return;
+            }
+            let hotkeys = new Map([
+                [71, () => { this.worldController.ToggleKarelPosition(); }],
+                [82, () => { this.worldController.SetBeepers(0); }],
+                [81, () => { this.worldController.ChangeBeepers(-1); }],
+                [69, () => { this.worldController.ChangeBeepers(1); }],
+                [48, () => { this.worldController.SetBeepers(0); }],
+                [49, () => { this.worldController.SetBeepers(1); }],
+                [50, () => { this.worldController.SetBeepers(2); }],
+                [51, () => { this.worldController.SetBeepers(3); }],
+                [52, () => { this.worldController.SetBeepers(4); }],
+                [53, () => { this.worldController.SetBeepers(5); }],
+                [54, () => { this.worldController.SetBeepers(6); }],
+                [55, () => { this.worldController.SetBeepers(7); }],
+                [56, () => { this.worldController.SetBeepers(8); }],
+                [57, () => { this.worldController.SetBeepers(9); }],
+                [87, () => { this.worldController.ToggleWall("north"); }],
+                [68, () => { this.worldController.ToggleWall("east"); }],
+                [83, () => { this.worldController.ToggleWall("south"); }],
+                [65, () => { this.worldController.ToggleWall("west"); }],
+                [88, () => { this.worldController.ToggleWall("outer"); }],
+                [37, () => { this.worldController.MoveSelection(0, -1); }],
+                [38, () => { this.worldController.MoveSelection(1, 0); }],
+                [39, () => { this.worldController.MoveSelection(0, 1); }],
+                [40, () => { this.worldController.MoveSelection(-1, 0); }],
+                [84, () => { this.worldController.SetBeepers(-1); }],
+            ]);
+            if (hotkeys.has(e.which) === false) {
+                return;
+            }
+            if (e.shiftKey) {
+                let dummy = new MouseEvent("", {
+                    clientX: e.clientX,
+                    clientY: e.clientY,
+                });
+                this.worldController.ClickUp(dummy);
+            }
+            hotkeys.get(e.which)();
+            e.preventDefault();
+        }
+        calculateScroll() {
+            let left = 1, top = 1;
+            const container = this.worldContainer[0];
+            if (container.scrollWidth !== container.clientWidth) {
+                left = container.scrollLeft / (container.scrollWidth - container.clientWidth);
+            }
+            if (container.scrollHeight !== container.clientHeight) {
+                top =
+                    1 - container.scrollTop
+                        / (container.scrollHeight - container.clientHeight);
+            }
+            this.worldController.UpdateScroll(left, top);
+        }
+        ResizeCanvas() {
+            this.worldCanvas[0].style.width = `${this.worldContainer[0].clientWidth}px`;
+            this.worldCanvas[0].style.height = `${this.worldContainer[0].clientHeight}px`;
+            let scale = window.devicePixelRatio;
+            this.worldCanvas.attr("width", Math.floor(this.worldContainer[0].clientWidth * scale));
+            this.worldCanvas.attr("height", Math.floor(this.worldContainer[0].clientHeight * scale));
+            this.worldController.Update();
+            this.calculateScroll();
+        }
+    }
+
+    function activateButton(toolbar, buttonPressed) {
+        for (const element in toolbar) {
+            $(element).removeClass("text-primary");
+        }
+        $(buttonPressed).addClass("text-primary");
+        toolbar[buttonPressed]();
+    }
+    function indent(elements) {
+        let editor = elements.editor;
+        let state = editor.state;
+        let head = state.selection.main.head;
+        let transaction = state.update({
+            changes: {
+                from: state.doc.lineAt(head).from,
+                insert: "\t"
+            }
+        });
+        editor.dispatch(transaction);
+    }
+    function unindent(elements) {
+        let state = elements.editor.state;
+        let head = state.selection.main.head;
+        let line = state.doc.lineAt(head);
+        let stringOutpt = line.text.replace(/^((\t)|( {0,4}))/, "");
+        let transaction = state.update({
+            changes: {
+                from: line.from,
+                to: line.to,
+                insert: stringOutpt
+            }
+        });
+        elements.editor.dispatch(transaction);
+    }
+    function replaceWithIndetation(elements, txt) {
+        let state = elements.editor.state;
+        let head = state.selection.main.head;
+        let line = state.doc.lineAt(head);
+        let indentation = line.text.match(/\s*/g)[0];
+        let text = indentation + txt;
+        let transaction = state.update({
+            changes: {
+                from: line.from,
+                to: line.to,
+                insert: text
+            }
+        });
+        elements.editor.dispatch(transaction);
+    }
+    //TODO: Add support for states
+    function GetPhoneUIHelper(elements) {
+        let response = {
+            changeCodeToolbar: (button) => activateButton(elements.codeTab.toolbar, button),
+            changeNavToolbar: (button) => activateButton(elements.navToolbar, button),
+            indent: () => indent(elements),
+            unindent: () => unindent(elements),
+            btnSimpleCodeInput: (btn) => replaceWithIndetation(elements, elements.codeTab.simpleCodeInputs[btn]()),
+            replaceWithIndetation: (txt) => replaceWithIndetation(elements, txt),
+        };
+        for (const btn in elements.navToolbar) {
+            $(btn).click(() => response.changeNavToolbar(btn));
+        }
+        for (const btn in elements.codeTab.toolbar) {
+            $(btn).click(() => response.changeCodeToolbar(btn));
+        }
+        for (const btn in elements.codeTab.simpleCodeInputs) {
+            $(btn).click(() => response.btnSimpleCodeInput(btn));
+        }
+        $(elements.codeTab.indent).click(response.indent);
+        $(elements.codeTab.unindent).click(response.unindent);
+        $(elements.codeTab.undo).on("click", () => { undo(elements.mainEdtior); });
+        $(elements.codeTab.redo).on("click", () => { redo(elements.mainEdtior); });
+        return response;
+    }
+
     var [desktopEditor, phoneEditor] = createEditors();
     //TODO: ThisShouldnt be here
     function hideElement(element) {
@@ -25883,6 +25926,9 @@
         console: {
             console: $("#desktopConsole"),
             clear: $("#desktopClearConsole")
+        },
+        callStack: {
+            panel: $("#pilaTab")
         }
     }, karelController);
     let PhoneUI = GetPhoneUIHelper({

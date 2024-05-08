@@ -156,6 +156,9 @@ let DesktopUI = new DesktopController(
         console: {
             console: $("#desktopConsole"),
             clear: $("#desktopClearConsole",)
+        },
+        callStack: {
+            panel : $("#pilaTab")
         }
     },
     karelController
