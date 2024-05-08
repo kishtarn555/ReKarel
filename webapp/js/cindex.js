@@ -25366,7 +25366,7 @@
         constructor(data) {
             this.panel = data.panel;
             KarelController.GetInstance().RegisterNewWorldObserver((a, _) => this.OnStackChanges());
-            // this.OnStackChanges();
+            this.OnStackChanges();
             KarelController.GetInstance().RegisterResetObserver((_) => this.clearStack());
         }
         OnStackChanges() {
