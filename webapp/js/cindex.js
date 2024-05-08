@@ -25365,6 +25365,10 @@
             this.autoStepInterval = 0;
             this.autoStepping = false;
             this.OnStackChanges();
+            KarelController.instance = this;
+        }
+        static GetInstance() {
+            return KarelController.instance;
         }
         // SetDesktopController(desktopController: WorldViewController) {
         //     this.desktopController = desktopController;

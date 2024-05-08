@@ -12,6 +12,9 @@ type StepCallback = (caller:KarelController, newState:ControllerState)=>void;
 type ResetCallback = (caller:KarelController)=>void;
 type NewWorldCallback = (caller:KarelController, world:World)=>void;
 class KarelController {
+    private static instance:KarelController
+
+
     world: World;
     // desktopController: WorldViewController;
     running: boolean;
@@ -41,6 +44,12 @@ class KarelController {
         this.autoStepInterval = 0;
         this.autoStepping = false;
         this.OnStackChanges();
+
+        KarelController.instance = this;
+    }
+
+    static GetInstance() {
+        return KarelController.instance;
     }
     
     // SetDesktopController(desktopController: WorldViewController) {
