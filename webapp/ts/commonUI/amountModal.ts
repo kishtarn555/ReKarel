@@ -1,4 +1,4 @@
-import { WorldViewController } from "../worldViewController";
+import { WorldViewController } from "../worldViewController/worldViewController";
 
 export type AmountModal = {
     modal:string,

@@ -5,7 +5,7 @@ import { DownloadCodeModal,hookDownloadModel } from './commonUI/downloadCodeMode
 import { HookResizeModal, ResizeModal } from './commonUI/resizeModel'
 import { KarelController } from './KarelController'
 import { AmountModal, HookAmountModal } from './commonUI/amountModal'
-import { WorldViewController } from './worldViewController'
+import { WorldViewController } from './worldViewController/worldViewController'
 import { HookWorldSaveModal, WorldSaveModal } from './commonUI/worldSaveModal'
 import { HookNavbar, NavbarData } from './commonUI/navbar'
 import { HookStyleModal } from './commonUI/karelStyleModal'

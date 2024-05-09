@@ -1,7 +1,7 @@
 import { WR_CLEAN, WR_CONTRAST, WR_DARK } from "../KarelStyles";
 import { GetCurrentSetting, SetWorldRendererStyle } from "../settings";
 import { DefaultWRStyle, WRStyle, isWRStyle } from "../worldRenderer";
-import { WorldViewController } from "../worldViewController";
+import { WorldViewController } from "../worldViewController/worldViewController";
 
 function parseFormData(): WRStyle {
     return {

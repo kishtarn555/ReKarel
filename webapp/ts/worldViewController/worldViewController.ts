@@ -1,24 +1,12 @@
-import { WorldRenderer } from "./worldRenderer";
-import { KarelController } from "./KarelController";
-import { World } from "../../js/karel";
+import { WorldRenderer } from "../worldRenderer";
+import { KarelController } from "../KarelController";
+import { World } from "../../../js/karel";
+import { SelectionBox, SelectionWaffle } from "./waffle";
+import { CellSelection, SelectionState } from "./selection";
 
-type CellSelection = {
-    r: number,
-    c: number,
-    rows: number,
-    cols: number,
-    dr: number,
-    dc: number,
-}
 
 type Gizmos = {
-    selectionBox: {
-        main: HTMLElement,
-        left: HTMLElement,
-        right: HTMLElement,
-        top: HTMLElement,
-        bottom: HTMLElement,
-    },
+    selectionBox: SelectionBox,
     HorizontalScrollElement: JQuery,
     VerticalScrollElement: JQuery,
 }
@@ -35,6 +23,7 @@ class WorldViewController {
     selection: CellSelection;
     private lock: boolean;
     private karelController : KarelController;
+    private waffle: SelectionWaffle
 
 
     constructor(renderer: WorldRenderer, karelController: KarelController, container: HTMLElement,  gizmos: Gizmos) {
@@ -49,6 +38,7 @@ class WorldViewController {
             cols: 1,
             dr: 1,
             dc: 1,
+            state:"normal"
         };
         this.state = {
             cursorX: 0,
@@ -61,6 +51,8 @@ class WorldViewController {
         this.karelController.RegisterResetObserver(this.OnReset.bind(this));
         this.karelController.RegisterNewWorldObserver(this.OnNewWorld.bind(this));
         this.karelController.RegisterStepController(this.onStep.bind(this));
+
+        this.waffle = new SelectionWaffle(gizmos.selectionBox);
     }
 
     Lock() {
@@ -99,7 +91,7 @@ class WorldViewController {
         this.Update();
     }
 
-    Select(r: number, c: number, r2: number, c2: number) {
+    Select(r: number, c: number, r2: number, c2: number, state:SelectionState="normal") {
         if (
             r > this.karelController.world.h ||
             c > this.karelController.world.w ||
@@ -117,6 +109,7 @@ class WorldViewController {
             cols: Math.abs(c - c2) + 1,
             dr: r <= r2 ? 1 : -1,
             dc: c <= c2 ? 1 : -1,
+            state:state
         };
         this.UpdateWaffle();
     }
@@ -137,32 +130,36 @@ class WorldViewController {
     }
 
     UpdateWaffle() {
-        let coords = this.renderer.CellToPoint(this.selection.r, this.selection.c);
-        let selectionBox = this.gizmos.selectionBox.main;
-        selectionBox.style.top = `${coords.y / window.devicePixelRatio}px`
-        selectionBox.style.left = `${coords.x / window.devicePixelRatio}px`
+        this.waffle.UpdateWaffle(this.selection, this.renderer);
     }
 
     SetScale(scale: number) {
         this.renderer.scale = scale * window.devicePixelRatio;
         this.scale = scale;
         //FIXME, this should be in update waffle
-        this.gizmos.selectionBox.bottom.style.maxWidth = `${this.renderer.CellSize * scale}px`;
-        this.gizmos.selectionBox.bottom.style.minWidth = `${this.renderer.CellSize * scale}px`;
+        // this.gizmos.selectionBox.bottom.style.maxWidth = `${this.renderer.CellSize * scale}px`;
+        // this.gizmos.selectionBox.bottom.style.minWidth = `${this.renderer.CellSize * scale}px`;
         
-        this.gizmos.selectionBox.top.style.maxWidth = `${this.renderer.CellSize * scale}px`;
-        this.gizmos.selectionBox.top.style.minWidth = `${this.renderer.CellSize * scale}px`;
+        // this.gizmos.selectionBox.top.style.maxWidth = `${this.renderer.CellSize * scale}px`;
+        // this.gizmos.selectionBox.top.style.minWidth = `${this.renderer.CellSize * scale}px`;
         
-        this.gizmos.selectionBox.left.style.maxHeight = `${this.renderer.CellSize * scale}px`;
-        this.gizmos.selectionBox.left.style.minHeight = `${this.renderer.CellSize * scale}px`;
+        // this.gizmos.selectionBox.left.style.maxHeight = `${this.renderer.CellSize * scale}px`;
+        // this.gizmos.selectionBox.left.style.minHeight = `${this.renderer.CellSize * scale}px`;
         
-        this.gizmos.selectionBox.right.style.maxHeight = `${this.renderer.CellSize * scale}px`;
-        this.gizmos.selectionBox.right.style.minHeight = `${this.renderer.CellSize * scale}px`;
+        // this.gizmos.selectionBox.right.style.maxHeight = `${this.renderer.CellSize * scale}px`;
+        // this.gizmos.selectionBox.right.style.minHeight = `${this.renderer.CellSize * scale}px`;
 
-        this.gizmos.selectionBox.bottom.style.top = `${this.renderer.CellSize * scale}px`;
-        this.gizmos.selectionBox.right.style.left = `${this.renderer.CellSize * scale}px`;
+        // this.gizmos.selectionBox.bottom.style.top = `${this.renderer.CellSize * scale}px`;
+        // this.gizmos.selectionBox.right.style.left = `${this.renderer.CellSize * scale}px`;
 
 
+        this.UpdateWaffle();
+        this.Update();             
+        this.UpdateScrollElements();   
+    }
+
+    RecalculateScale() {
+        this.renderer.scale = this.scale * window.devicePixelRatio;
         this.UpdateWaffle();
         this.Update();             
         this.UpdateScrollElements();   
@@ -175,6 +172,11 @@ class WorldViewController {
         let y = (e.clientY - boundingBox.top) * canvas.height / boundingBox.height;
         this.state.cursorX = x / this.renderer.scale;
         this.state.cursorY = y / this.renderer.scale;
+
+        // if (this.selection.state === "selecting") {
+        //     this.ClickUp(e);
+        // }
+
     }
 
     ClickUp(e: MouseEvent) {
@@ -182,9 +184,15 @@ class WorldViewController {
         if (cell.r < 0) {
             return;
         }
-        this.Select(cell.r, cell.c, cell.r, cell.c);
+        this.Select(this.selection.r, this.selection.c, cell.r, cell.c);
+    }
 
-
+    ClickDown(e:MouseEvent) {
+        let cell = this.renderer.PointToCell(this.state.cursorX, this.state.cursorY);
+        if (cell.r < 0) {
+            return;
+        }
+        this.Select(cell.r, cell.c, cell.r, cell.c, "selecting");
     }
 
     SetKarelOnSelection(direction: "north" | "east" | "west" | "south" = "north") {

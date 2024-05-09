@@ -2,7 +2,7 @@ import { EditorView } from 'codemirror'
 import { Compartment } from '@codemirror/state'
 import bootstrap from 'bootstrap';
 import { WorldRenderer, WRStyle, DefaultWRStyle } from '../worldRenderer';
-import { WorldViewController, Gizmos } from "../worldViewController";
+import { WorldViewController, Gizmos } from "../worldViewController/worldViewController";
 import { World } from '../../../js/karel';
 import { ControllerState, KarelController } from '../KarelController';
 import { GetOrCreateInstanceFactory } from 'bootstrap/js/dist/base-component';
@@ -159,6 +159,10 @@ class DesktopController {
         this.worldCanvas.on(
             "mousemove",
             this.worldController.TrackMouse.bind(this.worldController)
+        );
+        this.worldCanvas.on(
+            "mousedown",
+            this.worldController.ClickDown.bind(this.worldController)
         );
         
 
@@ -498,6 +502,7 @@ class DesktopController {
         this.worldCanvas.attr(
             "height", Math.floor(this.worldContainer[0].clientHeight * scale)
         );
+        // this.worldController.RecalculateScale();
 
         this.worldController.Update();        
         this.calculateScroll();

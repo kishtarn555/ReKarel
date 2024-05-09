@@ -1,6 +1,6 @@
 import bootstrap from "bootstrap"
 import { BeeperToolbar, KarelToolbar, WallToolbar } from "./commonTypes"
-import { WorldViewController } from "../worldViewController"
+import { WorldViewController } from "../worldViewController/worldViewController"
 
 export type ContextMenuData = {
     toggler: JQuery,

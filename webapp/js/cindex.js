@@ -20815,6 +20815,53 @@
         }
     }
 
+    class SelectionWaffle {
+        constructor(box) {
+            this.box = box;
+        }
+        UpdateWaffle(selection, renderer) {
+            let point = {
+                r: selection.r,
+                c: selection.c
+            };
+            let point2 = {
+                r: selection.r + (selection.rows - 1) * selection.dr,
+                c: selection.c + (selection.cols - 1) * selection.dc
+            };
+            if (point2.r > point.r) {
+                let r = point.r;
+                point.r = point2.r;
+                point2.r = r;
+            }
+            if (point2.c < point.c) {
+                let c = point.c;
+                point.c = point2.c;
+                point2.c = c;
+            }
+            let coords = renderer.CellToPoint(point.r, point.c);
+            let coords2 = renderer.CellToPoint(point2.r - 1, point2.c + 1);
+            console.log('c1', coords);
+            console.log('c2', coords2);
+            let selectionBox = this.box.main;
+            selectionBox.style.top = `${coords.y / window.devicePixelRatio}px`;
+            selectionBox.style.left = `${coords.x / window.devicePixelRatio}px`;
+            const width = `${(coords2.x - coords.x)}px`;
+            const height = `${(coords2.y - coords.y)}px`;
+            // console.log(CellSize);
+            // console.log('scale',renderer.scale);
+            this.box.top.style.maxWidth = width;
+            this.box.top.style.minWidth = width;
+            this.box.bottom.style.maxWidth = width;
+            this.box.bottom.style.minWidth = width;
+            this.box.right.style.left = width;
+            this.box.left.style.maxHeight = height;
+            this.box.left.style.minHeight = height;
+            this.box.right.style.maxHeight = height;
+            this.box.right.style.minHeight = height;
+            this.box.bottom.style.top = height;
+        }
+    }
+
     class WorldViewController {
         constructor(renderer, karelController, container, gizmos) {
             this.renderer = renderer;
@@ -20828,6 +20875,7 @@
                 cols: 1,
                 dr: 1,
                 dc: 1,
+                state: "normal"
             };
             this.state = {
                 cursorX: 0,
@@ -20838,6 +20886,7 @@
             this.karelController.RegisterResetObserver(this.OnReset.bind(this));
             this.karelController.RegisterNewWorldObserver(this.OnNewWorld.bind(this));
             this.karelController.RegisterStepController(this.onStep.bind(this));
+            this.waffle = new SelectionWaffle(gizmos.selectionBox);
         }
         Lock() {
             this.lock = true;
@@ -20864,7 +20913,7 @@
             this.renderer.NormalMode();
             this.Update();
         }
-        Select(r, c, r2, c2) {
+        Select(r, c, r2, c2, state = "normal") {
             if (r > this.karelController.world.h ||
                 c > this.karelController.world.w ||
                 r < 1 ||
@@ -20878,6 +20927,7 @@
                 cols: Math.abs(c - c2) + 1,
                 dr: r <= r2 ? 1 : -1,
                 dc: c <= c2 ? 1 : -1,
+                state: state
             };
             this.UpdateWaffle();
         }
@@ -20890,25 +20940,28 @@
             this.Select(this.selection.r + dr, this.selection.c + dc, this.selection.r + dr, this.selection.c + dc);
         }
         UpdateWaffle() {
-            let coords = this.renderer.CellToPoint(this.selection.r, this.selection.c);
-            let selectionBox = this.gizmos.selectionBox.main;
-            selectionBox.style.top = `${coords.y / window.devicePixelRatio}px`;
-            selectionBox.style.left = `${coords.x / window.devicePixelRatio}px`;
+            this.waffle.UpdateWaffle(this.selection, this.renderer);
         }
         SetScale(scale) {
             this.renderer.scale = scale * window.devicePixelRatio;
             this.scale = scale;
             //FIXME, this should be in update waffle
-            this.gizmos.selectionBox.bottom.style.maxWidth = `${this.renderer.CellSize * scale}px`;
-            this.gizmos.selectionBox.bottom.style.minWidth = `${this.renderer.CellSize * scale}px`;
-            this.gizmos.selectionBox.top.style.maxWidth = `${this.renderer.CellSize * scale}px`;
-            this.gizmos.selectionBox.top.style.minWidth = `${this.renderer.CellSize * scale}px`;
-            this.gizmos.selectionBox.left.style.maxHeight = `${this.renderer.CellSize * scale}px`;
-            this.gizmos.selectionBox.left.style.minHeight = `${this.renderer.CellSize * scale}px`;
-            this.gizmos.selectionBox.right.style.maxHeight = `${this.renderer.CellSize * scale}px`;
-            this.gizmos.selectionBox.right.style.minHeight = `${this.renderer.CellSize * scale}px`;
-            this.gizmos.selectionBox.bottom.style.top = `${this.renderer.CellSize * scale}px`;
-            this.gizmos.selectionBox.right.style.left = `${this.renderer.CellSize * scale}px`;
+            // this.gizmos.selectionBox.bottom.style.maxWidth = `${this.renderer.CellSize * scale}px`;
+            // this.gizmos.selectionBox.bottom.style.minWidth = `${this.renderer.CellSize * scale}px`;
+            // this.gizmos.selectionBox.top.style.maxWidth = `${this.renderer.CellSize * scale}px`;
+            // this.gizmos.selectionBox.top.style.minWidth = `${this.renderer.CellSize * scale}px`;
+            // this.gizmos.selectionBox.left.style.maxHeight = `${this.renderer.CellSize * scale}px`;
+            // this.gizmos.selectionBox.left.style.minHeight = `${this.renderer.CellSize * scale}px`;
+            // this.gizmos.selectionBox.right.style.maxHeight = `${this.renderer.CellSize * scale}px`;
+            // this.gizmos.selectionBox.right.style.minHeight = `${this.renderer.CellSize * scale}px`;
+            // this.gizmos.selectionBox.bottom.style.top = `${this.renderer.CellSize * scale}px`;
+            // this.gizmos.selectionBox.right.style.left = `${this.renderer.CellSize * scale}px`;
+            this.UpdateWaffle();
+            this.Update();
+            this.UpdateScrollElements();
+        }
+        RecalculateScale() {
+            this.renderer.scale = this.scale * window.devicePixelRatio;
             this.UpdateWaffle();
             this.Update();
             this.UpdateScrollElements();
@@ -20920,13 +20973,23 @@
             let y = (e.clientY - boundingBox.top) * canvas.height / boundingBox.height;
             this.state.cursorX = x / this.renderer.scale;
             this.state.cursorY = y / this.renderer.scale;
+            // if (this.selection.state === "selecting") {
+            //     this.ClickUp(e);
+            // }
         }
         ClickUp(e) {
             let cell = this.renderer.PointToCell(this.state.cursorX, this.state.cursorY);
             if (cell.r < 0) {
                 return;
             }
-            this.Select(cell.r, cell.c, cell.r, cell.c);
+            this.Select(this.selection.r, this.selection.c, cell.r, cell.c);
+        }
+        ClickDown(e) {
+            let cell = this.renderer.PointToCell(this.state.cursorX, this.state.cursorY);
+            if (cell.r < 0) {
+                return;
+            }
+            this.Select(cell.r, cell.c, cell.r, cell.c, "selecting");
         }
         SetKarelOnSelection(direction = "north") {
             if (this.lock)
@@ -25449,6 +25512,7 @@
             this.worldContainer.on("scroll", this.calculateScroll.bind(this));
             this.worldCanvas.on("mouseup", this.worldController.ClickUp.bind(this.worldController));
             this.worldCanvas.on("mousemove", this.worldController.TrackMouse.bind(this.worldController));
+            this.worldCanvas.on("mousedown", this.worldController.ClickDown.bind(this.worldController));
             this.worldZoom.on("change", () => {
                 let scale = parseFloat(String(this.worldZoom.val()));
                 this.worldController.SetScale(scale);
@@ -25730,6 +25794,7 @@
             let scale = window.devicePixelRatio;
             this.worldCanvas.attr("width", Math.floor(this.worldContainer[0].clientWidth * scale));
             this.worldCanvas.attr("height", Math.floor(this.worldContainer[0].clientHeight * scale));
+            // this.worldController.RecalculateScale();
             this.worldController.Update();
             this.calculateScroll();
         }
