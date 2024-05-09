@@ -20840,8 +20840,6 @@
             }
             let coords = renderer.CellToPoint(point.r, point.c);
             let coords2 = renderer.CellToPoint(point2.r - 1, point2.c + 1);
-            console.log('c1', coords);
-            console.log('c2', coords2);
             let selectionBox = this.box.main;
             selectionBox.style.top = `${coords.y / window.devicePixelRatio}px`;
             selectionBox.style.left = `${coords.x / window.devicePixelRatio}px`;
@@ -20973,11 +20971,13 @@
             let y = (e.clientY - boundingBox.top) * canvas.height / boundingBox.height;
             this.state.cursorX = x / this.renderer.scale;
             this.state.cursorY = y / this.renderer.scale;
+            console.log("track");
             // if (this.selection.state === "selecting") {
             //     this.ClickUp(e);
             // }
         }
         ClickUp(e) {
+            console.log("up");
             let cell = this.renderer.PointToCell(this.state.cursorX, this.state.cursorY);
             if (cell.r < 0) {
                 return;
@@ -20985,6 +20985,8 @@
             this.Select(this.selection.r, this.selection.c, cell.r, cell.c);
         }
         ClickDown(e) {
+            e.preventDefault();
+            console.log("down");
             let cell = this.renderer.PointToCell(this.state.cursorX, this.state.cursorY);
             if (cell.r < 0) {
                 return;

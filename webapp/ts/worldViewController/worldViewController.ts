@@ -172,6 +172,7 @@ class WorldViewController {
         let y = (e.clientY - boundingBox.top) * canvas.height / boundingBox.height;
         this.state.cursorX = x / this.renderer.scale;
         this.state.cursorY = y / this.renderer.scale;
+        console.log("track");
 
         // if (this.selection.state === "selecting") {
         //     this.ClickUp(e);
@@ -180,6 +181,7 @@ class WorldViewController {
     }
 
     ClickUp(e: MouseEvent) {
+        console.log("up");
         let cell = this.renderer.PointToCell(this.state.cursorX, this.state.cursorY);
         if (cell.r < 0) {
             return;
@@ -188,6 +190,9 @@ class WorldViewController {
     }
 
     ClickDown(e:MouseEvent) {
+        e.preventDefault();
+        console.log("down");
+
         let cell = this.renderer.PointToCell(this.state.cursorX, this.state.cursorY);
         if (cell.r < 0) {
             return;
