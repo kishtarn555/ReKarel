@@ -172,26 +172,29 @@ class WorldViewController {
         let y = (e.clientY - boundingBox.top) * canvas.height / boundingBox.height;
         this.state.cursorX = x / this.renderer.scale;
         this.state.cursorY = y / this.renderer.scale;
-        console.log("track");
 
-        // if (this.selection.state === "selecting") {
-        //     this.ClickUp(e);
-        // }
+        if (this.selection.state === "selecting") {
+            let cell = this.renderer.PointToCell(this.state.cursorX, this.state.cursorY);
+            this.ExtendSelection(cell.r, cell.c, "selecting");
+        }
 
     }
 
+    ExtendSelection(r:number, c:number, state:SelectionState="normal") {
+        if (r < 0 || r > KarelController.GetInstance().world.h) return;
+        if (c < 0 || c > KarelController.GetInstance().world.w) return;
+        
+        this.Select(this.selection.r, this.selection.c, r, c,state);
+    }
+
     ClickUp(e: MouseEvent) {
-        console.log("up");
-        let cell = this.renderer.PointToCell(this.state.cursorX, this.state.cursorY);
-        if (cell.r < 0) {
-            return;
-        }
-        this.Select(this.selection.r, this.selection.c, cell.r, cell.c);
+        if (this.selection.state!=="selecting") return;
+        this.selection.state = "normal";let cell = this.renderer.PointToCell(this.state.cursorX, this.state.cursorY);
+        this.ExtendSelection(cell.r, cell.c);
     }
 
     ClickDown(e:MouseEvent) {
         e.preventDefault();
-        console.log("down");
 
         let cell = this.renderer.PointToCell(this.state.cursorX, this.state.cursorY);
         if (cell.r < 0) {
@@ -226,29 +229,46 @@ class WorldViewController {
         if (delta === 0) {
             return;
         }
-        let buzzers = this.karelController.world.buzzers(this.selection.r, this.selection.c);
-        if (buzzers < 0 && delta < 0) {
-            //Do nothing
-            return;
+        
+        let rmin = Math.min(this.selection.r, this.selection.r + (this.selection.rows - 1)*this.selection.dr);
+        let rmax = Math.max(this.selection.r, this.selection.r + (this.selection.rows - 1)*this.selection.dr);
+        let cmin = Math.min(this.selection.c, this.selection.c + (this.selection.cols - 1)*this.selection.dc);
+        let cmax = Math.max(this.selection.c, this.selection.c + (this.selection.cols - 1)*this.selection.dc);
+        for (let i =rmin; i<=rmax; i++) {
+            for (let j=cmin; j <=cmax; j++) {
+                let buzzers = this.karelController.world.buzzers(i,j);
+                if (buzzers < 0 && delta < 0) {
+                    //Do nothing
+                    continue;
+                }
+                buzzers += delta;
+                if (buzzers < 0) {
+                    buzzers = 0;
+                }
+                this.karelController.world.setBuzzers(
+                    i,
+                    j,
+                    buzzers
+                );
+            }
         }
-        buzzers += delta;
-        if (buzzers < 0) {
-            buzzers = 0;
-        }
-        this.karelController.world.setBuzzers(
-            this.selection.r,
-            this.selection.c,
-            buzzers
-        );
         this.Update();
     }
 
     SetBeepers(ammount: number) {
         if (this.lock) return;
-        if (this.karelController.world.buzzers(this.selection.r, this.selection.c) === ammount) {
-            return;
+        let rmin = Math.min(this.selection.r, this.selection.r + (this.selection.rows - 1)*this.selection.dr);
+        let rmax = Math.max(this.selection.r, this.selection.r + (this.selection.rows - 1)*this.selection.dr);
+        let cmin = Math.min(this.selection.c, this.selection.c + (this.selection.cols - 1)*this.selection.dc);
+        let cmax = Math.max(this.selection.c, this.selection.c + (this.selection.cols - 1)*this.selection.dc);
+        for (let i =rmin; i<=rmax; i++) {
+            for (let j=cmin; j <=cmax; j++) {
+                if (this.karelController.world.buzzers(i, j) === ammount) {
+                    continue;
+                }
+                this.karelController.world.setBuzzers(i, j, ammount);
+            }
         }
-        this.karelController.world.setBuzzers(this.selection.r, this.selection.c, ammount);
         this.Update();
     }
 
@@ -370,73 +390,80 @@ class WorldViewController {
 
     ToggleWall(which: "north" | "east" | "west" | "south" | "outer") {
         if (this.lock) return;
+        let r=this.selection.r,c=this.selection.c;
         switch (which) {
             case "north":
-                for (let i = 0; i < this.selection.rows; i++) {
-                    let r = this.selection.r + i * this.selection.dr;
-                    let c = Math.min(
-                        this.selection.c,
-                        this.selection.c + (this.selection.cols - 1) * this.selection.dc
-                    );
+                r = Math.max(
+                    this.selection.r,
+                    this.selection.r + (this.selection.rows - 1) * this.selection.dr
+                );
+                for (let i = 0; i < this.selection.cols; i++) {
+                    
+                    c = this.selection.c + this.selection.dc * i;
                     this.karelController.world.toggleWall(r, c, 1);
                 }
                 break;
             case "south":
-                for (let i = 0; i < this.selection.rows; i++) {
-                    let r = this.selection.r + i * this.selection.dr;
-                    let c = Math.max(
-                        this.selection.c,
-                        this.selection.c + (this.selection.cols - 1) * this.selection.dc
-                    );
+                r = Math.min(
+                    this.selection.r,
+                    this.selection.r + (this.selection.rows - 1) * this.selection.dr
+                );
+                for (let i = 0; i < this.selection.cols; i++) {
+                    
+                    c = this.selection.c + this.selection.dc * i;
                     this.karelController.world.toggleWall(r, c, 3);
                 }
                 break;
             case "west":
-                for (let i = 0; i < this.selection.cols; i++) {
-                    let r = Math.min(
-                        this.selection.r,
-                        this.selection.r + (this.selection.rows - 1) * this.selection.dr
-                    );
-                    let c = this.selection.c + i * this.selection.dc;
+                c = Math.min(
+                    this.selection.c,
+                    this.selection.c + (this.selection.cols - 1) * this.selection.dc
+                );
+                for (let i = 0; i < this.selection.rows; i++) {
+                    r = this.selection.r + i * this.selection.dr;
+                    
                     this.karelController.world.toggleWall(r, c, 0);
                 }
                 break;
             case "east":
-                for (let i = 0; i < this.selection.cols; i++) {
-                    let r = Math.max(
-                        this.selection.r,
-                        this.selection.r + (this.selection.rows - 1) * this.selection.dr
-                    );
-                    let c = this.selection.c + i * this.selection.dc;
+                c = Math.max(
+                    this.selection.c,
+                    this.selection.c + (this.selection.cols - 1) * this.selection.dc
+                );
+                for (let i = 0; i < this.selection.rows; i++) {
+                    r = this.selection.r + i * this.selection.dr;
+                    
                     this.karelController.world.toggleWall(r, c, 2);
                 }
                 break;
             case "outer":
+                let rmin = Math.min(
+                    this.selection.r,
+                    this.selection.r + (this.selection.rows - 1) * this.selection.dr
+                );
+                let rmax = Math.max(
+                    this.selection.r,
+                    this.selection.r + (this.selection.rows - 1) * this.selection.dr
+                );
+                let cmin = Math.min(
+                    this.selection.c,
+                    this.selection.c + (this.selection.cols - 1) * this.selection.dc
+                );
+                let cmax = Math.max(
+                    this.selection.c,
+                    this.selection.c + (this.selection.cols - 1) * this.selection.dc
+                );
                 for (let i = 0; i < this.selection.cols; i++) {
-                    let rmin = Math.min(
-                        this.selection.r,
-                        this.selection.r + (this.selection.rows - 1) * this.selection.dr
-                    );
-                    let rmax = Math.max(
-                        this.selection.r,
-                        this.selection.r + (this.selection.rows - 1) * this.selection.dr
-                    );
-                    let c = this.selection.c + i * this.selection.dc;
-                    this.karelController.world.toggleWall(rmin, c, 2);
-                    this.karelController.world.toggleWall(rmax, c, 0);
+                    
+                    c = this.selection.c + i * this.selection.dc;
+                    this.karelController.world.toggleWall(rmin, c, 3);
+                    this.karelController.world.toggleWall(rmax, c, 1);
                 }
                 for (let i = 0; i < this.selection.rows; i++) {
-                    let r = this.selection.r + i * this.selection.dr;
-                    let cmin = Math.min(
-                        this.selection.c,
-                        this.selection.c + (this.selection.cols - 1) * this.selection.dc
-                    );
-                    let cmax = Math.max(
-                        this.selection.c,
-                        this.selection.c + (this.selection.cols - 1) * this.selection.dc
-                    );
-                    this.karelController.world.toggleWall(r, cmin, 1);
-                    this.karelController.world.toggleWall(r, cmax, 3);
+                    r = this.selection.r + i * this.selection.dr;
+                    
+                    this.karelController.world.toggleWall(r, cmin, 0);
+                    this.karelController.world.toggleWall(r, cmax, 2);
                 }
                 break;
         }

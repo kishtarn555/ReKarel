@@ -152,7 +152,7 @@ class DesktopController {
         $(window).on("keydown", this.HotKeys.bind(this));
 
         this.worldContainer.on("scroll", this.calculateScroll.bind(this));
-        this.worldCanvas.on(
+        $("body").on(
             "mouseup",
             this.worldController.ClickUp.bind(this.worldController)
         );

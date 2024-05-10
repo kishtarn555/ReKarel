@@ -20815,464 +20815,6 @@
         }
     }
 
-    class SelectionWaffle {
-        constructor(box) {
-            this.box = box;
-        }
-        UpdateWaffle(selection, renderer) {
-            let point = {
-                r: selection.r,
-                c: selection.c
-            };
-            let point2 = {
-                r: selection.r + (selection.rows - 1) * selection.dr,
-                c: selection.c + (selection.cols - 1) * selection.dc
-            };
-            if (point2.r > point.r) {
-                let r = point.r;
-                point.r = point2.r;
-                point2.r = r;
-            }
-            if (point2.c < point.c) {
-                let c = point.c;
-                point.c = point2.c;
-                point2.c = c;
-            }
-            let coords = renderer.CellToPoint(point.r, point.c);
-            let coords2 = renderer.CellToPoint(point2.r - 1, point2.c + 1);
-            let selectionBox = this.box.main;
-            selectionBox.style.top = `${coords.y / window.devicePixelRatio}px`;
-            selectionBox.style.left = `${coords.x / window.devicePixelRatio}px`;
-            const width = `${(coords2.x - coords.x)}px`;
-            const height = `${(coords2.y - coords.y)}px`;
-            // console.log(CellSize);
-            // console.log('scale',renderer.scale);
-            this.box.top.style.maxWidth = width;
-            this.box.top.style.minWidth = width;
-            this.box.bottom.style.maxWidth = width;
-            this.box.bottom.style.minWidth = width;
-            this.box.right.style.left = width;
-            this.box.left.style.maxHeight = height;
-            this.box.left.style.minHeight = height;
-            this.box.right.style.maxHeight = height;
-            this.box.right.style.minHeight = height;
-            this.box.bottom.style.top = height;
-        }
-    }
-
-    class WorldViewController {
-        constructor(renderer, karelController, container, gizmos) {
-            this.renderer = renderer;
-            this.container = container;
-            this.lock = false;
-            this.karelController = karelController;
-            this.selection = {
-                r: 1,
-                c: 1,
-                rows: 1,
-                cols: 1,
-                dr: 1,
-                dc: 1,
-                state: "normal"
-            };
-            this.state = {
-                cursorX: 0,
-                cursorY: 0,
-            };
-            this.gizmos = gizmos;
-            this.scale = 1;
-            this.karelController.RegisterResetObserver(this.OnReset.bind(this));
-            this.karelController.RegisterNewWorldObserver(this.OnNewWorld.bind(this));
-            this.karelController.RegisterStepController(this.onStep.bind(this));
-            this.waffle = new SelectionWaffle(gizmos.selectionBox);
-        }
-        Lock() {
-            this.lock = true;
-        }
-        UnLock() {
-            this.lock = false;
-        }
-        GetBeepersInBag() {
-            return this.karelController.world.bagBuzzers;
-        }
-        SetBeepersInBag(ammount) {
-            this.karelController.world.setBagBuzzers(ammount);
-        }
-        CheckUpdate() {
-            if (this.karelController.world.dirty) {
-                this.Update();
-            }
-        }
-        ErrorMode() {
-            this.renderer.ErrorMode();
-            this.Update();
-        }
-        NormalMode() {
-            this.renderer.NormalMode();
-            this.Update();
-        }
-        Select(r, c, r2, c2, state = "normal") {
-            if (r > this.karelController.world.h ||
-                c > this.karelController.world.w ||
-                r < 1 ||
-                c < 1) {
-                return;
-            }
-            this.selection = {
-                r: r,
-                c: c,
-                rows: Math.abs(r - r2) + 1,
-                cols: Math.abs(c - c2) + 1,
-                dr: r <= r2 ? 1 : -1,
-                dc: c <= c2 ? 1 : -1,
-                state: state
-            };
-            this.UpdateWaffle();
-        }
-        MoveSelection(dr, dc) {
-            let r = this.selection.r + dr;
-            let c = this.selection.c + dc;
-            if (r < 1 || c < 1 || r > this.karelController.world.h || c > this.karelController.world.w) {
-                return;
-            }
-            this.Select(this.selection.r + dr, this.selection.c + dc, this.selection.r + dr, this.selection.c + dc);
-        }
-        UpdateWaffle() {
-            this.waffle.UpdateWaffle(this.selection, this.renderer);
-        }
-        SetScale(scale) {
-            this.renderer.scale = scale * window.devicePixelRatio;
-            this.scale = scale;
-            //FIXME, this should be in update waffle
-            // this.gizmos.selectionBox.bottom.style.maxWidth = `${this.renderer.CellSize * scale}px`;
-            // this.gizmos.selectionBox.bottom.style.minWidth = `${this.renderer.CellSize * scale}px`;
-            // this.gizmos.selectionBox.top.style.maxWidth = `${this.renderer.CellSize * scale}px`;
-            // this.gizmos.selectionBox.top.style.minWidth = `${this.renderer.CellSize * scale}px`;
-            // this.gizmos.selectionBox.left.style.maxHeight = `${this.renderer.CellSize * scale}px`;
-            // this.gizmos.selectionBox.left.style.minHeight = `${this.renderer.CellSize * scale}px`;
-            // this.gizmos.selectionBox.right.style.maxHeight = `${this.renderer.CellSize * scale}px`;
-            // this.gizmos.selectionBox.right.style.minHeight = `${this.renderer.CellSize * scale}px`;
-            // this.gizmos.selectionBox.bottom.style.top = `${this.renderer.CellSize * scale}px`;
-            // this.gizmos.selectionBox.right.style.left = `${this.renderer.CellSize * scale}px`;
-            this.UpdateWaffle();
-            this.Update();
-            this.UpdateScrollElements();
-        }
-        RecalculateScale() {
-            this.renderer.scale = this.scale * window.devicePixelRatio;
-            this.UpdateWaffle();
-            this.Update();
-            this.UpdateScrollElements();
-        }
-        TrackMouse(e) {
-            let canvas = this.renderer.canvasContext.canvas;
-            let boundingBox = canvas.getBoundingClientRect();
-            let x = (e.clientX - boundingBox.left) * canvas.width / boundingBox.width;
-            let y = (e.clientY - boundingBox.top) * canvas.height / boundingBox.height;
-            this.state.cursorX = x / this.renderer.scale;
-            this.state.cursorY = y / this.renderer.scale;
-            console.log("track");
-            // if (this.selection.state === "selecting") {
-            //     this.ClickUp(e);
-            // }
-        }
-        ClickUp(e) {
-            console.log("up");
-            let cell = this.renderer.PointToCell(this.state.cursorX, this.state.cursorY);
-            if (cell.r < 0) {
-                return;
-            }
-            this.Select(this.selection.r, this.selection.c, cell.r, cell.c);
-        }
-        ClickDown(e) {
-            e.preventDefault();
-            console.log("down");
-            let cell = this.renderer.PointToCell(this.state.cursorX, this.state.cursorY);
-            if (cell.r < 0) {
-                return;
-            }
-            this.Select(cell.r, cell.c, cell.r, cell.c, "selecting");
-        }
-        SetKarelOnSelection(direction = "north") {
-            if (this.lock)
-                return;
-            this.karelController.world.move(this.selection.r, this.selection.c);
-            switch (direction) {
-                case "north":
-                    this.karelController.world.rotate('NORTE');
-                    break;
-                case "east":
-                    this.karelController.world.rotate('ESTE');
-                    break;
-                case "south":
-                    this.karelController.world.rotate('SUR');
-                    break;
-                case "west":
-                    this.karelController.world.rotate('OESTE');
-                    break;
-            }
-            this.Update();
-        }
-        ChangeBeepers(delta) {
-            if (this.lock)
-                return;
-            if (delta === 0) {
-                return;
-            }
-            let buzzers = this.karelController.world.buzzers(this.selection.r, this.selection.c);
-            if (buzzers < 0 && delta < 0) {
-                //Do nothing
-                return;
-            }
-            buzzers += delta;
-            if (buzzers < 0) {
-                buzzers = 0;
-            }
-            this.karelController.world.setBuzzers(this.selection.r, this.selection.c, buzzers);
-            this.Update();
-        }
-        SetBeepers(ammount) {
-            if (this.lock)
-                return;
-            if (this.karelController.world.buzzers(this.selection.r, this.selection.c) === ammount) {
-                return;
-            }
-            this.karelController.world.setBuzzers(this.selection.r, this.selection.c, ammount);
-            this.Update();
-        }
-        ToggleKarelPosition() {
-            if (this.lock)
-                return;
-            this.karelController.world.move(this.selection.r, this.selection.c);
-            this.karelController.world.rotate();
-            this.Update();
-        }
-        FocusOrigin() {
-            this.container.scrollLeft = 0;
-            this.container.scrollTop = this.container.scrollHeight - this.container.clientHeight;
-        }
-        FocusKarel() {
-            let r = this.karelController.world.i;
-            let c = this.karelController.world.j;
-            this.FocusTo(r, c);
-        }
-        FocusSelection() {
-            let r = this.selection.r - 1;
-            let c = this.selection.c - 1;
-            this.FocusTo(r, c);
-        }
-        TrackFocusToKarel() {
-            let origin = this.renderer.origin;
-            let rows = this.renderer.GetRowCount("floor");
-            let cols = this.renderer.GetColCount("floor");
-            if (rows * cols === 0) {
-                this.FocusKarel();
-                return;
-            }
-            if (origin.c <= this.karelController.world.j
-                && this.karelController.world.j < origin.c + cols
-                && origin.f <= this.karelController.world.i
-                && this.karelController.world.i < origin.f + rows) {
-                //Karel is already on focus.
-                return;
-            }
-            let tr = origin.f;
-            let tc = origin.c;
-            if (this.karelController.world.i < tr) {
-                tr = this.karelController.world.i;
-            }
-            else if (this.karelController.world.i >= tr + rows) {
-                tr = this.karelController.world.i - rows + 1;
-            }
-            if (this.karelController.world.j < tc) {
-                tc = this.karelController.world.j;
-            }
-            else if (this.karelController.world.j >= tc + cols) {
-                tc = this.karelController.world.j - cols + 1;
-            }
-            this.FocusTo(tr, tc);
-        }
-        FocusTo(r, c) {
-            let left = (c - 1 + 0.1) / (this.karelController.world.w - this.renderer.GetColCount("floor") + 1);
-            left = left < 0 ? 0 : left;
-            left = left > 1 ? 1 : left;
-            let top = (r - 1 + 0.01) / (this.karelController.world.h - this.renderer.GetRowCount("floor") + 1);
-            top = top < 0 ? 0 : top;
-            top = top > 1 ? 1 : top;
-            // let la =0, lb = 1;
-            // let ta =0, tb = 1;
-            // let left = (la+lb)/2.0;
-            // let top = (ta+tb)/2.0;
-            // for (let iter = 0; iter < 60; iter++) {
-            //     let lm = (la+lb)/2.0;
-            //     let tm = (ta+tb)/2.0;
-            //     this.ChangeOriginFromScroll( lm, tm);
-            //     if (this.renderer.origin.c < c) {
-            //         la = lm;
-            //     } else if (this.renderer.origin.c > c) {
-            //         lb = lm;
-            //     } else {
-            //         left = lm;
-            //         la=lb=lm;
-            //     }
-            //     if (this.renderer.origin.f < r) {
-            //         ta = tm;
-            //     } else if (this.renderer.origin.f > r) {
-            //         tb = tm;
-            //     } else {
-            //         top = tm;
-            //         ta=tb=tm;
-            //     }
-            // }
-            this.renderer.origin = {
-                c: c,
-                f: r,
-            };
-            // this.lockScroll=true;
-            this.container.scrollLeft = left * (this.container.scrollWidth - this.container.clientWidth);
-            this.container.scrollTop = (1 - top) * (this.container.scrollHeight - this.container.clientHeight);
-            // this.Update();        
-            // this.UpdateWaffle(); 
-        }
-        ToggleWall(which) {
-            if (this.lock)
-                return;
-            switch (which) {
-                case "north":
-                    for (let i = 0; i < this.selection.rows; i++) {
-                        let r = this.selection.r + i * this.selection.dr;
-                        let c = Math.min(this.selection.c, this.selection.c + (this.selection.cols - 1) * this.selection.dc);
-                        this.karelController.world.toggleWall(r, c, 1);
-                    }
-                    break;
-                case "south":
-                    for (let i = 0; i < this.selection.rows; i++) {
-                        let r = this.selection.r + i * this.selection.dr;
-                        let c = Math.max(this.selection.c, this.selection.c + (this.selection.cols - 1) * this.selection.dc);
-                        this.karelController.world.toggleWall(r, c, 3);
-                    }
-                    break;
-                case "west":
-                    for (let i = 0; i < this.selection.cols; i++) {
-                        let r = Math.min(this.selection.r, this.selection.r + (this.selection.rows - 1) * this.selection.dr);
-                        let c = this.selection.c + i * this.selection.dc;
-                        this.karelController.world.toggleWall(r, c, 0);
-                    }
-                    break;
-                case "east":
-                    for (let i = 0; i < this.selection.cols; i++) {
-                        let r = Math.max(this.selection.r, this.selection.r + (this.selection.rows - 1) * this.selection.dr);
-                        let c = this.selection.c + i * this.selection.dc;
-                        this.karelController.world.toggleWall(r, c, 2);
-                    }
-                    break;
-                case "outer":
-                    for (let i = 0; i < this.selection.cols; i++) {
-                        let rmin = Math.min(this.selection.r, this.selection.r + (this.selection.rows - 1) * this.selection.dr);
-                        let rmax = Math.max(this.selection.r, this.selection.r + (this.selection.rows - 1) * this.selection.dr);
-                        let c = this.selection.c + i * this.selection.dc;
-                        this.karelController.world.toggleWall(rmin, c, 2);
-                        this.karelController.world.toggleWall(rmax, c, 0);
-                    }
-                    for (let i = 0; i < this.selection.rows; i++) {
-                        let r = this.selection.r + i * this.selection.dr;
-                        let cmin = Math.min(this.selection.c, this.selection.c + (this.selection.cols - 1) * this.selection.dc);
-                        let cmax = Math.max(this.selection.c, this.selection.c + (this.selection.cols - 1) * this.selection.dc);
-                        this.karelController.world.toggleWall(r, cmin, 1);
-                        this.karelController.world.toggleWall(r, cmax, 3);
-                    }
-                    break;
-            }
-            this.Update();
-        }
-        ChangeOriginFromScroll(left, top) {
-            let worldWidth = this.karelController.world.w;
-            let worldHeight = this.karelController.world.h;
-            this.renderer.origin = {
-                f: Math.floor(1 + Math.max(0, (worldHeight - this.renderer.GetRowCount("floor") + 1) * top)),
-                c: Math.floor(1 + Math.max(0, (worldWidth - this.renderer.GetColCount("floor") + 1) * left)),
-            };
-        }
-        UpdateScroll(left, top) {
-            this.ChangeOriginFromScroll(left, top);
-            this.Update();
-            this.UpdateWaffle();
-        }
-        Update() {
-            this.karelController.world.dirty = false;
-            this.renderer.Draw(this.karelController.world);
-        }
-        UpdateScrollElements() {
-            let c = this.renderer.CellSize;
-            let h = this.karelController.world.h * this.scale * c;
-            let w = this.karelController.world.w * this.scale * c;
-            this.gizmos.HorizontalScrollElement.css("width", `${w}px`);
-            this.gizmos.VerticalScrollElement.css("height", `${h}px`);
-        }
-        onStep(caller, state) {
-            this.TrackFocusToKarel();
-            this.Update();
-        }
-        OnReset(caller) {
-            this.Update();
-        }
-        OnNewWorld(caller, world) {
-            this.Select(1, 1, 1, 1);
-            this.Update();
-            this.FocusOrigin();
-            this.UpdateScrollElements();
-        }
-    }
-
-    class DesktopContextMenu {
-        constructor(data, worldCanvas, worldController) {
-            this.toggler = data.toggler;
-            this.container = data.container;
-            this.beepers = data.beepers;
-            this.karel = data.karel;
-            this.wall = data.wall;
-            this.Hook(worldCanvas, worldController);
-        }
-        Hook(worldCanvas, worldController) {
-            worldCanvas.on("contextmenu", (e) => {
-                const dropmenu = new bootstrap.Dropdown(this.toggler[0]);
-                dropmenu.hide();
-                this.container[0].style.setProperty("top", `${e.pageY}px`);
-                this.container[0].style.setProperty("left", `${e.pageX}px`);
-                this.ToggleContextMenu();
-                e.preventDefault();
-            });
-            const ContextAction = (target, method) => {
-                target.on("click", (() => {
-                    this.ToggleContextMenu();
-                    method();
-                }).bind(this));
-            };
-            ContextAction(this.beepers.addOne, () => worldController.ChangeBeepers(1));
-            ContextAction(this.beepers.removeOne, () => worldController.ChangeBeepers(-1));
-            ContextAction(this.beepers.infinite, () => worldController.SetBeepers(-1));
-            ContextAction(this.beepers.clear, () => worldController.SetBeepers(0));
-            ContextAction(this.karel.north, () => worldController.SetKarelOnSelection("north"));
-            ContextAction(this.karel.east, () => worldController.SetKarelOnSelection("east"));
-            ContextAction(this.karel.south, () => worldController.SetKarelOnSelection("south"));
-            ContextAction(this.karel.west, () => worldController.SetKarelOnSelection("west"));
-            ContextAction(this.wall.north, () => worldController.ToggleWall("north"));
-            ContextAction(this.wall.east, () => worldController.ToggleWall("east"));
-            ContextAction(this.wall.south, () => worldController.ToggleWall("south"));
-            ContextAction(this.wall.west, () => worldController.ToggleWall("west"));
-            ContextAction(this.wall.outside, () => worldController.ToggleWall("outer"));
-        }
-        ToggleContextMenu() {
-            const dropmenu = new bootstrap.Dropdown(this.toggler[0]);
-            if (this.toggler.attr("aria-expanded") === "false") {
-                dropmenu.show();
-            }
-            else {
-                dropmenu.hide();
-            }
-        }
-    }
-
     /* parser generated by jison 0.4.17 */
     /*
       Returns a Parser object of the following structure:
@@ -25426,6 +24968,486 @@
         return message;
     }
 
+    class SelectionWaffle {
+        constructor(box) {
+            this.box = box;
+        }
+        UpdateWaffle(selection, renderer) {
+            let point = {
+                r: selection.r,
+                c: selection.c
+            };
+            let point2 = {
+                r: selection.r + (selection.rows - 1) * selection.dr,
+                c: selection.c + (selection.cols - 1) * selection.dc
+            };
+            if (point2.r > point.r) {
+                let r = point.r;
+                point.r = point2.r;
+                point2.r = r;
+            }
+            if (point2.c < point.c) {
+                let c = point.c;
+                point.c = point2.c;
+                point2.c = c;
+            }
+            let coords = renderer.CellToPoint(point.r, point.c);
+            let coords2 = renderer.CellToPoint(point2.r - 1, point2.c + 1);
+            let selectionBox = this.box.main;
+            selectionBox.style.top = `${coords.y / window.devicePixelRatio}px`;
+            selectionBox.style.left = `${coords.x / window.devicePixelRatio}px`;
+            const width = `${(coords2.x - coords.x)}px`;
+            const height = `${(coords2.y - coords.y)}px`;
+            // console.log(CellSize);
+            // console.log('scale',renderer.scale);
+            this.box.top.style.maxWidth = width;
+            this.box.top.style.minWidth = width;
+            this.box.bottom.style.maxWidth = width;
+            this.box.bottom.style.minWidth = width;
+            this.box.right.style.left = width;
+            this.box.left.style.maxHeight = height;
+            this.box.left.style.minHeight = height;
+            this.box.right.style.maxHeight = height;
+            this.box.right.style.minHeight = height;
+            this.box.bottom.style.top = height;
+        }
+    }
+
+    class WorldViewController {
+        constructor(renderer, karelController, container, gizmos) {
+            this.renderer = renderer;
+            this.container = container;
+            this.lock = false;
+            this.karelController = karelController;
+            this.selection = {
+                r: 1,
+                c: 1,
+                rows: 1,
+                cols: 1,
+                dr: 1,
+                dc: 1,
+                state: "normal"
+            };
+            this.state = {
+                cursorX: 0,
+                cursorY: 0,
+            };
+            this.gizmos = gizmos;
+            this.scale = 1;
+            this.karelController.RegisterResetObserver(this.OnReset.bind(this));
+            this.karelController.RegisterNewWorldObserver(this.OnNewWorld.bind(this));
+            this.karelController.RegisterStepController(this.onStep.bind(this));
+            this.waffle = new SelectionWaffle(gizmos.selectionBox);
+        }
+        Lock() {
+            this.lock = true;
+        }
+        UnLock() {
+            this.lock = false;
+        }
+        GetBeepersInBag() {
+            return this.karelController.world.bagBuzzers;
+        }
+        SetBeepersInBag(ammount) {
+            this.karelController.world.setBagBuzzers(ammount);
+        }
+        CheckUpdate() {
+            if (this.karelController.world.dirty) {
+                this.Update();
+            }
+        }
+        ErrorMode() {
+            this.renderer.ErrorMode();
+            this.Update();
+        }
+        NormalMode() {
+            this.renderer.NormalMode();
+            this.Update();
+        }
+        Select(r, c, r2, c2, state = "normal") {
+            if (r > this.karelController.world.h ||
+                c > this.karelController.world.w ||
+                r < 1 ||
+                c < 1) {
+                return;
+            }
+            this.selection = {
+                r: r,
+                c: c,
+                rows: Math.abs(r - r2) + 1,
+                cols: Math.abs(c - c2) + 1,
+                dr: r <= r2 ? 1 : -1,
+                dc: c <= c2 ? 1 : -1,
+                state: state
+            };
+            this.UpdateWaffle();
+        }
+        MoveSelection(dr, dc) {
+            let r = this.selection.r + dr;
+            let c = this.selection.c + dc;
+            if (r < 1 || c < 1 || r > this.karelController.world.h || c > this.karelController.world.w) {
+                return;
+            }
+            this.Select(this.selection.r + dr, this.selection.c + dc, this.selection.r + dr, this.selection.c + dc);
+        }
+        UpdateWaffle() {
+            this.waffle.UpdateWaffle(this.selection, this.renderer);
+        }
+        SetScale(scale) {
+            this.renderer.scale = scale * window.devicePixelRatio;
+            this.scale = scale;
+            //FIXME, this should be in update waffle
+            // this.gizmos.selectionBox.bottom.style.maxWidth = `${this.renderer.CellSize * scale}px`;
+            // this.gizmos.selectionBox.bottom.style.minWidth = `${this.renderer.CellSize * scale}px`;
+            // this.gizmos.selectionBox.top.style.maxWidth = `${this.renderer.CellSize * scale}px`;
+            // this.gizmos.selectionBox.top.style.minWidth = `${this.renderer.CellSize * scale}px`;
+            // this.gizmos.selectionBox.left.style.maxHeight = `${this.renderer.CellSize * scale}px`;
+            // this.gizmos.selectionBox.left.style.minHeight = `${this.renderer.CellSize * scale}px`;
+            // this.gizmos.selectionBox.right.style.maxHeight = `${this.renderer.CellSize * scale}px`;
+            // this.gizmos.selectionBox.right.style.minHeight = `${this.renderer.CellSize * scale}px`;
+            // this.gizmos.selectionBox.bottom.style.top = `${this.renderer.CellSize * scale}px`;
+            // this.gizmos.selectionBox.right.style.left = `${this.renderer.CellSize * scale}px`;
+            this.UpdateWaffle();
+            this.Update();
+            this.UpdateScrollElements();
+        }
+        RecalculateScale() {
+            this.renderer.scale = this.scale * window.devicePixelRatio;
+            this.UpdateWaffle();
+            this.Update();
+            this.UpdateScrollElements();
+        }
+        TrackMouse(e) {
+            let canvas = this.renderer.canvasContext.canvas;
+            let boundingBox = canvas.getBoundingClientRect();
+            let x = (e.clientX - boundingBox.left) * canvas.width / boundingBox.width;
+            let y = (e.clientY - boundingBox.top) * canvas.height / boundingBox.height;
+            this.state.cursorX = x / this.renderer.scale;
+            this.state.cursorY = y / this.renderer.scale;
+            if (this.selection.state === "selecting") {
+                let cell = this.renderer.PointToCell(this.state.cursorX, this.state.cursorY);
+                this.ExtendSelection(cell.r, cell.c, "selecting");
+            }
+        }
+        ExtendSelection(r, c, state = "normal") {
+            if (r < 0 || r > KarelController.GetInstance().world.h)
+                return;
+            if (c < 0 || c > KarelController.GetInstance().world.w)
+                return;
+            this.Select(this.selection.r, this.selection.c, r, c, state);
+        }
+        ClickUp(e) {
+            if (this.selection.state !== "selecting")
+                return;
+            this.selection.state = "normal";
+            let cell = this.renderer.PointToCell(this.state.cursorX, this.state.cursorY);
+            this.ExtendSelection(cell.r, cell.c);
+        }
+        ClickDown(e) {
+            e.preventDefault();
+            let cell = this.renderer.PointToCell(this.state.cursorX, this.state.cursorY);
+            if (cell.r < 0) {
+                return;
+            }
+            this.Select(cell.r, cell.c, cell.r, cell.c, "selecting");
+        }
+        SetKarelOnSelection(direction = "north") {
+            if (this.lock)
+                return;
+            this.karelController.world.move(this.selection.r, this.selection.c);
+            switch (direction) {
+                case "north":
+                    this.karelController.world.rotate('NORTE');
+                    break;
+                case "east":
+                    this.karelController.world.rotate('ESTE');
+                    break;
+                case "south":
+                    this.karelController.world.rotate('SUR');
+                    break;
+                case "west":
+                    this.karelController.world.rotate('OESTE');
+                    break;
+            }
+            this.Update();
+        }
+        ChangeBeepers(delta) {
+            if (this.lock)
+                return;
+            if (delta === 0) {
+                return;
+            }
+            let rmin = Math.min(this.selection.r, this.selection.r + (this.selection.rows - 1) * this.selection.dr);
+            let rmax = Math.max(this.selection.r, this.selection.r + (this.selection.rows - 1) * this.selection.dr);
+            let cmin = Math.min(this.selection.c, this.selection.c + (this.selection.cols - 1) * this.selection.dc);
+            let cmax = Math.max(this.selection.c, this.selection.c + (this.selection.cols - 1) * this.selection.dc);
+            for (let i = rmin; i <= rmax; i++) {
+                for (let j = cmin; j <= cmax; j++) {
+                    let buzzers = this.karelController.world.buzzers(i, j);
+                    if (buzzers < 0 && delta < 0) {
+                        //Do nothing
+                        continue;
+                    }
+                    buzzers += delta;
+                    if (buzzers < 0) {
+                        buzzers = 0;
+                    }
+                    this.karelController.world.setBuzzers(i, j, buzzers);
+                }
+            }
+            this.Update();
+        }
+        SetBeepers(ammount) {
+            if (this.lock)
+                return;
+            let rmin = Math.min(this.selection.r, this.selection.r + (this.selection.rows - 1) * this.selection.dr);
+            let rmax = Math.max(this.selection.r, this.selection.r + (this.selection.rows - 1) * this.selection.dr);
+            let cmin = Math.min(this.selection.c, this.selection.c + (this.selection.cols - 1) * this.selection.dc);
+            let cmax = Math.max(this.selection.c, this.selection.c + (this.selection.cols - 1) * this.selection.dc);
+            for (let i = rmin; i <= rmax; i++) {
+                for (let j = cmin; j <= cmax; j++) {
+                    if (this.karelController.world.buzzers(i, j) === ammount) {
+                        continue;
+                    }
+                    this.karelController.world.setBuzzers(i, j, ammount);
+                }
+            }
+            this.Update();
+        }
+        ToggleKarelPosition() {
+            if (this.lock)
+                return;
+            this.karelController.world.move(this.selection.r, this.selection.c);
+            this.karelController.world.rotate();
+            this.Update();
+        }
+        FocusOrigin() {
+            this.container.scrollLeft = 0;
+            this.container.scrollTop = this.container.scrollHeight - this.container.clientHeight;
+        }
+        FocusKarel() {
+            let r = this.karelController.world.i;
+            let c = this.karelController.world.j;
+            this.FocusTo(r, c);
+        }
+        FocusSelection() {
+            let r = this.selection.r - 1;
+            let c = this.selection.c - 1;
+            this.FocusTo(r, c);
+        }
+        TrackFocusToKarel() {
+            let origin = this.renderer.origin;
+            let rows = this.renderer.GetRowCount("floor");
+            let cols = this.renderer.GetColCount("floor");
+            if (rows * cols === 0) {
+                this.FocusKarel();
+                return;
+            }
+            if (origin.c <= this.karelController.world.j
+                && this.karelController.world.j < origin.c + cols
+                && origin.f <= this.karelController.world.i
+                && this.karelController.world.i < origin.f + rows) {
+                //Karel is already on focus.
+                return;
+            }
+            let tr = origin.f;
+            let tc = origin.c;
+            if (this.karelController.world.i < tr) {
+                tr = this.karelController.world.i;
+            }
+            else if (this.karelController.world.i >= tr + rows) {
+                tr = this.karelController.world.i - rows + 1;
+            }
+            if (this.karelController.world.j < tc) {
+                tc = this.karelController.world.j;
+            }
+            else if (this.karelController.world.j >= tc + cols) {
+                tc = this.karelController.world.j - cols + 1;
+            }
+            this.FocusTo(tr, tc);
+        }
+        FocusTo(r, c) {
+            let left = (c - 1 + 0.1) / (this.karelController.world.w - this.renderer.GetColCount("floor") + 1);
+            left = left < 0 ? 0 : left;
+            left = left > 1 ? 1 : left;
+            let top = (r - 1 + 0.01) / (this.karelController.world.h - this.renderer.GetRowCount("floor") + 1);
+            top = top < 0 ? 0 : top;
+            top = top > 1 ? 1 : top;
+            // let la =0, lb = 1;
+            // let ta =0, tb = 1;
+            // let left = (la+lb)/2.0;
+            // let top = (ta+tb)/2.0;
+            // for (let iter = 0; iter < 60; iter++) {
+            //     let lm = (la+lb)/2.0;
+            //     let tm = (ta+tb)/2.0;
+            //     this.ChangeOriginFromScroll( lm, tm);
+            //     if (this.renderer.origin.c < c) {
+            //         la = lm;
+            //     } else if (this.renderer.origin.c > c) {
+            //         lb = lm;
+            //     } else {
+            //         left = lm;
+            //         la=lb=lm;
+            //     }
+            //     if (this.renderer.origin.f < r) {
+            //         ta = tm;
+            //     } else if (this.renderer.origin.f > r) {
+            //         tb = tm;
+            //     } else {
+            //         top = tm;
+            //         ta=tb=tm;
+            //     }
+            // }
+            this.renderer.origin = {
+                c: c,
+                f: r,
+            };
+            // this.lockScroll=true;
+            this.container.scrollLeft = left * (this.container.scrollWidth - this.container.clientWidth);
+            this.container.scrollTop = (1 - top) * (this.container.scrollHeight - this.container.clientHeight);
+            // this.Update();        
+            // this.UpdateWaffle(); 
+        }
+        ToggleWall(which) {
+            if (this.lock)
+                return;
+            let r = this.selection.r, c = this.selection.c;
+            switch (which) {
+                case "north":
+                    r = Math.max(this.selection.r, this.selection.r + (this.selection.rows - 1) * this.selection.dr);
+                    for (let i = 0; i < this.selection.cols; i++) {
+                        c = this.selection.c + this.selection.dc * i;
+                        this.karelController.world.toggleWall(r, c, 1);
+                    }
+                    break;
+                case "south":
+                    r = Math.min(this.selection.r, this.selection.r + (this.selection.rows - 1) * this.selection.dr);
+                    for (let i = 0; i < this.selection.cols; i++) {
+                        c = this.selection.c + this.selection.dc * i;
+                        this.karelController.world.toggleWall(r, c, 3);
+                    }
+                    break;
+                case "west":
+                    c = Math.min(this.selection.c, this.selection.c + (this.selection.cols - 1) * this.selection.dc);
+                    for (let i = 0; i < this.selection.rows; i++) {
+                        r = this.selection.r + i * this.selection.dr;
+                        this.karelController.world.toggleWall(r, c, 0);
+                    }
+                    break;
+                case "east":
+                    c = Math.max(this.selection.c, this.selection.c + (this.selection.cols - 1) * this.selection.dc);
+                    for (let i = 0; i < this.selection.rows; i++) {
+                        r = this.selection.r + i * this.selection.dr;
+                        this.karelController.world.toggleWall(r, c, 2);
+                    }
+                    break;
+                case "outer":
+                    let rmin = Math.min(this.selection.r, this.selection.r + (this.selection.rows - 1) * this.selection.dr);
+                    let rmax = Math.max(this.selection.r, this.selection.r + (this.selection.rows - 1) * this.selection.dr);
+                    let cmin = Math.min(this.selection.c, this.selection.c + (this.selection.cols - 1) * this.selection.dc);
+                    let cmax = Math.max(this.selection.c, this.selection.c + (this.selection.cols - 1) * this.selection.dc);
+                    for (let i = 0; i < this.selection.cols; i++) {
+                        c = this.selection.c + i * this.selection.dc;
+                        this.karelController.world.toggleWall(rmin, c, 3);
+                        this.karelController.world.toggleWall(rmax, c, 1);
+                    }
+                    for (let i = 0; i < this.selection.rows; i++) {
+                        r = this.selection.r + i * this.selection.dr;
+                        this.karelController.world.toggleWall(r, cmin, 0);
+                        this.karelController.world.toggleWall(r, cmax, 2);
+                    }
+                    break;
+            }
+            this.Update();
+        }
+        ChangeOriginFromScroll(left, top) {
+            let worldWidth = this.karelController.world.w;
+            let worldHeight = this.karelController.world.h;
+            this.renderer.origin = {
+                f: Math.floor(1 + Math.max(0, (worldHeight - this.renderer.GetRowCount("floor") + 1) * top)),
+                c: Math.floor(1 + Math.max(0, (worldWidth - this.renderer.GetColCount("floor") + 1) * left)),
+            };
+        }
+        UpdateScroll(left, top) {
+            this.ChangeOriginFromScroll(left, top);
+            this.Update();
+            this.UpdateWaffle();
+        }
+        Update() {
+            this.karelController.world.dirty = false;
+            this.renderer.Draw(this.karelController.world);
+        }
+        UpdateScrollElements() {
+            let c = this.renderer.CellSize;
+            let h = this.karelController.world.h * this.scale * c;
+            let w = this.karelController.world.w * this.scale * c;
+            this.gizmos.HorizontalScrollElement.css("width", `${w}px`);
+            this.gizmos.VerticalScrollElement.css("height", `${h}px`);
+        }
+        onStep(caller, state) {
+            this.TrackFocusToKarel();
+            this.Update();
+        }
+        OnReset(caller) {
+            this.Update();
+        }
+        OnNewWorld(caller, world) {
+            this.Select(1, 1, 1, 1);
+            this.Update();
+            this.FocusOrigin();
+            this.UpdateScrollElements();
+        }
+    }
+
+    class DesktopContextMenu {
+        constructor(data, worldCanvas, worldController) {
+            this.toggler = data.toggler;
+            this.container = data.container;
+            this.beepers = data.beepers;
+            this.karel = data.karel;
+            this.wall = data.wall;
+            this.Hook(worldCanvas, worldController);
+        }
+        Hook(worldCanvas, worldController) {
+            worldCanvas.on("contextmenu", (e) => {
+                const dropmenu = new bootstrap.Dropdown(this.toggler[0]);
+                dropmenu.hide();
+                this.container[0].style.setProperty("top", `${e.pageY}px`);
+                this.container[0].style.setProperty("left", `${e.pageX}px`);
+                this.ToggleContextMenu();
+                e.preventDefault();
+            });
+            const ContextAction = (target, method) => {
+                target.on("click", (() => {
+                    this.ToggleContextMenu();
+                    method();
+                }).bind(this));
+            };
+            ContextAction(this.beepers.addOne, () => worldController.ChangeBeepers(1));
+            ContextAction(this.beepers.removeOne, () => worldController.ChangeBeepers(-1));
+            ContextAction(this.beepers.infinite, () => worldController.SetBeepers(-1));
+            ContextAction(this.beepers.clear, () => worldController.SetBeepers(0));
+            ContextAction(this.karel.north, () => worldController.SetKarelOnSelection("north"));
+            ContextAction(this.karel.east, () => worldController.SetKarelOnSelection("east"));
+            ContextAction(this.karel.south, () => worldController.SetKarelOnSelection("south"));
+            ContextAction(this.karel.west, () => worldController.SetKarelOnSelection("west"));
+            ContextAction(this.wall.north, () => worldController.ToggleWall("north"));
+            ContextAction(this.wall.east, () => worldController.ToggleWall("east"));
+            ContextAction(this.wall.south, () => worldController.ToggleWall("south"));
+            ContextAction(this.wall.west, () => worldController.ToggleWall("west"));
+            ContextAction(this.wall.outside, () => worldController.ToggleWall("outer"));
+        }
+        ToggleContextMenu() {
+            const dropmenu = new bootstrap.Dropdown(this.toggler[0]);
+            if (this.toggler.attr("aria-expanded") === "false") {
+                dropmenu.show();
+            }
+            else {
+                dropmenu.hide();
+            }
+        }
+    }
+
     let MAX_STACK_SIZE = 650;
     class CallStack {
         constructor(data) {
@@ -25512,7 +25534,7 @@
             $(window).on("resize", this.ResizeCanvas.bind(this));
             $(window).on("keydown", this.HotKeys.bind(this));
             this.worldContainer.on("scroll", this.calculateScroll.bind(this));
-            this.worldCanvas.on("mouseup", this.worldController.ClickUp.bind(this.worldController));
+            $("body").on("mouseup", this.worldController.ClickUp.bind(this.worldController));
             this.worldCanvas.on("mousemove", this.worldController.TrackMouse.bind(this.worldController));
             this.worldCanvas.on("mousedown", this.worldController.ClickDown.bind(this.worldController));
             this.worldZoom.on("change", () => {
