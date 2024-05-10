@@ -3838,7 +3838,7 @@
         @internal
         */
         static create(from, to, value) {
-            return new Range$1(from, to, value);
+            return new Range(from, to, value);
         }
     };
     function cmpRange(a, b) {
@@ -24115,471 +24115,6 @@
     }
     // vim: set noexpandtab:ts=2:sw=2
 
-    function confirmPrompt(evenet) {
-        let data = evenet.data;
-        $(data.uiData.confirmModal.titleField).html(data.modalData.title);
-        $(data.uiData.confirmModal.messageField).html(data.modalData.message);
-        $(data.uiData.confirmModal.confirmBtn).on("click", data.modalData.accept);
-        $(data.uiData.confirmModal.rejectBtn).on("click", data.modalData.reject);
-        let modal = new bootstrap.Modal($(data.uiData.confirmModal.modal).get(0));
-        modal.show();
-    }
-    function confirmPromptEnd(event) {
-        let data = event.data;
-        $(data.uiData.confirmModal.confirmBtn).off("click", data.modalData.accept);
-        $(data.uiData.confirmModal.rejectBtn).off("click", data.modalData.reject);
-    }
-
-    const fileRegex$1 = /^[a-zA-Z0-9._]+$/;
-    function setFileNameLink$1(modal, editor) {
-        let newFilename = $(modal.inputField).val();
-        if (!fileRegex$1.test(newFilename)) {
-            $(modal.wrongCodeWarning).removeAttr("hidden");
-            newFilename = "code.txt";
-        }
-        else {
-            $(modal.wrongCodeWarning).attr("hidden", "");
-        }
-        let blob = new Blob([editor.state.doc.toString()], { type: 'text/plain' });
-        $(modal.confirmBtn).attr("href", window.URL.createObjectURL(blob));
-        $(modal.confirmBtn).attr("download", newFilename);
-    }
-    function hookDownloadModel(modal, editor) {
-        $(modal.modal).on('show.bs.modal', () => setFileNameLink$1(modal, editor));
-        $(modal.inputField).change(() => setFileNameLink$1(modal, editor));
-    }
-
-    function HookResizeModal(resizeModel, karelController) {
-        $(resizeModel.modal).on('show.bs.modal', () => {
-            $(resizeModel.rowField).val(karelController.world.h);
-            $(resizeModel.columnField).val(karelController.world.w);
-        });
-        $(resizeModel.confirmBtn).on('click', () => {
-            let w = parseInt($(resizeModel.columnField).val());
-            let h = parseInt($(resizeModel.rowField).val());
-            karelController.Resize(w, h);
-            karelController.Reset();
-        });
-    }
-
-    function HookAmountModal(modal, worldController) {
-        $(modal.confirmBtn).on("click", () => {
-            const inputValue = $(modal.inputField).val();
-            if (inputValue === "") {
-                return;
-            }
-            const amount = parseFloat(inputValue);
-            if (amount < -1) {
-                return;
-            }
-            worldController.SetBeepers(amount);
-        });
-    }
-
-    let defaultFileName = "world.in";
-    function setWorldData(data, modal) {
-        $(modal.worldData).val(data);
-        let blob = new Blob([data], { type: 'text/plain' });
-        $(modal.confirmBtn).attr("href", window.URL.createObjectURL(blob));
-    }
-    function setInputWorld(modal, karelController) {
-        defaultFileName = "world.in";
-        const filename = $(modal.inputField).val();
-        $(modal.inputField).val(filename.replace(/\.out$/, ".in"));
-        setFileNameLink(modal);
-        const input = karelController.world.save();
-        $(modal.worldData).val(input);
-        setWorldData(input, modal);
-    }
-    function setOutputWorld(modal, karelController) {
-        defaultFileName = "world.out";
-        const filename = $(modal.inputField).val();
-        $(modal.inputField).val(filename.replace(/\.in$/, ".out"));
-        setFileNameLink(modal);
-        let result = KarelController.GetInstance().Compile(false);
-        let output;
-        if (result == null) {
-            output = "ERROR DE COMPILACION";
-        }
-        else {
-            KarelController.GetInstance().RunTillEnd(false);
-            if (KarelController.GetInstance().EndedOnError()) {
-                output = "ERROR DE EJECUCION";
-            }
-            else {
-                output = karelController.world.output();
-            }
-        }
-        $(modal.worldData).val(output);
-        setWorldData(output, modal);
-    }
-    const fileRegex = /^[a-zA-Z0-9._]+$/;
-    function setFileNameLink(modal) {
-        let newFilename = $(modal.inputField).val();
-        if (!fileRegex.test(newFilename)) {
-            $(modal.wrongWorldWaring).removeAttr("hidden");
-            newFilename = defaultFileName;
-        }
-        else {
-            $(modal.wrongWorldWaring).attr("hidden", "");
-        }
-        $(modal.confirmBtn).attr("download", newFilename);
-    }
-    function HookWorldSaveModal(modal, karelController) {
-        $(modal.inputBtn).on("click", () => setInputWorld(modal, karelController));
-        $(modal.outputBtn).on("click", () => setOutputWorld(modal, karelController));
-    }
-
-    function getCode(editor) {
-        var file = document.createElement('input');
-        file.type = 'file';
-        file.addEventListener('change', function (evt) {
-            //@ts-ignore
-            var files = evt.target.files; // @ts-ignore FileList object 
-            // Loop through the FileList and render image files as thumbnails.
-            for (var i = 0, f; (f = files[i]); i++) {
-                // Only process text files.
-                if (f.type &&
-                    !(f.type.match('text.*') || f.type == 'application/javascript')) {
-                    continue;
-                }
-                var reader = new FileReader();
-                // Closure to capture the file information.
-                reader.onload = (function (theFile) {
-                    return function (e) {
-                        SetText(editor, reader.result);
-                    };
-                })();
-                // Read in the file as a data URL.
-                reader.readAsText(f);
-            }
-        });
-        file.click();
-    }
-    function parseWorld(xml) {
-        // Parses the xml and returns a document object.
-        return new DOMParser().parseFromString(xml, 'text/xml');
-    }
-    function getWorldIn(karelController) {
-        var file = document.createElement('input');
-        file.type = 'file';
-        file.addEventListener('change', function (evt) {
-            //@ts-ignore
-            var files = evt.target.files; // FileList object
-            // Loop through the FileList and render image files as thumbnails.
-            for (var i = 0, f; (f = files[i]); i++) {
-                // Only process text files.
-                if (f.type && !f.type.match('text.*')) {
-                    continue;
-                }
-                var reader = new FileReader();
-                // Closure to capture the file information.
-                reader.onload = (function (theFile) {
-                    return function (e) {
-                        const result = reader.result;
-                        karelController.world.load(parseWorld(result));
-                        karelController.Reset();
-                    };
-                })();
-                // Read in the file as a data URL.
-                reader.readAsText(f);
-            }
-        });
-        file.click();
-    }
-    function HookNavbar(navbar, editor, karelController) {
-        $(navbar.openCode).on("click", () => getCode(editor));
-        $(navbar.openWorldIn).on("click", () => getWorldIn(karelController));
-    }
-
-    const WR_CLEAN = {
-        disabled: '#4f4f4f',
-        exportCellBackground: '#f5f7a8',
-        karelColor: '#3E6AC1',
-        gridBackgroundColor: '#f8f9fA',
-        errorGridBackgroundColor: "#f5d5d5",
-        gridBorderColor: '#c4c4c4',
-        errorGridBorderColor: '#a8838f',
-        gutterBackgroundColor: '#e6e6e6',
-        gutterColor: "#444444",
-        beeperBackgroundColor: "#ffffff",
-        beeperColor: "#000000",
-        wallColor: "#000000"
-    };
-    const WR_DARK = {
-        disabled: '#4f4f4f',
-        exportCellBackground: '#f5f7a8',
-        karelColor: '#328EAD',
-        gridBackgroundColor: '#282828',
-        errorGridBackgroundColor: "#5D3D3D",
-        gridBorderColor: '#565656',
-        errorGridBorderColor: '#565656',
-        gutterBackgroundColor: '#3B3B3B',
-        gutterColor: "#E8E8E8",
-        beeperBackgroundColor: "#005608",
-        beeperColor: "#ffffff",
-        wallColor: "#f1f1f1"
-    };
-    const WR_CONTRAST = {
-        disabled: '#4f4f4f',
-        exportCellBackground: '#f5f7a8',
-        karelColor: '#3F69DB',
-        gridBackgroundColor: '#f3f3f3',
-        errorGridBackgroundColor: "#5D3D3D",
-        gridBorderColor: '#565656',
-        errorGridBorderColor: '#565656',
-        gutterBackgroundColor: '#e3e3e3',
-        gutterColor: "#000000",
-        beeperBackgroundColor: "#000000",
-        beeperColor: "#ffffff",
-        wallColor: "#000000"
-    };
-
-    function clearAllDisplayClasses(element) {
-        $(element).removeClass("d-none");
-        $(element).removeClass("d-lg-block");
-        $(element).removeClass("d-lg-none");
-    }
-    function hideElement$1(element) {
-        $(element).addClass("d-none");
-    }
-    function SetResponsiveness() {
-        clearAllDisplayClasses("#desktopView");
-        clearAllDisplayClasses("#phoneView");
-        $("#phoneView").addClass("d-lg-none");
-        $("#desktopView").addClass("d-none");
-        $("#desktopView").addClass("d-lg-block");
-    }
-    function SetDesktopView() {
-        clearAllDisplayClasses("#phoneView");
-        clearAllDisplayClasses("#desktopView");
-        hideElement$1("#phoneView");
-    }
-    function SetPhoneView() {
-        clearAllDisplayClasses("#phoneView");
-        clearAllDisplayClasses("#desktopView");
-        hideElement$1("#desktopView");
-    }
-    function responsiveHack() {
-        $("#phoneView").removeClass("position-absolute");
-        {
-            $("#phoneView").addClass("d-none");
-        }
-        $("#loadingModal").remove();
-    }
-
-    const APP_SETTING = 'appSettings';
-    let appSettings = {
-        interface: "desktop",
-        editorFontSize: 12,
-        worldRendererStyle: DefaultWRStyle
-    };
-    function isFontSize(str) {
-        return 6 < str && str < 31;
-    }
-    function isResponsiveInterfaces(str) {
-        return ["auto", "desktop", "mobile"].indexOf(str) > -1;
-    }
-    let DesktopUI$1;
-    function applySettings(settings, desktopUI) {
-        switch (settings.interface) {
-            case "auto":
-                SetResponsiveness();
-                break;
-            case "desktop":
-                SetDesktopView();
-                break;
-            case "mobile":
-                SetPhoneView();
-                break;
-            default:
-                SetDesktopView();
-                break;
-        }
-        $(":root")[0].style.setProperty("--editor-font-size", `${settings.editorFontSize}pt`);
-        if (settings.interface == "desktop")
-            desktopUI.ResizeCanvas();
-        desktopUI.worldController.renderer.style = settings.worldRendererStyle;
-        desktopUI.worldController.Update();
-        localStorage.setItem(APP_SETTING, JSON.stringify(appSettings));
-    }
-    function setSettings(event, desktopUI) {
-        let interfaceType = $("#settingsForm select[name=interface]").val();
-        let fontSize = $("#settingsForm input[name=fontSize]").val();
-        console.log(fontSize);
-        if (isResponsiveInterfaces(interfaceType)) {
-            appSettings.interface = interfaceType;
-        }
-        if (isFontSize(fontSize)) {
-            appSettings.editorFontSize = fontSize;
-        }
-        console.log(appSettings);
-        applySettings(appSettings, desktopUI);
-        event.preventDefault();
-        return false;
-    }
-    function loadSettingsFromMemory() {
-        const jsonString = localStorage.getItem(APP_SETTING);
-        if (jsonString) {
-            appSettings = JSON.parse(jsonString);
-        }
-    }
-    function loadSettingsToModal() {
-        console.log("show", appSettings);
-        $("#settingsInterface").val(appSettings.interface);
-        $("#settingsFontSize").val(appSettings.editorFontSize);
-    }
-    function InitSettings(desktopUI) {
-        DesktopUI$1 = desktopUI;
-        loadSettingsFromMemory();
-        $("#settingsModal").on("show.bs.modal", (e) => {
-            loadSettingsToModal();
-        });
-        $("#settingsForm").on("submit", (e) => {
-            setSettings(e, desktopUI);
-        });
-    }
-    function StartSettings(desktopUI) {
-        applySettings(appSettings, desktopUI);
-        $(document).on("keydown", (e) => {
-            if (e.ctrlKey && e.which === 75) {
-                let fontSize = appSettings.editorFontSize;
-                fontSize--;
-                if (fontSize < 7)
-                    fontSize = 7;
-                appSettings.editorFontSize = fontSize;
-                applySettings(appSettings, desktopUI);
-                e.preventDefault();
-                return false;
-            }
-            if (e.ctrlKey && e.which === 76) {
-                let fontSize = appSettings.editorFontSize;
-                fontSize++;
-                if (fontSize > 30)
-                    fontSize = 30;
-                appSettings.editorFontSize = fontSize;
-                applySettings(appSettings, desktopUI);
-                e.preventDefault();
-                return false;
-            }
-        });
-    }
-    function SetWorldRendererStyle(style) {
-        appSettings.worldRendererStyle = style;
-        applySettings(appSettings, DesktopUI$1);
-    }
-    function GetCurrentSetting() { return appSettings; }
-
-    function parseFormData() {
-        return {
-            disabled: $('#disabledColor').val(),
-            exportCellBackground: $('#exportCellBackgroundColor').val(),
-            karelColor: $('#karelColor').val(),
-            gridBackgroundColor: $('#gridBackgroundColor').val(),
-            errorGridBackgroundColor: $('#errorGridBackgroundColor').val(),
-            gridBorderColor: $('#gridBorderColor').val(),
-            errorGridBorderColor: $('#errorGridBorderColor').val(),
-            gutterBackgroundColor: $('#gutterBackgroundColor').val(),
-            gutterColor: $('#gutterColor').val(),
-            beeperBackgroundColor: $('#beeperBackgroundColor').val(),
-            beeperColor: $('#beeperColor').val(),
-            wallColor: $('#wallColor').val(),
-        };
-    }
-    function setFormData(style) {
-        $('#disabledColor').val(style.disabled);
-        $('#exportCellBackgroundColor').val(style.exportCellBackground);
-        $('#karelColor').val(style.karelColor);
-        $('#gridBackgroundColor').val(style.gridBackgroundColor);
-        $('#errorGridBackgroundColor').val(style.errorGridBackgroundColor);
-        $('#gridBorderColor').val(style.gridBorderColor);
-        $('#errorGridBorderColor').val(style.errorGridBorderColor);
-        $('#gutterBackgroundColor').val(style.gutterBackgroundColor);
-        $('#gutterColor').val(style.gutterColor);
-        $('#beeperBackgroundColor').val(style.beeperBackgroundColor);
-        $('#beeperColor').val(style.beeperColor);
-        $('#wallColor').val(style.wallColor);
-    }
-    function loadPreset() {
-        const val = $("#karelStylePreset").val();
-        if (val === "current") {
-            setFormData(GetCurrentSetting().worldRendererStyle);
-            return;
-        }
-        if (val === "default") {
-            setFormData(DefaultWRStyle);
-            return;
-        }
-        if (val === "clean") {
-            setFormData(WR_CLEAN);
-            return;
-        }
-        if (val === "dark") {
-            setFormData(WR_DARK);
-            return;
-        }
-        if (val === "contrast") {
-            setFormData(WR_CONTRAST);
-            return;
-        }
-    }
-    function exportStyle() {
-        const style = GetCurrentSetting().worldRendererStyle;
-        const val = JSON.stringify(style);
-        $("#karelStyleJSON").val(val);
-    }
-    function importStyle() {
-        const val = $("#karelStyleJSON").val();
-        try {
-            const style = JSON.parse(val);
-            if (!isWRStyle(style)) {
-                return;
-            }
-            setFormData(style);
-        }
-        catch (error) {
-            return;
-        }
-    }
-    function HookStyleModal(view) {
-        $("#setKarelStyleBtn").on("click", () => {
-            const style = parseFormData();
-            console.log(style);
-            view.renderer.style = style;
-            view.Update();
-            SetWorldRendererStyle(style);
-        });
-        $("#karelStyleModal").on("show.bs.modal", () => {
-            setFormData(view.renderer.style);
-        });
-        $("#karelStyleLoadPresetBtn").on("click", () => {
-            loadPreset();
-        });
-        $("#karelStyleExport").on("click", () => {
-            exportStyle();
-        });
-        $("#karelStyleImport").on("click", () => {
-            importStyle();
-        });
-    }
-
-    function HookUpCommonUI(uiData) {
-        hookDownloadModel(uiData.downloadCodeModal, uiData.editor);
-        HookAmountModal(uiData.amountModal, uiData.worldController);
-        HookWorldSaveModal(uiData.wordSaveModal, uiData.karelController);
-        HookNavbar(uiData.navbar, uiData.editor, uiData.karelController);
-        HookStyleModal(uiData.worldController);
-        //Hook ConfirmCallers
-        uiData.confirmCallers.forEach((confirmCaller) => {
-            let confirmArgs = {
-                uiData: uiData,
-                modalData: confirmCaller.data,
-            };
-            $(confirmCaller.button).on('click', null, confirmArgs, confirmPrompt);
-            $(uiData.confirmModal.modal).on('hidden.bs.modal', null, confirmArgs, confirmPromptEnd);
-        });
-        HookResizeModal(uiData.resizeModal, uiData.karelController);
-    }
     const ERRORCODES = {
         WALL: 'Karel ha chocado con un muro!',
         WORLDUNDERFLOW: 'Karel intentó tomar zumbadores en una posición donde no había!',
@@ -25913,6 +25448,489 @@
         return response;
     }
 
+    function confirmPrompt(evenet) {
+        let data = evenet.data;
+        $(data.uiData.confirmModal.titleField).html(data.modalData.title);
+        $(data.uiData.confirmModal.messageField).html(data.modalData.message);
+        $(data.uiData.confirmModal.confirmBtn).on("click", data.modalData.accept);
+        $(data.uiData.confirmModal.rejectBtn).on("click", data.modalData.reject);
+        let modal = new bootstrap.Modal($(data.uiData.confirmModal.modal).get(0));
+        modal.show();
+    }
+    function confirmPromptEnd(event) {
+        let data = event.data;
+        $(data.uiData.confirmModal.confirmBtn).off("click", data.modalData.accept);
+        $(data.uiData.confirmModal.rejectBtn).off("click", data.modalData.reject);
+    }
+
+    const fileRegex$1 = /^[a-zA-Z0-9._]+$/;
+    function setFileNameLink$1(modal, editor) {
+        let newFilename = $(modal.inputField).val();
+        if (!fileRegex$1.test(newFilename)) {
+            $(modal.wrongCodeWarning).removeAttr("hidden");
+            newFilename = "code.txt";
+        }
+        else {
+            $(modal.wrongCodeWarning).attr("hidden", "");
+        }
+        let blob = new Blob([editor.state.doc.toString()], { type: 'text/plain' });
+        $(modal.confirmBtn).attr("href", window.URL.createObjectURL(blob));
+        $(modal.confirmBtn).attr("download", newFilename);
+    }
+    function hookDownloadModel(modal, editor) {
+        $(modal.modal).on('show.bs.modal', () => setFileNameLink$1(modal, editor));
+        $(modal.inputField).change(() => setFileNameLink$1(modal, editor));
+    }
+
+    function HookResizeModal(resizeModel, karelController) {
+        $(resizeModel.modal).on('show.bs.modal', () => {
+            $(resizeModel.rowField).val(karelController.world.h);
+            $(resizeModel.columnField).val(karelController.world.w);
+        });
+        $(resizeModel.confirmBtn).on('click', () => {
+            let w = parseInt($(resizeModel.columnField).val());
+            let h = parseInt($(resizeModel.rowField).val());
+            karelController.Resize(w, h);
+            karelController.Reset();
+        });
+    }
+
+    function HookAmountModal(modal, worldController) {
+        $(modal.confirmBtn).on("click", () => {
+            const inputValue = $(modal.inputField).val();
+            if (inputValue === "") {
+                return;
+            }
+            const amount = parseFloat(inputValue);
+            if (amount < -1) {
+                return;
+            }
+            worldController.SetBeepers(amount);
+        });
+    }
+
+    let defaultFileName = "world.in";
+    function setWorldData(data, modal) {
+        $(modal.worldData).val(data);
+        let blob = new Blob([data], { type: 'text/plain' });
+        $(modal.confirmBtn).attr("href", window.URL.createObjectURL(blob));
+    }
+    function setInputWorld(modal, karelController) {
+        defaultFileName = "world.in";
+        const filename = $(modal.inputField).val();
+        $(modal.inputField).val(filename.replace(/\.out$/, ".in"));
+        setFileNameLink(modal);
+        const input = karelController.world.save();
+        $(modal.worldData).val(input);
+        setWorldData(input, modal);
+    }
+    function setOutputWorld(modal, karelController) {
+        defaultFileName = "world.out";
+        const filename = $(modal.inputField).val();
+        $(modal.inputField).val(filename.replace(/\.in$/, ".out"));
+        setFileNameLink(modal);
+        let result = KarelController.GetInstance().Compile(false);
+        let output;
+        if (result == null) {
+            output = "ERROR DE COMPILACION";
+        }
+        else {
+            KarelController.GetInstance().RunTillEnd(false);
+            if (KarelController.GetInstance().EndedOnError()) {
+                output = "ERROR DE EJECUCION";
+            }
+            else {
+                output = karelController.world.output();
+            }
+        }
+        $(modal.worldData).val(output);
+        setWorldData(output, modal);
+    }
+    const fileRegex = /^[a-zA-Z0-9._]+$/;
+    function setFileNameLink(modal) {
+        let newFilename = $(modal.inputField).val();
+        if (!fileRegex.test(newFilename)) {
+            $(modal.wrongWorldWaring).removeAttr("hidden");
+            newFilename = defaultFileName;
+        }
+        else {
+            $(modal.wrongWorldWaring).attr("hidden", "");
+        }
+        $(modal.confirmBtn).attr("download", newFilename);
+    }
+    function HookWorldSaveModal(modal, karelController) {
+        $(modal.inputBtn).on("click", () => setInputWorld(modal, karelController));
+        $(modal.outputBtn).on("click", () => setOutputWorld(modal, karelController));
+    }
+
+    function getCode(editor) {
+        var file = document.createElement('input');
+        file.type = 'file';
+        file.addEventListener('change', function (evt) {
+            //@ts-ignore
+            var files = evt.target.files; // @ts-ignore FileList object 
+            // Loop through the FileList and render image files as thumbnails.
+            for (var i = 0, f; (f = files[i]); i++) {
+                // Only process text files.
+                if (f.type &&
+                    !(f.type.match('text.*') || f.type == 'application/javascript')) {
+                    continue;
+                }
+                var reader = new FileReader();
+                // Closure to capture the file information.
+                reader.onload = (function (theFile) {
+                    return function (e) {
+                        SetText(editor, reader.result);
+                    };
+                })();
+                // Read in the file as a data URL.
+                reader.readAsText(f);
+            }
+        });
+        file.click();
+    }
+    function parseWorld(xml) {
+        // Parses the xml and returns a document object.
+        return new DOMParser().parseFromString(xml, 'text/xml');
+    }
+    function getWorldIn(karelController) {
+        var file = document.createElement('input');
+        file.type = 'file';
+        file.addEventListener('change', function (evt) {
+            //@ts-ignore
+            var files = evt.target.files; // FileList object
+            // Loop through the FileList and render image files as thumbnails.
+            for (var i = 0, f; (f = files[i]); i++) {
+                // Only process text files.
+                if (f.type && !f.type.match('text.*')) {
+                    continue;
+                }
+                var reader = new FileReader();
+                // Closure to capture the file information.
+                reader.onload = (function (theFile) {
+                    return function (e) {
+                        const result = reader.result;
+                        karelController.world.load(parseWorld(result));
+                        karelController.Reset();
+                    };
+                })();
+                // Read in the file as a data URL.
+                reader.readAsText(f);
+            }
+        });
+        file.click();
+    }
+    function HookNavbar(navbar, editor, karelController) {
+        $(navbar.openCode).on("click", () => getCode(editor));
+        $(navbar.openWorldIn).on("click", () => getWorldIn(karelController));
+    }
+
+    const WR_CLEAN = {
+        disabled: '#4f4f4f',
+        exportCellBackground: '#f5f7a8',
+        karelColor: '#3E6AC1',
+        gridBackgroundColor: '#f8f9fA',
+        errorGridBackgroundColor: "#f5d5d5",
+        gridBorderColor: '#c4c4c4',
+        errorGridBorderColor: '#a8838f',
+        gutterBackgroundColor: '#e6e6e6',
+        gutterColor: "#444444",
+        beeperBackgroundColor: "#ffffff",
+        beeperColor: "#000000",
+        wallColor: "#000000"
+    };
+    const WR_DARK = {
+        disabled: '#4f4f4f',
+        exportCellBackground: '#f5f7a8',
+        karelColor: '#328EAD',
+        gridBackgroundColor: '#282828',
+        errorGridBackgroundColor: "#5D3D3D",
+        gridBorderColor: '#565656',
+        errorGridBorderColor: '#565656',
+        gutterBackgroundColor: '#3B3B3B',
+        gutterColor: "#E8E8E8",
+        beeperBackgroundColor: "#005608",
+        beeperColor: "#ffffff",
+        wallColor: "#f1f1f1"
+    };
+    const WR_CONTRAST = {
+        disabled: '#4f4f4f',
+        exportCellBackground: '#f5f7a8',
+        karelColor: '#3F69DB',
+        gridBackgroundColor: '#f3f3f3',
+        errorGridBackgroundColor: "#5D3D3D",
+        gridBorderColor: '#565656',
+        errorGridBorderColor: '#565656',
+        gutterBackgroundColor: '#e3e3e3',
+        gutterColor: "#000000",
+        beeperBackgroundColor: "#000000",
+        beeperColor: "#ffffff",
+        wallColor: "#000000"
+    };
+
+    function clearAllDisplayClasses(element) {
+        $(element).removeClass("d-none");
+        $(element).removeClass("d-lg-block");
+        $(element).removeClass("d-lg-none");
+    }
+    function hideElement$1(element) {
+        $(element).addClass("d-none");
+    }
+    function SetResponsiveness() {
+        clearAllDisplayClasses("#desktopView");
+        clearAllDisplayClasses("#phoneView");
+        $("#phoneView").addClass("d-lg-none");
+        $("#desktopView").addClass("d-none");
+        $("#desktopView").addClass("d-lg-block");
+    }
+    function SetDesktopView() {
+        clearAllDisplayClasses("#phoneView");
+        clearAllDisplayClasses("#desktopView");
+        hideElement$1("#phoneView");
+    }
+    function SetPhoneView() {
+        clearAllDisplayClasses("#phoneView");
+        clearAllDisplayClasses("#desktopView");
+        hideElement$1("#desktopView");
+    }
+    function responsiveHack() {
+        $("#phoneView").removeClass("position-absolute");
+        {
+            $("#phoneView").addClass("d-none");
+        }
+        $("#loadingModal").remove();
+    }
+
+    const APP_SETTING = 'appSettings';
+    let appSettings = {
+        interface: "desktop",
+        editorFontSize: 12,
+        worldRendererStyle: DefaultWRStyle
+    };
+    function isFontSize(str) {
+        return 6 < str && str < 31;
+    }
+    function isResponsiveInterfaces(str) {
+        return ["auto", "desktop", "mobile"].indexOf(str) > -1;
+    }
+    let DesktopUI$1;
+    function applySettings(settings, desktopUI) {
+        switch (settings.interface) {
+            case "auto":
+                SetResponsiveness();
+                break;
+            case "desktop":
+                SetDesktopView();
+                break;
+            case "mobile":
+                SetPhoneView();
+                break;
+            default:
+                SetDesktopView();
+                break;
+        }
+        $(":root")[0].style.setProperty("--editor-font-size", `${settings.editorFontSize}pt`);
+        if (settings.interface == "desktop")
+            desktopUI.ResizeCanvas();
+        desktopUI.worldController.renderer.style = settings.worldRendererStyle;
+        desktopUI.worldController.Update();
+        localStorage.setItem(APP_SETTING, JSON.stringify(appSettings));
+    }
+    function setSettings(event, desktopUI) {
+        let interfaceType = $("#settingsForm select[name=interface]").val();
+        let fontSize = $("#settingsForm input[name=fontSize]").val();
+        console.log(fontSize);
+        if (isResponsiveInterfaces(interfaceType)) {
+            appSettings.interface = interfaceType;
+        }
+        if (isFontSize(fontSize)) {
+            appSettings.editorFontSize = fontSize;
+        }
+        console.log(appSettings);
+        applySettings(appSettings, desktopUI);
+        event.preventDefault();
+        return false;
+    }
+    function loadSettingsFromMemory() {
+        const jsonString = localStorage.getItem(APP_SETTING);
+        if (jsonString) {
+            appSettings = JSON.parse(jsonString);
+        }
+    }
+    function loadSettingsToModal() {
+        console.log("show", appSettings);
+        $("#settingsInterface").val(appSettings.interface);
+        $("#settingsFontSize").val(appSettings.editorFontSize);
+    }
+    function InitSettings(desktopUI) {
+        DesktopUI$1 = desktopUI;
+        loadSettingsFromMemory();
+        $("#settingsModal").on("show.bs.modal", (e) => {
+            loadSettingsToModal();
+        });
+        $("#settingsForm").on("submit", (e) => {
+            setSettings(e, desktopUI);
+        });
+    }
+    function StartSettings(desktopUI) {
+        applySettings(appSettings, desktopUI);
+        $(document).on("keydown", (e) => {
+            if (e.ctrlKey && e.which === 75) {
+                let fontSize = appSettings.editorFontSize;
+                fontSize--;
+                if (fontSize < 7)
+                    fontSize = 7;
+                appSettings.editorFontSize = fontSize;
+                applySettings(appSettings, desktopUI);
+                e.preventDefault();
+                return false;
+            }
+            if (e.ctrlKey && e.which === 76) {
+                let fontSize = appSettings.editorFontSize;
+                fontSize++;
+                if (fontSize > 30)
+                    fontSize = 30;
+                appSettings.editorFontSize = fontSize;
+                applySettings(appSettings, desktopUI);
+                e.preventDefault();
+                return false;
+            }
+        });
+    }
+    function SetWorldRendererStyle(style) {
+        appSettings.worldRendererStyle = style;
+        applySettings(appSettings, DesktopUI$1);
+    }
+    function GetCurrentSetting() { return appSettings; }
+
+    function parseFormData() {
+        return {
+            disabled: $('#disabledColor').val(),
+            exportCellBackground: $('#exportCellBackgroundColor').val(),
+            karelColor: $('#karelColor').val(),
+            gridBackgroundColor: $('#gridBackgroundColor').val(),
+            errorGridBackgroundColor: $('#errorGridBackgroundColor').val(),
+            gridBorderColor: $('#gridBorderColor').val(),
+            errorGridBorderColor: $('#errorGridBorderColor').val(),
+            gutterBackgroundColor: $('#gutterBackgroundColor').val(),
+            gutterColor: $('#gutterColor').val(),
+            beeperBackgroundColor: $('#beeperBackgroundColor').val(),
+            beeperColor: $('#beeperColor').val(),
+            wallColor: $('#wallColor').val(),
+        };
+    }
+    function setFormData(style) {
+        $('#disabledColor').val(style.disabled);
+        $('#exportCellBackgroundColor').val(style.exportCellBackground);
+        $('#karelColor').val(style.karelColor);
+        $('#gridBackgroundColor').val(style.gridBackgroundColor);
+        $('#errorGridBackgroundColor').val(style.errorGridBackgroundColor);
+        $('#gridBorderColor').val(style.gridBorderColor);
+        $('#errorGridBorderColor').val(style.errorGridBorderColor);
+        $('#gutterBackgroundColor').val(style.gutterBackgroundColor);
+        $('#gutterColor').val(style.gutterColor);
+        $('#beeperBackgroundColor').val(style.beeperBackgroundColor);
+        $('#beeperColor').val(style.beeperColor);
+        $('#wallColor').val(style.wallColor);
+    }
+    function loadPreset() {
+        const val = $("#karelStylePreset").val();
+        if (val === "current") {
+            setFormData(GetCurrentSetting().worldRendererStyle);
+            return;
+        }
+        if (val === "default") {
+            setFormData(DefaultWRStyle);
+            return;
+        }
+        if (val === "clean") {
+            setFormData(WR_CLEAN);
+            return;
+        }
+        if (val === "dark") {
+            setFormData(WR_DARK);
+            return;
+        }
+        if (val === "contrast") {
+            setFormData(WR_CONTRAST);
+            return;
+        }
+    }
+    function exportStyle() {
+        const style = GetCurrentSetting().worldRendererStyle;
+        const val = JSON.stringify(style);
+        $("#karelStyleJSON").val(val);
+    }
+    function importStyle() {
+        const val = $("#karelStyleJSON").val();
+        try {
+            const style = JSON.parse(val);
+            if (!isWRStyle(style)) {
+                return;
+            }
+            setFormData(style);
+        }
+        catch (error) {
+            return;
+        }
+    }
+    function HookStyleModal(view) {
+        $("#setKarelStyleBtn").on("click", () => {
+            const style = parseFormData();
+            console.log(style);
+            view.renderer.style = style;
+            view.Update();
+            SetWorldRendererStyle(style);
+        });
+        $("#karelStyleModal").on("show.bs.modal", () => {
+            setFormData(view.renderer.style);
+        });
+        $("#karelStyleLoadPresetBtn").on("click", () => {
+            loadPreset();
+        });
+        $("#karelStyleExport").on("click", () => {
+            exportStyle();
+        });
+        $("#karelStyleImport").on("click", () => {
+            importStyle();
+        });
+    }
+
+    function getData(ui) {
+        console.log("GetDATA?");
+        const kcInstance = KarelController.GetInstance();
+        ui.evaluatePosition.prop("checked", kcInstance.world.getDumps(World.DUMP_POSITION));
+        ui.evaluateOrientation.prop("checked", kcInstance.world.getDumps(World.DUMP_ORIENTATION));
+        ui.evaluateBag.prop("checked", kcInstance.world.getDumps(World.DUMP_BAG));
+        ui.evaluateUniverse.prop("checked", kcInstance.world.getDumps(World.DUMP_ALL_BUZZERS));
+        ui.countMoves.prop("checked", kcInstance.world.getDumps(World.DUMP_MOVE));
+        ui.countTurns.prop("checked", kcInstance.world.getDumps(World.DUMP_LEFT));
+        ui.countPicks.prop("checked", kcInstance.world.getDumps(World.DUMP_PICK_BUZZER));
+        ui.countPuts.prop("checked", kcInstance.world.getDumps(World.DUMP_LEAVE_BUZZER));
+    }
+    function HookEvaluatorModal(ui) {
+        ui.modal.on("shown.bs.modal", () => getData(ui));
+    }
+
+    function HookUpCommonUI(uiData) {
+        hookDownloadModel(uiData.downloadCodeModal, uiData.editor);
+        HookAmountModal(uiData.amountModal, uiData.worldController);
+        HookWorldSaveModal(uiData.wordSaveModal, uiData.karelController);
+        HookNavbar(uiData.navbar, uiData.editor, uiData.karelController);
+        HookStyleModal(uiData.worldController);
+        HookEvaluatorModal(uiData.evaluatorModal);
+        //Hook ConfirmCallers
+        uiData.confirmCallers.forEach((confirmCaller) => {
+            let confirmArgs = {
+                uiData: uiData,
+                modalData: confirmCaller.data,
+            };
+            $(confirmCaller.button).on('click', null, confirmArgs, confirmPrompt);
+            $(uiData.confirmModal.modal).on('hidden.bs.modal', null, confirmArgs, confirmPromptEnd);
+        });
+        HookResizeModal(uiData.resizeModal, uiData.karelController);
+    }
+
     var [desktopEditor, phoneEditor] = createEditors();
     //TODO: ThisShouldnt be here
     function hideElement(element) {
@@ -26105,6 +26123,18 @@
             confirmBtn: "#resizeBtn",
             rowField: "#rowField",
             columnField: "#columnField",
+        },
+        evaluatorModal: {
+            modal: $("#evaluatorModal"),
+            form: $("#evaluatorForm"),
+            evaluatePosition: $("#evaluatePosition"),
+            evaluateBag: $("#evaluateBag"),
+            evaluateOrientation: $("#evaluateOrientation"),
+            evaluateUniverse: $("#evaluateUniverse"),
+            countMoves: $("#countMoves"),
+            countPicks: $("#countPicks"),
+            countPuts: $("#countPuts"),
+            countTurns: $("#countTurns"),
         },
         confirmModal: {
             modal: "#confirmModal",

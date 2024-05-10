@@ -9,6 +9,7 @@ import { WorldViewController } from './worldViewController/worldViewController'
 import { HookWorldSaveModal, WorldSaveModal } from './commonUI/worldSaveModal'
 import { HookNavbar, NavbarData } from './commonUI/navbar'
 import { HookStyleModal } from './commonUI/karelStyleModal'
+import { EvaluatorData, HookEvaluatorModal } from './commonUI/evaluatorModal'
 
 
 
@@ -19,6 +20,7 @@ interface UiData {
     confirmModal: ConfirmModal,
     wordSaveModal:WorldSaveModal,
     amountModal: AmountModal,
+    evaluatorModal:EvaluatorData
     confirmCallers: Array<ConfirmModalBtn>,
     karelController:KarelController,
     worldController: WorldViewController,
@@ -35,6 +37,7 @@ function HookUpCommonUI(uiData: UiData) {
     HookWorldSaveModal(uiData.wordSaveModal, uiData.karelController);
     HookNavbar(uiData.navbar, uiData.editor, uiData.karelController);
     HookStyleModal(uiData.worldController);
+    HookEvaluatorModal(uiData.evaluatorModal);
     //Hook ConfirmCallers
     uiData.confirmCallers.forEach((confirmCaller)=> {
         let confirmArgs: ConfirmPromptArgs = {            
@@ -60,14 +63,5 @@ function HookUpCommonUI(uiData: UiData) {
 }
 
 
-const ERRORCODES = {
-    WALL: 'Karel ha chocado con un muro!',
-    WORLDUNDERFLOW:
-      'Karel intentó tomar zumbadores en una posición donde no había!',
-    BAGUNDERFLOW:
-      'Karel intentó dejar un zumbador pero su mochila estaba vacía!',
-    INSTRUCTION: 'Karel ha superado el límite de instrucciones!',
-    STACK: 'La pila de karel se ha desbordado!',
-};
 
-export {HookUpCommonUI, ERRORCODES, UiData};
+export {HookUpCommonUI, UiData};

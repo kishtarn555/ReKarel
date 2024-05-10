@@ -242,6 +242,18 @@ HookUpCommonUI(
             rowField: "#rowField",
             columnField: "#columnField",
         },
+        evaluatorModal: {
+            modal:$("#evaluatorModal"),
+            form:$("#evaluatorForm"),
+            evaluatePosition:$("#evaluatePosition"),
+            evaluateBag:$("#evaluateBag"),
+            evaluateOrientation:$("#evaluateOrientation"),
+            evaluateUniverse:$("#evaluateUniverse"),
+            countMoves:$("#countMoves"),
+            countPicks:$("#countPicks"),
+            countPuts:$("#countPuts"),
+            countTurns:$("#countTurns"),
+        },
         confirmModal: {
             modal: "#confirmModal",
             titleField: "#confirmModalTitle",
