@@ -25348,6 +25348,7 @@
             if (document.activeElement.getAttribute("role") == "textbox" || tag == "input") {
                 return;
             }
+            const overrideShift = new Set([37, 38, 39, 40]);
             let hotkeys = new Map([
                 [71, () => { this.worldController.ToggleKarelPosition(); }],
                 [82, () => { this.worldController.SetBeepers(0); }],
@@ -25378,7 +25379,7 @@
             if (hotkeys.has(e.which) === false) {
                 return;
             }
-            if (e.shiftKey) {
+            if (e.shiftKey && !overrideShift.has(e.which)) {
                 let dummy = new MouseEvent("", {
                     clientX: e.clientX,
                     clientY: e.clientY

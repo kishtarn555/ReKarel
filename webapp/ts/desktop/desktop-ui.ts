@@ -436,6 +436,8 @@ class DesktopController {
             return;
         }
 
+        const overrideShift = new Set<number>([37, 38, 39, 40]);
+
         let hotkeys = new Map<number, ()=>void>([
             [71,()=>{this.worldController.ToggleKarelPosition();}],
             [82,()=>{this.worldController.SetBeepers(0);}],
@@ -457,7 +459,7 @@ class DesktopController {
             [83,()=>{this.worldController.ToggleWall("south");}],
             [65,()=>{this.worldController.ToggleWall("west");}],
             [88,()=>{this.worldController.ToggleWall("outer");}],
-            [37,()=>{this.worldController.MoveSelection(0,-1, e.shiftKey);}],
+            [37,()=>{this.worldController.MoveSelection(0,-1, e.shiftKey);} ],
             [38,()=>{this.worldController.MoveSelection(1, 0, e.shiftKey);}],
             [39,()=>{this.worldController.MoveSelection(0, 1, e.shiftKey);}],
             [40,()=>{this.worldController.MoveSelection(-1, 0, e.shiftKey);}],
@@ -468,7 +470,7 @@ class DesktopController {
             return;
         }     
         
-        if (e.shiftKey) {
+        if (e.shiftKey && !overrideShift.has(e.which)) {
             let dummy: MouseEvent = new MouseEvent("", {
                 clientX: e.clientX,
                 clientY: e.clientY
