@@ -24196,7 +24196,20 @@
         const filename = $(modal.inputField).val();
         $(modal.inputField).val(filename.replace(/\.in$/, ".out"));
         setFileNameLink(modal);
-        const output = karelController.world.output();
+        let result = KarelController.GetInstance().Compile(false);
+        let output;
+        if (result == null) {
+            output = "ERROR DE COMPILACION";
+        }
+        else {
+            KarelController.GetInstance().RunTillEnd(false);
+            if (KarelController.GetInstance().EndedOnError()) {
+                output = "ERROR DE EJECUCION";
+            }
+            else {
+                output = karelController.world.output();
+            }
+        }
         $(modal.worldData).val(output);
         setWorldData(output, modal);
     }
@@ -24599,7 +24612,7 @@
         //     this.desktopController.SetWorld(this.world);
         //     this.OnStackChanges();
         // }
-        Compile() {
+        Compile(notifyOnSuccess = true) {
             let code = this.mainEditor.state.doc.toString();
             // let language: string = detectLanguage(code);
             let language = detectLanguage(code);
@@ -24609,12 +24622,14 @@
             let response = null;
             try {
                 response = compile(code);
-                //TODO: expand message            
-                this.SendMessage("Programa compilado correctamente", "info");
+                //TODO: expand message       
+                if (notifyOnSuccess)
+                    this.SendMessage("Programa compilado correctamente", "info");
             }
             catch (e) {
                 //TODO: Expand error
                 this.SendMessage(decodeError(e, language), "error");
+                return null;
             }
             return response;
         }
@@ -24763,7 +24778,7 @@
         EndedOnError() {
             return this.endedOnError;
         }
-        RunTillEnd() {
+        RunTillEnd(ignoreBreakpoints = false) {
             if (this.state === "finished") {
                 return;
             }
@@ -24774,7 +24789,7 @@
             }
             let runtime = this.GetRuntime();
             runtime.disableStackEvents = true; // FIXME: This should only be done when no breakpoints
-            while (runtime.step() && !this.CheckForBreakPointOnCurrentLine())
+            while (runtime.step() && (ignoreBreakpoints || !this.CheckForBreakPointOnCurrentLine()))
                 ;
             runtime.disableStackEvents = false; // FIXME: This should only be done when no breakpoints
             // this.desktopController.CheckUpdate();

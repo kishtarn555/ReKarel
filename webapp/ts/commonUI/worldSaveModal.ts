@@ -35,8 +35,19 @@ function setOutputWorld(modal:WorldSaveModal, karelController: KarelController) 
     const filename = $(modal.inputField).val() as string;
     $(modal.inputField).val(filename.replace(/\.in$/, ".out"));
     setFileNameLink(modal);
+    let result = KarelController.GetInstance().Compile(false);
+    let output;
+    if (result == null) {
+        output = "ERROR DE COMPILACION";
+    } else {
 
-    const output = karelController.world.output();
+        KarelController.GetInstance().RunTillEnd(false);
+        if (KarelController.GetInstance().EndedOnError()) {
+            output = "ERROR DE EJECUCION"
+        } else {
+            output = karelController.world.output();
+        }
+    }
     $(modal.worldData).val(output);
     setWorldData(output, modal);
 }

@@ -58,7 +58,7 @@ class KarelController {
     //     this.OnStackChanges();
     // }
 
-    Compile() {
+    Compile(notifyOnSuccess:boolean = true) {
         let code = this.mainEditor.state.doc.toString();
         // let language: string = detectLanguage(code);
         let language = detectLanguage(code) as "java" | "pascal" | "ruby" | "none";
@@ -69,11 +69,13 @@ class KarelController {
         let response = null;
         try {
             response = compile(code);
-            //TODO: expand message            
-            this.SendMessage("Programa compilado correctamente", "info");
+            //TODO: expand message       
+            if (notifyOnSuccess)     
+                this.SendMessage("Programa compilado correctamente", "info");
         } catch (e) {            
             //TODO: Expand error
             this.SendMessage(decodeError(e, language), "error");
+            return null;
         }
         
         return response;
@@ -252,7 +254,7 @@ class KarelController {
     EndedOnError() {
         return this.endedOnError;
     }
-    RunTillEnd() {
+    RunTillEnd(ignoreBreakpoints:boolean = false) {
         if (this.state === "finished") {
             return;
         }
@@ -264,7 +266,7 @@ class KarelController {
 
         let runtime = this.GetRuntime();
         runtime.disableStackEvents= true; // FIXME: This should only be done when no breakpoints
-        while ( runtime.step() && !this.CheckForBreakPointOnCurrentLine());
+        while ( runtime.step() && (ignoreBreakpoints || !this.CheckForBreakPointOnCurrentLine()));
         runtime.disableStackEvents= false; // FIXME: This should only be done when no breakpoints
 
         // this.desktopController.CheckUpdate();
