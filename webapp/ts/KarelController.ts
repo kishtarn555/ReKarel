@@ -12,6 +12,7 @@ type StepCallback = (caller:KarelController, newState:ControllerState)=>void;
 type ResetCallback = (caller:KarelController)=>void;
 type NewWorldCallback = (caller:KarelController, world:World, newInstance:boolean)=>void;
 class KarelController {
+    
     private static instance:KarelController
 
 
@@ -316,6 +317,11 @@ class KarelController {
         this.world = new World(w, h);
         this.NotifyNewWorld(true);
         // this.OnStackChanges(); // This causes a bug where the pile is double
+    }
+
+    LoadWorld(world: Document) {
+        this.world.load(world);
+        this.NotifyNewWorld(false);
     }
 
     private SendMessage(message: string, type: messageType) {

@@ -24356,15 +24356,19 @@
         Resize(w, h) {
             this.Reset();
             this.world.resize(w, h);
-            this.NotifyNewWorld();
+            this.NotifyNewWorld(false);
         }
         NewWorld() {
             this.Reset();
             const w = this.world.w;
             const h = this.world.h;
             this.world = new World(w, h);
-            this.NotifyNewWorld();
+            this.NotifyNewWorld(true);
             // this.OnStackChanges(); // This causes a bug where the pile is double
+        }
+        LoadWorld(world) {
+            this.world.load(world);
+            this.NotifyNewWorld(false);
         }
         SendMessage(message, type) {
             this.onMessage.forEach((callback) => callback(message, type));
@@ -24375,8 +24379,8 @@
         NotifyReset() {
             this.onReset.forEach((callback) => callback(this));
         }
-        NotifyNewWorld() {
-            this.onNewWorld.forEach((callback) => callback(this, this.world));
+        NotifyNewWorld(usedNewInstance) {
+            this.onNewWorld.forEach((callback) => callback(this, this.world, usedNewInstance));
         }
         NotifyStep() {
             this.onStep.forEach((callback) => callback(this, this.state));
@@ -25040,7 +25044,8 @@
     class CallStack {
         constructor(data) {
             this.panel = data.panel;
-            KarelController.GetInstance().RegisterNewWorldObserver((a, _) => this.OnStackChanges());
+            KarelController.GetInstance().RegisterNewWorldObserver((a, _, newInstance) => { if (newInstance)
+                this.OnStackChanges(); });
             this.OnStackChanges();
             KarelController.GetInstance().RegisterResetObserver((_) => this.clearStack());
         }
@@ -25651,7 +25656,7 @@
                 reader.onload = (function (theFile) {
                     return function (e) {
                         const result = reader.result;
-                        karelController.world.load(parseWorld(result));
+                        karelController.LoadWorld(parseWorld(result));
                         karelController.Reset();
                     };
                 })();

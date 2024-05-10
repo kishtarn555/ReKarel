@@ -12,7 +12,7 @@ export class CallStack {
     constructor(data:CallStackUI ) {
         this.panel = data.panel;
 
-        KarelController.GetInstance().RegisterNewWorldObserver((a,_)=>this.OnStackChanges());
+        KarelController.GetInstance().RegisterNewWorldObserver((a,_, newInstance)=> {if (newInstance) this.OnStackChanges();});
         this.OnStackChanges();
         KarelController.GetInstance().RegisterResetObserver((_)=>this.clearStack());
     }

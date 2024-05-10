@@ -68,7 +68,7 @@ function getWorldIn(karelController:KarelController) {
         reader.onload = (function (theFile) {
           return function (e) {
             const result = reader.result as string
-            karelController.world.load(parseWorld(result));
+            karelController.LoadWorld(parseWorld(result));
             karelController.Reset()
           };
         })(f);
