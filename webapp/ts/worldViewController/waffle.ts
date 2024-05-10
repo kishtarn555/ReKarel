@@ -46,8 +46,8 @@ export class SelectionWaffle {
         let coords2 = renderer.CellToPoint(point2.r-1, point2.c+1);
         
         let selectionBox = this.box.main;
-        selectionBox.style.top = `${coords.y / window.devicePixelRatio}px`
-        selectionBox.style.left = `${coords.x / window.devicePixelRatio}px`
+        selectionBox.style.top = `${coords.y }px`
+        selectionBox.style.left = `${coords.x }px`
         const width = `${(coords2.x - coords.x)}px`
         const height = `${(coords2.y - coords.y)}px`
 

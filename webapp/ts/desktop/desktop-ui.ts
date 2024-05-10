@@ -133,7 +133,7 @@ class DesktopController {
             new WorldRenderer(
                 (this.worldCanvas[0] as HTMLCanvasElement).getContext("2d"),
                 DefaultWRStyle,
-                window.devicePixelRatio
+                1
             ),
             karelController,
             elements.worldContainer[0],

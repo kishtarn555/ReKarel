@@ -134,7 +134,7 @@ class WorldViewController {
     }
 
     SetScale(scale: number) {
-        this.renderer.scale = scale * window.devicePixelRatio;
+        this.renderer.scale = scale ;
         this.scale = scale;
         //FIXME, this should be in update waffle
         // this.gizmos.selectionBox.bottom.style.maxWidth = `${this.renderer.CellSize * scale}px`;
@@ -159,7 +159,7 @@ class WorldViewController {
     }
 
     RecalculateScale() {
-        this.renderer.scale = this.scale * window.devicePixelRatio;
+        this.renderer.scale = this.scale;
         this.UpdateWaffle();
         this.Update();             
         this.UpdateScrollElements();   

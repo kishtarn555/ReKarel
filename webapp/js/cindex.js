@@ -20809,8 +20809,8 @@
         }
         CellToPoint(r, c) {
             return {
-                x: (this.GutterSize + (c - this.origin.c) * this.GutterSize) * this.scale,
-                y: (this.GetHeight() - (this.GutterSize + (r - this.origin.f + 1) * this.GutterSize)) * this.scale,
+                x: (this.GutterSize + (c - this.origin.c) * this.CellSize) * this.scale / window.devicePixelRatio,
+                y: (this.GetHeight() - (this.GutterSize + (r - this.origin.f + 1) * this.CellSize)) * this.scale / window.devicePixelRatio,
             };
         }
     }
@@ -24544,8 +24544,8 @@
             let coords = renderer.CellToPoint(point.r, point.c);
             let coords2 = renderer.CellToPoint(point2.r - 1, point2.c + 1);
             let selectionBox = this.box.main;
-            selectionBox.style.top = `${coords.y / window.devicePixelRatio}px`;
-            selectionBox.style.left = `${coords.x / window.devicePixelRatio}px`;
+            selectionBox.style.top = `${coords.y}px`;
+            selectionBox.style.left = `${coords.x}px`;
             const width = `${(coords2.x - coords.x)}px`;
             const height = `${(coords2.y - coords.y)}px`;
             // console.log(CellSize);
@@ -24644,7 +24644,7 @@
             this.waffle.UpdateWaffle(this.selection, this.renderer);
         }
         SetScale(scale) {
-            this.renderer.scale = scale * window.devicePixelRatio;
+            this.renderer.scale = scale;
             this.scale = scale;
             //FIXME, this should be in update waffle
             // this.gizmos.selectionBox.bottom.style.maxWidth = `${this.renderer.CellSize * scale}px`;
@@ -24662,7 +24662,7 @@
             this.UpdateScrollElements();
         }
         RecalculateScale() {
-            this.renderer.scale = this.scale * window.devicePixelRatio;
+            this.renderer.scale = this.scale;
             this.UpdateWaffle();
             this.Update();
             this.UpdateScrollElements();
@@ -25074,7 +25074,7 @@
             // this.contextWall = elements.context.wall;
             this.consoleTab = elements.console;
             this.karelController = karelController;
-            this.worldController = new WorldViewController(new WorldRenderer(this.worldCanvas[0].getContext("2d"), DefaultWRStyle, window.devicePixelRatio), karelController, elements.worldContainer[0], elements.gizmos);
+            this.worldController = new WorldViewController(new WorldRenderer(this.worldCanvas[0].getContext("2d"), DefaultWRStyle, 1), karelController, elements.worldContainer[0], elements.gizmos);
             this.contextMenu = new DesktopContextMenu(elements.context, elements.worldCanvas, this.worldController);
             this.karelController.RegisterStateChangeObserver(this.OnKarelControllerStateChange.bind(this));
             this.isControlInPlayMode = false;

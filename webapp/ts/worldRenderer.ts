@@ -451,8 +451,8 @@ class WorldRenderer {
 
     CellToPoint(r:number, c: number): {x:number, y:number} {        
         return {
-            x: (this.GutterSize+(c-this.origin.c)*this.GutterSize) * this.scale,
-            y: (this.GetHeight()-(this.GutterSize+(r-this.origin.f+1)*this.GutterSize))*this.scale,
+            x: (this.GutterSize+(c-this.origin.c)*this.CellSize) * this.scale / window.devicePixelRatio,
+            y: (this.GetHeight()-(this.GutterSize+(r-this.origin.f+1)*this.CellSize))*this.scale / window.devicePixelRatio,
         };        
     }
 
