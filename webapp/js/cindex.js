@@ -24819,7 +24819,7 @@
             let c = this.selection.c - 1;
             this.FocusTo(r, c);
         }
-        TrackFocusToKarel() {
+        TrackFocus(r, c) {
             let origin = this.renderer.origin;
             let rows = this.renderer.GetRowCount("floor");
             let cols = this.renderer.GetColCount("floor");
@@ -24827,28 +24827,31 @@
                 this.FocusKarel();
                 return;
             }
-            if (origin.c <= this.karelController.world.j
-                && this.karelController.world.j < origin.c + cols
-                && origin.f <= this.karelController.world.i
-                && this.karelController.world.i < origin.f + rows) {
+            if (origin.c <= c
+                && c < origin.c + cols
+                && origin.f <= r
+                && r < origin.f + rows) {
                 //Karel is already on focus.
                 return;
             }
             let tr = origin.f;
             let tc = origin.c;
-            if (this.karelController.world.i < tr) {
-                tr = this.karelController.world.i;
+            if (r < tr) {
+                tr = r;
             }
-            else if (this.karelController.world.i >= tr + rows) {
-                tr = this.karelController.world.i - rows + 1;
+            else if (r >= tr + rows) {
+                tr = r - rows + 1;
             }
-            if (this.karelController.world.j < tc) {
-                tc = this.karelController.world.j;
+            if (c < tc) {
+                tc = c;
             }
-            else if (this.karelController.world.j >= tc + cols) {
-                tc = this.karelController.world.j - cols + 1;
+            else if (c >= tc + cols) {
+                tc = c - cols + 1;
             }
             this.FocusTo(tr, tc);
+        }
+        TrackFocusToKarel() {
+            this.TrackFocus(this.karelController.world.i, this.karelController.world.j);
         }
         FocusTo(r, c) {
             let left = (c - 1 + 0.1) / (this.karelController.world.w - this.renderer.GetColCount("floor") + 1);

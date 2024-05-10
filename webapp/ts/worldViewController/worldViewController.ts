@@ -314,8 +314,7 @@ class WorldViewController {
         this.FocusTo(r, c);
     }
 
-    TrackFocusToKarel () {
-
+    TrackFocus(r:number, c:number) {
         let origin = this.renderer.origin;
         let rows = this.renderer.GetRowCount("floor");
         let cols = this.renderer.GetColCount("floor");
@@ -327,10 +326,10 @@ class WorldViewController {
         }
 
         if (
-            origin.c <= this.karelController.world.j 
-            &&  this.karelController.world.j < origin.c + cols
-            && origin.f <= this.karelController.world.i
-            &&  this.karelController.world.i < origin.f + rows
+            origin.c <= c 
+            &&  c < origin.c + cols
+            && origin.f <= r
+            &&  r < origin.f + rows
         ) {
             //Karel is already on focus.
             return;
@@ -339,19 +338,24 @@ class WorldViewController {
         let tr = origin.f;
         let tc = origin.c;
 
-        if (this.karelController.world.i < tr) {
-            tr = this.karelController.world.i;
-        } else if (this.karelController.world.i >= tr + rows ) {
-            tr = this.karelController.world.i -  rows + 1;
+        if (r < tr) {
+            tr = r;
+        } else if (r >= tr + rows ) {
+            tr = r -  rows + 1;
         }
 
-        if (this.karelController.world.j < tc) {
-            tc = this.karelController.world.j;
-        } else if (this.karelController.world.j >= tc + cols ) {
-            tc = this.karelController.world.j -  cols + 1;
+        if (c < tc) {
+            tc = c;
+        } else if (c >= tc + cols ) {
+            tc = c -  cols + 1;
         }
 
         this.FocusTo(tr,tc);
+    }
+
+    TrackFocusToKarel () {
+
+        this.TrackFocus(this.karelController.world.i,this.karelController.world.j);
     }
 
     FocusTo(r: number, c: number) {
