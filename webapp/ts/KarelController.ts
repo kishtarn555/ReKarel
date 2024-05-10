@@ -10,7 +10,7 @@ type ControllerState = "unstarted"| "running" | "finished" | "paused";
 type StateChangeCallback = (caller:KarelController, newState:ControllerState)=>void;
 type StepCallback = (caller:KarelController, newState:ControllerState)=>void;
 type ResetCallback = (caller:KarelController)=>void;
-type NewWorldCallback = (caller:KarelController, world:World)=>void;
+type NewWorldCallback = (caller:KarelController, world:World, newInstance:boolean)=>void;
 class KarelController {
     private static instance:KarelController
 
@@ -306,7 +306,7 @@ class KarelController {
     Resize(w:number, h:number) {
         this.Reset();
         this.world.resize(w, h);    
-        this.NotifyNewWorld();
+        this.NotifyNewWorld(false);
     }
 
     NewWorld() {
@@ -314,7 +314,7 @@ class KarelController {
         const w = this.world.w;
         const h = this.world.h;
         this.world = new World(w, h);
-        this.NotifyNewWorld();
+        this.NotifyNewWorld(true);
         // this.OnStackChanges(); // This causes a bug where the pile is double
     }
 
@@ -330,8 +330,8 @@ class KarelController {
         this.onReset.forEach((callback) => callback(this));
     }
 
-    private NotifyNewWorld() {
-        this.onNewWorld.forEach((callback) => callback(this, this.world));
+    private NotifyNewWorld(usedNewInstance:boolean ) {
+        this.onNewWorld.forEach((callback) => callback(this, this.world, usedNewInstance));
     }
 
     private NotifyStep() {
