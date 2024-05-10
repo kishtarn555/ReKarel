@@ -54,7 +54,7 @@ function setData(ui: EvaluatorData) {
 
 
 export function HookEvaluatorModal(ui:EvaluatorData) {
-    ui.modal.on("shown.bs.modal",()=>getData(ui)); 
+    ui.modal.on("show.bs.modal",()=>getData(ui)); 
     ui.form.on("submit",(e)=>{
         e.preventDefault();
         setData(ui);

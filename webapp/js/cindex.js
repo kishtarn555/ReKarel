@@ -25959,7 +25959,7 @@
         kcInstance.world.setDumps(World.DUMP_LEAVE_BUZZER, ui.countPuts.prop("checked"));
     }
     function HookEvaluatorModal(ui) {
-        ui.modal.on("shown.bs.modal", () => getData(ui));
+        ui.modal.on("show.bs.modal", () => getData(ui));
         ui.form.on("submit", (e) => {
             e.preventDefault();
             setData(ui);
