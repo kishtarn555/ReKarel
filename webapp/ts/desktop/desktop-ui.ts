@@ -456,10 +456,10 @@ class DesktopController {
             [83,()=>{this.worldController.ToggleWall("south");}],
             [65,()=>{this.worldController.ToggleWall("west");}],
             [88,()=>{this.worldController.ToggleWall("outer");}],
-            [37,()=>{this.worldController.MoveSelection(0,-1);}],
-            [38,()=>{this.worldController.MoveSelection(1, 0);}],
-            [39,()=>{this.worldController.MoveSelection(0, 1);}],
-            [40,()=>{this.worldController.MoveSelection(-1, 0);}],
+            [37,()=>{this.worldController.MoveSelection(0,-1, e.shiftKey);}],
+            [38,()=>{this.worldController.MoveSelection(1, 0, e.shiftKey);}],
+            [39,()=>{this.worldController.MoveSelection(0, 1, e.shiftKey);}],
+            [40,()=>{this.worldController.MoveSelection(-1, 0, e.shiftKey);}],
             [84,()=>{this.worldController.SetBeepers(-1);}],
             
         ]);

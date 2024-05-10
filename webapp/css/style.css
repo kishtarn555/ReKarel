@@ -212,6 +212,14 @@ pre.error-popup {
     z-index: 1;
 }
 
+.waffle-sphere {
+    width: 6px;
+    height: 6px;;
+    background-color: blue; /* You can change the color */
+    border-radius: 50%; /* This creates a circular shape */
+    box-shadow: inset 0 0 10px rgba(0,0,0,0.3); /* Optional: adds a shadow for depth */
+}
+
 .z-index-2 {
     z-index: 2;
 }

@@ -24546,8 +24546,22 @@
             let selectionBox = this.box.main;
             selectionBox.style.top = `${coords.y}px`;
             selectionBox.style.left = `${coords.x}px`;
-            const width = `${(coords2.x - coords.x)}px`;
-            const height = `${(coords2.y - coords.y)}px`;
+            const ww = (coords2.x - coords.x);
+            const hh = (coords2.y - coords.y);
+            const width = `${ww}px`;
+            const height = `${hh}px`;
+            if (selection.dc > 0) {
+                this.box.cursor.style.left = "-2.75px";
+            }
+            else {
+                this.box.cursor.style.left = `${ww - 2.75}px`;
+            }
+            if (selection.dr < 0) {
+                this.box.cursor.style.top = "-2.75px";
+            }
+            else {
+                this.box.cursor.style.top = `${hh - 2.75}px`;
+            }
             // console.log(CellSize);
             // console.log('scale',renderer.scale);
             this.box.top.style.maxWidth = width;
@@ -24632,13 +24646,33 @@
             };
             this.UpdateWaffle();
         }
-        MoveSelection(dr, dc) {
-            let r = this.selection.r + dr;
-            let c = this.selection.c + dc;
+        GetCoords2() {
+            return {
+                r2: this.selection.r + (this.selection.rows - 1) * this.selection.dr,
+                c2: this.selection.c + (this.selection.cols - 1) * this.selection.dc,
+            };
+        }
+        MoveSelection(dr, dc, moveSecond = false) {
+            let { r2, c2 } = this.GetCoords2();
+            let r = this.selection.r;
+            let c = this.selection.c;
+            if (moveSecond) {
+                r2 += dr;
+                c2 += dc;
+            }
+            else {
+                r += dr;
+                c += dc;
+                r2 = r;
+                c2 = c;
+            }
             if (r < 1 || c < 1 || r > this.karelController.world.h || c > this.karelController.world.w) {
                 return;
             }
-            this.Select(this.selection.r + dr, this.selection.c + dc, this.selection.r + dr, this.selection.c + dc);
+            if (r2 < 1 || c2 < 1 || r2 > this.karelController.world.h || c2 > this.karelController.world.w) {
+                return;
+            }
+            this.Select(r, c, r2, c2);
         }
         UpdateWaffle() {
             this.waffle.UpdateWaffle(this.selection, this.renderer);
@@ -25330,10 +25364,10 @@
                 [83, () => { this.worldController.ToggleWall("south"); }],
                 [65, () => { this.worldController.ToggleWall("west"); }],
                 [88, () => { this.worldController.ToggleWall("outer"); }],
-                [37, () => { this.worldController.MoveSelection(0, -1); }],
-                [38, () => { this.worldController.MoveSelection(1, 0); }],
-                [39, () => { this.worldController.MoveSelection(0, 1); }],
-                [40, () => { this.worldController.MoveSelection(-1, 0); }],
+                [37, () => { this.worldController.MoveSelection(0, -1, e.shiftKey); }],
+                [38, () => { this.worldController.MoveSelection(1, 0, e.shiftKey); }],
+                [39, () => { this.worldController.MoveSelection(0, 1, e.shiftKey); }],
+                [40, () => { this.worldController.MoveSelection(-1, 0, e.shiftKey); }],
                 [84, () => { this.worldController.SetBeepers(-1); }],
             ]);
             if (hotkeys.has(e.which) === false) {
@@ -26056,6 +26090,7 @@
                 top: $("#desktopBoxSelect [name='top']")[0],
                 left: $("#desktopBoxSelect [name='left']")[0],
                 right: $("#desktopBoxSelect [name='right']")[0],
+                cursor: $("#desktopBoxSelect [name='cursor']")[0],
             },
             HorizontalScrollElement: $("#worldScrolledContainerHorizontal"),
             VerticalScrollElement: $("#worldScrolledContainerVertical"),

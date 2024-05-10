@@ -114,19 +114,35 @@ class WorldViewController {
         this.UpdateWaffle();
     }
 
-    MoveSelection(dr: number, dc: number) {
-        let r = this.selection.r+dr;
-        let c =this.selection.c+dc;
-
-        if (r < 1 || c < 1 || r > this.karelController.world.h || c > this.karelController.world.w) {
-                return;
+    GetCoords2() {
+        return {
+            r2:this.selection.r + (this.selection.rows-1)*this.selection.dr,
+            c2:this.selection.c + (this.selection.cols-1)*this.selection.dc,
         }
-        this.Select(
-            this.selection.r+dr,
-            this.selection.c+dc,
-            this.selection.r+dr,
-            this.selection.c+dc,
-        );
+    }
+
+    MoveSelection(dr: number, dc: number, moveSecond =false) {
+        let {r2,c2}=this.GetCoords2();
+        let r = this.selection.r;
+        let c = this.selection.c;
+        if (moveSecond) {                    
+            r2 += dr;
+            c2 += dc;      
+                          
+        } else {
+            r += dr;
+            c += dc;
+            r2=r;
+            c2=c;
+            
+        }
+        if (r < 1 || c < 1 || r > this.karelController.world.h || c > this.karelController.world.w) {
+            return;
+        }
+        if (r2 < 1 || c2 < 1 || r2 > this.karelController.world.h || c2 > this.karelController.world.w) {
+            return;
+        }
+        this.Select(r, c, r2, c2);
     }
 
     UpdateWaffle() {

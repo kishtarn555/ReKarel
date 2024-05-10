@@ -148,6 +148,7 @@ let DesktopUI = new DesktopController(
                 top: $("#desktopBoxSelect [name='top']")[0],
                 left: $("#desktopBoxSelect [name='left']")[0],
                 right: $("#desktopBoxSelect [name='right']")[0],
+                cursor: $("#desktopBoxSelect [name='cursor']")[0],
             },
             HorizontalScrollElement: $("#worldScrolledContainerHorizontal"),
             VerticalScrollElement: $("#worldScrolledContainerVertical"),

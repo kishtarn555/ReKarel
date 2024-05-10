@@ -7,6 +7,7 @@ export type SelectionBox = {
     right: HTMLElement,
     top: HTMLElement,
     bottom: HTMLElement,
+    cursor:HTMLElement
 }
 
 export class SelectionWaffle {
@@ -44,13 +45,26 @@ export class SelectionWaffle {
         
         let coords = renderer.CellToPoint(point.r, point.c);
         let coords2 = renderer.CellToPoint(point2.r-1, point2.c+1);
+
         
         let selectionBox = this.box.main;
         selectionBox.style.top = `${coords.y }px`
         selectionBox.style.left = `${coords.x }px`
-        const width = `${(coords2.x - coords.x)}px`
-        const height = `${(coords2.y - coords.y)}px`
+        const ww = (coords2.x - coords.x);
+        const hh = (coords2.y - coords.y);
+        const width = `${ww}px`
+        const height = `${hh}px`
 
+        if (selection.dc > 0) {
+            this.box.cursor.style.left = "-2.75px";
+        } else {
+            this.box.cursor.style.left = `${ww-2.75}px`;
+        }
+        if (selection.dr < 0) {
+            this.box.cursor.style.top = "-2.75px";
+        } else {
+            this.box.cursor.style.top = `${hh-2.75}px`;
+        }
         // console.log(CellSize);
         
         // console.log('scale',renderer.scale);
