@@ -200,6 +200,7 @@ class DesktopController {
         this.beeperBagInput.on("change", () => this.OnBeeperInputChange());
         this.infiniteBeeperInput.on("click", () => this.ToggleInfiniteBeepers());
         this.karelController.RegisterStepController((_ctr, _state)=> {this.UpdateBeeperBag()})
+        this.karelController.RegisterNewWorldObserver((_ctr, _state, _newInstance)=> {this.UpdateBeeperBag()})
     }
     
     private UpdateBeeperBag() {
