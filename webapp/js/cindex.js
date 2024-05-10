@@ -25363,6 +25363,7 @@
                 [55, () => { this.worldController.SetBeepers(7); }],
                 [56, () => { this.worldController.SetBeepers(8); }],
                 [57, () => { this.worldController.SetBeepers(9); }],
+                [67, () => { $("#desktopSetAmmount").trigger("click"); }],
                 [87, () => { this.worldController.ToggleWall("north"); }],
                 [68, () => { this.worldController.ToggleWall("east"); }],
                 [83, () => { this.worldController.ToggleWall("south"); }],
