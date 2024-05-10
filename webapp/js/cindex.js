@@ -24672,6 +24672,7 @@
             if (r2 < 1 || c2 < 1 || r2 > this.karelController.world.h || c2 > this.karelController.world.w) {
                 return;
             }
+            this.TrackFocus(r2, c2);
             this.Select(r, c, r2, c2);
         }
         UpdateWaffle() {
