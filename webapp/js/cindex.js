@@ -25908,8 +25908,24 @@
         ui.countPicks.prop("checked", kcInstance.world.getDumps(World.DUMP_PICK_BUZZER));
         ui.countPuts.prop("checked", kcInstance.world.getDumps(World.DUMP_LEAVE_BUZZER));
     }
+    function setData(ui) {
+        console.log("SetDATA?");
+        const kcInstance = KarelController.GetInstance();
+        kcInstance.world.setDumps(World.DUMP_POSITION, ui.evaluatePosition.prop("checked"));
+        kcInstance.world.setDumps(World.DUMP_ORIENTATION, ui.evaluateOrientation.prop("checked"));
+        kcInstance.world.setDumps(World.DUMP_BAG, ui.evaluateBag.prop("checked"));
+        kcInstance.world.setDumps(World.DUMP_ALL_BUZZERS, ui.evaluateUniverse.prop("checked"));
+        kcInstance.world.setDumps(World.DUMP_MOVE, ui.countMoves.prop("checked"));
+        kcInstance.world.setDumps(World.DUMP_LEFT, ui.countTurns.prop("checked"));
+        kcInstance.world.setDumps(World.DUMP_PICK_BUZZER, ui.countPicks.prop("checked"));
+        kcInstance.world.setDumps(World.DUMP_LEAVE_BUZZER, ui.countPuts.prop("checked"));
+    }
     function HookEvaluatorModal(ui) {
         ui.modal.on("shown.bs.modal", () => getData(ui));
+        ui.form.on("submit", (e) => {
+            e.preventDefault();
+            setData(ui);
+        });
     }
 
     function HookUpCommonUI(uiData) {
