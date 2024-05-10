@@ -25381,8 +25381,9 @@
             if (e.shiftKey) {
                 let dummy = new MouseEvent("", {
                     clientX: e.clientX,
-                    clientY: e.clientY,
+                    clientY: e.clientY
                 });
+                this.worldController.ClickDown(dummy);
                 this.worldController.ClickUp(dummy);
             }
             hotkeys.get(e.which)();
