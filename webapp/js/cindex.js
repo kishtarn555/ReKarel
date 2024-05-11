@@ -23496,7 +23496,7 @@
         if (dumpPos < self.dumpCells.length) {
             if (dumpState)
                 return;
-            self.dumpCells.splice(dumpPos, 0);
+            self.dumpCells.splice(dumpPos, 1); // ReKarel, bug fix, changed this line from splice(dumpPos, 0) to [...]
         }
         else {
             if (!dumpState)
@@ -24803,6 +24803,19 @@
             }
             this.Update();
         }
+        SetCellEvaluation(state) {
+            const world = this.karelController.world;
+            let rmin = Math.min(this.selection.r, this.selection.r + (this.selection.rows - 1) * this.selection.dr);
+            let rmax = Math.max(this.selection.r, this.selection.r + (this.selection.rows - 1) * this.selection.dr);
+            let cmin = Math.min(this.selection.c, this.selection.c + (this.selection.cols - 1) * this.selection.dc);
+            let cmax = Math.max(this.selection.c, this.selection.c + (this.selection.cols - 1) * this.selection.dc);
+            for (let i = rmin; i <= rmax; i++) {
+                for (let j = cmin; j <= cmax; j++) {
+                    world.setDumpCell(i, j, state);
+                }
+            }
+            this.Update();
+        }
         ToggleKarelPosition() {
             if (this.lock)
                 return;
@@ -24998,6 +25011,7 @@
             this.beepers = data.beepers;
             this.karel = data.karel;
             this.wall = data.wall;
+            this.evaluate = data.evaluate;
             this.Hook(worldCanvas, worldController);
         }
         Hook(worldCanvas, worldController) {
@@ -25028,6 +25042,8 @@
             ContextAction(this.wall.south, () => worldController.ToggleWall("south"));
             ContextAction(this.wall.west, () => worldController.ToggleWall("west"));
             ContextAction(this.wall.outside, () => worldController.ToggleWall("outer"));
+            ContextAction(this.evaluate.evaluate, () => worldController.SetCellEvaluation(true));
+            ContextAction(this.evaluate.ignore, () => worldController.SetCellEvaluation(false));
         }
         ToggleContextMenu() {
             const dropmenu = new bootstrap.Dropdown(this.toggler[0]);
@@ -25109,6 +25125,7 @@
             this.beeperToolbar = elements.toolbar.beepers;
             this.karelToolbar = elements.toolbar.karel;
             this.wallToolbar = elements.toolbar.wall;
+            this.evaluateToolbar = elements.toolbar.evaluate;
             this.focusToolbar = elements.toolbar.focus;
             // this.contextToggler = elements.context.toggler;
             // this.contextContainer = elements.context.container;
@@ -25300,19 +25317,12 @@
             this.focusToolbar.karel.on("click", () => this.worldController.FocusKarel());
             this.focusToolbar.origin.on("click", () => this.worldController.FocusOrigin());
             this.focusToolbar.selector.on("click", () => this.worldController.FocusSelection());
+            this.evaluateToolbar.evaluate.on("click", () => this.worldController.SetCellEvaluation(true));
+            this.evaluateToolbar.ignore.on("click", () => this.worldController.SetCellEvaluation(false));
         }
         ConnectConsole() {
             this.karelController.RegisterMessageCallback(this.ConsoleMessage.bind(this));
             this.consoleTab.clear.on("click", () => this.ClearConsole());
-        }
-        ToggleContextMenu() {
-            const dropmenu = new bootstrap.Dropdown(this.contextToggler[0]);
-            if (this.contextToggler.attr("aria-expanded") === "false") {
-                dropmenu.show();
-            }
-            else {
-                dropmenu.hide();
-            }
         }
         ClearConsole() {
             this.consoleTab.console.empty();
@@ -26071,6 +26081,10 @@
                 origin: $("#desktopGoHome"),
                 selector: $("#desktopGoSelection"),
             },
+            evaluate: {
+                evaluate: $("#desktopEvaluateCell"),
+                ignore: $("#desktopIgnoreCell"),
+            }
         },
         context: {
             toggler: $("#contextMenuToggler"),
@@ -26095,6 +26109,10 @@
                 west: $("#contextWestWall"),
                 outside: $("#contextOuterWall"),
             },
+            evaluate: {
+                evaluate: $("#contextEvaluateCell"),
+                ignore: $("#contextIgnoreCell"),
+            }
         },
         gizmos: {
             selectionBox: {

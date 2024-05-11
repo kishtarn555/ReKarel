@@ -21,3 +21,8 @@ export type WallToolbar= {
     west: JQuery,
     outside: JQuery,
 }
+
+export type EvaluateToolbar= {
+    evaluate:JQuery,
+    ignore:JQuery
+}

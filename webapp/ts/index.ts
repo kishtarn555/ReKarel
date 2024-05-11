@@ -116,6 +116,10 @@ let DesktopUI = new DesktopController(
                 origin: $("#desktopGoHome"),
                 selector: $("#desktopGoSelection"),
             },
+            evaluate: {
+                evaluate: $("#desktopEvaluateCell"),
+                ignore: $("#desktopIgnoreCell"),
+            }
         },
         context: {
             toggler: $("#contextMenuToggler"),
@@ -140,6 +144,10 @@ let DesktopUI = new DesktopController(
                 west: $("#contextWestWall"),
                 outside: $("#contextOuterWall"),
             },
+            evaluate: {
+                evaluate: $("#contextEvaluateCell"),
+                ignore: $("#contextIgnoreCell"),
+            }
         },
         gizmos: {
             selectionBox: {

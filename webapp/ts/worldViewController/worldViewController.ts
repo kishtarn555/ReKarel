@@ -290,6 +290,20 @@ class WorldViewController {
         this.Update();
     }
 
+    SetCellEvaluation(state:boolean) {
+        const world = this.karelController.world;
+        let rmin = Math.min(this.selection.r, this.selection.r + (this.selection.rows - 1)*this.selection.dr);
+        let rmax = Math.max(this.selection.r, this.selection.r + (this.selection.rows - 1)*this.selection.dr);
+        let cmin = Math.min(this.selection.c, this.selection.c + (this.selection.cols - 1)*this.selection.dc);
+        let cmax = Math.max(this.selection.c, this.selection.c + (this.selection.cols - 1)*this.selection.dc);
+        for (let i =rmin; i<=rmax; i++) {
+            for (let j=cmin; j <=cmax; j++) {
+                world.setDumpCell(i, j, state);
+            }
+        }
+        this.Update();
+    }
+
     ToggleKarelPosition() {
         if (this.lock) return;
         this.karelController.world.move(this.selection.r, this.selection.c);

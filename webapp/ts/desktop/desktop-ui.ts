@@ -8,7 +8,7 @@ import { ControllerState, KarelController } from '../KarelController';
 import { GetOrCreateInstanceFactory } from 'bootstrap/js/dist/base-component';
 import { freezeEditors, unfreezeEditors } from '../editor';
 import { ContextMenuData, DesktopContextMenu } from './contextMenu';
-import { BeeperToolbar, KarelToolbar, WallToolbar } from './commonTypes';
+import { BeeperToolbar, EvaluateToolbar, KarelToolbar, WallToolbar } from './commonTypes';
 import { CallStack, CallStackUI } from './callStack';
 
 
@@ -49,6 +49,7 @@ interface DesktopElements {
         karel: KarelToolbar
         wall: WallToolbar
         focus: FocusToolbar
+        evaluate: EvaluateToolbar
     },
     context: ContextMenuData,
     console: ConsoleTab,
@@ -76,14 +77,10 @@ class DesktopController {
     beeperToolbar: BeeperToolbar;
     karelToolbar: KarelToolbar;
     wallToolbar: WallToolbar;
+    evaluateToolbar: EvaluateToolbar;
 
     focusToolbar: FocusToolbar;
 
-    contextToggler: JQuery;
-    contextContainer: JQuery
-    contextBeepers: BeeperToolbar;
-    contextKarel: KarelToolbar;
-    contextWall: WallToolbar;
 
     contextMenu: DesktopContextMenu
 
@@ -115,6 +112,7 @@ class DesktopController {
         this.beeperToolbar = elements.toolbar.beepers;
         this.karelToolbar = elements.toolbar.karel;
         this.wallToolbar = elements.toolbar.wall;
+        this.evaluateToolbar = elements.toolbar.evaluate;
 
         this.focusToolbar = elements.toolbar.focus;
 
@@ -372,6 +370,9 @@ class DesktopController {
         this.focusToolbar.karel.on("click", ()=>this.worldController.FocusKarel());
         this.focusToolbar.origin.on("click", ()=>this.worldController.FocusOrigin());
         this.focusToolbar.selector.on("click", ()=>this.worldController.FocusSelection());
+
+        this.evaluateToolbar.evaluate.on("click", ()=> this.worldController.SetCellEvaluation(true));
+        this.evaluateToolbar.ignore.on("click", ()=> this.worldController.SetCellEvaluation(false));
     }
 
 
@@ -381,15 +382,7 @@ class DesktopController {
     }
 
     
-    private ToggleContextMenu() {
-        const dropmenu = new bootstrap.Dropdown(this.contextToggler[0]);
-        if (this.contextToggler.attr("aria-expanded")==="false") {
-            dropmenu.show();
-        } else {
-            dropmenu.hide();
-        }
-    }
-
+    
     private ClearConsole() {
         this.consoleTab.console.empty();
     } 

@@ -154,9 +154,28 @@
             <hr class="dropdown-divider">
         </li>
         <li>
-            <button class="dropdown-item">
-                <i class="bi bi-flag-fill"></i> Evaluar casillas
-            </button>
+            <div class="dropend">
+                <button type="button" class="dropdown-item dropdown-toggle" data-bs-toggle="dropdown"
+                    aria-expanded="false">
+                    <i class="bi bi-flag-fill"></i> Evaluar casillas
+                </button>
+
+                <ul class="dropdown-menu" aria-labelledby="cellImportanceDesktop" data-popper-placement="top-start" style="position: absolute; inset: auto auto 0px 0px; margin: 0px; transform: translate3d(0px, -40px, 0px);">
+                    <li>
+                        <button class="dropdown-item" id="contextEvaluateCell">
+                            <i class="bi bi-flag-fill text-warning"></i> Evaluar
+                            casilla
+                        </button>
+                    </li>
+                    <li>
+                        <button class="dropdown-item" id="contextIgnoreCell">
+                            <i class="bi bi-flag-fill text-secondary"></i> Ignorar
+                            casilla
+                        </button>
+                    </li>
+
+                </ul>
+            </div>
         </li>
 
     </ul>

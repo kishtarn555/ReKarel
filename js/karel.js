@@ -972,7 +972,7 @@ World.prototype.setDumpCell = function (i, j, dumpState) {
 
   if (dumpPos < self.dumpCells.length) {
     if (dumpState) return;
-    self.dumpCells.splice(dumpPos, 0);
+    self.dumpCells.splice(dumpPos, 1); // ReKarel, bug fix, changed this line from splice(dumpPos, 0) to [...]
   } else {
     if (!dumpState) return;
     self.dumpCells.push([i, j]);

@@ -1,5 +1,5 @@
 import bootstrap from "bootstrap"
-import { BeeperToolbar, KarelToolbar, WallToolbar } from "./commonTypes"
+import { BeeperToolbar, EvaluateToolbar, KarelToolbar, WallToolbar } from "./commonTypes"
 import { WorldViewController } from "../worldViewController/worldViewController"
 
 export type ContextMenuData = {
@@ -7,7 +7,8 @@ export type ContextMenuData = {
     container: JQuery
     beepers: BeeperToolbar,
     karel: KarelToolbar,
-    wall: WallToolbar
+    wall: WallToolbar,
+    evaluate: EvaluateToolbar
     
 }
 
@@ -17,6 +18,7 @@ export class DesktopContextMenu {
     beepers: BeeperToolbar
     karel: KarelToolbar
     wall: WallToolbar
+    evaluate: EvaluateToolbar
 
 
     constructor(data: ContextMenuData, worldCanvas:JQuery, worldController:WorldViewController) {
@@ -25,7 +27,7 @@ export class DesktopContextMenu {
         this.beepers = data.beepers;
         this.karel = data.karel;
         this.wall = data.wall;
-
+        this.evaluate = data.evaluate;
         this.Hook(worldCanvas, worldController);
     }
 
@@ -64,6 +66,9 @@ export class DesktopContextMenu {
         ContextAction(this.wall .south, ()=>worldController.ToggleWall("south"));
         ContextAction(this.wall .west, ()=>worldController.ToggleWall("west"));
         ContextAction(this.wall .outside, ()=>worldController.ToggleWall("outer"));
+
+        ContextAction(this.evaluate.evaluate, ()=>worldController.SetCellEvaluation(true) );
+        ContextAction(this.evaluate.ignore, ()=>worldController.SetCellEvaluation(false) );
     }
 
     ToggleContextMenu() {
