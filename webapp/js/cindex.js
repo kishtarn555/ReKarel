@@ -24955,7 +24955,6 @@
         ChangeOriginFromScroll(left, top) {
             let worldWidth = this.karelController.world.w;
             let worldHeight = this.karelController.world.h;
-            console.log('left', left, worldWidth, this.renderer.GetColCount("floor"));
             this.renderer.origin = {
                 f: Math.floor(1 + Math.max(0, (worldHeight - this.renderer.GetRowCount("floor") + 1) * top)),
                 c: Math.floor(1 + Math.max(0, (worldWidth - this.renderer.GetColCount("floor") + 1) * left)),
