@@ -484,7 +484,7 @@ class DesktopController {
     }
 
     private calculateScroll() {
-        let left = 1, top=1;
+        let left = 0, top=1;
         const container = this.worldContainer[0];
         if (container.scrollWidth !== container.clientWidth) {
             left = container.scrollLeft / (container.scrollWidth - container.clientWidth);

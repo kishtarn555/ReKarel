@@ -24955,6 +24955,7 @@
         ChangeOriginFromScroll(left, top) {
             let worldWidth = this.karelController.world.w;
             let worldHeight = this.karelController.world.h;
+            console.log('left', left, worldWidth, this.renderer.GetColCount("floor"));
             this.renderer.origin = {
                 f: Math.floor(1 + Math.max(0, (worldHeight - this.renderer.GetRowCount("floor") + 1) * top)),
                 c: Math.floor(1 + Math.max(0, (worldWidth - this.renderer.GetColCount("floor") + 1) * left)),
@@ -24971,8 +24972,8 @@
         }
         UpdateScrollElements() {
             let c = this.renderer.CellSize;
-            let h = this.karelController.world.h * this.scale * c;
-            let w = this.karelController.world.w * this.scale * c;
+            let h = (this.karelController.world.h * this.scale * c + this.renderer.GutterSize) / window.devicePixelRatio;
+            let w = (this.karelController.world.w * this.scale * c + this.renderer.GutterSize) / window.devicePixelRatio;
             this.gizmos.HorizontalScrollElement.css("width", `${w}px`);
             this.gizmos.VerticalScrollElement.css("height", `${h}px`);
         }
@@ -25397,7 +25398,7 @@
             e.preventDefault();
         }
         calculateScroll() {
-            let left = 1, top = 1;
+            let left = 0, top = 1;
             const container = this.worldContainer[0];
             if (container.scrollWidth !== container.clientWidth) {
                 left = container.scrollLeft / (container.scrollWidth - container.clientWidth);

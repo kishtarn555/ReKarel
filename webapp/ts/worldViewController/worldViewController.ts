@@ -527,8 +527,8 @@ class WorldViewController {
 
     UpdateScrollElements() {
         let c = this.renderer.CellSize;
-        let h = this.karelController.world.h * this.scale*c;
-        let w = this.karelController.world.w * this.scale*c;
+        let h = (this.karelController.world.h * this.scale*c + this.renderer.GutterSize) / window.devicePixelRatio;
+        let w = (this.karelController.world.w * this.scale*c + this.renderer.GutterSize) / window.devicePixelRatio;
         this.gizmos.HorizontalScrollElement.css("width", `${w}px`);
         this.gizmos.VerticalScrollElement.css("height", `${h}px`);
         
