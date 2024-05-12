@@ -24739,6 +24739,7 @@
                 return;
             }
             this.Select(cell.r, cell.c, cell.r, cell.c, "selecting");
+            $(":focus").blur();
         }
         SetKarelOnSelection(direction = "north") {
             if (this.lock)

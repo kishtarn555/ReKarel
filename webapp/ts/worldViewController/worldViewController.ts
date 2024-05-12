@@ -219,6 +219,7 @@ class WorldViewController {
             return;
         }
         this.Select(cell.r, cell.c, cell.r, cell.c, "selecting");
+        $(":focus").blur();
     }
 
     SetKarelOnSelection(direction: "north" | "east" | "west" | "south" = "north") {
