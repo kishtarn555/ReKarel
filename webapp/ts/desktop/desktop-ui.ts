@@ -459,7 +459,7 @@ class DesktopController {
             [40,()=>{this.worldController.MoveSelection(-1, 0, e.shiftKey);}],
             [84,()=>{this.worldController.SetBeepers(-1);}],
             [90,()=>{this.worldController.SetCellEvaluation(true);}],
-            [88,()=>{this.worldController.SetCellEvaluation(false);}],
+            [86,()=>{this.worldController.SetCellEvaluation(false);}],
             
         ]);
         if (hotkeys.has(e.which) === false) {
