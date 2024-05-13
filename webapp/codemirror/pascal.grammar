@@ -1,3 +1,5 @@
+
+
 @top Script {
     StartProgram Execution EndProgram
 }
@@ -8,12 +10,12 @@ Execution {
 }
 
 whileStatement {
-    While "(" boolStatement ")" Do
+    While boolStatement Do
     expression
 }
 
 iterateStatement {
-    Iterate "(" numberStatement ")" Times
+    Iterate  numberStatement  Times
     expression
 }
 
@@ -41,8 +43,19 @@ call {
 }
 
 numberStatement { Number }
-boolStatement { Identifier }
 
+@precedence { binaryLogic @left}
+
+boolStatement { Clause | boolStatement !binaryLogic boolStatement  }
+Clause { IFZ | boolFunc | "(" boolStatement ")"}
+IFZ {
+    ifzero "(" numberStatement ")"
+}
+
+boolFunc {
+    @specialize<Identifier, "junto-a-zumbador"> 
+}
+binaryLogic {Or | And}
 
 Begin[closedBy="End"] {
     start
@@ -67,11 +80,15 @@ StartProgram { @specialize<Identifier, "iniciar-programa"> }
 EndProgram { @specialize<Identifier, "finalizar-programa"> }
 StartExecution { @specialize<Identifier, "inicia-ejecucion"> }
 EndExecution { @specialize<Identifier, "termina-ejecucion"> }
+ifzero { @specialize<Identifier, "si-es-cero"> }
 
 @tokens {
     space { @whitespace+ }
     Define { "define-nueva-instruccion" }
     Prototipo { "define-nuevo-prototipo" }
+    Or { "o"}
+    And { "y"}
+    Not { "no"}
     Identifier { $[A-Za-zÀ-ÖØ-öø-ÿ_]$[A-Za-zÀ-ÖØ-öø-ÿ0-9_-]*}
     Number { $[0-9]+}
 }

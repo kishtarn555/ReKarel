@@ -1,5 +1,5 @@
 import { EditorView } from "codemirror";
-import { SetText } from "../editor";
+import { SetText } from "../editor/editor";
 import { KarelController } from "../KarelController";
 
 

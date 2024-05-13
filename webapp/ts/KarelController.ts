@@ -2,7 +2,7 @@ import { World, compile, detectLanguage } from "../../js/karel";
 // import { WorldViewController } from "./worldViewController";
 import { EditorView } from "codemirror";
 import { ERRORCODES } from "./errorCodes";
-import { breakpointState, setLanguage } from "./editor";
+import { breakpointState, setLanguage } from "./editor/editor";
 
 type messageType = "info"|"success"|"error"|"raw";
 type MessageCallback = (message:string, type:messageType)=>void;

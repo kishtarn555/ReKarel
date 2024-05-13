@@ -6,7 +6,7 @@ import { WorldViewController, Gizmos } from "../worldViewController/worldViewCon
 import { World } from '../../../js/karel';
 import { ControllerState, KarelController } from '../KarelController';
 import { GetOrCreateInstanceFactory } from 'bootstrap/js/dist/base-component';
-import { freezeEditors, unfreezeEditors } from '../editor';
+import { freezeEditors, unfreezeEditors } from '../editor/editor';
 import { ContextMenuData, DesktopContextMenu } from './contextMenu';
 import { BeeperToolbar, EvaluateToolbar, KarelToolbar, WallToolbar } from './commonTypes';
 import { CallStack, CallStackUI } from './callStack';

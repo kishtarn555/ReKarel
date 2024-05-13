@@ -1,4 +1,4 @@
-import { parser as pascalparser } from "../js/lezer_pascal";
+import { parser as pascalparser } from "../../js/lezer_pascal";
 import {LanguageSupport} from "@codemirror/language"
 
 
@@ -29,6 +29,7 @@ let pascalWithContext = pascalparser.configure({
             Times: t.controlKeyword,
             Begin: t.keyword,
             End: t.keyword,
+            boolFunc: t.className,
 
         }),
         indentNodeProp.add({
@@ -52,7 +53,7 @@ const pascalLanguage = LRLanguage.define({
 
 
   import {completeFromList} from "@codemirror/autocomplete"
-import { Begin } from "../js/lezer_pascal.terms";
+import { Begin } from "../../js/lezer_pascal.terms";
 
   const pascalCompletion = pascalLanguage.data.of({
     autocomplete: completeFromList([

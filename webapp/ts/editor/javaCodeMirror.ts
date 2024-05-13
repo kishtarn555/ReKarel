@@ -1,4 +1,4 @@
-import { parser as javaparser } from "../js/lezer_java";
+import { parser as javaparser } from "../../js/lezer_java";
 import {LanguageSupport} from "@codemirror/language"
 
 

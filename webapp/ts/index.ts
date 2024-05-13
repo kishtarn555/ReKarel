@@ -1,5 +1,5 @@
 import { splitPanels } from "./split";
-import { createEditors, SetText } from "./editor";
+import { createEditors, SetText } from "./editor/editor";
 import { DesktopController } from "./desktop/desktop-ui";
 import { GetPhoneUIHelper } from "./phone-ui";
 import { HookUpCommonUI } from "./common-ui";
