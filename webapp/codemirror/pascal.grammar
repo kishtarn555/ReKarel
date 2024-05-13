@@ -46,16 +46,33 @@ numberStatement { Number }
 
 @precedence { binaryLogic @left}
 
-boolStatement { Clause | boolStatement !binaryLogic boolStatement  }
-Clause { IFZ | boolFunc | "(" boolStatement ")"}
+boolStatement { clause | boolStatement !binaryLogic binaryOperator boolStatement  }
+clause { IFZ | BoolFunc | "(" boolStatement ")"}
 IFZ {
     ifzero "(" numberStatement ")"
 }
 
-boolFunc {
-    @specialize<Identifier, "junto-a-zumbador"> 
+BoolFunc {
+    @specialize<Identifier, "junto-a-zumbador"> |
+    @specialize<Identifier, "no-junto-a-zumbador"> |
+    @specialize<Identifier, "frente-libre"> |
+    @specialize<Identifier, "izquierda-libre"> |
+    @specialize<Identifier, "derecha-libre"> |
+    @specialize<Identifier, "frente-bloqueado"> |
+    @specialize<Identifier, "izquierda-bloqueada"> |
+    @specialize<Identifier, "derecha-bloqueada"> |
+    @specialize<Identifier, "orientado-al-norte"> |
+    @specialize<Identifier, "orientado-al-sur"> |
+    @specialize<Identifier, "orientado-al-este"> |
+    @specialize<Identifier, "orientado-al-oeste"> |
+    @specialize<Identifier, "no-orientado-al-norte"> |
+    @specialize<Identifier, "no-orientado-al-sur"> |
+    @specialize<Identifier, "no-orientado-al-este"> |
+    @specialize<Identifier, "no-orientado-al-oeste"> |
+    @specialize<Identifier, "algun-zumbador-en-la-mochila"> |    
+    @specialize<Identifier, "ningun-zumbador-en-la-mochila">
 }
-binaryLogic {Or | And}
+binaryOperator {Or | And}
 
 Begin[closedBy="End"] {
     start
@@ -81,14 +98,14 @@ EndProgram { @specialize<Identifier, "finalizar-programa"> }
 StartExecution { @specialize<Identifier, "inicia-ejecucion"> }
 EndExecution { @specialize<Identifier, "termina-ejecucion"> }
 ifzero { @specialize<Identifier, "si-es-cero"> }
+And { @specialize<Identifier, "y"> }
+Not { @specialize<Identifier, "no"> }
+Or { @specialize<Identifier, "o"> }
 
 @tokens {
     space { @whitespace+ }
     Define { "define-nueva-instruccion" }
     Prototipo { "define-nuevo-prototipo" }
-    Or { "o"}
-    And { "y"}
-    Not { "no"}
     Identifier { $[A-Za-zÀ-ÖØ-öø-ÿ_]$[A-Za-zÀ-ÖØ-öø-ÿ0-9_-]*}
     Number { $[0-9]+}
 }

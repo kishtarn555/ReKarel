@@ -29,7 +29,10 @@ let pascalWithContext = pascalparser.configure({
             Times: t.controlKeyword,
             Begin: t.keyword,
             End: t.keyword,
-            boolFunc: t.className,
+            BoolFunc: t.atom,
+            And : t.operator,
+            Not : t.operator,
+            Or : t.operator,
 
         }),
         indentNodeProp.add({
@@ -53,7 +56,6 @@ const pascalLanguage = LRLanguage.define({
 
 
   import {completeFromList} from "@codemirror/autocomplete"
-import { Begin } from "../../js/lezer_pascal.terms";
 
   const pascalCompletion = pascalLanguage.data.of({
     autocomplete: completeFromList([
