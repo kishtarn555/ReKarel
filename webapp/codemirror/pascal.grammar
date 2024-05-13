@@ -46,7 +46,7 @@ numberStatement { Number }
 
 @precedence { binaryLogic @left}
 
-boolStatement { clause | boolStatement !binaryLogic binaryOperator boolStatement  }
+boolStatement { clause | boolStatement !binaryLogic binaryOperator boolStatement  | Not boolStatement }
 clause { IFZ | BoolFunc | "(" boolStatement ")"}
 IFZ {
     ifzero "(" numberStatement ")"

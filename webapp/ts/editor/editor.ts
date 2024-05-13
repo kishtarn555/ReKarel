@@ -10,6 +10,7 @@ import { kpascal } from "./pascalCodeMirror"
 
 import {defaultHighlightStyle, syntaxHighlighting, foldGutter, bracketMatching, indentUnit} from "@codemirror/language"
 import { closeBrackets, autocompletion } from "@codemirror/autocomplete"
+import { classicHighlight } from "./themes/classic"
 
 let language = new Compartment, tabSize = new Compartment
 
@@ -74,7 +75,7 @@ function createEditors() : Array<EditorView> {
     doc: "iniciar-programa\n\tinicia-ejecucion\n\t\t{ TODO poner codigo aqui }\n\t\tapagate;\n\ttermina-ejecucion\nfinalizar-programa",
     extensions: [
       language.of(kpascal()),
-      syntaxHighlighting(defaultHighlightStyle, {fallback: true}),
+      syntaxHighlighting(classicHighlight, {fallback: false}),
       history(),
       breakpointGutter,
       drawSelection(),
