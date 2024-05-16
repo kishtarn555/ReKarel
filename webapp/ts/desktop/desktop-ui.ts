@@ -10,6 +10,7 @@ import { freezeEditors, unfreezeEditors } from '../editor/editor';
 import { ContextMenuData, DesktopContextMenu } from './contextMenu';
 import { BeeperToolbar, EvaluateToolbar, KarelToolbar, WallToolbar } from './commonTypes';
 import { CallStack, CallStackUI } from './callStack';
+import { ConsoleTab, KarelConsole } from './console';
 
 
 type FocusToolbar = {
@@ -27,10 +28,6 @@ type ExecutionToolbar = {
     future: JQuery,
 }
 
-type ConsoleTab = {
-    console:JQuery,
-    clear: JQuery
-}
 
 interface DesktopElements {
     desktopEditor: EditorView
@@ -87,7 +84,7 @@ class DesktopController {
     worldController: WorldViewController;
     karelController: KarelController;
 
-    consoleTab: ConsoleTab;
+    console:KarelConsole
     callStack: CallStack
 
     private isControlInPlayMode: boolean
@@ -123,7 +120,7 @@ class DesktopController {
         // this.contextWall = elements.context.wall;
 
         
-        this.consoleTab = elements.console;
+        this.console =  new KarelConsole(elements.console);
         
         this.karelController = karelController;
         
@@ -376,32 +373,12 @@ class DesktopController {
     }
 
 
+    
+
     private ConnectConsole() {        
         this.karelController.RegisterMessageCallback(this.ConsoleMessage.bind(this));
-        this.consoleTab.clear.on("click", ()=> this.ClearConsole());
     }
-
     
-    
-    private ClearConsole() {
-        this.consoleTab.console.empty();
-    } 
-
-    private SendMessageToConsole(message: string, style:string) {
-        if (style !== "raw") {
-            const currentDate = new Date();
-            const hour = currentDate.getHours() % 12 || 12;
-            const minute = currentDate.getMinutes();
-            const second = currentDate.getSeconds();
-            const amOrPm = currentDate.getHours() < 12 ? "AM" : "PM";
-            
-            const html = `<div style="text-wrap: wrap;"><span class="text-${style}">[${hour}:${minute}:${second} ${amOrPm}]</span> ${message}</div>`;
-            this.consoleTab.console.prepend(html);
-            return;
-        }
-        const html = `<div>${message}</div>`;
-        this.consoleTab.console.prepend(html);
-    }
 
     public ConsoleMessage(message: string, type:"info"|"success"|"error"|"raw" = "info") {
         let style="info";
@@ -419,7 +396,7 @@ class DesktopController {
                 style="raw";
                 break;
         }        
-        this.SendMessageToConsole(message, style);
+        this.console.SendMessageToConsole(message, style);
     }
 
     

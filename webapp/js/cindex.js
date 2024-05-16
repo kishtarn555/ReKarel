@@ -25161,6 +25161,37 @@
         }
     }
 
+    class KarelConsole {
+        constructor(data) {
+            this.consoleTab = data;
+            this.consoleTab.clear.on("click", () => this.ClearConsole());
+        }
+        SendMessageToConsole(message, style) {
+            if (style !== "raw") {
+                const currentDate = new Date();
+                const hour = currentDate.getHours() % 12 || 12;
+                const minute = currentDate.getMinutes();
+                const second = currentDate.getSeconds();
+                const amOrPm = currentDate.getHours() < 12 ? "AM" : "PM";
+                const html = `<div style="text-wrap: wrap;"><span class="text-${style}">[${hour}:${minute}:${second} ${amOrPm}]</span> ${message}</div>`;
+                this.consoleTab.console.prepend(html);
+                this.ScrollToBottom();
+                return;
+            }
+            const html = `<div>${message}</div>`;
+            this.consoleTab.console.prepend(html);
+            this.ScrollToBottom();
+        }
+        ClearConsole() {
+            this.consoleTab.console.empty();
+        }
+        ScrollToBottom() {
+            if (this.consoleTab.console.is(":hidden") === false) {
+                this.consoleTab.parent.scrollTop(this.consoleTab.parent.prop("scrollHeight"));
+            }
+        }
+    }
+
     class DesktopController {
         constructor(elements, karelController) {
             this.editor = elements.desktopEditor;
@@ -25185,7 +25216,7 @@
             // this.contextBeepers = elements.context.beepers;
             // this.contextKarel = elements.context.karel;        
             // this.contextWall = elements.context.wall;
-            this.consoleTab = elements.console;
+            this.console = new KarelConsole(elements.console);
             this.karelController = karelController;
             this.worldController = new WorldViewController(new WorldRenderer(this.worldCanvas[0].getContext("2d"), DefaultWRStyle, 1), karelController, elements.worldContainer[0], elements.gizmos);
             this.contextMenu = new DesktopContextMenu(elements.context, elements.worldCanvas, this.worldController);
@@ -25375,24 +25406,6 @@
         }
         ConnectConsole() {
             this.karelController.RegisterMessageCallback(this.ConsoleMessage.bind(this));
-            this.consoleTab.clear.on("click", () => this.ClearConsole());
-        }
-        ClearConsole() {
-            this.consoleTab.console.empty();
-        }
-        SendMessageToConsole(message, style) {
-            if (style !== "raw") {
-                const currentDate = new Date();
-                const hour = currentDate.getHours() % 12 || 12;
-                const minute = currentDate.getMinutes();
-                const second = currentDate.getSeconds();
-                const amOrPm = currentDate.getHours() < 12 ? "AM" : "PM";
-                const html = `<div style="text-wrap: wrap;"><span class="text-${style}">[${hour}:${minute}:${second} ${amOrPm}]</span> ${message}</div>`;
-                this.consoleTab.console.prepend(html);
-                return;
-            }
-            const html = `<div>${message}</div>`;
-            this.consoleTab.console.prepend(html);
         }
         ConsoleMessage(message, type = "info") {
             let style = "info";
@@ -25410,7 +25423,7 @@
                     style = "raw";
                     break;
             }
-            this.SendMessageToConsole(message, style);
+            this.console.SendMessageToConsole(message, style);
         }
         HotKeys(e) {
             let tag = e.target.tagName.toLowerCase();
@@ -26184,7 +26197,8 @@
         worldZoom: $("#zoomDekstop"),
         console: {
             console: $("#desktopConsole"),
-            clear: $("#desktopClearConsole")
+            clear: $("#desktopClearConsole"),
+            parent: $("#ExecDataContent")
         },
         callStack: {
             panel: $("#pilaTab")

@@ -164,7 +164,8 @@ let DesktopUI = new DesktopController(
         worldZoom: $("#zoomDekstop"),
         console: {
             console: $("#desktopConsole"),
-            clear: $("#desktopClearConsole",)
+            clear: $("#desktopClearConsole"),
+            parent: $("#ExecDataContent")
         },
         callStack: {
             panel : $("#pilaTab")
