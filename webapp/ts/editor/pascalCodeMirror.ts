@@ -12,6 +12,9 @@ let pascalWithContext = pascalparser.configure({
             StartProgram: t.keyword,
             EndProgram: t.keyword,
             StartExecution: t.keyword,
+            Define: t.keyword,
+            Prototipo: t.keyword,
+            As: t.controlKeyword,
             EndExecution: t.keyword,
             ProgramClass: t.className,
             ProgramMain: t.function(t.variableName),
@@ -61,7 +64,8 @@ const pascalLanguage = LRLanguage.define({
 
 
   import {completeFromList} from "@codemirror/autocomplete"
-import { BuiltIn } from "../../js/lezer_pascal.terms";
+import { BuiltIn, Prototipo } from "../../js/lezer_pascal.terms";
+import { Define } from "../../js/lezer_java.terms";
 
   const pascalCompletion = pascalLanguage.data.of({
     autocomplete: completeFromList([

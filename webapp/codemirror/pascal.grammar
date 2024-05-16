@@ -1,13 +1,26 @@
 
 
 @top Script {
-    StartProgram Execution EndProgram
+    StartProgram functionList?   Execution EndProgram
 }
 
+functionList {
+    (Function | Prototype) +
+}
+
+
+Function {
+    Define Identifier As expression | Define Identifier "(" Identifier ")"As expression ";"
+}
+
+Prototype {
+    Prototipo Identifier ";"
+}
 
 Execution {
     StartExecution expressionList EndExecution
 }
+
 
 whileStatement {
     While boolStatement Do
@@ -99,6 +112,7 @@ Then { @specialize<Identifier, "entonces"> }
 Times { @specialize<Identifier, "veces"> }
 If { @specialize<Identifier, "si"> }
 Else { @specialize<Identifier, "sino"> |  @specialize<Identifier, "si-no"> }
+As { @specialize<Identifier, "como">}
 Iterate { @specialize<Identifier, "repetir"> }
 start { @specialize<Identifier, "inicio"> }
 end { @specialize<Identifier, "fin"> }
@@ -107,14 +121,15 @@ EndProgram { @specialize<Identifier, "finalizar-programa"> }
 StartExecution { @specialize<Identifier, "inicia-ejecucion"> }
 EndExecution { @specialize<Identifier, "termina-ejecucion"> }
 ifzero { @specialize<Identifier, "si-es-cero"> }
+Define { @specialize<Identifier, "define-nueva-instruccion"> }
+Prototipo { @specialize<Identifier, "define-prototipo-instruccion"> }
+
 And { @specialize<Identifier, "y"> }
 Not { @specialize<Identifier, "no"> }
 Or { @specialize<Identifier, "o"> }
 
 @tokens {
     space { @whitespace+ }
-    Define { "define-nueva-instruccion" }
-    Prototipo { "define-nuevo-prototipo" }
     Identifier { $[A-Za-zÀ-ÖØ-öø-ÿ_]$[A-Za-zÀ-ÖØ-öø-ÿ0-9_-]*}
     Number { $[0-9]+}
 }
