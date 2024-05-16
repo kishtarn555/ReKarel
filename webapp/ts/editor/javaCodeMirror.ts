@@ -23,6 +23,7 @@ let javaWithContext = javaparser.configure({
             Else: t.controlKeyword,
             Iterate: t.controlKeyword,
             BoolFunc: t.atom,
+            Ifzero: t.atom,
             And: t.operator,
             Or: t.operator,
             Not: t.operator,
