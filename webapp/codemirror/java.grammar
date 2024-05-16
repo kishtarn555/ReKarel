@@ -33,23 +33,20 @@ expression {
 }
 
 call {
-    Identifier "("numeric?")"
+    Identifier "("numberStatement?")"
 }
 
-numeric {
-    Identifier | Number 
-
-}
 
 whileStatement {
     While "(" booleanStatement ")" expression
 }
 
 iterateStatement {
-    Iterate "(" numeric ")" expression
+    Iterate "(" numberStatement ")" expression
 }
 
 @precedence {
+    binaryLogic @left,
     else,
     expression
 
@@ -65,9 +62,51 @@ elseStatement {
     Else expression
 }
 
+
+
 booleanStatement {
-    Identifier
+    clause |  booleanStatement !binaryLogic binaryOperator booleanStatement  | Not booleanStatement 
 }
+
+binaryOperator {
+    Or | And
+}
+
+Or { "||" }
+And { "&&" }
+Not { "!" }
+
+clause { IFZ | BoolFunc ("(" ")")? | "(" booleanStatement ")"}
+
+BoolFunc {
+    @specialize<Identifier, "nextToABeeper"> |
+    @specialize<Identifier, "notNextToABeeper"> |
+    @specialize<Identifier, "frontIsClear"> |
+    @specialize<Identifier, "leftIsClear"> |
+    @specialize<Identifier, "rightIsClear"> |
+    @specialize<Identifier, "frontIsBlocked"> |
+    @specialize<Identifier, "leftIsBlocked"> |
+    @specialize<Identifier, "rightIsBlocked"> |
+    @specialize<Identifier, "facingNorth"> |
+    @specialize<Identifier, "facingSouth"> |
+    @specialize<Identifier, "facingEast"> |
+    @specialize<Identifier, "facingWest"> |
+    @specialize<Identifier, "notFacingNorth"> |
+    @specialize<Identifier, "notFacingSouth"> |
+    @specialize<Identifier, "notFacingEast"> |
+    @specialize<Identifier, "notFacingWest"> |
+    @specialize<Identifier, "anyBeepersInBeeperBag"> |    
+    @specialize<Identifier, "noBeepersInBeeperBag">
+}
+
+IFZ {
+    Ifzero { @specialize<Identifier, "iszero">  } "(" numberStatement ")"
+}
+
+numberStatement {
+    Number
+}
+
 Start[closedBy="End"] {
     start
 }

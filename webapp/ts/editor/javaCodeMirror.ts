@@ -22,6 +22,7 @@ let javaWithContext = javaparser.configure({
             If: t.controlKeyword,
             Else: t.controlKeyword,
             Iterate: t.controlKeyword,
+            BoolFunc: t.atom
 
         }),
         indentNodeProp.add({
