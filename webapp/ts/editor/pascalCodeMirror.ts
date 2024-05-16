@@ -35,6 +35,7 @@ let pascalWithContext = pascalparser.configure({
             Or : t.operator,
             BlockComment:t.blockComment,
             BlockComment2:t.blockComment,
+            BuiltIn: t.constant(t.variableName),
         }),
         indentNodeProp.add({
             Function: continuedIndent({}),
@@ -60,6 +61,7 @@ const pascalLanguage = LRLanguage.define({
 
 
   import {completeFromList} from "@codemirror/autocomplete"
+import { BuiltIn } from "../../js/lezer_pascal.terms";
 
   const pascalCompletion = pascalLanguage.data.of({
     autocomplete: completeFromList([

@@ -39,7 +39,7 @@ expressionList {
 
 
 call {
-    Identifier | Identifier "(" numberStatement ")"
+    BuiltIn | Identifier | Identifier "(" numberStatement ")"
 }
 
 numberStatement { Number }
@@ -50,6 +50,14 @@ boolStatement { clause | boolStatement !binaryLogic binaryOperator boolStatement
 clause { IFZ | BoolFunc | "(" boolStatement ")"}
 IFZ {
     ifzero "(" numberStatement ")"
+}
+
+BuiltIn {
+    @specialize<Identifier, "avanza"> |
+    @specialize<Identifier, "gira-izquierda"> |
+    @specialize<Identifier, "deja-zumbador"> |
+    @specialize<Identifier, "coge-zumbador"> |
+    @specialize<Identifier, "apagate">
 }
 
 BoolFunc {
@@ -72,6 +80,7 @@ BoolFunc {
     @specialize<Identifier, "algun-zumbador-en-la-mochila"> |    
     @specialize<Identifier, "ningun-zumbador-en-la-mochila">
 }
+
 binaryOperator {Or | And}
 
 Begin[closedBy="End"] {
