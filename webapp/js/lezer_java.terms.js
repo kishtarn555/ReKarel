@@ -14,5 +14,7 @@ export const
   Number = 12,
   While = 13,
   Iterate = 14,
-  End = 15,
-  ProgramMain = 16
+  If = 15,
+  Else = 16,
+  End = 17,
+  ProgramMain = 18

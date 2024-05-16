@@ -29,7 +29,7 @@ InnerBlock {
 }
 
 expression {
-    call | Block | whileStatement | iterateStatement
+    call | Block | whileStatement | iterateStatement | ifStatement
 }
 
 call {
@@ -42,13 +42,32 @@ numeric {
 }
 
 whileStatement {
-    While "(" Identifier ")" expression
+    While "(" booleanStatement ")" expression
 }
 
 iterateStatement {
     Iterate "(" numeric ")" expression
 }
 
+@precedence {
+    else,
+    expression
+
+}
+
+
+ifStatement {
+    If "(" booleanStatement")" expression (!else elseStatement)?
+    
+}
+
+elseStatement {
+    Else expression
+}
+
+booleanStatement {
+    Identifier
+}
 Start[closedBy="End"] {
     start
 }
