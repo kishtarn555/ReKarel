@@ -112,4 +112,15 @@ Or { @specialize<Identifier, "o"> }
 
 
 
-@skip { space  }
+
+@skip {space | BlockComment}
+
+@skip { } {
+  BlockComment { "{" (blockCommentContent | blockCommentNewline)* blockCommentEnd }
+}
+
+@local tokens {
+  blockCommentEnd { "}" }
+  blockCommentNewline { "\n" }
+  @else blockCommentContent
+}

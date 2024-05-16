@@ -75,7 +75,8 @@ function createEditors() : Array<EditorView> {
     doc: "iniciar-programa\n\tinicia-ejecucion\n\t\t{ TODO poner codigo aqui }\n\t\tapagate;\n\ttermina-ejecucion\nfinalizar-programa",
     extensions: [
       language.of(kpascal()),
-      syntaxHighlighting(classicHighlight, {fallback: false}),
+      syntaxHighlighting(classicHighlight),
+      syntaxHighlighting(defaultHighlightStyle, {fallback:true}),
       history(),
       breakpointGutter,
       drawSelection(),

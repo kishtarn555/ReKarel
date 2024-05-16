@@ -33,6 +33,7 @@ let pascalWithContext = pascalparser.configure({
             And : t.operator,
             Not : t.operator,
             Or : t.operator,
+            BlockComment:t.blockComment
 
         }),
         indentNodeProp.add({
