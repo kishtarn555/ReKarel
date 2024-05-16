@@ -33,8 +33,8 @@ let pascalWithContext = pascalparser.configure({
             And : t.operator,
             Not : t.operator,
             Or : t.operator,
-            BlockComment:t.blockComment
-
+            BlockComment:t.blockComment,
+            BlockComment2:t.blockComment,
         }),
         indentNodeProp.add({
             Function: continuedIndent({}),
@@ -51,7 +51,10 @@ let pascalWithContext = pascalparser.configure({
 const pascalLanguage = LRLanguage.define({
     parser: pascalWithContext,
     languageData: {
-      commentTokens: {line: "//"}
+      block: {
+        open:"{",
+        close:"}"
+      }
     }
   })
 
