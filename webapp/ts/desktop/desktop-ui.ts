@@ -211,7 +211,7 @@ class DesktopController {
 
     private ActivateInfiniteBeepers() {
         this.beeperBagInput.hide();
-        this.infiniteBeeperInput.removeClass("btn-light");
+        this.infiniteBeeperInput.removeClass("btn-body");
         this.infiniteBeeperInput.addClass("btn-info");
     }
 
@@ -219,7 +219,7 @@ class DesktopController {
     private DeactivateInfiniteBeepers() {
         this.beeperBagInput.show();
         this.infiniteBeeperInput.removeClass("btn-info");
-        this.infiniteBeeperInput.addClass("btn-light");
+        this.infiniteBeeperInput.addClass("btn-body");
     }
 
 
