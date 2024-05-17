@@ -84,7 +84,7 @@ function createEditors() : Array<EditorView> {
       highlightActiveLine(),
       foldGutter(),
       bracketMatching(),
-      autocompletion(),
+      // autocompletion(),
       closeBrackets(),
       indentUnit.of("\t"),
       readOnly.of(EditorState.readOnly.of(false)),      

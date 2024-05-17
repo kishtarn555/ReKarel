@@ -45,11 +45,11 @@ BuiltIn {
     @specialize<Identifier, "turnoff">
 }
 
-WhileHeader {
-    While "(" booleanStatement ")"
+BooleanHeader {
+     "(" booleanStatement ")"
 }
 whileStatement {
-    WhileHeader expression
+    While BooleanHeader expression
 }
 
 iterateStatement {
@@ -66,7 +66,7 @@ iterateStatement {
 
 
 ifStatement {
-    If "(" booleanStatement")" expression (!else elseStatement)?
+    If BooleanHeader expression (!else elseStatement)?
     
 }
 
@@ -88,7 +88,7 @@ Or { "||" }
 And { "&&" }
 Not { "!" }
 
-clause { IFZ | BoolFunc ("(" ")")? | "(" booleanStatement ")"}
+clause { IFZ | BoolFunc ("(" ")")? | Identifier | "(" booleanStatement ")"}
 
 BoolFunc {
     @specialize<Identifier, "nextToABeeper"> |

@@ -8,8 +8,19 @@ const conditions = [
   "nextToABeeper", "notNextToABeeper", 
   "facingNorth", "facingSouth", "facingEast", "facingWest",
   "notFacingNorth", "notFacingSouth", "notFacingEast", "notFacingWest",
+].map(tag => ({label: tag, type: "function"}))
+
+const builtins = [
+  "move()", "turnleft()", 
+  "pickbeeper()", "putbeeper()",
+  "return()", "turnoff()"
+].map(tag => ({label: tag, type: "function"}))
+
+const keywords = [
+  "if", "iterate", "while"
 ].map(tag => ({label: tag, type: "keyword"}))
 
+const statements = builtins.concat(keywords);
 
 function safeStringify(obj) {
   const seen = new WeakSet();
@@ -25,29 +36,35 @@ function safeStringify(obj) {
 }
 
 function searchFirst(node: SyntaxNode, depth:number):string {
-
+  
   if (depth <=0) return "none";
-  if (node.name ==="WhileHeader") return "Boolean";
+  console.log((node.name), depth);
+  if (node.name ==="BooleanHeader") return "Boolean";
+  if (node.name ==="InnerBlock") return "Block";
+  if (node.name ==="Block") return "Block";
 
   if (!node.parent)
-    return null;
+    return "none";
   return searchFirst(node.parent, depth-1);
 }
 
 export function completeKarelJava(context: CompletionContext) {
   let nodeBefore = syntaxTree(context.state).resolveInner(context.pos, -1)
-  console.log(safeStringify(nodeBefore.type));
-  console.log(safeStringify(nodeBefore.parent.type));
   let word = context.matchBefore(/\w*/)
-  let textBefore = context.state.sliceDoc(nodeBefore.from, context.pos)
-  console.log(textBefore);
+  if (word.from === word.to && !context.explicit) 
+      return null;
   console.log(word);
-  if (searchFirst(nodeBefore, 3) === "Boolean") {
-    
-    console.log("returning Boolean")
+  const target = searchFirst(nodeBefore, 2);
+  if (target === "Boolean") {    
       return {
       from: word.from,
       options: conditions,
+    }
+  }
+  if (target === "Block") {    
+      return {
+      from: word.from,
+      options: statements,
     }
   }
   return null
