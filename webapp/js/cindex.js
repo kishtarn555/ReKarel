@@ -16212,6 +16212,20 @@
             pos = next.to;
         }
     }
+    /**
+    An indentation strategy for delimited (usually bracketed) nodes.
+    Will, by default, indent one unit more than the parent's base
+    indent unless the line starts with a closing token. When `align`
+    is true and there are non-skipped nodes on the node's opening
+    line, the content of the node will be aligned with the end of the
+    opening node, like this:
+
+        foo(bar,
+            baz)
+    */
+    function delimitedIndent({ closing, align = true, units = 1 }) {
+        return (context) => delimitedStrategy(context, align, units, closing);
+    }
     function delimitedStrategy(context, align, units, closing, closedAt) {
         let after = context.textAfter, space = after.match(/^\s*/)[0].length;
         let closed = closing && after.slice(space, space + closing.length) == closing || closedAt == context.pos + space;
@@ -20348,20 +20362,25 @@
             indentNodeProp.add({
                 Function: continuedIndent({}),
                 Script: continuedIndent({}),
+                Block: delimitedIndent({ closing: "fin" }),
+                Execution: delimitedIndent({ closing: "termina-ejecucion" }),
             }),
             foldNodeProp.add({
                 Block: foldInside,
                 Execution: foldInside
-            })
+            }),
         ]
     });
     const pascalLanguage = LRLanguage.define({
         parser: pascalWithContext,
         languageData: {
-            block: {
-                open: "{",
-                close: "}"
-            }
+            commentTokens: {
+                block: {
+                    open: "{",
+                    close: "}"
+                }
+            },
+            // indentOnInput: /^\s*fin$/
         }
     });
     const pascalCompletion = pascalLanguage.data.of({
