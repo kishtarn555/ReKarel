@@ -1,7 +1,7 @@
 import { DefaultWRStyle } from "./KarelStyles";
 import { DesktopController } from "./desktop/desktop-ui";
 import { responsiveHack, SetResponsiveness, SetDesktopView, SetPhoneView } from "./responsive-load";
-import { SetDarkTheme, SetLightTheme, SetSystemTheme } from "./theme";
+import { SetDarkTheme, SetLightTheme, SetSystemTheme } from "./appTheme";
 import {  WRStyle } from "./worldRenderer";
 
 const APP_SETTING = 'appSettings';
