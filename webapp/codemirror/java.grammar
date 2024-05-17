@@ -33,9 +33,17 @@ expression {
 }
 
 call {
-    Identifier "("numberStatement?")"
+    (BuiltIn | Identifier) "("numberStatement?")"
 }
 
+
+BuiltIn {
+    @specialize<Identifier, "move"> |
+    @specialize<Identifier, "turnleft"> |
+    @specialize<Identifier, "putbeeper"> |
+    @specialize<Identifier, "pickbeeper"> |
+    @specialize<Identifier, "turnoff">
+}
 
 whileStatement {
     While "(" booleanStatement ")" expression

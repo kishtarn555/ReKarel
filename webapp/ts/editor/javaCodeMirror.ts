@@ -27,6 +27,7 @@ let javaWithContext = javaparser.configure({
             And: t.operator,
             Or: t.operator,
             Not: t.operator,
+            BuiltIn: t.constant(t.variableName)
 
         }),
         indentNodeProp.add({
@@ -49,6 +50,7 @@ const javaLanguage = LRLanguage.define({
 
 
   import {completeFromList} from "@codemirror/autocomplete"
+import { BuiltIn } from "../../js/lezer_java.terms";
 
   const javaCompletion = javaLanguage.data.of({
     autocomplete: completeFromList([
