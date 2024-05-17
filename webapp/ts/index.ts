@@ -1,5 +1,5 @@
 import { splitPanels } from "./split";
-import { createEditors, SetText } from "./editor/editor";
+import { createEditors, setLanguage, SetText } from "./editor/editor";
 import { DesktopController } from "./desktop/desktop-ui";
 import { GetPhoneUIHelper } from "./phone-ui";
 import { HookUpCommonUI } from "./common-ui";
@@ -29,6 +29,7 @@ const pascalConfirm = {
             desktopEditor,
             "iniciar-programa\n\tinicia-ejecucion\n\t\t{ TODO poner codigo aqui }\n\t\tapagate;\n\ttermina-ejecucion\nfinalizar-programa"
         );
+        setLanguage(desktopEditor, "pascal");
     },
     message: "¡Perderás todo el código no guardado!",
     title: "Nuevo código Pascal",
@@ -40,6 +41,7 @@ const javaConfirm = {
             desktopEditor,
             "class program {\n\tprogram () {\n\t\t// TODO poner codigo aqui \n\t\tturnoff();\n\t}\n}"
         );
+        setLanguage(desktopEditor, "java");
     },
     message: "¡Perderás todo el código no guardado!",
     title: "Nuevo código Java",
