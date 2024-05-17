@@ -1,0 +1,72 @@
+<div class="btn-toolbar m-1 gap-2">
+    <div class="btn-group" role="group" aria-label="Basic example">
+        <button type="button" class="btn btn-light p-1 ps-2 pe-2 border-dark"
+            title="Regresa el mundo a su estado original" id="desktopResetKarel">
+            <i class="bi bi-arrow-clockwise"></i>
+        </button>
+    </div>
+    <div class="btn-group" role="group" aria-label="Basic example">
+        <button type="button" class="btn btn-light p-1 ps-2 pe-2 border-dark"
+            title="Compila el programa" id="desktopCompileKarel">
+            <i class="bi bi-microsoft"></i>
+        </button>
+        <button type="button" class="btn btn-light p-1 ps-2 pe-2 border-dark"
+            title="Ejecuta el programa" id="dekstopRunKarel">
+            <i class="bi bi-play-fill"></i>
+        </button>
+        <button type="button" class="btn btn-light p-1 ps-2 pe-2 border-dark"
+            id="desktopStepProgram" title="Avanza un paso el programa">
+            <i class="bi bi-skip-forward-fill"></i>
+        </button>
+        <button type="button" class="btn btn-light p-1 ps-2 pe-2 border-dark"
+            title="Ver resultado" id="desktopFutureProgram">
+            <i class="bi bi-eye-fill"></i>
+        </button>
+    </div>
+
+    <div class="input-group" role="group" aria-label="Basic example">
+        <div class="input-group-text bg-light border-dark ps-2 pe-2"
+            title="Tiempo de espera entre instrucción e instruccion en milisegundos">
+            <small><label for="delayPanel">Retraso (ms)</label></small>
+        </div>
+        <input type="number" id="delayPanel" class="form-control border-dark" min="0"
+            value="0">
+        <button type="button" class="btn btn-light p-1 ps-1 pe-1 border-dark"
+            id="removeDelayBtn" title="Regresa el mundo a su estado original">
+            <i class="bi bi-dash"></i>
+        </button>
+        <button type="button" class="btn btn-light p-1 ps-1 pe-1 border-dark"
+            id="addDelayBtn" title="Regresa el mundo a su estado original">
+            <i class="bi bi-plus"></i>
+        </button>
+    </div>
+
+    <div class="input-group" role="group" aria-label="Basic example">
+        <div class="input-group-text bg-light border-dark ps-2 pe-2"
+            title="Zumbadores en Karel">
+            <small><label for="beeperBag"> Mochila</label></small>
+        </div>
+        <input type="number" id="beeperBag" class="form-control border-dark"
+            aria-label="" min="0" value="0">
+        <button type="button" class="btn btn-light p-1 ps-3 pe-3 border-dark"
+            id="infiniteBeepersBtn" title="Activar/desactivar zumbadores infinitos">
+            <i class="bi bi-infinity"></i>
+        </button>
+    </div>
+    <!-- OLD FILAS AND COLUMNAS
+    <div class="input-group" role="group" aria-label="Basic example">
+        <div class="input-group-text bg-light border-dark ps-2 pe-2"
+            title="Alto del mundo">
+            <small>Filas</small>
+        </div>
+        <input type="number" id="toolbarRows" class="form-control border-dark" min="1"
+            value="100">
+        <div class="input-group-text bg-light border-dark ps-2 pe-2"
+            title="Ancho del mundo">
+            <small>Columnas</small>
+        </div>
+        <input type="number" id="toolbarCols" class="form-control border-dark" min="1"
+            value="100">
+
+    </div> -->
+</div>
