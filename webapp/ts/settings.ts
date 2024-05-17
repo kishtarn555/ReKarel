@@ -44,7 +44,10 @@ function applySettings(settings: AppSettings, desktopUI:DesktopController) {
             SetDesktopView();
             break;
     }
-    $(":root")[0].style.setProperty("--editor-font-size", `${settings.editorFontSize}pt`);
+    const root = $(":root")[0];
+    root.style.setProperty("--editor-font-size", `${settings.editorFontSize}pt`);
+    root.style.setProperty("--waffle-color", `${settings.worldRendererStyle.waffleColor}`);
+    console.log(`${settings.worldRendererStyle.waffleColor}`);
     if (settings.interface == "desktop")
         desktopUI.ResizeCanvas();
     desktopUI.worldController.renderer.style = settings.worldRendererStyle;

@@ -25259,7 +25259,7 @@
         beeperBackgroundColor: "#0ADB23",
         beeperColor: "#000000",
         wallColor: "#000000",
-        waffleColor: "rgb(13, 110, 253)",
+        waffleColor: "#0d6dfd",
     };
     const WR_CLEAN = {
         disabled: '#4f4f4f',
@@ -25274,7 +25274,7 @@
         beeperBackgroundColor: "#ffffff",
         beeperColor: "#000000",
         wallColor: "#000000",
-        waffleColor: "rgb(13, 110, 253)",
+        waffleColor: "#0d6dfd",
     };
     const WR_DARK = {
         disabled: '#4f4f4f',
@@ -25289,7 +25289,7 @@
         beeperBackgroundColor: "#005608",
         beeperColor: "#ffffff",
         wallColor: "#f1f1f1",
-        waffleColor: "rgb(130 233 255)"
+        waffleColor: "#82e8ff"
     };
     const WR_CONTRAST = {
         disabled: '#4f4f4f',
@@ -25304,7 +25304,7 @@
         beeperBackgroundColor: "#000000",
         beeperColor: "#ffffff",
         wallColor: "#000000",
-        waffleColor: "red",
+        waffleColor: "#ff0000",
     };
 
     class DesktopController {
@@ -25926,7 +25926,10 @@
                 SetDesktopView();
                 break;
         }
-        $(":root")[0].style.setProperty("--editor-font-size", `${settings.editorFontSize}pt`);
+        const root = $(":root")[0];
+        root.style.setProperty("--editor-font-size", `${settings.editorFontSize}pt`);
+        root.style.setProperty("--waffle-color", `${settings.worldRendererStyle.waffleColor}`);
+        console.log(`${settings.worldRendererStyle.waffleColor}`);
         if (settings.interface == "desktop")
             desktopUI.ResizeCanvas();
         desktopUI.worldController.renderer.style = settings.worldRendererStyle;

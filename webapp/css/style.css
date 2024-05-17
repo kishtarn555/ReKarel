@@ -6,7 +6,7 @@
     --kw-gutter-size: 30px;
     --omegaup-blue: #678dd7;
     --editor-font-size: medium;
-    --waffle-color: rgb(13, 110, 253);
+    --waffle-color: #0d6dfd;
 }
 
 :root[data-bs-theme="dark"]
@@ -17,7 +17,7 @@
     --kw-gutter-size: 30px;
     --omegaup-blue: #183060;
     --editor-font-size: medium;
-    --waffle-color: rgb(13, 110, 253);
+    --waffle-color: #0d6dfd;
 }
 
 .text-emphasis {

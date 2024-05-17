@@ -13,7 +13,7 @@ export const DefaultWRStyle: WRStyle = {
     beeperBackgroundColor: "#0ADB23",    
     beeperColor: "#000000",
     wallColor:"#000000",    
-    waffleColor: "rgb(13, 110, 253)",
+    waffleColor: "#0d6dfd",
 }
 export const WR_CLEAN : WRStyle = {
     disabled: '#4f4f4f',
@@ -28,7 +28,7 @@ export const WR_CLEAN : WRStyle = {
     beeperBackgroundColor: "#ffffff",    
     beeperColor: "#000000",
     wallColor:"#000000",
-    waffleColor: "rgb(13, 110, 253)",
+    waffleColor: "#0d6dfd",
 }
 
 export const WR_DARK : WRStyle = {
@@ -44,7 +44,7 @@ export const WR_DARK : WRStyle = {
     beeperBackgroundColor: "#005608",    
     beeperColor: "#ffffff",
     wallColor:"#f1f1f1",
-    waffleColor:"rgb(130 233 255)"
+    waffleColor:"#82e8ff"
 }
 
 
@@ -62,5 +62,5 @@ export const WR_CONTRAST : WRStyle = {
     beeperBackgroundColor: "#000000",    
     beeperColor: "#ffffff",
     wallColor:"#000000",
-    waffleColor:"red",
+    waffleColor:"#ff0000",
 }
