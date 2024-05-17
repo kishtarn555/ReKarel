@@ -7,6 +7,7 @@
     --omegaup-blue: #678dd7;
     --editor-font-size: medium;
     --waffle-color: #0d6dfd;
+    --editor-color: var(--bs-body-color);
 }
 
 :root[data-bs-theme="dark"]
@@ -18,6 +19,7 @@
     --omegaup-blue: #183060;
     --editor-font-size: medium;
     --waffle-color: #0d6dfd;
+    --editor-color: var(--bs-body-color);
 }
 
 .text-emphasis {
@@ -25,7 +27,8 @@
 }
 
 .cm-editor .cm-content {
-    font-size: var(--editor-font-size);
+    font-size: var(--editor-font-size);    
+    color: var(--editor-color); 
 }
 
 .cm-editor .cm-gutter {

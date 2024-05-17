@@ -1,17 +1,20 @@
 import { DefaultWRStyle } from "./KarelStyles";
 import { DesktopController } from "./desktop/desktop-ui";
 import { responsiveHack, SetResponsiveness, SetDesktopView, SetPhoneView } from "./responsive-load";
+import { SetDarkTheme, SetLightTheme, SetSystemTheme } from "./theme";
 import {  WRStyle } from "./worldRenderer";
 
 const APP_SETTING = 'appSettings';
-const SETTINGS_VERSION = "0.1.0";
+const SETTINGS_VERSION = "0.2.0";
 
 type fontSizes = number;
 type responsiveInterfaces = "auto" | "desktop" | "mobile";
+type themeSettings = "system" | "light" | "dark";
 
 type AppSettings = {
     version:string,
     interface: responsiveInterfaces,
+    theme: themeSettings
     editorFontSize: fontSizes,
     worldRendererStyle: WRStyle
     
@@ -21,6 +24,7 @@ let appSettings: AppSettings = {
     version:SETTINGS_VERSION,
     interface: "desktop",
     editorFontSize: 12,
+    theme: "system",
     worldRendererStyle: DefaultWRStyle
 }
 
@@ -29,6 +33,9 @@ function isFontSize(str: number): str is fontSizes {
 }
 function isResponsiveInterfaces(str: string): str is responsiveInterfaces {
     return ["auto", "desktop", "mobile"].indexOf(str) > -1;
+}
+function isTheme(str: string): str is themeSettings {
+    return ["system", "light", "dark"].indexOf(str) > -1;
 }
 let DesktopUI: DesktopController
 
@@ -47,6 +54,20 @@ function applySettings(settings: AppSettings, desktopUI:DesktopController) {
             SetDesktopView();
             break;
     }
+    switch (settings.theme) {
+        case "system":
+            SetSystemTheme();
+            break;
+        case "light":
+            SetLightTheme();
+            break;
+        
+        case "dark":
+            SetDarkTheme();
+            break;
+        default:            
+            SetDarkTheme();
+    }
     const root = $(":root")[0];
     root.style.setProperty("--editor-font-size", `${settings.editorFontSize}pt`);
     root.style.setProperty("--waffle-color", `${settings.worldRendererStyle.waffleColor}`);
@@ -63,12 +84,16 @@ function applySettings(settings: AppSettings, desktopUI:DesktopController) {
 function setSettings(event:  JQuery.SubmitEvent<HTMLElement, undefined, HTMLElement, HTMLElement>, desktopUI:DesktopController) {
     let interfaceType = <string>$("#settingsForm select[name=interface]").val();
     let fontSize = <number>$("#settingsForm input[name=fontSize]").val();
+    let theme = <string>$("#settingsForm select[name=theme]").val();
     console.log(fontSize);
     if (isResponsiveInterfaces(interfaceType)) {
         appSettings.interface = interfaceType;
     }
     if (isFontSize(fontSize)) {
         appSettings.editorFontSize = fontSize;
+    }
+    if (isTheme(theme)) {
+        appSettings.theme = theme;
     }
 
     console.log(appSettings);
@@ -93,6 +118,7 @@ function loadSettingsToModal() {
     console.log("show", appSettings)
     $("#settingsInterface").val(appSettings.interface );
     $("#settingsFontSize").val(appSettings.editorFontSize);
+    $("#settingsTheme").val(appSettings.theme);
 }
 
 export function InitSettings(desktopUI:DesktopController) {    

@@ -20418,10 +20418,11 @@
         { tag: tags.operator, color: "rgb(104, 118, 135)" },
         { tag: tags.blockComment, color: "rgb(104, 118, 135)", fontStyle: "italic" },
         { tag: tags.comment, color: "rgb(104, 118, 135)", fontStyle: "italic" },
-        { tag: tags.constant(tags.variableName), color: "rgb(49, 132, 149)" }
+        { tag: tags.constant(tags.variableName), color: "rgb(49, 132, 149)" },
     ]);
 
     let language = new Compartment, tabSize = new Compartment;
+    let highlight = new Compartment;
     let readOnly = new Compartment;
     const breakpointEffect = StateEffect.define({
         map: (val, mapping) => ({ pos: mapping.mapPos(val.pos), on: val.on })
@@ -20479,7 +20480,7 @@
             doc: "iniciar-programa\n\tinicia-ejecucion\n\t\t{ TODO poner codigo aqui }\n\t\tapagate;\n\ttermina-ejecucion\nfinalizar-programa",
             extensions: [
                 language.of(kpascal()),
-                syntaxHighlighting(classicHighlight),
+                highlight.of(syntaxHighlighting(classicHighlight)),
                 syntaxHighlighting(defaultHighlightStyle, { fallback: true }),
                 history(),
                 breakpointGutter,
@@ -25899,12 +25900,32 @@
         $("#loadingModal").remove();
     }
 
+    function SetLightTheme() {
+        $(":root").attr("data-bs-theme", "light");
+    }
+    function SetDarkTheme() {
+        $(":root").attr("data-bs-theme", "dark");
+    }
+    function SetSystemTheme() {
+        if (window.matchMedia) {
+            if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+                SetDarkTheme();
+            }
+            else {
+                SetLightTheme();
+            }
+            return;
+        }
+        SetLightTheme(); //Default light theme
+    }
+
     const APP_SETTING = 'appSettings';
-    const SETTINGS_VERSION = "0.1.0";
+    const SETTINGS_VERSION = "0.2.0";
     let appSettings = {
         version: SETTINGS_VERSION,
         interface: "desktop",
         editorFontSize: 12,
+        theme: "system",
         worldRendererStyle: DefaultWRStyle
     };
     function isFontSize(str) {
@@ -25912,6 +25933,9 @@
     }
     function isResponsiveInterfaces(str) {
         return ["auto", "desktop", "mobile"].indexOf(str) > -1;
+    }
+    function isTheme(str) {
+        return ["system", "light", "dark"].indexOf(str) > -1;
     }
     let DesktopUI$1;
     function applySettings(settings, desktopUI) {
@@ -25929,6 +25953,19 @@
                 SetDesktopView();
                 break;
         }
+        switch (settings.theme) {
+            case "system":
+                SetSystemTheme();
+                break;
+            case "light":
+                SetLightTheme();
+                break;
+            case "dark":
+                SetDarkTheme();
+                break;
+            default:
+                SetDarkTheme();
+        }
         const root = $(":root")[0];
         root.style.setProperty("--editor-font-size", `${settings.editorFontSize}pt`);
         root.style.setProperty("--waffle-color", `${settings.worldRendererStyle.waffleColor}`);
@@ -25942,12 +25979,16 @@
     function setSettings(event, desktopUI) {
         let interfaceType = $("#settingsForm select[name=interface]").val();
         let fontSize = $("#settingsForm input[name=fontSize]").val();
+        let theme = $("#settingsForm select[name=theme]").val();
         console.log(fontSize);
         if (isResponsiveInterfaces(interfaceType)) {
             appSettings.interface = interfaceType;
         }
         if (isFontSize(fontSize)) {
             appSettings.editorFontSize = fontSize;
+        }
+        if (isTheme(theme)) {
+            appSettings.theme = theme;
         }
         console.log(appSettings);
         applySettings(appSettings, desktopUI);
@@ -25969,6 +26010,7 @@
         console.log("show", appSettings);
         $("#settingsInterface").val(appSettings.interface);
         $("#settingsFontSize").val(appSettings.editorFontSize);
+        $("#settingsTheme").val(appSettings.theme);
     }
     function InitSettings(desktopUI) {
         DesktopUI$1 = desktopUI;
