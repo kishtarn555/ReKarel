@@ -4,11 +4,13 @@ import { responsiveHack, SetResponsiveness, SetDesktopView, SetPhoneView } from 
 import {  WRStyle } from "./worldRenderer";
 
 const APP_SETTING = 'appSettings';
+const SETTINGS_VERSION = "0.1.0";
 
 type fontSizes = number;
 type responsiveInterfaces = "auto" | "desktop" | "mobile";
 
 type AppSettings = {
+    version:string,
     interface: responsiveInterfaces,
     editorFontSize: fontSizes,
     worldRendererStyle: WRStyle
@@ -16,6 +18,7 @@ type AppSettings = {
 }
 
 let appSettings: AppSettings = {
+    version:SETTINGS_VERSION,
     interface: "desktop",
     editorFontSize: 12,
     worldRendererStyle: DefaultWRStyle
@@ -79,12 +82,11 @@ function setSettings(event:  JQuery.SubmitEvent<HTMLElement, undefined, HTMLElem
 function loadSettingsFromMemory() {
     const jsonString = localStorage.getItem(APP_SETTING);
     if (jsonString) {
-        appSettings = JSON.parse(jsonString);
+        const memorySettings = JSON.parse(jsonString);
+        if (memorySettings.version == null) return;
+        if (memorySettings.version !== SETTINGS_VERSION) return;
+        appSettings = memorySettings;
     } 
-    
-   
-    
-
 }
 
 function loadSettingsToModal() {

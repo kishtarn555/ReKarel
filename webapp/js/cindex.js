@@ -25899,7 +25899,9 @@
     }
 
     const APP_SETTING = 'appSettings';
+    const SETTINGS_VERSION = "0.1.0";
     let appSettings = {
+        version: SETTINGS_VERSION,
         interface: "desktop",
         editorFontSize: 12,
         worldRendererStyle: DefaultWRStyle
@@ -25954,7 +25956,12 @@
     function loadSettingsFromMemory() {
         const jsonString = localStorage.getItem(APP_SETTING);
         if (jsonString) {
-            appSettings = JSON.parse(jsonString);
+            const memorySettings = JSON.parse(jsonString);
+            if (memorySettings.version == null)
+                return;
+            if (memorySettings.version !== SETTINGS_VERSION)
+                return;
+            appSettings = memorySettings;
         }
     }
     function loadSettingsToModal() {
