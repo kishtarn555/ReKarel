@@ -1,6 +1,7 @@
+import { DefaultWRStyle } from "./KarelStyles";
 import { DesktopController } from "./desktop/desktop-ui";
 import { responsiveHack, SetResponsiveness, SetDesktopView, SetPhoneView } from "./responsive-load";
-import { DefaultWRStyle, WRStyle } from "./worldRenderer";
+import {  WRStyle } from "./worldRenderer";
 
 const APP_SETTING = 'appSettings';
 

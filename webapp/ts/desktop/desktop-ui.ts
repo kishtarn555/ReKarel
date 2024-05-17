@@ -1,7 +1,7 @@
 import { EditorView } from 'codemirror'
 import { Compartment } from '@codemirror/state'
 import bootstrap from 'bootstrap';
-import { WorldRenderer, WRStyle, DefaultWRStyle } from '../worldRenderer';
+import { WorldRenderer, WRStyle } from '../worldRenderer';
 import { WorldViewController, Gizmos } from "../worldViewController/worldViewController";
 import { World } from '../../../js/karel';
 import { ControllerState, KarelController } from '../KarelController';
@@ -11,6 +11,7 @@ import { ContextMenuData, DesktopContextMenu } from './contextMenu';
 import { BeeperToolbar, EvaluateToolbar, KarelToolbar, WallToolbar } from './commonTypes';
 import { CallStack, CallStackUI } from './callStack';
 import { ConsoleTab, KarelConsole } from './console';
+import { DefaultWRStyle } from '../KarelStyles';
 
 
 type FocusToolbar = {

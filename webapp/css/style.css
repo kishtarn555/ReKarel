@@ -6,6 +6,7 @@
     --kw-gutter-size: 30px;
     --omegaup-blue: #678dd7;
     --editor-font-size: medium;
+    --waffle-color: rgb(13, 110, 253);
 }
 
 :root[data-bs-theme="dark"]
@@ -16,6 +17,7 @@
     --kw-gutter-size: 30px;
     --omegaup-blue: #183060;
     --editor-font-size: medium;
+    --waffle-color: rgb(13, 110, 253);
 }
 
 .text-emphasis {
@@ -226,7 +228,7 @@ pre.error-popup {
 .waffle-sphere {
     width: 6px;
     height: 6px;;
-    background-color: blue; /* You can change the color */
+    background-color: var(--waffle-color); /* You can change the color */
     border-radius: 50%; /* This creates a circular shape */
     box-shadow: inset 0 0 10px rgba(0,0,0,0.3); /* Optional: adds a shadow for depth */
 }
@@ -236,7 +238,7 @@ pre.error-popup {
 }
 
 .waffle-border {
-    border: solid 0px blue;
+    border: solid 0px var(--waffle-color);
     cursor: grab;
     opacity: 0.8;
 }

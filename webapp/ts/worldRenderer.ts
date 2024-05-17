@@ -13,25 +13,10 @@ type WRStyle = {
     gutterBackgroundColor: string,
     gutterColor: string,
     wallColor:string,
+    waffleColor:string
 }
 
 
-
-
-const DefaultWRStyle: WRStyle = {
-    disabled: '#4f4f4f',
-    exportCellBackground: '#f5f7a8',
-    karelColor: '#3E6AC1',
-    gridBackgroundColor: '#f8f9fA',
-    errorGridBackgroundColor: "#f5d5d5",
-    gridBorderColor: '#c4c4c4',
-    errorGridBorderColor: '#a8838f',
-    gutterBackgroundColor: '#e6e6e6',
-    gutterColor: "#444444",
-    beeperBackgroundColor: "#0ADB23",    
-    beeperColor: "#000000",
-    wallColor:"#000000"
-}
 
 export function isWRStyle(obj: any): obj is WRStyle {
     if (!obj || typeof obj !== 'object') return false;
@@ -458,4 +443,4 @@ class WorldRenderer {
 
 }
 
-export { WorldRenderer, WRStyle, DefaultWRStyle};
+export { WorldRenderer, WRStyle};

@@ -1,6 +1,6 @@
-import { WR_CLEAN, WR_CONTRAST, WR_DARK } from "../KarelStyles";
+import { DefaultWRStyle, WR_CLEAN, WR_CONTRAST, WR_DARK } from "../KarelStyles";
 import { GetCurrentSetting, SetWorldRendererStyle } from "../settings";
-import { DefaultWRStyle, WRStyle, isWRStyle } from "../worldRenderer";
+import { WRStyle, isWRStyle } from "../worldRenderer";
 import { WorldViewController } from "../worldViewController/worldViewController";
 
 function parseFormData(): WRStyle {
@@ -17,6 +17,7 @@ function parseFormData(): WRStyle {
         beeperBackgroundColor: $('#beeperBackgroundColor').val() as string,
         beeperColor: $('#beeperColor').val() as string,
         wallColor: $('#wallColor').val() as string,
+        waffleColor: $('#waffleColor').val() as string,
     };
 }
 
@@ -33,6 +34,7 @@ function setFormData(style: WRStyle): void {
     $('#beeperBackgroundColor').val(style.beeperBackgroundColor);
     $('#beeperColor').val(style.beeperColor);
     $('#wallColor').val(style.wallColor);
+    $('#waffleColor').val(style.waffleColor);
 }
 
 

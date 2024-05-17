@@ -20570,20 +20570,6 @@
         editor.dispatch(transaction);
     }
 
-    const DefaultWRStyle = {
-        disabled: '#4f4f4f',
-        exportCellBackground: '#f5f7a8',
-        karelColor: '#3E6AC1',
-        gridBackgroundColor: '#f8f9fA',
-        errorGridBackgroundColor: "#f5d5d5",
-        gridBorderColor: '#c4c4c4',
-        errorGridBorderColor: '#a8838f',
-        gutterBackgroundColor: '#e6e6e6',
-        gutterColor: "#444444",
-        beeperBackgroundColor: "#0ADB23",
-        beeperColor: "#000000",
-        wallColor: "#000000"
-    };
     function isWRStyle(obj) {
         if (!obj || typeof obj !== 'object')
             return false;
@@ -25260,6 +25246,67 @@
         }
     }
 
+    const DefaultWRStyle = {
+        disabled: '#4f4f4f',
+        exportCellBackground: '#f5f7a8',
+        karelColor: '#3E6AC1',
+        gridBackgroundColor: '#f8f9fA',
+        errorGridBackgroundColor: "#f5d5d5",
+        gridBorderColor: '#c4c4c4',
+        errorGridBorderColor: '#a8838f',
+        gutterBackgroundColor: '#e6e6e6',
+        gutterColor: "#444444",
+        beeperBackgroundColor: "#0ADB23",
+        beeperColor: "#000000",
+        wallColor: "#000000",
+        waffleColor: "rgb(13, 110, 253)",
+    };
+    const WR_CLEAN = {
+        disabled: '#4f4f4f',
+        exportCellBackground: '#f5f7a8',
+        karelColor: '#3E6AC1',
+        gridBackgroundColor: '#f8f9fA',
+        errorGridBackgroundColor: "#f5d5d5",
+        gridBorderColor: '#c4c4c4',
+        errorGridBorderColor: '#a8838f',
+        gutterBackgroundColor: '#e6e6e6',
+        gutterColor: "#444444",
+        beeperBackgroundColor: "#ffffff",
+        beeperColor: "#000000",
+        wallColor: "#000000",
+        waffleColor: "rgb(13, 110, 253)",
+    };
+    const WR_DARK = {
+        disabled: '#4f4f4f',
+        exportCellBackground: '#f5f7a8',
+        karelColor: '#328EAD',
+        gridBackgroundColor: '#282828',
+        errorGridBackgroundColor: "#5D3D3D",
+        gridBorderColor: '#565656',
+        errorGridBorderColor: '#565656',
+        gutterBackgroundColor: '#3B3B3B',
+        gutterColor: "#E8E8E8",
+        beeperBackgroundColor: "#005608",
+        beeperColor: "#ffffff",
+        wallColor: "#f1f1f1",
+        waffleColor: "rgb(130 233 255)"
+    };
+    const WR_CONTRAST = {
+        disabled: '#4f4f4f',
+        exportCellBackground: '#f5f7a8',
+        karelColor: '#3F69DB',
+        gridBackgroundColor: '#f3f3f3',
+        errorGridBackgroundColor: "#5D3D3D",
+        gridBorderColor: '#565656',
+        errorGridBorderColor: '#565656',
+        gutterBackgroundColor: '#e3e3e3',
+        gutterColor: "#000000",
+        beeperBackgroundColor: "#000000",
+        beeperColor: "#ffffff",
+        wallColor: "#000000",
+        waffleColor: "red",
+    };
+
     class DesktopController {
         constructor(elements, karelController) {
             this.editor = elements.desktopEditor;
@@ -25818,49 +25865,6 @@
         $(navbar.openWorldIn).on("click", () => getWorldIn(karelController));
     }
 
-    const WR_CLEAN = {
-        disabled: '#4f4f4f',
-        exportCellBackground: '#f5f7a8',
-        karelColor: '#3E6AC1',
-        gridBackgroundColor: '#f8f9fA',
-        errorGridBackgroundColor: "#f5d5d5",
-        gridBorderColor: '#c4c4c4',
-        errorGridBorderColor: '#a8838f',
-        gutterBackgroundColor: '#e6e6e6',
-        gutterColor: "#444444",
-        beeperBackgroundColor: "#ffffff",
-        beeperColor: "#000000",
-        wallColor: "#000000"
-    };
-    const WR_DARK = {
-        disabled: '#4f4f4f',
-        exportCellBackground: '#f5f7a8',
-        karelColor: '#328EAD',
-        gridBackgroundColor: '#282828',
-        errorGridBackgroundColor: "#5D3D3D",
-        gridBorderColor: '#565656',
-        errorGridBorderColor: '#565656',
-        gutterBackgroundColor: '#3B3B3B',
-        gutterColor: "#E8E8E8",
-        beeperBackgroundColor: "#005608",
-        beeperColor: "#ffffff",
-        wallColor: "#f1f1f1"
-    };
-    const WR_CONTRAST = {
-        disabled: '#4f4f4f',
-        exportCellBackground: '#f5f7a8',
-        karelColor: '#3F69DB',
-        gridBackgroundColor: '#f3f3f3',
-        errorGridBackgroundColor: "#5D3D3D",
-        gridBorderColor: '#565656',
-        errorGridBorderColor: '#565656',
-        gutterBackgroundColor: '#e3e3e3',
-        gutterColor: "#000000",
-        beeperBackgroundColor: "#000000",
-        beeperColor: "#ffffff",
-        wallColor: "#000000"
-    };
-
     function clearAllDisplayClasses(element) {
         $(element).removeClass("d-none");
         $(element).removeClass("d-lg-block");
@@ -26010,6 +26014,7 @@
             beeperBackgroundColor: $('#beeperBackgroundColor').val(),
             beeperColor: $('#beeperColor').val(),
             wallColor: $('#wallColor').val(),
+            waffleColor: $('#waffleColor').val(),
         };
     }
     function setFormData(style) {
@@ -26025,6 +26030,7 @@
         $('#beeperBackgroundColor').val(style.beeperBackgroundColor);
         $('#beeperColor').val(style.beeperColor);
         $('#wallColor').val(style.wallColor);
+        $('#waffleColor').val(style.waffleColor);
     }
     function loadPreset() {
         const val = $("#karelStylePreset").val();
