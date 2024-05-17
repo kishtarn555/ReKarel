@@ -39,6 +39,8 @@ let pascalWithContext = pascalparser.configure({
             BlockComment:t.blockComment,
             BlockComment2:t.blockComment,
             BuiltIn: t.constant(t.variableName),
+            Succ: t.operator,
+            Pred: t.operator
         }),
         indentNodeProp.add({
             Function: continuedIndent({}),

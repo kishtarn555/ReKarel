@@ -33,7 +33,7 @@ iterateStatement {
 }
 
 ifStatement {
-    If boolStatement Then expression
+    If boolStatement Then expression (!sino Else expression)?
     
 }
 
@@ -55,9 +55,14 @@ call {
     BuiltIn | Identifier | Identifier "(" numberStatement ")"
 }
 
-numberStatement { Number }
+numberStatement { Number | Identifier| numberFunction }
 
-@precedence { binaryLogic @left}
+numberFunction {(Succ | Pred)"(" numberStatement ")" }
+
+Succ { @specialize<Identifier, "sucede"> }
+Pred { @specialize<Identifier, "precede"> }
+
+@precedence { sino,binaryLogic @left}
 
 boolStatement { clause | boolStatement !binaryLogic binaryOperator boolStatement  | Not boolStatement }
 clause { IFZ | BoolFunc | "(" boolStatement ")"}
