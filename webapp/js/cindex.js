@@ -20410,16 +20410,20 @@
         return new LanguageSupport(pascalLanguage, [pascalCompletion]);
     }
 
-    const classicHighlight = HighlightStyle.define([
-        { tag: tags.atom, color: "rgb(6, 150, 14)" },
-        { tag: tags.keyword, color: "rgb(147, 15, 128)" },
-        { tag: tags.number, color: "rgb(0, 0, 205)" },
-        { tag: tags.operator, color: "rgb(104, 118, 135)" },
-        { tag: tags.operator, color: "rgb(104, 118, 135)" },
-        { tag: tags.blockComment, color: "rgb(104, 118, 135)", fontStyle: "italic" },
-        { tag: tags.comment, color: "rgb(104, 118, 135)", fontStyle: "italic" },
-        { tag: tags.constant(tags.variableName), color: "rgb(49, 132, 149)" },
-    ]);
+    const classicHighlight = {
+        color: "var(--bs-body-color)",
+        backgroundColor: "rgba(var(--bs-body-bg-rgb), var(--bs-bg-opacity))",
+        highlight: HighlightStyle.define([
+            { tag: tags.atom, color: "rgb(6, 150, 14)" },
+            { tag: tags.keyword, color: "rgb(147, 15, 128)" },
+            { tag: tags.number, color: "rgb(0, 0, 205)" },
+            { tag: tags.operator, color: "rgb(104, 118, 135)" },
+            { tag: tags.operator, color: "rgb(104, 118, 135)" },
+            { tag: tags.blockComment, color: "rgb(104, 118, 135)", fontStyle: "italic" },
+            { tag: tags.comment, color: "rgb(104, 118, 135)", fontStyle: "italic" },
+            { tag: tags.constant(tags.variableName), color: "rgb(49, 132, 149)" },
+        ])
+    };
 
     let language = new Compartment, tabSize = new Compartment;
     let highlight = new Compartment;
@@ -20480,7 +20484,7 @@
             doc: "iniciar-programa\n\tinicia-ejecucion\n\t\t{ TODO poner codigo aqui }\n\t\tapagate;\n\ttermina-ejecucion\nfinalizar-programa",
             extensions: [
                 language.of(kpascal()),
-                highlight.of(syntaxHighlighting(classicHighlight)),
+                highlight.of(syntaxHighlighting(classicHighlight.highlight)),
                 syntaxHighlighting(defaultHighlightStyle, { fallback: true }),
                 history(),
                 breakpointGutter,

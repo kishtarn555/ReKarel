@@ -10,10 +10,11 @@ import { kpascal } from "./pascalCodeMirror"
 
 import {defaultHighlightStyle, syntaxHighlighting, foldGutter, bracketMatching, indentUnit} from "@codemirror/language"
 import { closeBrackets, autocompletion } from "@codemirror/autocomplete"
-import { classicHighlight } from "./themes/classic"
+import { classicHighlight } from "./themes/themes"
+import {HighlightStyle} from "@codemirror/language"
 
 let language = new Compartment, tabSize = new Compartment
-
+let highlight = new Compartment
 let readOnly = new Compartment
 
 const breakpointEffect = StateEffect.define<{pos:number, on:boolean}>({
@@ -75,7 +76,7 @@ function createEditors() : Array<EditorView> {
     doc: "iniciar-programa\n\tinicia-ejecucion\n\t\t{ TODO poner codigo aqui }\n\t\tapagate;\n\ttermina-ejecucion\nfinalizar-programa",
     extensions: [
       language.of(kpascal()),
-      syntaxHighlighting(classicHighlight),
+      highlight.of(syntaxHighlighting(classicHighlight.highlight)),
       syntaxHighlighting(defaultHighlightStyle, {fallback:true}),
       history(),
       breakpointGutter,
@@ -174,4 +175,11 @@ function SetText(editor: EditorView, message:string) {
   editor.dispatch(transaction);
 }
 
-export {createEditors, freezeEditors, unfreezeEditors, setLanguage, SetText}
+
+function SetEditorHighlight (highlight:HighlightStyle) {
+  desktopEditor.dispatch({
+    effects:highlight
+  });
+}
+
+export {createEditors, freezeEditors, unfreezeEditors, setLanguage, SetText, SetEditorHighlight}
