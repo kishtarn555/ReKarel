@@ -1,9 +1,20 @@
-:root {
+:root[data-bs-theme="light"]
+ {
     --action: #06c;
     --flow: rgb(138, 75, 167);
     --keyword: rgb(10, 140, 40);
     --kw-gutter-size: 30px;
     --omegaup-blue: #678dd7;
+    --editor-font-size: medium;
+}
+
+:root[data-bs-theme="dark"]
+ {
+    --action: #06c;
+    --flow: rgb(138, 75, 167);
+    --keyword: rgb(10, 140, 40);
+    --kw-gutter-size: 30px;
+    --omegaup-blue: #183060;
     --editor-font-size: medium;
 }
 
@@ -166,7 +177,7 @@ pre.error-popup {
 }
 
 .gutter {
-    background-color: #eee;
+    background-color: var(--bs-secondary-bg);
     background-repeat: no-repeat;
     background-position: 50%;
 }
