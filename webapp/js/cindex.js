@@ -25341,6 +25341,7 @@
         }
         Init() {
             $(window).on("resize", this.ResizeCanvas.bind(this));
+            $(window).on("focus", this.ResizeCanvas.bind(this));
             $(window).on("keydown", this.HotKeys.bind(this));
             this.worldContainer.on("scroll", this.calculateScroll.bind(this));
             $("body").on("mouseup", this.worldController.ClickUp.bind(this.worldController));
