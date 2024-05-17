@@ -4,17 +4,18 @@ import {drawSelection, keymap, lineNumbers, highlightActiveLine, GutterMarker,gu
 import {indentWithTab} from "@codemirror/commands"
 import {undo, redo} from "@codemirror/commands"
 import {EditorView} from "@codemirror/view"
-import {Transaction, Annotation, Compartment, StateField, StateEffect, RangeSet} from "@codemirror/state"
+import {Transaction, Annotation, Compartment, StateField, StateEffect, RangeSet, Extension} from "@codemirror/state"
 import { kjava } from "./javaCodeMirror"
 import { kpascal } from "./pascalCodeMirror"
 
 import {defaultHighlightStyle, syntaxHighlighting, foldGutter, bracketMatching, indentUnit} from "@codemirror/language"
 import { closeBrackets, autocompletion } from "@codemirror/autocomplete"
-import { classicHighlight } from "./themes/themes"
+import { darkClassicHighlight } from "./themes/darkClassicHighlight"
+import { classicHighlight } from "./themes/classicHighlight"
 import {HighlightStyle} from "@codemirror/language"
 
 let language = new Compartment, tabSize = new Compartment
-let highlight = new Compartment
+let theme = new Compartment
 let readOnly = new Compartment
 
 const breakpointEffect = StateEffect.define<{pos:number, on:boolean}>({
@@ -76,7 +77,7 @@ function createEditors() : Array<EditorView> {
     doc: "iniciar-programa\n\tinicia-ejecucion\n\t\t{ TODO poner codigo aqui }\n\t\tapagate;\n\ttermina-ejecucion\nfinalizar-programa",
     extensions: [
       language.of(kpascal()),
-      highlight.of(syntaxHighlighting(classicHighlight.highlight)),
+      theme.of(classicHighlight.extensions),
       syntaxHighlighting(defaultHighlightStyle, {fallback:true}),
       history(),
       breakpointGutter,
@@ -176,10 +177,10 @@ function SetText(editor: EditorView, message:string) {
 }
 
 
-function SetEditorHighlight (highlight:HighlightStyle) {
+function SetEditorTheme (extension:Extension) {
   desktopEditor.dispatch({
-    effects:highlight
+    effects:extension
   });
 }
 
-export {createEditors, freezeEditors, unfreezeEditors, setLanguage, SetText, SetEditorHighlight}
+export {createEditors, freezeEditors, unfreezeEditors, setLanguage, SetText, SetEditorTheme}

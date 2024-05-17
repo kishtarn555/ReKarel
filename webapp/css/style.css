@@ -31,6 +31,9 @@
     color: var(--editor-color); 
 }
 
+/* .cm-editor .cm-selectionBackground {
+    background-color: red;
+} */
 .cm-editor .cm-gutter {
     font-size: var(--editor-font-size);
     color: var(--bs-emphasis-color);

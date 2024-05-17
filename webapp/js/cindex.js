@@ -10242,7 +10242,7 @@
         return new BlockInfo(block.from, block.length, bTop, bBottom - bTop, Array.isArray(block.type) ? block.type.map(b => scaleBlock(b, scaler)) : block.type);
     }
 
-    const theme = /*@__PURE__*/Facet.define({ combine: strs => strs.join(" ") });
+    const theme$1 = /*@__PURE__*/Facet.define({ combine: strs => strs.join(" ") });
     const darkTheme = /*@__PURE__*/Facet.define({ combine: values => values.indexOf(true) > -1 });
     const baseThemeID = /*@__PURE__*/StyleModule.newName(), baseLightID = /*@__PURE__*/StyleModule.newName(), baseDarkID = /*@__PURE__*/StyleModule.newName();
     const lightDarkIDs = { "&light": "." + baseLightID, "&dark": "." + baseDarkID };
@@ -11367,7 +11367,7 @@
             finally {
                 this.updateState = 0 /* UpdateState.Idle */;
             }
-            if (update.startState.facet(theme) != update.state.facet(theme))
+            if (update.startState.facet(theme$1) != update.state.facet(theme$1))
                 this.viewState.mustMeasureContent = true;
             if (redrawn || attrsChanged || scrollTarget || this.viewState.mustEnforceCursorAssoc || this.viewState.mustMeasureContent)
                 this.requestMeasure();
@@ -11545,7 +11545,7 @@
         get themeClasses() {
             return baseThemeID + " " +
                 (this.state.facet(darkTheme) ? baseDarkID : baseLightID) + " " +
-                this.state.facet(theme);
+                this.state.facet(theme$1);
         }
         updateAttrs() {
             let editorAttrs = attrsFromFacet(this, editorAttributes, {
@@ -11934,7 +11934,7 @@
         */
         static theme(spec, options) {
             let prefix = StyleModule.newName();
-            let result = [theme.of(prefix), styleModule.of(buildTheme(`.${prefix}`, spec))];
+            let result = [theme$1.of(prefix), styleModule.of(buildTheme(`.${prefix}`, spec))];
             if (options && options.dark)
                 result.push(darkTheme.of(true));
             return result;
@@ -20413,7 +20413,7 @@
     const classicHighlight = {
         color: "var(--bs-body-color)",
         backgroundColor: "rgba(var(--bs-body-bg-rgb), var(--bs-bg-opacity))",
-        highlight: HighlightStyle.define([
+        extensions: syntaxHighlighting(HighlightStyle.define([
             { tag: tags.atom, color: "rgb(6, 150, 14)" },
             { tag: tags.keyword, color: "rgb(147, 15, 128)" },
             { tag: tags.number, color: "rgb(0, 0, 205)" },
@@ -20422,11 +20422,11 @@
             { tag: tags.blockComment, color: "rgb(104, 118, 135)", fontStyle: "italic" },
             { tag: tags.comment, color: "rgb(104, 118, 135)", fontStyle: "italic" },
             { tag: tags.constant(tags.variableName), color: "rgb(49, 132, 149)" },
-        ])
+        ]))
     };
 
     let language = new Compartment, tabSize = new Compartment;
-    let highlight = new Compartment;
+    let theme = new Compartment;
     let readOnly = new Compartment;
     const breakpointEffect = StateEffect.define({
         map: (val, mapping) => ({ pos: mapping.mapPos(val.pos), on: val.on })
@@ -20484,7 +20484,7 @@
             doc: "iniciar-programa\n\tinicia-ejecucion\n\t\t{ TODO poner codigo aqui }\n\t\tapagate;\n\ttermina-ejecucion\nfinalizar-programa",
             extensions: [
                 language.of(kpascal()),
-                highlight.of(syntaxHighlighting(classicHighlight.highlight)),
+                theme.of(classicHighlight.extensions),
                 syntaxHighlighting(defaultHighlightStyle, { fallback: true }),
                 history(),
                 breakpointGutter,

@@ -1,9 +1,13 @@
 import {HighlightStyle} from "@codemirror/language"
 import { EditorView } from "codemirror"
-import { SetEditorHighlight } from "../editor";
+import { SetEditorTheme } from "../editor";
+import {Extension} from "@codemirror/state"
+type combo = Extension
+
+
 
 export type EditorTheme = {
-    highlight:HighlightStyle,
+    extensions:combo,
     color:string,
     backgroundColor:string
 } 
@@ -12,7 +16,7 @@ export type EditorTheme = {
 
 
 export function applyTheme(theme:EditorTheme) {
-    SetEditorHighlight(theme.highlight);
+    SetEditorTheme(theme.extensions);
     const root = $(":root")[0];
     root.style.setProperty("--editor-color", theme.color);
     root.style.setProperty("--editor-background-color", theme.backgroundColor);
