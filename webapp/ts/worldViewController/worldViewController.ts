@@ -561,6 +561,7 @@ class WorldViewController {
 
     private OnReset(caller: KarelController) {
         this.Update();
+        this.FocusKarel();
     }
 
     private OnNewWorld(caller: KarelController, world:World) {

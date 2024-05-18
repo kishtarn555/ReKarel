@@ -25121,6 +25121,7 @@
         }
         OnReset(caller) {
             this.Update();
+            this.FocusKarel();
         }
         OnNewWorld(caller, world) {
             this.Select(1, 1, 1, 1);
