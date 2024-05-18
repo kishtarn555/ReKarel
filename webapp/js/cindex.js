@@ -20574,6 +20574,19 @@
         });
         editor.dispatch(transaction);
     }
+    function SetEditorTheme(extension, editor) {
+        console.log("?");
+        try {
+            console.log(extension);
+            editor.dispatch({
+                effects: theme.reconfigure(extension)
+            });
+        }
+        catch (_a) {
+            console.log("ERROR");
+        }
+        console.log("ok");
+    }
 
     function isWRStyle(obj) {
         if (!obj || typeof obj !== 'object')
@@ -25904,30 +25917,74 @@
         $("#loadingModal").remove();
     }
 
-    function SetLightTheme() {
+    let editors = createEditors();
+    console.log("!");
+    function getEditors() {
+        return editors;
+    }
+
+    function applyTheme(theme) {
+        SetEditorTheme(theme.extensions, getEditors()[0]);
+        const root = $(":root")[0];
+        root.style.setProperty("--editor-color", theme.color);
+        root.style.setProperty("--editor-background-color", theme.backgroundColor);
+    }
+
+    const darkClassicHighlight = {
+        color: "var(--bs-body-color)",
+        backgroundColor: "rgba(var(--bs-body-bg-rgb), var(--bs-bg-opacity))",
+        extensions: [
+            syntaxHighlighting(HighlightStyle.define([
+                { tag: tags.atom, color: "#93bf74" },
+                { tag: tags.keyword, color: "#C586C0" },
+                { tag: tags.number, color: "#569CD6" },
+                { tag: tags.operator, color: "#77a1d5" },
+                { tag: tags.blockComment, color: "#a0b6b6", fontStyle: "italic" },
+                { tag: tags.comment, color: "#a0b6b6", fontStyle: "italic" },
+                { tag: tags.constant(tags.variableName), color: "#9CDCFE" },
+            ])),
+            EditorView.theme({
+                '&.cm-focused .cm-selectionBackground, ::selection': {
+                    backgroundColor: "#4e4d48"
+                }
+            })
+        ]
+    };
+
+    const DarkEditorThemes = {
+        'classic': darkClassicHighlight
+    };
+    const LightEditorThemes = {
+        'classic': classicHighlight
+    };
+
+    function SetLightTheme(theme) {
         $(":root").attr("data-bs-theme", "light");
+        applyTheme(LightEditorThemes[theme]);
     }
-    function SetDarkTheme() {
+    function SetDarkTheme(theme) {
         $(":root").attr("data-bs-theme", "dark");
+        applyTheme(DarkEditorThemes[theme]);
     }
-    function SetSystemTheme() {
+    function SetSystemTheme(theme) {
         if (window.matchMedia) {
             if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
-                SetDarkTheme();
+                SetDarkTheme(theme);
             }
             else {
-                SetLightTheme();
+                SetLightTheme(theme);
             }
             return;
         }
-        SetLightTheme(); //Default light theme
+        SetLightTheme(theme); //Default light theme
     }
 
     const APP_SETTING = 'appSettings';
-    const SETTINGS_VERSION = "0.2.0";
+    const SETTINGS_VERSION = "0.3.0";
     let appSettings = {
         version: SETTINGS_VERSION,
         interface: "desktop",
+        editorTheme: "classic",
         editorFontSize: 12,
         theme: "system",
         worldRendererStyle: DefaultWRStyle
@@ -25959,16 +26016,16 @@
         }
         switch (settings.theme) {
             case "system":
-                SetSystemTheme();
+                SetSystemTheme(settings.editorTheme);
                 break;
             case "light":
-                SetLightTheme();
+                SetLightTheme(settings.editorTheme);
                 break;
             case "dark":
-                SetDarkTheme();
+                SetDarkTheme(settings.editorTheme);
                 break;
             default:
-                SetDarkTheme();
+                SetDarkTheme(settings.editorTheme);
         }
         const root = $(":root")[0];
         root.style.setProperty("--editor-font-size", `${settings.editorFontSize}pt`);
@@ -26203,7 +26260,7 @@
         HookResizeModal(uiData.resizeModal, uiData.karelController);
     }
 
-    var [desktopEditor, phoneEditor] = createEditors();
+    var [desktopEditor, phoneEditor] = getEditors();
     //TODO: ThisShouldnt be here
     function hideElement(element) {
         $(element).addClass("d-none");

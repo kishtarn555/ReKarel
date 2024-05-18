@@ -5,7 +5,7 @@ import { SetDarkTheme, SetLightTheme, SetSystemTheme } from "./appTheme";
 import {  WRStyle } from "./worldRenderer";
 
 const APP_SETTING = 'appSettings';
-const SETTINGS_VERSION = "0.2.0";
+const SETTINGS_VERSION = "0.3.0";
 
 type fontSizes = number;
 type responsiveInterfaces = "auto" | "desktop" | "mobile";
@@ -15,6 +15,7 @@ type AppSettings = {
     version:string,
     interface: responsiveInterfaces,
     theme: themeSettings
+    editorTheme:string
     editorFontSize: fontSizes,
     worldRendererStyle: WRStyle
     
@@ -23,6 +24,7 @@ type AppSettings = {
 let appSettings: AppSettings = {
     version:SETTINGS_VERSION,
     interface: "desktop",
+    editorTheme: "classic",
     editorFontSize: 12,
     theme: "system",
     worldRendererStyle: DefaultWRStyle
@@ -56,17 +58,17 @@ function applySettings(settings: AppSettings, desktopUI:DesktopController) {
     }
     switch (settings.theme) {
         case "system":
-            SetSystemTheme();
+            SetSystemTheme(settings.editorTheme);
             break;
         case "light":
-            SetLightTheme();
+            SetLightTheme(settings.editorTheme);
             break;
         
         case "dark":
-            SetDarkTheme();
+            SetDarkTheme(settings.editorTheme);
             break;
         default:            
-            SetDarkTheme();
+            SetDarkTheme(settings.editorTheme);
     }
     const root = $(":root")[0];
     root.style.setProperty("--editor-font-size", `${settings.editorFontSize}pt`);

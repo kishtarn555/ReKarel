@@ -177,10 +177,18 @@ function SetText(editor: EditorView, message:string) {
 }
 
 
-function SetEditorTheme (extension:Extension) {
-  desktopEditor.dispatch({
-    effects:extension
+function SetEditorTheme (extension:Extension, editor:EditorView) {
+  console.log("?");
+  try {
+    console.log(extension);
+  editor.dispatch({
+    effects:theme.reconfigure(extension)
   });
+  } catch {
+    console.log("ERROR");
+  }
+  
+  console.log("ok");
 }
 
 export {createEditors, freezeEditors, unfreezeEditors, setLanguage, SetText, SetEditorTheme}

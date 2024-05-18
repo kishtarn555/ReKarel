@@ -1,20 +1,25 @@
+import { applyTheme } from "./editor/themes/editorTheme";
+import { DarkEditorThemes, LightEditorThemes } from "./editor/themes/themeManager";
 
 
-export function SetLightTheme () {
-    $(":root").attr("data-bs-theme", "light");
+export function SetLightTheme (theme:string) {
+    $(":root").attr("data-bs-theme", "light");    
+    applyTheme(LightEditorThemes[theme]);
 }
 
-export function SetDarkTheme () {
-    $(":root").attr("data-bs-theme", "dark");
+export function SetDarkTheme (theme:string) {
+    $(":root").attr("data-bs-theme", "dark");    
+    applyTheme(DarkEditorThemes[theme]);
 }
-export function SetSystemTheme () {
+
+export function SetSystemTheme (theme:string) {
     if (window.matchMedia) {
         if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
-            SetDarkTheme();
+            SetDarkTheme(theme);
         } else {
-            SetLightTheme();
+            SetLightTheme(theme);
         }
         return;
     }
-    SetLightTheme(); //Default light theme
+    SetLightTheme(theme); //Default light theme
 }

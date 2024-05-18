@@ -1,5 +1,5 @@
 import { splitPanels } from "./split";
-import { createEditors, setLanguage, SetText } from "./editor/editor";
+import { setLanguage, SetText } from "./editor/editor";
 import { DesktopController } from "./desktop/desktop-ui";
 import { GetPhoneUIHelper } from "./phone-ui";
 import { HookUpCommonUI } from "./common-ui";
@@ -8,9 +8,10 @@ import { karel } from "../../js";
 import { KarelController } from "./KarelController";
 import { responsiveHack } from "./responsive-load";
 import { InitSettings, StartSettings } from "./settings";
+import { getEditors } from "./editor/editorsInstances";
 
 
-var [desktopEditor, phoneEditor] = createEditors();
+var [desktopEditor, phoneEditor] = getEditors();
 //TODO: ThisShouldnt be here
 function hideElement(element: string) {
     $(element).addClass("d-none");

@@ -10,12 +10,12 @@ export const darkClassicHighlight: EditorTheme = {
   extensions: [
     
     syntaxHighlighting(HighlightStyle.define([
-      { tag: tags.atom, color: "rgb(6, 150, 14)" },
+      { tag: tags.atom, color: "#93bf74" },
       { tag: tags.keyword, color: "#C586C0" },
       { tag: tags.number, color: "#569CD6" },
-      { tag: tags.operator, color: "rgb(104, 118, 135)" },
-      { tag: tags.blockComment, color: "#6A9949", fontStyle: "italic" },
-      { tag: tags.comment, color: "#6A9949", fontStyle: "italic" },
+      { tag: tags.operator, color: "#77a1d5" },
+      { tag: tags.blockComment, color: "#a0b6b6", fontStyle: "italic" },
+      { tag: tags.comment, color: "#a0b6b6", fontStyle: "italic" },
       { tag: tags.constant(tags.variableName), color: "#9CDCFE" },
     ])),
     EditorView.theme({
