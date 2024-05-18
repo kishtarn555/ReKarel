@@ -67,7 +67,7 @@ Pred { @specialize<Identifier, "precede"> }
 boolStatement { clause | boolStatement !binaryLogic binaryOperator boolStatement  | Not boolStatement }
 clause { IFZ | BoolFunc | "(" boolStatement ")"}
 IFZ {
-    ifzero "(" numberStatement ")"
+    Ifzero "(" numberStatement ")"
 }
 
 BuiltIn {
@@ -125,7 +125,7 @@ StartProgram { @specialize<Identifier, "iniciar-programa"> }
 EndProgram { @specialize<Identifier, "finalizar-programa"> }
 StartExecution { @specialize<Identifier, "inicia-ejecucion"> }
 EndExecution { @specialize<Identifier, "termina-ejecucion"> }
-ifzero { @specialize<Identifier, "si-es-cero"> }
+Ifzero { @specialize<Identifier, "si-es-cero"> }
 Define { @specialize<Identifier, "define-nueva-instruccion"> }
 Prototipo { @specialize<Identifier, "define-prototipo-instruccion"> }
 
