@@ -6,7 +6,7 @@ import {  WRStyle } from "./worldRenderer";
 import { DarkEditorThemes } from "./editor/themes/themeManager";
 
 const APP_SETTING = 'appSettings';
-const SETTINGS_VERSION = "0.3.0";
+const SETTINGS_VERSION = "0.4.0";
 
 type fontSizes = number;
 type responsiveInterfaces = "auto" | "desktop" | "mobile";

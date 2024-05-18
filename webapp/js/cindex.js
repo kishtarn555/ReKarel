@@ -26005,7 +26005,7 @@
     }
 
     const APP_SETTING = 'appSettings';
-    const SETTINGS_VERSION = "0.3.0";
+    const SETTINGS_VERSION = "0.4.0";
     let appSettings = {
         version: SETTINGS_VERSION,
         interface: "desktop",
