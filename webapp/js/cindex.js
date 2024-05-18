@@ -25973,6 +25973,22 @@
             })
         ]
     };
+    const LightReKarelHighlight = {
+        color: "#2e2e2e",
+        backgroundColor: "var(--bs-light)",
+        extensions: [
+            syntaxHighlighting(HighlightStyle.define([
+                { tag: tags.atom, color: "#ff9c07" },
+                { tag: tags.keyword, color: "#c62e3d" },
+                { tag: tags.controlKeyword, color: "#0d6efd " },
+                { tag: tags.number, color: "#ff9c07" },
+                { tag: tags.operator, color: "#77a1d5" },
+                { tag: tags.blockComment, color: "#198754", fontStyle: "italic" },
+                { tag: tags.comment, color: "#198754", fontStyle: "italic" },
+                { tag: tags.constant(tags.variableName), color: "#24a7db" },
+            ])),
+        ]
+    };
 
     const DarkEditorThemes = {
         'classic': darkClassicHighlight,
@@ -25980,7 +25996,7 @@
     };
     const LightEditorThemes = {
         'classic': classicHighlight,
-        'rekarel': ReKarelHighlight,
+        'rekarel': LightReKarelHighlight,
     };
 
     function SetLightTheme(theme) {
@@ -26101,6 +26117,7 @@
         $("#settingsInterface").val(appSettings.interface);
         $("#settingsFontSize").val(appSettings.editorFontSize);
         $("#settingsTheme").val(appSettings.theme);
+        $("#settingsStyle").val(appSettings.editorTheme);
     }
     function InitSettings(desktopUI) {
         DesktopUI$1 = desktopUI;

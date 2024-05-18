@@ -125,6 +125,7 @@ function loadSettingsToModal() {
     $("#settingsInterface").val(appSettings.interface );
     $("#settingsFontSize").val(appSettings.editorFontSize);
     $("#settingsTheme").val(appSettings.theme);
+    $("#settingsStyle").val(appSettings.editorTheme);
 }
 
 export function InitSettings(desktopUI:DesktopController) {    

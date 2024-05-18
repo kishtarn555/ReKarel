@@ -1,6 +1,6 @@
 import { classicHighlight } from "./classicHighlight";
 import { darkClassicHighlight } from "./darkClassicHighlight";
-import { ReKarelHighlight } from "./reKarelTheme";
+import { LightReKarelHighlight, ReKarelHighlight } from "./reKarelTheme";
 
 export const DarkEditorThemes = {
     'classic': darkClassicHighlight,
@@ -8,5 +8,5 @@ export const DarkEditorThemes = {
 }
 export const LightEditorThemes = {
     'classic': classicHighlight,
-    'rekarel': ReKarelHighlight,
+    'rekarel': LightReKarelHighlight,
 }
