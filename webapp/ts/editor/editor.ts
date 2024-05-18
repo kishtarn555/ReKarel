@@ -178,17 +178,14 @@ function SetText(editor: EditorView, message:string) {
 
 
 function SetEditorTheme (extension:Extension, editor:EditorView) {
-  console.log("?");
   try {
-    console.log(extension);
   editor.dispatch({
     effects:theme.reconfigure(extension)
   });
   } catch {
-    console.log("ERROR");
+    console.log("ERROR loading extension");
   }
   
-  console.log("ok");
 }
 
 export {createEditors, freezeEditors, unfreezeEditors, setLanguage, SetText, SetEditorTheme}

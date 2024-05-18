@@ -20576,17 +20576,14 @@
         editor.dispatch(transaction);
     }
     function SetEditorTheme(extension, editor) {
-        console.log("?");
         try {
-            console.log(extension);
             editor.dispatch({
                 effects: theme.reconfigure(extension)
             });
         }
         catch (_a) {
-            console.log("ERROR");
+            console.log("ERROR loading extension");
         }
-        console.log("ok");
     }
 
     function isWRStyle(obj) {
