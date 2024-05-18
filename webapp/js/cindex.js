@@ -25927,7 +25927,7 @@
         SetEditorTheme(theme.extensions, getEditors()[0]);
         const root = $(":root")[0];
         root.style.setProperty("--editor-color", theme.color);
-        root.style.setProperty("--editor-background-color", theme.backgroundColor);
+        root.style.setProperty("--editor-background", theme.backgroundColor);
     }
 
     const darkClassicHighlight = {
@@ -25951,11 +25951,35 @@
         ]
     };
 
+    const ReKarelHighlight = {
+        color: "#fafafa",
+        backgroundColor: "var(--bs-dark)",
+        extensions: [
+            syntaxHighlighting(HighlightStyle.define([
+                { tag: tags.atom, color: "#ffda6a" },
+                { tag: tags.keyword, color: "#ea868f" },
+                { tag: tags.controlKeyword, color: "#6ea8fe" },
+                { tag: tags.number, color: "#ffda6a" },
+                { tag: tags.operator, color: "#77a1d5" },
+                { tag: tags.blockComment, color: "#75b798", fontStyle: "italic" },
+                { tag: tags.comment, color: "#75b798", fontStyle: "italic" },
+                { tag: tags.constant(tags.variableName), color: "#6edff6" },
+            ])),
+            EditorView.theme({
+                '&.cm-focused .cm-selectionBackground, ::selection': {
+                    backgroundColor: "#4e4d48"
+                }
+            })
+        ]
+    };
+
     const DarkEditorThemes = {
-        'classic': darkClassicHighlight
+        'classic': darkClassicHighlight,
+        'rekarel': ReKarelHighlight,
     };
     const LightEditorThemes = {
-        'classic': classicHighlight
+        'classic': classicHighlight,
+        'rekarel': ReKarelHighlight,
     };
 
     function SetLightTheme(theme) {
@@ -26014,6 +26038,8 @@
                 SetDesktopView();
                 break;
         }
+        if (!(settings.editorTheme in DarkEditorThemes))
+            settings.editorTheme = "classic";
         switch (settings.theme) {
             case "system":
                 SetSystemTheme(settings.editorTheme);
@@ -26041,6 +26067,7 @@
         let interfaceType = $("#settingsForm select[name=interface]").val();
         let fontSize = $("#settingsForm input[name=fontSize]").val();
         let theme = $("#settingsForm select[name=theme]").val();
+        let style = $("#settingsForm select[name=editorStyle]").val();
         console.log(fontSize);
         if (isResponsiveInterfaces(interfaceType)) {
             appSettings.interface = interfaceType;
@@ -26051,6 +26078,7 @@
         if (isTheme(theme)) {
             appSettings.theme = theme;
         }
+        appSettings.editorTheme = style;
         console.log(appSettings);
         applySettings(appSettings, desktopUI);
         event.preventDefault();

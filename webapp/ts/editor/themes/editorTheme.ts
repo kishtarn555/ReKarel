@@ -20,5 +20,5 @@ export function applyTheme(theme:EditorTheme) {
     SetEditorTheme(theme.extensions, getEditors()[0]);
     const root = $(":root")[0];
     root.style.setProperty("--editor-color", theme.color);
-    root.style.setProperty("--editor-background-color", theme.backgroundColor);
+    root.style.setProperty("--editor-background", theme.backgroundColor);
 }

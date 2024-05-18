@@ -3,6 +3,7 @@ import { DesktopController } from "./desktop/desktop-ui";
 import { responsiveHack, SetResponsiveness, SetDesktopView, SetPhoneView } from "./responsive-load";
 import { SetDarkTheme, SetLightTheme, SetSystemTheme } from "./appTheme";
 import {  WRStyle } from "./worldRenderer";
+import { DarkEditorThemes } from "./editor/themes/themeManager";
 
 const APP_SETTING = 'appSettings';
 const SETTINGS_VERSION = "0.3.0";
@@ -56,6 +57,7 @@ function applySettings(settings: AppSettings, desktopUI:DesktopController) {
             SetDesktopView();
             break;
     }
+    if (!(settings.editorTheme in DarkEditorThemes)) settings.editorTheme = "classic";
     switch (settings.theme) {
         case "system":
             SetSystemTheme(settings.editorTheme);
@@ -87,6 +89,7 @@ function setSettings(event:  JQuery.SubmitEvent<HTMLElement, undefined, HTMLElem
     let interfaceType = <string>$("#settingsForm select[name=interface]").val();
     let fontSize = <number>$("#settingsForm input[name=fontSize]").val();
     let theme = <string>$("#settingsForm select[name=theme]").val();
+    let style = <string>$("#settingsForm select[name=editorStyle]").val();
     console.log(fontSize);
     if (isResponsiveInterfaces(interfaceType)) {
         appSettings.interface = interfaceType;
@@ -97,6 +100,7 @@ function setSettings(event:  JQuery.SubmitEvent<HTMLElement, undefined, HTMLElem
     if (isTheme(theme)) {
         appSettings.theme = theme;
     }
+    appSettings.editorTheme = style;
 
     console.log(appSettings);
     applySettings(appSettings, desktopUI);
