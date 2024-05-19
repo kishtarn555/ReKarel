@@ -201,7 +201,7 @@ cond
 
 loop
   : WHILE line '(' term ')' expr
-    { $$ = $line.concat($term).concat([['JZ', 1 + $expr.length]]).concat($expr).concat([['JMP', -1 -($term.length + $expr.length + 1)]]); }
+    { $$ = $line.concat($term).concat([['JZ', 1 + $expr.length]]).concat($expr).concat([['JMP', -1 -($term.length + $expr.length + 2)]]); }
   ;
 
 repeat
