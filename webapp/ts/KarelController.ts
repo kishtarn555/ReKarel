@@ -351,13 +351,32 @@ class KarelController {
     }
 
     private EndMessage() {
-        let runtime = this.GetRuntime();
-        if (runtime.state.error) {
-            this.SendMessage(ERRORCODES[runtime.state.error], "error");            
+        let state = this.GetRuntime().state;
+        if (state.error) {
+            this.SendMessage(ERRORCODES[state.error], "error");            
             this.endedOnError = true;
             return;
         }
         this.SendMessage("Ejecucion terminada exitosamente!", "success");
+        let inner = "";
+        if (this.world.getDumps(World.DUMP_MOVE)){
+            inner += `<li class="list-group-item d-flex justify-content-between align-items-start"><div class="ms-2 me-auto">Avanza </div><span class="badge bg-primary rounded-pill">${state.moveCount}</span></li>`
+        }
+        if (this.world.getDumps(World.DUMP_LEFT)) {
+            inner += `<li class="list-group-item d-flex justify-content-between align-items-start"><div class="ms-2 me-auto">Gira izquierda </div><span class="badge bg-primary rounded-pill">${state.turnLeftCount}</span></li>`
+        }
+        if (this.world.getDumps(World.DUMP_PICK_BUZZER)) {
+            inner += `<li class="list-group-item d-flex justify-content-between align-items-start"><div class="ms-2 me-auto">Coge zumbador </div><span class="badge bg-primary rounded-pill">${state.pickBuzzerCount}</span></li>`
+        }
+        if (this.world.getDumps(World.DUMP_LEAVE_BUZZER)) {
+            inner += `<li class="list-group-item d-flex justify-content-between align-items-start"><div class="ms-2 me-auto">Deja zumbador</div> <span class="badge bg-primary rounded-pill">${state.leaveBuzzerCount}</span></li>`
+        }
+        if (inner !== "") {
+             this.SendMessage(
+                '<ul class="list-group list-group-flush">'+inner+ '</ul>', 
+                "raw"
+            )
+        }
     }
 
     private BreakPointMessage(line:number) {
