@@ -79,7 +79,8 @@ function applySettings(settings: AppSettings, desktopUI:DesktopController) {
         desktopUI.ResizeCanvas();
     desktopUI.worldController.renderer.style = settings.worldRendererStyle;
     desktopUI.worldController.Update();
-    localStorage.setItem(APP_SETTING, JSON.stringify(appSettings))
+    if (localStorage)
+        localStorage.setItem(APP_SETTING, JSON.stringify(appSettings))
 
     
 }
@@ -110,7 +111,7 @@ function setSettings(event:  JQuery.SubmitEvent<HTMLElement, undefined, HTMLElem
 }
 
 function loadSettingsFromMemory() {
-    const jsonString = localStorage.getItem(APP_SETTING);
+    const jsonString = localStorage?.getItem(APP_SETTING);
     if (jsonString) {
         const memorySettings = JSON.parse(jsonString);
         if (memorySettings.version == null) return;

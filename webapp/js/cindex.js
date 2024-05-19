@@ -26101,7 +26101,8 @@
             desktopUI.ResizeCanvas();
         desktopUI.worldController.renderer.style = settings.worldRendererStyle;
         desktopUI.worldController.Update();
-        localStorage.setItem(APP_SETTING, JSON.stringify(appSettings));
+        if (localStorage)
+            localStorage.setItem(APP_SETTING, JSON.stringify(appSettings));
     }
     function setSettings(event, desktopUI) {
         let interfaceType = $("#settingsForm select[name=interface]").val();
@@ -26125,7 +26126,7 @@
         return false;
     }
     function loadSettingsFromMemory() {
-        const jsonString = localStorage.getItem(APP_SETTING);
+        const jsonString = localStorage === null || localStorage === void 0 ? void 0 : localStorage.getItem(APP_SETTING);
         if (jsonString) {
             const memorySettings = JSON.parse(jsonString);
             if (memorySettings.version == null)
