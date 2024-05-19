@@ -25393,7 +25393,7 @@
             $("body").on("mouseup", this.worldController.ClickUp.bind(this.worldController));
             this.worldCanvas.on("mousemove", this.worldController.TrackMouse.bind(this.worldController));
             this.worldCanvas.on("mousedown", this.worldController.ClickDown.bind(this.worldController));
-            const zooms = ["0.5", "0.75", "1", "1.5", "2.0", "2.5"];
+            const zooms = ["0.5", "0.75", "1", "1.5", "2.0", "2.5", "4"];
             this.worldZoom.on("change", () => {
                 let scale = parseFloat(String(this.worldZoom.val()));
                 this.worldController.SetScale(scale);
