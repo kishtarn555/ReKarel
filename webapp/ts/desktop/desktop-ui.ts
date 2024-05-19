@@ -41,6 +41,8 @@ interface DesktopElements {
         beeperInput: JQuery,
         infiniteBeeperInput: JQuery,
         delayInput: JQuery,
+        delayAdd: JQuery,
+        delayRemove: JQuery,
     },
     toolbar: {
         beepers: BeeperToolbar
@@ -71,6 +73,8 @@ class DesktopController {
     infiniteBeeperInput: JQuery
 
     delayInput: JQuery
+    delayAdd: JQuery
+    delayRemove: JQuery
 
     beeperToolbar: BeeperToolbar;
     karelToolbar: KarelToolbar;
@@ -106,6 +110,8 @@ class DesktopController {
         this.infiniteBeeperInput = elements.controlBar.infiniteBeeperInput;
 
         this.delayInput = elements.controlBar.delayInput;
+        this.delayAdd = elements.controlBar.delayAdd;
+        this.delayRemove = elements.controlBar.delayRemove;
 
         this.beeperToolbar = elements.toolbar.beepers;
         this.karelToolbar = elements.toolbar.karel;
@@ -192,6 +198,20 @@ class DesktopController {
         });
         this.delayInput.on("change", () => {
             let delay:number = parseInt(this.delayInput.val() as string);
+            this.karelController.ChangeAutoStepDelay(delay);
+        });
+
+        this.delayAdd.on("click", ()=>{            
+            let delay:number = parseInt(this.delayInput.val() as string);
+            delay += 50;
+            this.delayInput.val(delay);
+            this.karelController.ChangeAutoStepDelay(delay);
+        });
+        this.delayRemove.on("click", ()=>{            
+            let delay:number = parseInt(this.delayInput.val() as string);
+            delay -= 50;
+            delay = delay < 0 ? 0:delay;
+            this.delayInput.val(delay);
             this.karelController.ChangeAutoStepDelay(delay);
         });
         this.beeperBagInput.on("change", () => this.OnBeeperInputChange());

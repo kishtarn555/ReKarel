@@ -25363,6 +25363,8 @@
             this.beeperBagInput = elements.controlBar.beeperInput;
             this.infiniteBeeperInput = elements.controlBar.infiniteBeeperInput;
             this.delayInput = elements.controlBar.delayInput;
+            this.delayAdd = elements.controlBar.delayAdd;
+            this.delayRemove = elements.controlBar.delayRemove;
             this.beeperToolbar = elements.toolbar.beepers;
             this.karelToolbar = elements.toolbar.karel;
             this.wallToolbar = elements.toolbar.wall;
@@ -25414,6 +25416,19 @@
             });
             this.delayInput.on("change", () => {
                 let delay = parseInt(this.delayInput.val());
+                this.karelController.ChangeAutoStepDelay(delay);
+            });
+            this.delayAdd.on("click", () => {
+                let delay = parseInt(this.delayInput.val());
+                delay += 50;
+                this.delayInput.val(delay);
+                this.karelController.ChangeAutoStepDelay(delay);
+            });
+            this.delayRemove.on("click", () => {
+                let delay = parseInt(this.delayInput.val());
+                delay -= 50;
+                delay = delay < 0 ? 0 : delay;
+                this.delayInput.val(delay);
                 this.karelController.ChangeAutoStepDelay(delay);
             });
             this.beeperBagInput.on("change", () => this.OnBeeperInputChange());
@@ -26412,6 +26427,8 @@
             beeperInput: $("#beeperBag"),
             infiniteBeeperInput: $("#infiniteBeepersBtn"),
             delayInput: $("#delayPanel"),
+            delayAdd: $("#addDelayBtn"),
+            delayRemove: $("#removeDelayBtn"),
         },
         toolbar: {
             karel: {

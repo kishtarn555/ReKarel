@@ -93,6 +93,8 @@ let DesktopUI = new DesktopController(
             beeperInput: $("#beeperBag"),
             infiniteBeeperInput: $("#infiniteBeepersBtn"),
             delayInput: $("#delayPanel"),
+            delayAdd:$("#addDelayBtn"),
+            delayRemove: $("#removeDelayBtn"),
         },
         toolbar: {
             karel: {
