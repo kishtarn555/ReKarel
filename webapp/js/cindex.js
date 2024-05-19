@@ -21096,7 +21096,7 @@
                         this.$ = $$[$0 - 6].concat($$[$0 - 4]).concat([['JZ', 1 + $$[$0 - 2].length]]).concat($$[$0 - 2]).concat([['JMP', $$[$0].length]]).concat($$[$0]);
                         break;
                     case 26:
-                        this.$ = $$[$0 - 4].concat($$[$0 - 2]).concat([['JZ', 1 + $$[$0].length]]).concat($$[$0]).concat([['JMP', -1 - ($$[$0 - 2].length + $$[$0].length + 1)]]);
+                        this.$ = $$[$0 - 4].concat($$[$0 - 2]).concat([['JZ', 1 + $$[$0].length]]).concat($$[$0]).concat([['JMP', -1 - ($$[$0 - 2].length + $$[$0].length + 2)]]);
                         break;
                     case 27:
                         this.$ = $$[$0 - 4].concat($$[$0 - 2]).concat([['DUP'], ['LOAD', 0], ['EQ'], ['NOT'], ['JZ', $$[$0].length + 2]]).concat($$[$0]).concat([['DEC'], ['JMP', -1 - ($$[$0].length + 6)], ['POP']]);
@@ -24275,12 +24275,12 @@
                 //TODO: expand message       
                 if (notifyOnSuccess)
                     this.SendMessage("Programa compilado correctamente", "info");
-                this.NotifyCompile(true);
+                this.NotifyCompile(true, language);
             }
             catch (e) {
                 //TODO: Expand error
                 this.SendMessage(decodeError(e, language), "error");
-                this.NotifyCompile(false);
+                this.NotifyCompile(false, language);
                 return null;
             }
             return response;
@@ -24505,8 +24505,8 @@
         NotifyStep() {
             this.onStep.forEach((callback) => callback(this, this.state));
         }
-        NotifyCompile(success) {
-            this.onCompile.forEach((callback) => callback(this, success));
+        NotifyCompile(success, language) {
+            this.onCompile.forEach((callback) => callback(this, success, language));
         }
         ChangeState(nextState) {
             this.state = nextState;
@@ -26360,14 +26360,15 @@
     }
 
     function HookSession() {
-        KarelController.GetInstance().RegisterCompileObserver((_, __) => SaveSession());
+        KarelController.GetInstance().RegisterCompileObserver((_, __, lan) => SaveSession(lan));
     }
-    function SaveSession() {
+    function SaveSession(lang) {
         if (sessionStorage == null) {
             return;
         }
         let code = getEditors()[0].state.doc.toString();
         sessionStorage.setItem("rekarel:code", code);
+        sessionStorage.setItem("rekarel:lang", lang);
         let world = KarelController.GetInstance().world.save();
         sessionStorage.setItem("rekarel:world", world);
     }
@@ -26386,6 +26387,13 @@
         let world = sessionStorage.getItem("rekarel:world");
         if (world) {
             KarelController.GetInstance().LoadWorld(parseWorld(world));
+        }
+        let language = sessionStorage.getItem("rekarel:lang");
+        if (language === "java") {
+            setLanguage(getEditors()[0], "java");
+        }
+        if (language === "pascal") {
+            setLanguage(getEditors()[0], "pascal");
         }
     }
 

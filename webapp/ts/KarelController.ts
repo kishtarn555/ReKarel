@@ -11,7 +11,7 @@ type StateChangeCallback = (caller:KarelController, newState:ControllerState)=>v
 type StepCallback = (caller:KarelController, newState:ControllerState)=>void;
 type ResetCallback = (caller:KarelController)=>void;
 type NewWorldCallback = (caller:KarelController, world:World, newInstance:boolean)=>void;
-type CompileCallback = (caller:KarelController, success:boolean)=>void;
+type CompileCallback = (caller:KarelController, success:boolean, language:string)=>void;
 class KarelController {
     
     private static instance:KarelController
@@ -77,12 +77,12 @@ class KarelController {
             //TODO: expand message       
             if (notifyOnSuccess)     
                 this.SendMessage("Programa compilado correctamente", "info");
-            this.NotifyCompile(true);
+            this.NotifyCompile(true, language);
         } catch (e) {            
             //TODO: Expand error
             this.SendMessage(decodeError(e, language), "error");
             
-            this.NotifyCompile(false);
+            this.NotifyCompile(false, language);
             return null;
         }
         
@@ -354,8 +354,8 @@ class KarelController {
     private NotifyStep() {
         this.onStep.forEach((callback) => callback(this, this.state));
     }
-    private NotifyCompile(success:boolean) {
-        this.onCompile.forEach((callback) => callback(this, success));
+    private NotifyCompile(success:boolean, language:string) {
+        this.onCompile.forEach((callback) => callback(this, success, language));
     }
 
     

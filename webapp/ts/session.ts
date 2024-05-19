@@ -1,17 +1,19 @@
+import { jsxLanguage } from "@codemirror/lang-javascript";
 import { KarelController } from "./KarelController";
-import { SetText } from "./editor/editor";
+import { SetText, setLanguage } from "./editor/editor";
 import { getEditors } from "./editor/editorsInstances";
 
 export function HookSession() {
-    KarelController.GetInstance().RegisterCompileObserver((_,__)=> SaveSession());
+    KarelController.GetInstance().RegisterCompileObserver((_,__, lan)=> SaveSession(lan));
 }
 
-export function SaveSession() {
+export function SaveSession(lang:string) {
     if (sessionStorage == null) {
         return;
     }
     let code = getEditors()[0].state.doc.toString();
     sessionStorage.setItem("rekarel:code", code);
+    sessionStorage.setItem("rekarel:lang", lang);
 
     let world = KarelController.GetInstance().world.save();
     sessionStorage.setItem("rekarel:world", world);
@@ -35,5 +37,12 @@ export function RestoreSession() {
     let world = sessionStorage.getItem("rekarel:world");
     if (world) {
         KarelController.GetInstance().LoadWorld(parseWorld(world))
+    }
+    let language = sessionStorage.getItem("rekarel:lang");
+    if (language==="java") {
+        setLanguage(getEditors()[0],"java");
+    }
+    if (language==="pascal") {
+        setLanguage(getEditors()[0],"pascal");
     }
 }
