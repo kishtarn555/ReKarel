@@ -9,6 +9,7 @@ import { KarelController } from "./KarelController";
 import { responsiveHack } from "./responsive-load";
 import { InitSettings, StartSettings } from "./settings";
 import { getEditors } from "./editor/editorsInstances";
+import { HookSession, RestoreSession } from "./session";
 
 
 var [desktopEditor, phoneEditor] = getEditors();
@@ -327,8 +328,10 @@ PhoneUI.changeNavToolbar("#codeTabBtn");
 
 
 $(document).ready(() => {
+    HookSession();
     InitSettings(DesktopUI);
     responsiveHack();
     DesktopUI.Init();
     StartSettings(DesktopUI);
+    RestoreSession();
 })

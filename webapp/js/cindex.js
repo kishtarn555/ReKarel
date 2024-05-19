@@ -24250,6 +24250,7 @@
             this.onStep = [];
             this.onReset = [];
             this.onNewWorld = [];
+            this.onCompile = [];
             this.state = "unstarted";
             this.endedOnError = false;
             this.autoStepInterval = 0;
@@ -24277,10 +24278,12 @@
                 //TODO: expand message       
                 if (notifyOnSuccess)
                     this.SendMessage("Programa compilado correctamente", "info");
+                this.NotifyCompile(true);
             }
             catch (e) {
                 //TODO: Expand error
                 this.SendMessage(decodeError(e, language), "error");
+                this.NotifyCompile(false);
                 return null;
             }
             return response;
@@ -24470,6 +24473,9 @@
         RegisterStepController(callback) {
             this.onStep.push(callback);
         }
+        RegisterCompileObserver(callback) {
+            this.onCompile.push(callback);
+        }
         Resize(w, h) {
             this.Reset();
             this.world.resize(w, h);
@@ -24501,6 +24507,9 @@
         }
         NotifyStep() {
             this.onStep.forEach((callback) => callback(this, this.state));
+        }
+        NotifyCompile(success) {
+            this.onCompile.forEach((callback) => callback(this, success));
         }
         ChangeState(nextState) {
             this.state = nextState;
@@ -25863,7 +25872,7 @@
         });
         file.click();
     }
-    function parseWorld(xml) {
+    function parseWorld$1(xml) {
         // Parses the xml and returns a document object.
         return new DOMParser().parseFromString(xml, 'text/xml');
     }
@@ -25884,7 +25893,7 @@
                 reader.onload = (function (theFile) {
                     return function (e) {
                         const result = reader.result;
-                        karelController.LoadWorld(parseWorld(result));
+                        karelController.LoadWorld(parseWorld$1(result));
                         karelController.Reset();
                     };
                 })();
@@ -26320,6 +26329,36 @@
         HookResizeModal(uiData.resizeModal, uiData.karelController);
     }
 
+    function HookSession() {
+        KarelController.GetInstance().RegisterCompileObserver((_, __) => SaveSession());
+    }
+    function SaveSession() {
+        if (sessionStorage == null) {
+            return;
+        }
+        let code = getEditors()[0].state.doc.toString();
+        sessionStorage.setItem("rekarel:code", code);
+        let world = KarelController.GetInstance().world.save();
+        sessionStorage.setItem("rekarel:world", world);
+    }
+    function parseWorld(xml) {
+        // Parses the xml and returns a document object.
+        return new DOMParser().parseFromString(xml, 'text/xml');
+    }
+    function RestoreSession() {
+        if (sessionStorage == null) {
+            return;
+        }
+        let source = sessionStorage.getItem("rekarel:code");
+        if (source) {
+            SetText(getEditors()[0], source);
+        }
+        let world = sessionStorage.getItem("rekarel:world");
+        if (world) {
+            KarelController.GetInstance().LoadWorld(parseWorld(world));
+        }
+    }
+
     var [desktopEditor, phoneEditor] = getEditors();
     //TODO: ThisShouldnt be here
     function hideElement(element) {
@@ -26591,10 +26630,12 @@
     PhoneUI.changeCodeToolbar("#codeAction");
     PhoneUI.changeNavToolbar("#codeTabBtn");
     $(document).ready(() => {
+        HookSession();
         InitSettings(DesktopUI);
         responsiveHack();
         DesktopUI.Init();
         StartSettings(DesktopUI);
+        RestoreSession();
     });
 
 })(bootstrap);

@@ -11,6 +11,7 @@ type StateChangeCallback = (caller:KarelController, newState:ControllerState)=>v
 type StepCallback = (caller:KarelController, newState:ControllerState)=>void;
 type ResetCallback = (caller:KarelController)=>void;
 type NewWorldCallback = (caller:KarelController, world:World, newInstance:boolean)=>void;
+type CompileCallback = (caller:KarelController, success:boolean)=>void;
 class KarelController {
     
     private static instance:KarelController
@@ -25,6 +26,7 @@ class KarelController {
     private onStep: StepCallback[];
     private onReset: ResetCallback[];
     private onNewWorld: NewWorldCallback[];
+    private onCompile: CompileCallback[];
     private state : ControllerState;
     private endedOnError:boolean;
     private autoStepInterval:number;
@@ -40,6 +42,7 @@ class KarelController {
         this.onStep = [];
         this.onReset= [];
         this.onNewWorld= [];
+        this.onCompile= [];
         this.state = "unstarted";
         this.endedOnError = false;
         this.autoStepInterval = 0;
@@ -61,6 +64,7 @@ class KarelController {
 
     Compile(notifyOnSuccess:boolean = true) {
         let code = this.mainEditor.state.doc.toString();
+
         // let language: string = detectLanguage(code);
         let language = detectLanguage(code) as "java" | "pascal" | "ruby" | "none";
             
@@ -73,9 +77,12 @@ class KarelController {
             //TODO: expand message       
             if (notifyOnSuccess)     
                 this.SendMessage("Programa compilado correctamente", "info");
+            this.NotifyCompile(true);
         } catch (e) {            
             //TODO: Expand error
             this.SendMessage(decodeError(e, language), "error");
+            
+            this.NotifyCompile(false);
             return null;
         }
         
@@ -304,6 +311,10 @@ class KarelController {
         this.onStep.push(callback);
     }
 
+    RegisterCompileObserver(callback: CompileCallback) {
+        this.onCompile.push(callback);
+    }
+
     Resize(w:number, h:number) {
         this.Reset();
         this.world.resize(w, h);    
@@ -342,6 +353,9 @@ class KarelController {
 
     private NotifyStep() {
         this.onStep.forEach((callback) => callback(this, this.state));
+    }
+    private NotifyCompile(success:boolean) {
+        this.onCompile.forEach((callback) => callback(this, success));
     }
 
     
