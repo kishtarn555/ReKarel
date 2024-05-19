@@ -175,7 +175,7 @@ class DesktopController {
         );
         
 
-        const zooms = ["0.5", "0.75", "1", "1.5", "2.0", "2.5"]
+        const zooms = ["0.5", "0.75", "1", "1.5", "2.0", "2.5", "4"]
         this.worldZoom.on("change", ()=> {
             let scale = parseFloat(String(this.worldZoom.val()));
             this.worldController.SetScale(scale);
