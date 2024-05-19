@@ -36,6 +36,8 @@ interface DesktopElements {
     worldCanvas: JQuery,
     gizmos: Gizmos,
     worldZoom: JQuery,
+    lessZoom: JQuery,
+    moreZoom: JQuery,
     controlBar: {
         execution: ExecutionToolbar,
         beeperInput: JQuery,
@@ -62,6 +64,8 @@ class DesktopController {
     worldContainer: JQuery;
     worldCanvas: JQuery;
     worldZoom: JQuery;
+    lessZoom: JQuery;
+    moreZoom: JQuery;
     
     executionReset : JQuery;
     executionCompile : JQuery;
@@ -99,6 +103,8 @@ class DesktopController {
         this.worldContainer = elements.worldContainer;
         this.worldCanvas = elements.worldCanvas;
         this.worldZoom = elements.worldZoom;
+        this.lessZoom = elements.lessZoom;
+        this.moreZoom = elements.moreZoom;
 
         this.executionReset = elements.controlBar.execution.reset;
         this.executionCompile = elements.controlBar.execution.compile;
@@ -169,9 +175,22 @@ class DesktopController {
         );
         
 
+        const zooms = ["0.5", "0.75", "1", "1.5", "2.0", "2.5"]
         this.worldZoom.on("change", ()=> {
             let scale = parseFloat(String(this.worldZoom.val()));
             this.worldController.SetScale(scale);
+        });
+        this.lessZoom.on("click", ()=> {
+            let val = String(this.worldZoom.val());
+            let nzoom = zooms.indexOf(val)-1;
+            if (nzoom < 0)nzoom=0;
+            this.worldZoom.val( zooms[nzoom]).trigger('change');;
+        });
+        this.moreZoom.on("click", ()=> {
+            let val = String(this.worldZoom.val());
+            let nzoom = zooms.indexOf(val)+1;
+            if (nzoom >= zooms.length)nzoom=zooms.length-1;
+            this.worldZoom.val( zooms[nzoom]).trigger('change');;
         });
 
         this.ConnectExecutionButtonGroup();

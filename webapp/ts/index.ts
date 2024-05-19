@@ -168,6 +168,8 @@ let DesktopUI = new DesktopController(
             VerticalScrollElement: $("#worldScrolledContainerVertical"),
         },
         worldZoom: $("#zoomDekstop"),
+        lessZoom: $("#removeZoomBtn"),
+        moreZoom: $("#addZoomBtn"),
         console: {
             console: $("#desktopConsole"),
             clear: $("#desktopClearConsole"),

@@ -25355,6 +25355,8 @@
             this.worldContainer = elements.worldContainer;
             this.worldCanvas = elements.worldCanvas;
             this.worldZoom = elements.worldZoom;
+            this.lessZoom = elements.lessZoom;
+            this.moreZoom = elements.moreZoom;
             this.executionReset = elements.controlBar.execution.reset;
             this.executionCompile = elements.controlBar.execution.compile;
             this.executionRun = elements.controlBar.execution.run;
@@ -25391,9 +25393,24 @@
             $("body").on("mouseup", this.worldController.ClickUp.bind(this.worldController));
             this.worldCanvas.on("mousemove", this.worldController.TrackMouse.bind(this.worldController));
             this.worldCanvas.on("mousedown", this.worldController.ClickDown.bind(this.worldController));
+            const zooms = ["0.5", "0.75", "1", "1.5", "2.0", "2.5"];
             this.worldZoom.on("change", () => {
                 let scale = parseFloat(String(this.worldZoom.val()));
                 this.worldController.SetScale(scale);
+            });
+            this.lessZoom.on("click", () => {
+                let val = String(this.worldZoom.val());
+                let nzoom = zooms.indexOf(val) - 1;
+                if (nzoom < 0)
+                    nzoom = 0;
+                this.worldZoom.val(zooms[nzoom]).trigger('change');
+            });
+            this.moreZoom.on("click", () => {
+                let val = String(this.worldZoom.val());
+                let nzoom = zooms.indexOf(val) + 1;
+                if (nzoom >= zooms.length)
+                    nzoom = zooms.length - 1;
+                this.worldZoom.val(zooms[nzoom]).trigger('change');
             });
             this.ConnectExecutionButtonGroup();
             this.ConnectToolbar();
@@ -26502,6 +26519,8 @@
             VerticalScrollElement: $("#worldScrolledContainerVertical"),
         },
         worldZoom: $("#zoomDekstop"),
+        lessZoom: $("#removeZoomBtn"),
+        moreZoom: $("#addZoomBtn"),
         console: {
             console: $("#desktopConsole"),
             clear: $("#desktopClearConsole"),
