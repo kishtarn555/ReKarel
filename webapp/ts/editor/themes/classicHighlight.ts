@@ -7,6 +7,8 @@ import { EditorTheme } from "./editorTheme";
 export const classicHighlight: EditorTheme = {
   color: "var(--bs-body-color)",
   backgroundColor: "rgba(var(--bs-body-bg-rgb), var(--bs-bg-opacity))",
+  gutterBackgroundColor: "var(--bs-secondary-bg)",
+  gutterColor: "var(--bs-emphasis-color)",
   extensions: syntaxHighlighting(HighlightStyle.define([
     { tag: tags.atom, color: "rgb(6, 150, 14)" },
     { tag: tags.keyword, color: "rgb(147, 15, 128)" },

@@ -7,6 +7,8 @@ import { EditorView } from "codemirror";
 export const darkClassicHighlight: EditorTheme = {
   color: "var(--bs-body-color)",
   backgroundColor: "rgba(var(--bs-body-bg-rgb), var(--bs-bg-opacity))",
+  gutterBackgroundColor: "var(--bs-secondary-bg)",
+  gutterColor: "var(--bs-emphasis-color)",
   extensions: [
     
     syntaxHighlighting(HighlightStyle.define([

@@ -10,7 +10,9 @@ type combo = Extension
 export type EditorTheme = {
     extensions:combo,
     color:string,
-    backgroundColor:string
+    backgroundColor:string,
+    gutterBackgroundColor:string,
+    gutterColor:string,
 } 
 
 
@@ -21,4 +23,6 @@ export function applyTheme(theme:EditorTheme) {
     const root = $(":root")[0];
     root.style.setProperty("--editor-color", theme.color);
     root.style.setProperty("--editor-background", theme.backgroundColor);
+    root.style.setProperty("--editor-gutter-bg", theme.gutterBackgroundColor);
+    root.style.setProperty("--editor-gutter", theme.gutterColor);
 }

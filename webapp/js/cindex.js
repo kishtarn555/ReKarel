@@ -20414,6 +20414,8 @@
     const classicHighlight = {
         color: "var(--bs-body-color)",
         backgroundColor: "rgba(var(--bs-body-bg-rgb), var(--bs-bg-opacity))",
+        gutterBackgroundColor: "var(--bs-secondary-bg)",
+        gutterColor: "var(--bs-emphasis-color)",
         extensions: syntaxHighlighting(HighlightStyle.define([
             { tag: tags.atom, color: "rgb(6, 150, 14)" },
             { tag: tags.keyword, color: "rgb(147, 15, 128)" },
@@ -25980,11 +25982,15 @@
         const root = $(":root")[0];
         root.style.setProperty("--editor-color", theme.color);
         root.style.setProperty("--editor-background", theme.backgroundColor);
+        root.style.setProperty("--editor-gutter-bg", theme.gutterBackgroundColor);
+        root.style.setProperty("--editor-gutter", theme.gutterColor);
     }
 
     const darkClassicHighlight = {
         color: "var(--bs-body-color)",
         backgroundColor: "rgba(var(--bs-body-bg-rgb), var(--bs-bg-opacity))",
+        gutterBackgroundColor: "var(--bs-secondary-bg)",
+        gutterColor: "var(--bs-emphasis-color)",
         extensions: [
             syntaxHighlighting(HighlightStyle.define([
                 { tag: tags.atom, color: "#93bf74" },
@@ -26006,6 +26012,8 @@
     const ReKarelHighlight = {
         color: "#fafafa",
         backgroundColor: "var(--bs-dark)",
+        gutterBackgroundColor: "var(--bs-secondary-bg)",
+        gutterColor: "var(--bs-emphasis-color)",
         extensions: [
             syntaxHighlighting(HighlightStyle.define([
                 { tag: tags.atom, color: "#ffda6a" },
@@ -26028,6 +26036,8 @@
     const LightReKarelHighlight = {
         color: "#2e2e2e",
         backgroundColor: "var(--bs-light)",
+        gutterBackgroundColor: "var(--bs-secondary-bg)",
+        gutterColor: "var(--bs-emphasis-color)",
         extensions: [
             syntaxHighlighting(HighlightStyle.define([
                 { tag: tags.atom, color: "#ff9c07" },
@@ -26043,13 +26053,40 @@
         ]
     };
 
+    const SepiaTheme = {
+        color: "#3a3d42",
+        backgroundColor: "#fffde5",
+        gutterBackgroundColor: "#d9ceb6",
+        gutterColor: "#2d2e3b",
+        extensions: [
+            syntaxHighlighting(HighlightStyle.define([
+                { tag: tags.atom, color: "#707894" },
+                { tag: tags.keyword, color: "#cb3551" },
+                { tag: tags.controlKeyword, color: "#3f9c4f" },
+                { tag: tags.definitionKeyword, color: "#3f9c4f" },
+                { tag: tags.number, color: "#22867e" },
+                { tag: tags.operator, color: "#3f9c4f" },
+                { tag: tags.blockComment, color: "#973d1a", fontStyle: "italic" },
+                { tag: tags.comment, color: "#973d1a", fontStyle: "italic" },
+                { tag: tags.constant(tags.variableName), color: "#1f34a1" },
+            ])),
+            EditorView.theme({
+                '&.cm-focused .cm-selectionBackground, ::selection': {
+                    backgroundColor: "#b3c6c7"
+                }
+            })
+        ]
+    };
+
     const DarkEditorThemes = {
         'classic': darkClassicHighlight,
         'rekarel': ReKarelHighlight,
+        'sepia': SepiaTheme,
     };
     const LightEditorThemes = {
         'classic': classicHighlight,
         'rekarel': LightReKarelHighlight,
+        'sepia': SepiaTheme,
     };
 
     function SetLightTheme(theme) {

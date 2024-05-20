@@ -9,6 +9,8 @@
     --waffle-color: #0d6dfd;
     --editor-color: var(--bs-body-color);
     --editor-background: var(--bs-body-bg);
+    --editor-gutter-bg: var(--bs-secondary-bg);
+    --editor-gutter: var(--bs-emphasis-color);
 }
 
 :root[data-bs-theme="dark"]
@@ -22,6 +24,8 @@
     --waffle-color: #0d6dfd;
     --editor-color: var(--bs-body-color);
     --editor-background: var(--bs-body-bg);
+    --editor-gutter-bg: var(--bs-secondary-bg);
+    --editor-gutter: var(--bs-emphasis-color);
 }
 
 .text-emphasis {
@@ -39,7 +43,8 @@
 .cm-editor .cm-gutter {
     font-size: var(--editor-font-size);
     color: var(--bs-emphasis-color);
-    background-color: var(--bs-secondary-bg);
+    background-color: var(--editor-gutter-bg);
+    color: var(--editor-gutter);
 }
 
 

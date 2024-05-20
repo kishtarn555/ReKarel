@@ -7,6 +7,8 @@ import { EditorView } from "codemirror";
 export const ReKarelHighlight: EditorTheme = {
     color: "#fafafa",
     backgroundColor: "var(--bs-dark)",
+    gutterBackgroundColor: "var(--bs-secondary-bg)",
+    gutterColor: "var(--bs-emphasis-color)",
     extensions: [
       
       syntaxHighlighting(HighlightStyle.define([
@@ -34,6 +36,8 @@ export const ReKarelHighlight: EditorTheme = {
 export const LightReKarelHighlight: EditorTheme = {
     color: "#2e2e2e",
     backgroundColor: "var(--bs-light)",
+    gutterBackgroundColor: "var(--bs-secondary-bg)",
+    gutterColor: "var(--bs-emphasis-color)",
     extensions: [
       
       syntaxHighlighting(HighlightStyle.define([
