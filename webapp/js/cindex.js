@@ -26009,6 +26009,29 @@
         ]
     };
 
+    const OMIHighlight = {
+        color: "#FFFF00",
+        backgroundColor: "#000080",
+        gutterBackgroundColor: "#F5F5F5",
+        gutterColor: "#000000",
+        extensions: [
+            syntaxHighlighting(HighlightStyle.define([
+                { tag: tags.atom, color: "#00FFFF" },
+                { tag: tags.keyword, color: "#00FFFF" },
+                { tag: tags.controlKeyword, color: "#00FFFF" },
+                { tag: tags.definitionKeyword, color: "#00FFFF" },
+                { tag: tags.number, color: "#FF00FF" },
+                { tag: tags.operator, color: "#00FFFF" },
+                { tag: tags.constant(tags.variableName), color: "#00FFFF" },
+            ])),
+            EditorView.theme({
+                '&.cm-focused .cm-selectionBackground, ::selection': {
+                    backgroundColor: "#0000FF"
+                }
+            })
+        ]
+    };
+
     const ReKarelHighlight = {
         color: "#fafafa",
         backgroundColor: "var(--bs-dark)",
@@ -26082,11 +26105,13 @@
         'classic': darkClassicHighlight,
         'rekarel': ReKarelHighlight,
         'sepia': SepiaTheme,
+        'omi': OMIHighlight,
     };
     const LightEditorThemes = {
         'classic': classicHighlight,
         'rekarel': LightReKarelHighlight,
         'sepia': SepiaTheme,
+        'omi': OMIHighlight,
     };
 
     function SetLightTheme(theme) {
