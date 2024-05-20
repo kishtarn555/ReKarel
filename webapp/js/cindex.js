@@ -25265,8 +25265,16 @@
         constructor(data) {
             this.consoleTab = data;
             this.consoleTab.clear.on("click", () => this.ClearConsole());
+            this.unreadMessages = 0;
         }
         SendMessageToConsole(message, style) {
+            if (!this.IsShown()) {
+                this.unreadMessages++;
+            }
+            else {
+                this.unreadMessages = 0;
+            }
+            this.UpdateUnreadPill();
             if (style !== "raw") {
                 const currentDate = new Date();
                 const hour = currentDate.getHours() % 12 || 12;
@@ -25283,10 +25291,18 @@
             this.ScrollToBottom();
         }
         ClearConsole() {
+            this.unreadMessages = 0;
+            this.UpdateUnreadPill();
             this.consoleTab.console.empty();
         }
+        UpdateUnreadPill() {
+            this.consoleTab.consoleMessageCount.text(this.unreadMessages);
+        }
+        IsShown() {
+            return this.consoleTab.console.is(":hidden") === false;
+        }
         ScrollToBottom() {
-            if (this.consoleTab.console.is(":hidden") === false) {
+            if (this.IsShown()) {
                 this.consoleTab.parent.scrollTop(this.consoleTab.parent.prop("scrollHeight"));
             }
         }
@@ -26656,7 +26672,8 @@
         console: {
             console: $("#desktopConsole"),
             clear: $("#desktopClearConsole"),
-            parent: $("#ExecDataContent")
+            parent: $("#ExecDataContent"),
+            consoleMessageCount: $("#consoleMessageCount"),
         },
         callStack: {
             panel: $("#pilaTab")

@@ -173,7 +173,8 @@ let DesktopUI = new DesktopController(
         console: {
             console: $("#desktopConsole"),
             clear: $("#desktopClearConsole"),
-            parent: $("#ExecDataContent")
+            parent: $("#ExecDataContent"),
+            consoleMessageCount:$("#consoleMessageCount"),
         },
         callStack: {
             panel : $("#pilaTab")

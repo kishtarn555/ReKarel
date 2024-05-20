@@ -1,20 +1,31 @@
 export type ConsoleTab = {
     console:JQuery,
     clear: JQuery,
-    parent: JQuery
+    parent: JQuery,
+    consoleMessageCount: JQuery
 }
 
 
 export class KarelConsole {
     consoleTab:ConsoleTab
+    private unreadMessages;
 
     constructor (data:ConsoleTab) {
         this.consoleTab = data;
         this.consoleTab.clear.on("click", ()=> this.ClearConsole());
+        this.unreadMessages = 0;
 
     }
 
     SendMessageToConsole(message: string, style:string) {
+        if (!this.IsShown()) {
+            this.unreadMessages++;
+        } else {
+            this.unreadMessages = 0;
+        }
+
+        this.UpdateUnreadPill();
+                
         if (style !== "raw") {
             const currentDate = new Date();
             const hour = currentDate.getHours() % 12 || 12;
@@ -36,11 +47,20 @@ export class KarelConsole {
     
     
     ClearConsole() {
+        this.unreadMessages = 0;
+        this.UpdateUnreadPill();
         this.consoleTab.console.empty();
     } 
 
+    private UpdateUnreadPill() {
+        this.consoleTab.consoleMessageCount.text(this.unreadMessages);
+    }
+
+    private IsShown() {
+        return this.consoleTab.console.is(":hidden") === false;
+    }
     private ScrollToBottom() {
-        if (this.consoleTab.console.is(":hidden") === false) {
+        if (this.IsShown()) {
             this.consoleTab.parent.scrollTop(
                 this.consoleTab.parent.prop("scrollHeight")
             );
