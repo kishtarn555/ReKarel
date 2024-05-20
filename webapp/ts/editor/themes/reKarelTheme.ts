@@ -14,6 +14,7 @@ export const ReKarelHighlight: EditorTheme = {
       syntaxHighlighting(HighlightStyle.define([
         { tag: tags.atom, color: "#ffda6a" },
         { tag: tags.keyword, color: "#ea868f" },
+        { tag: tags.brace, color: "#ea868f" },
         { tag: tags.controlKeyword, color: "#6ea8fe" },
         { tag: tags.definitionKeyword, color: "#6ea8fe" },
         { tag: tags.number, color: "#ffda6a" },
@@ -43,6 +44,7 @@ export const LightReKarelHighlight: EditorTheme = {
       syntaxHighlighting(HighlightStyle.define([
         { tag: tags.atom, color: "#ff9c07" },
         { tag: tags.keyword, color: "#c62e3d" },
+        { tag: tags.brace, color: "#c62e3d" },
         { tag: tags.controlKeyword, color: "#0d6efd " },
         { tag: tags.definitionKeyword, color: "#0d6efd " },
         { tag: tags.number, color: "#ff9c07" },

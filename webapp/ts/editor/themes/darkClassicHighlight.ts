@@ -14,6 +14,7 @@ export const darkClassicHighlight: EditorTheme = {
     syntaxHighlighting(HighlightStyle.define([
       { tag: tags.atom, color: "#93bf74" },
       { tag: tags.keyword, color: "#C586C0" },
+      { tag: tags.brace, color: "#94a4cb" },
       { tag: tags.number, color: "#569CD6" },
       { tag: tags.operator, color: "#77a1d5" },
       { tag: tags.blockComment, color: "#a0b6b6", fontStyle: "italic" },

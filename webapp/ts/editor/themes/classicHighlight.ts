@@ -12,6 +12,7 @@ export const classicHighlight: EditorTheme = {
   extensions: syntaxHighlighting(HighlightStyle.define([
     { tag: tags.atom, color: "rgb(6, 150, 14)" },
     { tag: tags.keyword, color: "rgb(147, 15, 128)" },
+    { tag: tags.brace, color: "rgb(60, 76, 114)" },
     { tag: tags.number, color: "rgb(0, 0, 205)" },
     { tag: tags.operator, color: "rgb(104, 118, 135)" },
     { tag: tags.operator, color: "rgb(104, 118, 135)" },

@@ -20422,6 +20422,7 @@
         extensions: syntaxHighlighting(HighlightStyle.define([
             { tag: tags.atom, color: "rgb(6, 150, 14)" },
             { tag: tags.keyword, color: "rgb(147, 15, 128)" },
+            { tag: tags.brace, color: "rgb(60, 76, 114)" },
             { tag: tags.number, color: "rgb(0, 0, 205)" },
             { tag: tags.operator, color: "rgb(104, 118, 135)" },
             { tag: tags.operator, color: "rgb(104, 118, 135)" },
@@ -26025,6 +26026,7 @@
             syntaxHighlighting(HighlightStyle.define([
                 { tag: tags.atom, color: "#93bf74" },
                 { tag: tags.keyword, color: "#C586C0" },
+                { tag: tags.brace, color: "#94a4cb" },
                 { tag: tags.number, color: "#569CD6" },
                 { tag: tags.operator, color: "#77a1d5" },
                 { tag: tags.blockComment, color: "#a0b6b6", fontStyle: "italic" },
@@ -26052,6 +26054,7 @@
                 { tag: tags.definitionKeyword, color: "#00FFFF" },
                 { tag: tags.number, color: "#FF00FF" },
                 { tag: tags.operator, color: "#00FFFF" },
+                { tag: tags.brace, color: "#00FFFF" },
                 { tag: tags.constant(tags.variableName), color: "#00FFFF" },
             ])),
             EditorView.theme({
@@ -26071,6 +26074,7 @@
             syntaxHighlighting(HighlightStyle.define([
                 { tag: tags.atom, color: "#ffda6a" },
                 { tag: tags.keyword, color: "#ea868f" },
+                { tag: tags.brace, color: "#ea868f" },
                 { tag: tags.controlKeyword, color: "#6ea8fe" },
                 { tag: tags.definitionKeyword, color: "#6ea8fe" },
                 { tag: tags.number, color: "#ffda6a" },
@@ -26095,6 +26099,7 @@
             syntaxHighlighting(HighlightStyle.define([
                 { tag: tags.atom, color: "#ff9c07" },
                 { tag: tags.keyword, color: "#c62e3d" },
+                { tag: tags.brace, color: "#c62e3d" },
                 { tag: tags.controlKeyword, color: "#0d6efd " },
                 { tag: tags.definitionKeyword, color: "#0d6efd " },
                 { tag: tags.number, color: "#ff9c07" },
