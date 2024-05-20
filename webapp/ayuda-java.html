@@ -437,19 +437,14 @@
                     <h2>Sucede</h2>
 
 
-<p>El operador sucede recibe un valor numérico y calcula ese valor más uno.</p>
+<p>El operador succ recibe un valor numérico y calcula ese valor más uno.</p>
 
 <p>Por ejemplo, el siguiente código deja 5 zumbadores, porque 4 + 1 = 5</p>
 
 <div class="border p-2">
-    <span class="text-primary-emphasis">repetir</span> sucede(<span class="text-warning-emphasis">4</span>) <span
-        class="text-primary-emphasis">veces</span>
-        <br>
-        <span class="text-danger-emphasis">inicio</span>
-        <br>
-        <pre style="display: inline;">    </pre><span class="text-info-emphasis">deja-zumbador;</span>
-        <br>
-        <span class="text-danger-emphasis">fin;</span>
+    <span class="text-primary-emphasis">iterate</span> (succ(<span class="text-warning-emphasis">4</span>)) <br>
+        
+        <pre style="display: inline;">    </pre><span class="text-info-emphasis">putbeeper</span>();
 </div>
 
 
@@ -462,27 +457,25 @@
 </div>
 
 <div class="border p-2">
-    <span class="text-danger-emphasis">iniciar-programa</span><br>
-    <pre style="display: inline;">    </pre><span class="text-primary-emphasis">define-nueva-instruccion</span> deja(<span class="text-warning-emphasis">n</span>) <span class="text-primary-emphasis">como</span><br>
-    <pre style="display: inline;">    </pre><span class="text-danger-emphasis">inicio</span><br>
-    <pre style="display: inline;">        </pre><span class="text-primary-emphasis">repetir</span> <span class="text-warning-emphasis">n</span> <span class="text-primary-emphasis">veces</span><br>
-    <pre style="display: inline;">            </pre>deja-zumbador;<br>
-    <pre style="display: inline;">    </pre><span class="text-danger-emphasis">fin</span>;<br>
+    <span class="text-danger-emphasis">class program</span><span class="text-danger-emphasis"> {</span> <br>
+    <pre style="display: inline;">    </pre><span class="text-primary-emphasis">define</span> deja(<span class="text-warning-emphasis">n</span>) <span class="text-danger-emphasis"> {</span><br>
+    <pre style="display: inline;">        </pre><span class="text-primary-emphasis">iterate</span> (<span class="text-warning-emphasis">n</span>) <br>
+    <pre style="display: inline;">            </pre>putbeeper();<br>
+    <pre style="display: inline;">    </pre><span class="text-danger-emphasis">}</span><br>
     <br>
-    <pre style="display: inline;">    </pre><span class="text-primary-emphasis">define-nueva-instruccion</span> funcion(<span class="text-warning-emphasis">n</span>) <span class="text-primary-emphasis">como</span><br>
-    <pre style="display: inline;">    </pre><span class="text-danger-emphasis">inicio</span><br>
+    <pre style="display: inline;">    </pre><span class="text-primary-emphasis">define</span> funcion(<span class="text-warning-emphasis">n</span>) <span class="text-danger-emphasis"> {</span><br>
     <pre style="display: inline;">        </pre>deja(<span class="text-warning-emphasis">n</span>);<br>
-    <pre style="display: inline;">        </pre>avanza;<br>
-    <pre style="display: inline;">        </pre>deja(sucede(<span class="text-warning-emphasis">n</span>));<br>
-    <pre style="display: inline;">        </pre>avanza;<br>
+    <pre style="display: inline;">        </pre>move();<br>
+    <pre style="display: inline;">        </pre>deja(succ(<span class="text-warning-emphasis">n</span>));<br>
+    <pre style="display: inline;">        </pre>move();<br>
     <pre style="display: inline;">        </pre>deja(<span class="text-warning-emphasis">n</span>);<br>
-    <pre style="display: inline;">    </pre><span class="text-danger-emphasis">fin</span>;<br>
+    <pre style="display: inline;">    </pre><span class="text-danger-emphasis">}</span><br>
     <br>
-    <pre style="display: inline;">    </pre><span class="text-danger-emphasis">inicia-ejecucion</span><br>
+    <pre style="display: inline;">    </pre><span class="text-danger-emphasis">program ()</span> <span class="text-danger-emphasis"> {</span><br>
     <pre style="display: inline;">        </pre>funcion(<span class="text-warning-emphasis">5</span>);<br>
-    <pre style="display: inline;">        </pre>apagate;<br>
-    <pre style="display: inline;">    </pre><span class="text-danger-emphasis">termina-ejecucion</span><br>
-    <span class="text-danger-emphasis">finalizar-programa</span>
+    <pre style="display: inline;">        </pre>turnoff();<br>
+    <pre style="display: inline;">    </pre><span class="text-danger-emphasis">}</span><br>
+    <span class="text-danger-emphasis">}</span>
 </div>
 
 <h2>Precede</h2>
@@ -497,27 +490,25 @@
 </div>
 
 <div class="border p-2">
-    <span class="text-danger-emphasis">iniciar-programa</span><br>
-    <pre style="display: inline;">    </pre><span class="text-primary-emphasis">define-nueva-instruccion</span> deja(<span class="text-warning-emphasis">n</span>) <span class="text-primary-emphasis">como</span><br>
-    <pre style="display: inline;">    </pre><span class="text-danger-emphasis">inicio</span><br>
-    <pre style="display: inline;">        </pre><span class="text-primary-emphasis">repetir</span> <span class="text-warning-emphasis">n</span> <span class="text-primary-emphasis">veces</span><br>
-    <pre style="display: inline;">            </pre>deja-zumbador;<br>
-    <pre style="display: inline;">    </pre><span class="text-danger-emphasis">fin</span>;<br>
+    <span class="text-danger-emphasis">class program</span><span class="text-danger-emphasis"> {</span> <br>
+    <pre style="display: inline;">    </pre><span class="text-primary-emphasis">define</span> deja(<span class="text-warning-emphasis">n</span>) <span class="text-danger-emphasis"> {</span><br>
+        <pre style="display: inline;">        </pre><span class="text-primary-emphasis">iterate</span> (<span class="text-warning-emphasis">n</span>) <br>
+        <pre style="display: inline;">            </pre>putbeeper();<br>
+        <pre style="display: inline;">    </pre><span class="text-danger-emphasis">}</span><br>
     <br>
-    <pre style="display: inline;">    </pre><span class="text-primary-emphasis">define-nueva-instruccion</span> funcion(<span class="text-warning-emphasis">n</span>) <span class="text-primary-emphasis">como</span><br>
-    <pre style="display: inline;">    </pre><span class="text-danger-emphasis">inicio</span><br>
+    <pre style="display: inline;">    </pre><span class="text-primary-emphasis">define</span> funcion(<span class="text-warning-emphasis">n</span>) <span class="text-danger-emphasis"> {</span><br>
     <pre style="display: inline;">        </pre>deja(<span class="text-warning-emphasis">n</span>);<br>
-    <pre style="display: inline;">        </pre>avanza;<br>
-    <pre style="display: inline;">        </pre>deja(precede(precede(<span class="text-warning-emphasis">n</span>)));<br>
-    <pre style="display: inline;">        </pre>avanza;<br>
-    <pre style="display: inline;">        </pre>deja(precede(<span class="text-warning-emphasis">n</span>));<br>
-    <pre style="display: inline;">    </pre><span class="text-danger-emphasis">fin</span>;<br>
+    <pre style="display: inline;">        </pre>move();<br>
+    <pre style="display: inline;">        </pre>deja(pred(pred(<span class="text-warning-emphasis">n</span>)));<br>
+    <pre style="display: inline;">        </pre>move();<br>
+    <pre style="display: inline;">        </pre>deja(pred(<span class="text-warning-emphasis">n</span>));<br>
+    <pre style="display: inline;">    </pre><span class="text-danger-emphasis">}</span><br>
     <br>
-    <pre style="display: inline;">    </pre><span class="text-danger-emphasis">inicia-ejecucion</span><br>
+    <pre style="display: inline;">    </pre><span class="text-danger-emphasis">program()</span><span class="text-danger-emphasis"> {</span><br>
     <pre style="display: inline;">        </pre>funcion(<span class="text-warning-emphasis">5</span>);<br>
-    <pre style="display: inline;">        </pre>apagate;<br>
-    <pre style="display: inline;">    </pre><span class="text-danger-emphasis">termina-ejecucion</span><br>
-    <span class="text-danger-emphasis">finalizar-programa</span>
+    <pre style="display: inline;">        </pre>turnoff();<br>
+    <pre style="display: inline;">    </pre><span class="text-danger-emphasis">}</span><br>
+    <span class="text-danger-emphasis">}</span>
 </div>
 
                 </div>    
