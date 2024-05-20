@@ -20422,6 +20422,7 @@
         extensions: syntaxHighlighting(HighlightStyle.define([
             { tag: tags.atom, color: "rgb(6, 150, 14)" },
             { tag: tags.keyword, color: "rgb(147, 15, 128)" },
+            { tag: tags.className, color: "rgb(147, 15, 128)" },
             { tag: tags.brace, color: "rgb(60, 76, 114)" },
             { tag: tags.number, color: "rgb(0, 0, 205)" },
             { tag: tags.operator, color: "rgb(104, 118, 135)" },
@@ -26052,6 +26053,7 @@
             syntaxHighlighting(HighlightStyle.define([
                 { tag: tags.atom, color: "#93bf74" },
                 { tag: tags.keyword, color: "#C586C0" },
+                { tag: tags.className, color: "#C586C0" },
                 { tag: tags.brace, color: "#94a4cb" },
                 { tag: tags.number, color: "#569CD6" },
                 { tag: tags.operator, color: "#77a1d5" },
