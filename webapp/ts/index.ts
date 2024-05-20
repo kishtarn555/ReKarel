@@ -174,6 +174,7 @@ let DesktopUI = new DesktopController(
             console: $("#desktopConsole"),
             clear: $("#desktopClearConsole"),
             parent: $("#ExecDataContent"),
+            tab: $("#consoleTab-tab"),
             consoleMessageCount:$("#consoleMessageCount"),
         },
         callStack: {

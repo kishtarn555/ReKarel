@@ -25266,6 +25266,11 @@
             this.consoleTab = data;
             this.consoleTab.clear.on("click", () => this.ClearConsole());
             this.unreadMessages = 0;
+            this.consoleTab.tab.on("show.bs.tab", () => {
+                console.log("???");
+                this.unreadMessages = 0;
+                this.UpdateUnreadPill();
+            });
         }
         SendMessageToConsole(message, style) {
             if (!this.IsShown()) {
@@ -26673,6 +26678,7 @@
             console: $("#desktopConsole"),
             clear: $("#desktopClearConsole"),
             parent: $("#ExecDataContent"),
+            tab: $("#consoleTab-tab"),
             consoleMessageCount: $("#consoleMessageCount"),
         },
         callStack: {

@@ -2,7 +2,8 @@ export type ConsoleTab = {
     console:JQuery,
     clear: JQuery,
     parent: JQuery,
-    consoleMessageCount: JQuery
+    consoleMessageCount: JQuery,
+    tab: JQuery,
 }
 
 
@@ -14,6 +15,11 @@ export class KarelConsole {
         this.consoleTab = data;
         this.consoleTab.clear.on("click", ()=> this.ClearConsole());
         this.unreadMessages = 0;
+        this.consoleTab.tab.on("show.bs.tab", ()=> {
+            console.log("???");
+            this.unreadMessages = 0;
+            this.UpdateUnreadPill();
+        })
 
     }
 
@@ -25,7 +31,7 @@ export class KarelConsole {
         }
 
         this.UpdateUnreadPill();
-                
+
         if (style !== "raw") {
             const currentDate = new Date();
             const hour = currentDate.getHours() % 12 || 12;
