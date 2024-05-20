@@ -14,6 +14,7 @@ let javaWithContext = javaparser.configure({
             ProgramClass: t.className,
             ProgramMain: t.function(t.variableName),
             Comment: t.comment,
+            BlockComment: t.blockComment,
             obr: t.bracket,
             cbr: t.bracket,
             Identifier: t.variableName,

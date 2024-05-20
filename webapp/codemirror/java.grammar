@@ -150,4 +150,14 @@ Iterate { @specialize<Identifier, "iterate"> }
 
 }
 
-@skip { space | Comment }
+@skip { space | Comment | BlockComment }
+@skip { } {
+  BlockComment { "/*" (blockCommentContent | blockCommentNewline)* blockCommentEnd }
+}
+
+@local tokens {
+  blockCommentEnd { "*/" }
+  blockCommentNewline { "\n" }
+  @else blockCommentContent
+}
+
