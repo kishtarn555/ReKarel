@@ -3,7 +3,6 @@ import { HighlightStyle, syntaxHighlighting } from "@codemirror/language"
 import { EditorTheme } from "./editorTheme"
 import { EditorView } from "codemirror";
 
-
 export const SepiaTheme: EditorTheme = {
     color: "#3a3d42",
     backgroundColor: "#fffde5",

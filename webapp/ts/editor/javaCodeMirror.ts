@@ -28,7 +28,9 @@ let javaWithContext = javaparser.configure({
             And: t.operator,
             Or: t.operator,
             Not: t.operator,
-            BuiltIn: t.constant(t.variableName)
+            BuiltIn: t.constant(t.variableName),
+            Start: t.brace,
+            End: t.brace,
 
         }),
         indentNodeProp.add({

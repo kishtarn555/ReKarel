@@ -20031,7 +20031,9 @@
                 And: tags.operator,
                 Or: tags.operator,
                 Not: tags.operator,
-                BuiltIn: tags.constant(tags.variableName)
+                BuiltIn: tags.constant(tags.variableName),
+                Start: tags.brace,
+                End: tags.brace,
             }),
             indentNodeProp.add({
                 Function: continuedIndent({}),
@@ -20329,11 +20331,11 @@
             styleTags({
                 StartProgram: tags.keyword,
                 EndProgram: tags.keyword,
-                StartExecution: tags.keyword,
                 Define: tags.definitionKeyword,
                 Prototipo: tags.definitionKeyword,
                 As: tags.controlKeyword,
-                EndExecution: tags.keyword,
+                StartExecution: tags.moduleKeyword,
+                EndExecution: tags.moduleKeyword,
                 ProgramClass: tags.className,
                 ProgramMain: tags.function(tags.variableName),
                 Comment: tags.comment,
@@ -20348,8 +20350,8 @@
                 Then: tags.controlKeyword,
                 Do: tags.controlKeyword,
                 Times: tags.controlKeyword,
-                Begin: tags.keyword,
-                End: tags.keyword,
+                Begin: tags.brace,
+                End: tags.brace,
                 BoolFunc: tags.atom,
                 Ifzero: tags.atom,
                 And: tags.operator,
@@ -25987,6 +25989,33 @@
         root.style.setProperty("--editor-gutter", theme.gutterColor);
     }
 
+    const DarkCodeTheme = {
+        color: "#9CDCFE",
+        backgroundColor: "#1F1F1F",
+        gutterBackgroundColor: "#1F1F1F",
+        gutterColor: "#6e7681",
+        extensions: [
+            syntaxHighlighting(HighlightStyle.define([
+                { tag: tags.atom, color: "#DCDCAA" },
+                { tag: tags.className, color: "#4EC9B0" },
+                { tag: tags.keyword, color: "#C586C0" },
+                { tag: tags.controlKeyword, color: "#C586C0" },
+                { tag: tags.definitionKeyword, color: "#569CD6" },
+                { tag: tags.number, color: "#b5cea8" },
+                { tag: tags.operator, color: "#efefef" },
+                { tag: tags.brace, color: "#FFD700" },
+                { tag: tags.blockComment, color: "#6A9955", fontStyle: "italic" },
+                { tag: tags.comment, color: "#6A9955", fontStyle: "italic" },
+                { tag: tags.constant(tags.variableName), color: "#DCDCAA" },
+            ])),
+            EditorView.theme({
+                '&.cm-focused .cm-selectionBackground, ::selection': {
+                    backgroundColor: "#b3c6c7"
+                }
+            })
+        ]
+    };
+
     const darkClassicHighlight = {
         color: "var(--bs-body-color)",
         backgroundColor: "rgba(var(--bs-body-bg-rgb), var(--bs-bg-opacity))",
@@ -26107,12 +26136,14 @@
         'rekarel': ReKarelHighlight,
         'sepia': SepiaTheme,
         'omi': OMIHighlight,
+        'code': DarkCodeTheme,
     };
     const LightEditorThemes = {
         'classic': classicHighlight,
         'rekarel': LightReKarelHighlight,
         'sepia': SepiaTheme,
         'omi': OMIHighlight,
+        'code': DarkCodeTheme,
     };
 
     function SetLightTheme(theme) {
