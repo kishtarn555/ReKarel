@@ -33,6 +33,34 @@ export const DarkCodeTheme: EditorTheme = {
     ]
   };
 
+  export const LightCodeTheme: EditorTheme = {
+    color: "#0451A5",
+    backgroundColor: "#FAFAFA",
+    gutterBackgroundColor: "#FAFAFA",
+    gutterColor: "#6e7681",
+    extensions: [
+      
+      syntaxHighlighting(HighlightStyle.define([
+        { tag: tags.atom, color: "#795E26" },
+        { tag: tags.className, color: "#4EC9B0" },
+        { tag: tags.keyword, color: "#AF00DB" },
+        { tag: tags.controlKeyword, color: "#AF00DB" },
+        { tag: tags.definitionKeyword, color: "#569CD6" },
+        { tag: tags.number, color: "#098658" },
+        { tag: tags.operator, color: "#050505" },
+        { tag: tags.brace, color: "#0431FA" },
+        { tag: tags.blockComment, color: "#008000", fontStyle: "italic" },
+        { tag: tags.comment, color: "#008000", fontStyle: "italic" },
+        { tag: tags.constant(tags.variableName), color: "#795E26" },
+      ])),
+      EditorView.theme({
+        '&.cm-focused .cm-selectionBackground, ::selection' : {
+          backgroundColor: "#b3c6c7"
+        }
+      })
+    ]
+  };
+
 
 
   

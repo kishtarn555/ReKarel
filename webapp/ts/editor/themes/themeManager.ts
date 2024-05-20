@@ -1,5 +1,5 @@
 import { classicHighlight } from "./classicHighlight";
-import { DarkCodeTheme } from "./codeTheme";
+import { DarkCodeTheme, LightCodeTheme } from "./codeTheme";
 import { darkClassicHighlight } from "./darkClassicHighlight";
 import { OMIHighlight } from "./omiTheme";
 import { LightReKarelHighlight, ReKarelHighlight } from "./reKarelTheme";
@@ -17,6 +17,6 @@ export const LightEditorThemes = {
     'rekarel': LightReKarelHighlight,
     'sepia': SepiaTheme,
     'omi': OMIHighlight,
-    'code': DarkCodeTheme, 
+    'code': LightCodeTheme, 
 
 }
