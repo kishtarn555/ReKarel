@@ -1,110 +1,29 @@
 <h2>Funciones</h2>
 
-<p>Una funcion en Karel es una instruccion definida por el usuario que puede ser llamada en cualquier momento. Se colocan despues de <span class="text-danger-emphasis">iniciar-programa</span> y arriba del bloque de <span class="text-danger-emphasis">ejecución</span>.</p>
+<p>Una funcion en Karel es una instruccion definida por el usuario que puede ser llamada en cualquier momento. Se colocan despues de <span class="text-danger-emphasis">class program {</span> y arriba del bloque de <span class="text-danger-emphasis">program()</span>.</p>
 
 
 <p>Tienen la siguiente estructura</p>
 
 <div class="border p-2">
-    <span class="text-primary-emphasis">define-nueva-instruccion </span> NOMBRE <span class="text-primary-emphasis">como </span> <br>
+    <span class="text-primary-emphasis">define </span> NOMBRE <span class="text-primary-emphasis"> () </span> <span class="text-danger-emphasis"> {</span> <br>
+
     <pre style="display: inline;">  </pre><span class="text-info-emphasis">INSTRUCCION;</span>
+    <span class="text-danger-emphasis"> }</span>
 </div>    
 <p>A continuación se muestra un ejemplo de una función que gira a la derecha</p>
 
 <div class="border p-2">
-    <span class="text-danger-emphasis"> iniciar-programa</span><br>
-    <pre style="display: inline;">  </pre><span class="text-primary-emphasis">define-nueva-instruccion </span> gira-derecha <span class="text-primary-emphasis">como </span> <br>
-    <pre style="display: inline;">  </pre><span class="text-danger-emphasis">inicio</span> <br>
-    <pre style="display: inline;">    </pre><span class="text-info-emphasis">gira-izquierda;</span> <br>
-    <pre style="display: inline;">    </pre><span class="text-info-emphasis">gira-izquierda;</span> <br>
-    <pre style="display: inline;">    </pre><span class="text-info-emphasis">gira-izquierda;</span> <br>
-    <pre style="display: inline;">  </pre><span class="text-danger-emphasis">fin;</span> <br>
+    <span class="text-danger-emphasis"> class program </span>{<br>
+    <pre style="display: inline;">  </pre><span class="text-primary-emphasis">define </span> giraDerecha () <span class="text-danger-emphasis"> {</span> <br>
+    <pre style="display: inline;">    </pre><span class="text-info-emphasis">turnleft</span>(); <br>
+    <pre style="display: inline;">    </pre><span class="text-info-emphasis">turnleft</span>(); <br>
+    <pre style="display: inline;">    </pre><span class="text-info-emphasis">turnleft</span>(); <br>
+    <pre style="display: inline;">  </pre><span class="text-danger-emphasis">}</span> <br>
     <br>
-    <pre style="display: inline;">  </pre><span class="text-danger-emphasis">inicia-ejecucion</span> <br>
-    <pre style="display: inline;">    </pre>gira-derecha; <br>
-    <pre style="display: inline;">    </pre><span class="text-info-emphasis">apagate;</span> <br>
-    <pre style="display: inline;">  </pre><span class="text-danger-emphasis">termina-ejecucion </span><br>
-    <span class="text-danger-emphasis">finalizar-programa</span> <br>
-</div>
-
-
-<h2>Prototipo</h2>
-
-En Karel pascal, una funcion solo puede llamar a funciones que hayan sido creadas, por lo que el siguiente código compila:
-<div class="border p-2">
-    <span class="text-danger-emphasis"> iniciar-programa</span><br>
-    <pre style="display: inline;">  </pre><span class="text-primary-emphasis">define-nueva-instruccion </span> A <span class="text-primary-emphasis">como </span> <br>
-    <pre style="display: inline;">  </pre><span class="text-danger-emphasis">inicio</span> <br>
-    <pre style="display: inline;">    </pre><span class="text-info-emphasis">avanza;</span> <br>
-    <pre style="display: inline;">  </pre><span class="text-danger-emphasis">fin;</span> <br>
-    <br>    
-    <pre style="display: inline;">  </pre><span class="text-primary-emphasis">define-nueva-instruccion </span> B <span class="text-primary-emphasis">como </span> <br>
-    <pre style="display: inline;">  </pre><span class="text-danger-emphasis">inicio</span> <br>
-    <pre style="display: inline;">    </pre>A; <br>
-    <pre style="display: inline;">  </pre><span class="text-danger-emphasis">fin;</span> <br>
-    <br>
-    <pre style="display: inline;">  </pre><span class="text-danger-emphasis">inicia-ejecucion</span> <br>
-    <pre style="display: inline;">    </pre>B; <br>
-    <pre style="display: inline;">    </pre><span class="text-info-emphasis">apagate;</span> <br>
-    <pre style="display: inline;">  </pre><span class="text-danger-emphasis">termina-ejecucion </span><br>
-    <span class="text-danger-emphasis">finalizar-programa</span> <br>
-</div>
-
-<p>Pero este siguiente código no compila, debido a que la función B no conocerá la existencia de la función A.</p>
-<div class="border p-2">
-    <span class="text-danger-emphasis"> iniciar-programa</span><br>
-
-    <pre style="display: inline;">  </pre><span class="text-primary-emphasis">define-nueva-instruccion </span> B <span class="text-primary-emphasis">como </span> <br>
-    <pre style="display: inline;">  </pre><span class="text-danger-emphasis">inicio</span> <br>
-    <pre style="display: inline;">    </pre>A; <br>
-    <pre style="display: inline;">  </pre><span class="text-danger-emphasis">fin;</span> <br>
-    <br>
-    <pre style="display: inline;">  </pre><span class="text-primary-emphasis">define-nueva-instruccion </span> A <span class="text-primary-emphasis">como </span> <br>
-    <pre style="display: inline;">  </pre><span class="text-danger-emphasis">inicio</span> <br>
-    <pre style="display: inline;">    </pre><span class="text-info-emphasis">avanza;</span> <br>
-    <pre style="display: inline;">  </pre><span class="text-danger-emphasis">fin;</span> <br>
-    <br>
-    <pre style="display: inline;">  </pre><span class="text-danger-emphasis">inicia-ejecucion</span> <br>
-    <pre style="display: inline;">    </pre>B; <br>
-    <pre style="display: inline;">    </pre><span class="text-info-emphasis">apagate;</span> <br>
-    <pre style="display: inline;">  </pre><span class="text-danger-emphasis">termina-ejecucion </span><br>
-    <span class="text-danger-emphasis">finalizar-programa</span> <br>
-</div>
-
-<p>Pare resolver este problema, Karel Pascal nos permite separar la declaración de una función de su definición. Es decir, primero declarar que existe una función bajo cierto nombre, y luego definir que instruccion ejecuta cuando se llama.</p>
-
-<p>Esta separación la logramos utilizando un <span class="text-primary-emphasis">prototipo</span></p>
-
-<p>La estructura de un prototipo es la siguiente:</p>
-
-<div class="border p-2">
-    <span class="text-primary-emphasis">define-prototipo-instruccion </span> NOMBRE; <br>    
-</div>
-
-<p>El código anterior, corregido para que compile sería de la siguiente manera</p>
-
-
-<div class="border p-2">
-    <span class="text-danger-emphasis"> iniciar-programa</span><br>
-    <pre style="display: inline;">  </pre><span class="text-success-emphasis">{ Crea la declaración de A, el prototipo }</span>  <br>
-    <pre style="display: inline;">  </pre><span class="text-primary-emphasis">define-prototipo-instruccion </span> A;<br>
-
-    <br>
-    <pre style="display: inline;">  </pre><span class="text-primary-emphasis">define-nueva-instruccion </span> B <span class="text-primary-emphasis">como </span> <br>
-    <pre style="display: inline;">  </pre><span class="text-danger-emphasis">inicio</span> <br>
-    <pre style="display: inline;">    </pre>A; <br>
-    <pre style="display: inline;">  </pre><span class="text-danger-emphasis">fin;</span> <br>
-    <br>
-    
-    <pre style="display: inline;">  </pre><span class="text-success-emphasis">{ Crea la definicion de A, donde se especifica su comportamiento }</span><br>
-    <pre style="display: inline;">  </pre><span class="text-primary-emphasis">define-nueva-instruccion </span> A <span class="text-primary-emphasis">como </span> <br>
-    <pre style="display: inline;">  </pre><span class="text-danger-emphasis">inicio</span> <br>
-    <pre style="display: inline;">    </pre><span class="text-info-emphasis">avanza;</span> <br>
-    <pre style="display: inline;">  </pre><span class="text-danger-emphasis">fin;</span> <br>
-    <br>
-    <pre style="display: inline;">  </pre><span class="text-danger-emphasis">inicia-ejecucion</span> <br>
-    <pre style="display: inline;">    </pre>B; <br>
-    <pre style="display: inline;">    </pre><span class="text-info-emphasis">apagate;</span> <br>
-    <pre style="display: inline;">  </pre><span class="text-danger-emphasis">termina-ejecucion </span><br>
-    <span class="text-danger-emphasis">finalizar-programa</span> <br>
+    <pre style="display: inline;">  </pre><span class="text-danger-emphasis">program ()</span><span class="text-danger-emphasis"> {</span> <br>
+    <pre style="display: inline;">    </pre>giraDerecha(); <br>
+    <pre style="display: inline;">    </pre><span class="text-info-emphasis">turnoff</span>() <br>
+    <pre style="display: inline;">  </pre><span class="text-danger-emphasis">} </span><br>
+    <span class="text-danger-emphasis">}</span> <br>
 </div>
