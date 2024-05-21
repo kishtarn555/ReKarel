@@ -26266,7 +26266,7 @@
     }
 
     const APP_SETTING = 'appSettings';
-    const SETTINGS_VERSION = "0.4.0";
+    const SETTINGS_VERSION = "0.5.0";
     let appSettings = {
         version: SETTINGS_VERSION,
         interface: "desktop",
@@ -26352,8 +26352,9 @@
             const memorySettings = JSON.parse(jsonString);
             if (memorySettings.version == null)
                 return;
-            if (memorySettings.version !== SETTINGS_VERSION)
-                return;
+            if (memorySettings.version !== SETTINGS_VERSION) {
+                localStorage.removeItem(memorySettings);
+            }
             appSettings = memorySettings;
         }
     }

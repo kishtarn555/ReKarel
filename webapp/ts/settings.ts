@@ -6,7 +6,7 @@ import {  WRStyle } from "./worldRenderer";
 import { DarkEditorThemes } from "./editor/themes/themeManager";
 
 const APP_SETTING = 'appSettings';
-const SETTINGS_VERSION = "0.4.0";
+const SETTINGS_VERSION = "0.5.0";
 
 type fontSizes = number;
 type responsiveInterfaces = "auto" | "desktop" | "mobile";
@@ -115,7 +115,9 @@ function loadSettingsFromMemory() {
     if (jsonString) {
         const memorySettings = JSON.parse(jsonString);
         if (memorySettings.version == null) return;
-        if (memorySettings.version !== SETTINGS_VERSION) return;
+        if (memorySettings.version !== SETTINGS_VERSION) {
+            localStorage.removeItem(memorySettings);
+        }
         appSettings = memorySettings;
     } 
 }
