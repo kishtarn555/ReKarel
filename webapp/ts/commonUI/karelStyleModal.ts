@@ -18,6 +18,8 @@ function parseFormData(): WRStyle {
         beeperColor: $('#beeperColor').val() as string,
         wallColor: $('#wallColor').val() as string,
         waffleColor: $('#waffleColor').val() as string,
+        gutterSelectionBackgroundColor: $('#gutterSelectionBackgroundColor').val() as string,
+        gutterSelectionColor: $('#gutterSelectionColor').val() as string,
     };
 }
 
@@ -35,6 +37,8 @@ function setFormData(style: WRStyle): void {
     $('#beeperColor').val(style.beeperColor);
     $('#wallColor').val(style.wallColor);
     $('#waffleColor').val(style.waffleColor);
+    $('#gutterSelectionBackgroundColor').val(style.gutterSelectionBackgroundColor);
+    $('#gutterSelectionColor').val(style.gutterSelectionColor);
 }
 
 

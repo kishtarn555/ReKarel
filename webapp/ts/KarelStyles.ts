@@ -14,6 +14,8 @@ export const DefaultWRStyle: WRStyle = {
     beeperColor: "#000000",
     wallColor:"#000000",    
     waffleColor: "#0d6dfd",
+    gutterSelectionBackgroundColor: "#86afd5",
+    gutterSelectionColor: "#000000",
 }
 export const WR_CLEAN : WRStyle = {
     disabled: '#4f4f4f',
@@ -29,6 +31,8 @@ export const WR_CLEAN : WRStyle = {
     beeperColor: "#000000",
     wallColor:"#000000",
     waffleColor: "#0d6dfd",
+    gutterSelectionBackgroundColor: "#86afd5",
+    gutterSelectionColor: "#000000",
 }
 
 export const WR_DARK : WRStyle = {
@@ -44,7 +48,9 @@ export const WR_DARK : WRStyle = {
     beeperBackgroundColor: "#005608",    
     beeperColor: "#ffffff",
     wallColor:"#f1f1f1",
-    waffleColor:"#82e8ff"
+    waffleColor:"#82e8ff",
+    gutterSelectionBackgroundColor: "#352f7f",
+    gutterSelectionColor: "#FCFCFC",
 }
 
 
@@ -63,4 +69,6 @@ export const WR_CONTRAST : WRStyle = {
     beeperColor: "#ffffff",
     wallColor:"#000000",
     waffleColor:"#ff0000",
+    gutterSelectionBackgroundColor: "#000000",
+    gutterSelectionColor: "#ffffff",
 }

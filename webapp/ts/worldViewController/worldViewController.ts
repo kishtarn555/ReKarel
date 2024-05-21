@@ -3,6 +3,7 @@ import { KarelController } from "../KarelController";
 import { World } from "../../../js/karel";
 import { SelectionBox, SelectionWaffle } from "./waffle";
 import { CellSelection, SelectionState } from "./selection";
+import { CellPair } from "../cellPair";
 
 
 type Gizmos = {
@@ -11,15 +12,19 @@ type Gizmos = {
     VerticalScrollElement: JQuery,
 }
 
+type MouseState = {
+    cursorX: number,
+    cursorY: number,
+    cellPair: CellPair,
+}
+
+
 class WorldViewController {
     renderer: WorldRenderer
     container: HTMLElement
     gizmos: Gizmos
     scale: number;
-    state: {
-        cursorX: number,
-        cursorY: number,
-    }
+    state: MouseState
     selection: CellSelection;
     private lock: boolean;
     private karelController : KarelController;
@@ -43,6 +48,7 @@ class WorldViewController {
         this.state = {
             cursorX: 0,
             cursorY: 0,
+            cellPair: {r:0, c:0}
         }
         this.gizmos = gizmos;
         this.scale = 1;
@@ -111,6 +117,7 @@ class WorldViewController {
             dc: c <= c2 ? 1 : -1,
             state:state
         };
+        this.UpdateGutter();
         this.UpdateWaffle();
     }
 
@@ -190,9 +197,10 @@ class WorldViewController {
         let y = (e.clientY - boundingBox.top) * canvas.height / boundingBox.height;
         this.state.cursorX = x / this.renderer.scale;
         this.state.cursorY = y / this.renderer.scale;
+        this.state.cellPair = this.renderer.PointToCell(this.state.cursorX, this.state.cursorY);
 
         if (this.selection.state === "selecting") {
-            let cell = this.renderer.PointToCell(this.state.cursorX, this.state.cursorY);
+            let cell = this.state.cellPair;
             this.ExtendSelection(cell.r, cell.c, "selecting");
         }
 
@@ -540,9 +548,12 @@ class WorldViewController {
 
     Update() {
         this.karelController.world.dirty=false;
-        this.renderer.Draw(this.karelController.world);
+        this.renderer.Draw(this.karelController.world, this.selection);
     }
 
+    UpdateGutter() {
+        this.renderer.DrawGutters(this.selection);
+    }
    
 
     UpdateScrollElements() {

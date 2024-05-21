@@ -1,4 +1,6 @@
 import { World } from "../../js/karel";
+import { CellPair } from "./cellPair";
+import { CellSelection } from "./worldViewController/selection";
 
 type WRStyle = {
     beeperBackgroundColor: string,
@@ -13,7 +15,9 @@ type WRStyle = {
     gutterBackgroundColor: string,
     gutterColor: string,
     wallColor:string,
-    waffleColor:string
+    waffleColor:string,
+    gutterSelectionColor:string,
+    gutterSelectionBackgroundColor:string
 }
 
 
@@ -111,7 +115,7 @@ class WorldRenderer {
         return this.world.w;
     }
 
-    private DrawVerticalGutter(): void {
+    private DrawVerticalGutter(selection: CellSelection | null = null): void {
         let h = this.GetHeight();
         let w = this.GetWidth();
         
@@ -119,6 +123,19 @@ class WorldRenderer {
         this.canvasContext.fillRect(0, 0, this.GutterSize, h - this.GutterSize);
         let rows = this.GetRowCount();
         this.canvasContext.strokeStyle = this.style.gridBorderColor;
+        let r1=-1,r2=-1;
+        if (selection != null) {
+            r1 = Math.min(selection.r, selection.r + (selection.rows-1)*selection.dr)-this.origin.f;
+            r2 = Math.max(selection.r, selection.r + (selection.rows-1)*selection.dr)-this.origin.f;
+            
+            let sr1 = h-(this.GutterSize+ (r1) *this.CellSize);
+            let sr2 = h-(this.GutterSize+ (r2+1) *this.CellSize);
+            this.canvasContext.fillStyle = this.style.gutterSelectionBackgroundColor;
+            
+            this.canvasContext.fillRect(0, sr2, this.GutterSize, sr1-sr2);
+
+
+        }
         this.canvasContext.beginPath();
         for (let i =0; i < rows; i++) {
             this.canvasContext.moveTo(0, h-(this.GutterSize+ (i+1) *this.CellSize)+0.5);
@@ -132,6 +149,11 @@ class WorldRenderer {
         this.canvasContext.textBaseline = "middle";
         for (let i =0; i < rows; i++) {
             // this.canvasContext.measureText()
+            if (i < r1 || i > r2) {
+                this.canvasContext.fillStyle= this.style.gutterColor;
+            } else {
+                this.canvasContext.fillStyle= this.style.gutterSelectionColor;
+            }
             if (i+this.origin.f <= this.GetWorldRowCount())
                 this.DrawTextVerticallyAlign(
                     `${i+this.origin.f}`, 
@@ -145,13 +167,26 @@ class WorldRenderer {
 
     }
 
-    private DrawHorizontalGutter(): void {
+    private DrawHorizontalGutter(selection: CellSelection | null = null): void {
         let h = this.GetHeight();
         let w = this.GetWidth();
         this.canvasContext.fillStyle = this.style.gutterBackgroundColor;
         this.canvasContext.fillRect(this.GutterSize, h - this.GutterSize, w, h);
         let cols = this.GetColCount();
         this.canvasContext.strokeStyle = this.style.gridBorderColor;
+        let c1 = -1, c2=-1;        
+        if (selection != null) {
+            c1 = Math.min(selection.c, selection.c + (selection.cols-1)*selection.dc)-this.origin.c;
+            c2 = Math.max(selection.c, selection.c + (selection.cols-1)*selection.dc)-this.origin.c;
+            let sc1 = (this.GutterSize+ (c1) *this.CellSize);
+            let sc2 = (this.GutterSize+ (c2+1) *this.CellSize);
+            this.canvasContext.fillStyle = this.style.gutterSelectionBackgroundColor;
+            
+            this.canvasContext.fillRect(sc1, h - this.GutterSize, sc2-sc1, this.GutterSize+1);
+            
+
+        }
+        
         this.canvasContext.beginPath();
         for (let i =0; i < cols; i++) {
             this.canvasContext.moveTo(this.GutterSize+(i+1)*this.CellSize-0.5, h);            
@@ -163,6 +198,11 @@ class WorldRenderer {
         this.canvasContext.textAlign = "center";
         this.canvasContext.textBaseline = "middle";
         for (let i =0; i < cols; i++) {
+            if (i < c1 || i > c2) {
+                this.canvasContext.fillStyle= this.style.gutterColor;
+            } else {
+                this.canvasContext.fillStyle= this.style.gutterSelectionColor;
+            }
             // this.canvasContext.measureText()            
             if (i+this.origin.c <= this.GetWorldColCount())
                 this.DrawTextVerticallyAlign(
@@ -174,13 +214,13 @@ class WorldRenderer {
         }
     }
 
-    private DrawGutters(): void {
+    DrawGutters(selection: CellSelection | null = null): void {
         let h = this.GetHeight();
         let w = this.GetWidth();
         this.canvasContext.fillStyle = this.style.gridBorderColor;
         this.canvasContext.fillRect(0, h-this.GutterSize, this.GutterSize, this.GutterSize);
-        this.DrawVerticalGutter();
-        this.DrawHorizontalGutter();
+        this.DrawVerticalGutter(selection);
+        this.DrawHorizontalGutter(selection);
     }
 
     private DrawGrid(): void {
@@ -387,13 +427,13 @@ class WorldRenderer {
         }
     }
 
-    Draw(world: World) {        
+    Draw(world: World, selection: CellSelection | null = null) {        
         this.world= world;
         this.ResetTransform();
         let h = this.GetHeight();
         let w = this.GetWidth();
         this.canvasContext.clearRect(0, 0, w, h);
-        this.DrawGutters();
+        this.DrawGutters(selection);
         this.DrawBackground();
         this.DrawDumpCells();
         this.DrawGrid();        
@@ -420,7 +460,7 @@ class WorldRenderer {
         return "north";
     }
 
-    PointToCell(x:number, y:number) : {r:number, c: number} {
+    PointToCell(x:number, y:number) : CellPair {
         let c = (x-this.GutterSize)/this.CellSize;
         let r = ((this.GetHeight()-y)-this.GutterSize)/this.CellSize;
 
