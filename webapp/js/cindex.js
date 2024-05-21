@@ -26354,6 +26354,7 @@
                 return;
             if (memorySettings.version !== SETTINGS_VERSION) {
                 localStorage.removeItem(memorySettings);
+                return;
             }
             appSettings = memorySettings;
         }

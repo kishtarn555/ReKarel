@@ -117,6 +117,7 @@ function loadSettingsFromMemory() {
         if (memorySettings.version == null) return;
         if (memorySettings.version !== SETTINGS_VERSION) {
             localStorage.removeItem(memorySettings);
+            return;
         }
         appSettings = memorySettings;
     } 
