@@ -221,6 +221,8 @@ class WorldRenderer {
         this.canvasContext.fillRect(0, h-this.GutterSize, this.GutterSize, this.GutterSize);
         this.DrawVerticalGutter(selection);
         this.DrawHorizontalGutter(selection);
+        this.DrawGutterWalls();
+
     }
 
     private DrawGrid(): void {
@@ -386,6 +388,20 @@ class WorldRenderer {
         this.ResetTransform();
     }
 
+    private DrawGutterWalls() {
+        for (let i =0; i < this.GetRowCount(); i++) {
+            let walls = this.world.walls(i + this.origin.f, this.origin.c);
+            if ((walls & (1<<0))!==0) {
+                this.DrawWall(i,0, "west");
+            }
+        } 
+        for (let j =0; j < this.GetColCount(); j++) {
+            let walls = this.world.walls(this.origin.f, j + this.origin.c);
+            if ((walls & (1<<3))!==0) {
+                this.DrawWall(0,j, "south");
+            }
+        }
+    }
     private DrawWalls() {
         for (let i =0; i < this.GetRowCount(); i++) {
             for (let j =0; j < this.GetColCount(); j++) {
