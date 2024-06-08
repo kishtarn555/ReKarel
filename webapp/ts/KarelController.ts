@@ -273,9 +273,9 @@ class KarelController {
         }
 
         let runtime = this.GetRuntime();
-        runtime.disableStackEvents= true; // FIXME: This should only be done when no breakpoints
+        // runtime.disableStackEvents= true; // FIXME: This should only be done when no breakpoints
         while ( runtime.step() && (ignoreBreakpoints || !this.CheckForBreakPointOnCurrentLine()));
-        runtime.disableStackEvents= false; // FIXME: This should only be done when no breakpoints
+        // runtime.disableStackEvents= false; // FIXME: This should only be done when no breakpoints
 
         // this.desktopController.CheckUpdate();
         
