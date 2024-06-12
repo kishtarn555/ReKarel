@@ -25960,6 +25960,7 @@
     function HookWorldSaveModal(modal, karelController) {
         $(modal.inputBtn).on("click", () => setInputWorld(modal, karelController));
         $(modal.outputBtn).on("click", () => setOutputWorld(modal, karelController));
+        $(modal.inputField).on("change", () => { setFileNameLink(modal); });
     }
 
     function getCode(editor) {

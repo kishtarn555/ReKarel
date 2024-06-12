@@ -68,4 +68,6 @@ function setFileNameLink(modal: WorldSaveModal) {
 export function HookWorldSaveModal(modal:WorldSaveModal, karelController:KarelController) {
     $(modal.inputBtn).on("click", ()=>setInputWorld(modal,karelController) );
     $(modal.outputBtn).on("click", ()=>setOutputWorld(modal,karelController) );
+
+    $(modal.inputField).on("change", ()=>{setFileNameLink(modal)});
 }
