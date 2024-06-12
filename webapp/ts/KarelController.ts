@@ -4,7 +4,7 @@ import { EditorView } from "codemirror";
 import { ERRORCODES } from "./errorCodes";
 import { breakpointState, setLanguage } from "./editor/editor";
 
-type messageType = "info"|"success"|"error"|"raw";
+type messageType = "info"|"success"|"error"|"raw"|"warning";
 type MessageCallback = (message:string, type:messageType)=>void;
 type ControllerState = "unstarted"| "running" | "finished" | "paused";
 type StateChangeCallback = (caller:KarelController, newState:ControllerState)=>void;
@@ -124,6 +124,7 @@ class KarelController {
         this.Reset();
         let runtime = this.GetRuntime();        
         runtime.load(compiled);
+        runtime.disableStackEvents = false;
         // FIXME: We skip validators, they seem useless, but I'm unsure
         
         runtime.start();
@@ -273,9 +274,16 @@ class KarelController {
         }
 
         let runtime = this.GetRuntime();
-        // runtime.disableStackEvents= true; // FIXME: This should only be done when no breakpoints
-        while ( runtime.step() && (ignoreBreakpoints || !this.CheckForBreakPointOnCurrentLine()));
         // runtime.disableStackEvents= false; // FIXME: This should only be done when no breakpoints
+        // runtime.disableStackEvents= true; // FIXME: This should only be done when no breakpoints
+        while ( runtime.step() && (ignoreBreakpoints || !this.CheckForBreakPointOnCurrentLine()) && runtime.state.ic <= 200000);
+        
+        if (runtime.state.running && (ignoreBreakpoints || !this.CheckForBreakPointOnCurrentLine())) {
+            runtime.disableStackEvents = true;
+            this.SendMessage("Karel alcanzó las 200,000 instrucciones, Karel cambiara al modo rápido de ejecución, algunas caracteristicas estarán desactivadas", "warning");
+            
+            while ( runtime.step() && (ignoreBreakpoints || !this.CheckForBreakPointOnCurrentLine()));
+        }
 
         // this.desktopController.CheckUpdate();
         

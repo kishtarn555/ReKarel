@@ -421,7 +421,7 @@ class DesktopController {
     }
     
 
-    public ConsoleMessage(message: string, type:"info"|"success"|"error"|"raw" = "info") {
+    public ConsoleMessage(message: string, type:"info"|"success"|"error"|"raw"|"warning" = "info") {
         let style="info";
         switch (type) {
             case "info":
@@ -430,9 +430,12 @@ class DesktopController {
             case "success":
                 style = "success";
                 break;
-                case  "error":
-                    style="danger";
-                    break;
+            case  "error":
+                style="danger";
+                break;
+            case  "warning":
+                style="warning";
+                break;
             case "raw":
                 style="raw";
                 break;
