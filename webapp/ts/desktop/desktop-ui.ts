@@ -12,6 +12,7 @@ import { BeeperToolbar, EvaluateToolbar, KarelToolbar, WallToolbar } from './com
 import { CallStack, CallStackUI } from './callStack';
 import { ConsoleTab, KarelConsole } from './console';
 import { DefaultWRStyle } from '../KarelStyles';
+import { ControlBar, ControlBarData } from './controlBar';
 
 
 type FocusToolbar = {
@@ -21,13 +22,6 @@ type FocusToolbar = {
     
 }
 
-type ExecutionToolbar = {
-    reset: JQuery,
-    compile: JQuery,
-    run: JQuery,
-    step: JQuery,
-    future: JQuery,
-}
 
 
 interface DesktopElements {
@@ -38,14 +32,7 @@ interface DesktopElements {
     worldZoom: JQuery,
     lessZoom: JQuery,
     moreZoom: JQuery,
-    controlBar: {
-        execution: ExecutionToolbar,
-        beeperInput: JQuery,
-        infiniteBeeperInput: JQuery,
-        delayInput: JQuery,
-        delayAdd: JQuery,
-        delayRemove: JQuery,
-    },
+    controlBar: ControlBarData,
     toolbar: {
         beepers: BeeperToolbar
         karel: KarelToolbar
@@ -67,11 +54,7 @@ class DesktopController {
     lessZoom: JQuery;
     moreZoom: JQuery;
     
-    executionReset : JQuery;
-    executionCompile : JQuery;
-    executionRun : JQuery;
-    executionStep : JQuery;
-    executionEnd : JQuery;
+    controlbar: ControlBar
 
     beeperBagInput: JQuery
     infiniteBeeperInput: JQuery
@@ -106,12 +89,6 @@ class DesktopController {
         this.lessZoom = elements.lessZoom;
         this.moreZoom = elements.moreZoom;
 
-        this.executionReset = elements.controlBar.execution.reset;
-        this.executionCompile = elements.controlBar.execution.compile;
-        this.executionRun = elements.controlBar.execution.run;
-        this.executionStep = elements.controlBar.execution.step;
-        this.executionEnd = elements.controlBar.execution.future;
-
         this.beeperBagInput = elements.controlBar.beeperInput;
         this.infiniteBeeperInput = elements.controlBar.infiniteBeeperInput;
 
@@ -126,12 +103,7 @@ class DesktopController {
 
         this.focusToolbar = elements.toolbar.focus;
 
-        // this.contextToggler = elements.context.toggler;
-        // this.contextContainer = elements.context.container;
-        // this.contextBeepers = elements.context.beepers;
-        // this.contextKarel = elements.context.karel;        
-        // this.contextWall = elements.context.wall;
-
+        
         
         this.console =  new KarelConsole(elements.console);
         
@@ -149,9 +121,10 @@ class DesktopController {
         );
         this.contextMenu = new DesktopContextMenu(elements.context, elements.worldCanvas, this.worldController);
         this.karelController.RegisterStateChangeObserver(this.OnKarelControllerStateChange.bind(this));
-
+        
         this.isControlInPlayMode = false;
         this.callStack = new CallStack(elements.callStack);
+        this.controlbar = new ControlBar(elements.controlBar, this.worldController);
 
     }
 
@@ -193,7 +166,7 @@ class DesktopController {
             this.worldZoom.val( zooms[nzoom]).trigger('change');;
         });
 
-        this.ConnectExecutionButtonGroup();
+        this.controlbar.Init();
 
         this.ConnectToolbar();        
         
@@ -202,190 +175,23 @@ class DesktopController {
         this.ConnectConsole();
     }
 
-
-    private ConnectExecutionButtonGroup() {
-        this.executionCompile.on("click", ()=>this.karelController.Compile());
-        this.executionReset.on("click", ()=>this.ResetExecution());
-        this.executionStep.on("click", ()=>this.Step());
-        this.executionEnd.on("click", ()=> this.RunTillEnd());
-        this.executionRun.on("click", ()=> {
-            if (!this.isControlInPlayMode) {
-                this.AutoStep();
-            } else {
-                this.PauseStep();
-            }            
-        });
-        this.delayInput.on("change", () => {
-            let delay:number = parseInt(this.delayInput.val() as string);
-            this.karelController.ChangeAutoStepDelay(delay);
-        });
-
-        this.delayAdd.on("click", ()=>{            
-            let delay:number = parseInt(this.delayInput.val() as string);
-            delay += 50;
-            this.delayInput.val(delay);
-            this.karelController.ChangeAutoStepDelay(delay);
-        });
-        this.delayRemove.on("click", ()=>{            
-            let delay:number = parseInt(this.delayInput.val() as string);
-            delay -= 50;
-            delay = delay < 0 ? 0:delay;
-            this.delayInput.val(delay);
-            this.karelController.ChangeAutoStepDelay(delay);
-        });
-        this.beeperBagInput.on("change", () => this.OnBeeperInputChange());
-        this.infiniteBeeperInput.on("click", () => this.ToggleInfiniteBeepers());
-        this.karelController.RegisterStepController((_ctr, _state)=> {this.UpdateBeeperBag()})
-        this.karelController.RegisterNewWorldObserver((_ctr, _state, _newInstance)=> {this.UpdateBeeperBag()})
-    }
-    
-    private UpdateBeeperBag() {
-        const amount = this.worldController.GetBeepersInBag()
-        
-        this.beeperBagInput.val(amount);
-        if (amount === -1) {
-            this.ActivateInfiniteBeepers();
-        } else {
-            this.DeactivateInfiniteBeepers();
-        }
-    }
-
-    private ActivateInfiniteBeepers() {
-        this.beeperBagInput.hide();
-        this.infiniteBeeperInput.removeClass("btn-body");
-        this.infiniteBeeperInput.addClass("btn-info");
-    }
-
-    
-    private DeactivateInfiniteBeepers() {
-        this.beeperBagInput.show();
-        this.infiniteBeeperInput.removeClass("btn-info");
-        this.infiniteBeeperInput.addClass("btn-body");
-    }
-
-
-    private ToggleInfiniteBeepers() {
-        if (this.worldController.GetBeepersInBag() !== -1) {
-            this.ActivateInfiniteBeepers();
-            this.worldController.SetBeepersInBag(-1);
-        } else {
-            this.DeactivateInfiniteBeepers();
-            this.worldController.SetBeepersInBag(0);
-            this.UpdateBeeperBag();
-
-        }
-    }
-    
-    private OnBeeperInputChange() {
-        if (this.karelController.GetState() !== "unstarted") {
-            return;
-        }
-        let beeperAmmount = parseInt(this.beeperBagInput.val() as string);
-        this.worldController.SetBeepersInBag(beeperAmmount);
-    }
-
-    private ResetExecution() {
-        this.karelController.Reset();
-        this.UpdateBeeperBag();
-    }
-    
-    private AutoStep() {
-        let delay:number = parseInt(this.delayInput.val() as string);
-        this.karelController.StartAutoStep(delay);
-        this.SetPlayMode();
-    }
-    
-    private PauseStep() {
-        this.karelController.Pause();
-    }
-
-    private RunTillEnd() {
-        this.karelController.RunTillEnd();        
-        this.UpdateBeeperBag();
-    }
-    private Step() {
-        this.karelController.Step();
-        this.UpdateBeeperBag();
-    }
-
-    private DisableControlBar() {
-        this.executionCompile.attr("disabled", "");
-        this.executionRun.attr("disabled", "");
-        this.executionStep.attr("disabled", "");
-        this.executionEnd.attr("disabled", "");
-        this.beeperBagInput.attr("disabled", "");
-        this.infiniteBeeperInput.attr("disabled", "");
-    }
-
-    
-    private EnableControlBar() {
-        this.executionCompile.removeAttr("disabled");
-        this.executionRun.removeAttr("disabled");
-        this.executionStep.removeAttr("disabled");
-        this.executionEnd.removeAttr("disabled");
-        this.beeperBagInput.removeAttr("disabled");
-        this.infiniteBeeperInput.removeAttr("disabled");
-
-        
-        this.executionRun.html('<i class="bi bi-play-fill"></i>');
-    }
-
-    private SetPlayMode() {
-        this.isControlInPlayMode = true;
-
-        this.executionCompile.attr("disabled", "");
-        this.executionStep.attr("disabled", "");
-        this.executionEnd.attr("disabled", "");
-        this.beeperBagInput.attr("disabled", "");
-        this.infiniteBeeperInput.attr("disabled", "");
-
-        
-        this.executionRun.html('<i class="bi bi-pause-fill"></i>');
-    }
-
-    
-    private SetPauseMode() {
-        this.isControlInPlayMode = false;
-
-        this.executionCompile.attr("disabled", "");
-        this.beeperBagInput.attr("disabled", "");
-        this.infiniteBeeperInput.attr("disabled", "");
-
-        this.executionStep.removeAttr("disabled");
-        this.executionEnd.removeAttr("disabled");
-        this.executionRun.removeAttr("disabled");
-        
-        this.executionRun.html('<i class="bi bi-play-fill"></i>');
-    }
-
     private OnKarelControllerStateChange(sender: KarelController, state: ControllerState) {
         if (state === "running") {            
             freezeEditors(this.editor);
-            this.SetPauseMode();
             this.worldController.Lock();
         }
         if (state === "finished") {
-            this.isControlInPlayMode = false;
-            this.DisableControlBar();
             if (this.karelController.EndedOnError()) {
                 this.worldController.ErrorMode();
             }
             freezeEditors(this.editor);
-            
             this.worldController.Lock();
 
-        } else if (state === "unstarted") {            
-            this.isControlInPlayMode = false;
-
-            this.EnableControlBar();
+        } else if (state === "unstarted") {  
             unfreezeEditors(this.editor);
             this.worldController.UnLock();
-
             this.worldController.NormalMode();
-            this.UpdateBeeperBag();
-        } else if (state === "paused") {
-            this.SetPauseMode();
-        }
+        } 
     }
 
     private ConnectToolbar() {        
