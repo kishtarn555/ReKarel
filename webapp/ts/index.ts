@@ -88,6 +88,8 @@ let DesktopUI = new DesktopController(
                 compile: $("#desktopCompileKarel"),
                 run: $("#dekstopRunKarel"),
                 step: $("#desktopStepProgram"),
+                stepOut: $("#desktopStepOutProgram"),
+                stepOver: $("#desktopStepOverProgram"),
                 future: $("#desktopFutureProgram"),
             },
             beeperInput: $("#beeperBag"),

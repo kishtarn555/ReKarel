@@ -18,7 +18,15 @@
                 </button>
                 <button type="button" class="btn btn-body p-1 ps-2 pe-2 border-secondary"
                     id="desktopStepProgram" title="Avanza un paso el programa">
-                    <i class="bi bi-skip-forward-fill"></i>
+                    @@include('../svg/stepOn.svg')
+                </button>
+                <button type="button" class="btn btn-body p-1 ps-2 pe-2 border-secondary"
+                    id="desktopStepOverProgram" title="Ejecuta hasta salir de la función actual">
+                    @@include('../svg/stepOver.svg')
+                </button>
+                <button type="button" class="btn btn-body p-1 ps-2 pe-2 border-secondary"
+                    id="desktopStepOutProgram" title="Ejecuta hasta salir de la función actual">
+                    @@include('../svg/stepOff.svg')
                 </button>
                 <button type="button" class="btn btn-body p-1 ps-2 pe-2 border-secondary"
                     title="Ver resultado" id="desktopFutureProgram">

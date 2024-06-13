@@ -25577,6 +25577,8 @@
             this.isControlInPlayMode = true;
             this.ui.execution.compile.attr("disabled", "");
             this.ui.execution.step.attr("disabled", "");
+            this.ui.execution.stepOver.attr("disabled", "");
+            this.ui.execution.stepOut.attr("disabled", "");
             this.ui.execution.future.attr("disabled", "");
             this.ui.beeperInput.attr("disabled", "");
             this.ui.infiniteBeeperInput.attr("disabled", "");
@@ -25588,6 +25590,8 @@
             this.ui.beeperInput.attr("disabled", "");
             this.ui.infiniteBeeperInput.attr("disabled", "");
             this.ui.execution.step.removeAttr("disabled");
+            this.ui.execution.stepOver.removeAttr("disabled");
+            this.ui.execution.stepOut.removeAttr("disabled");
             this.ui.execution.future.removeAttr("disabled");
             this.ui.execution.run.removeAttr("disabled");
             this.ui.execution.run.html('<i class="bi bi-play-fill"></i>');
@@ -25596,6 +25600,8 @@
             this.ui.execution.compile.attr("disabled", "");
             this.ui.execution.run.attr("disabled", "");
             this.ui.execution.step.attr("disabled", "");
+            this.ui.execution.stepOver.attr("disabled", "");
+            this.ui.execution.stepOut.attr("disabled", "");
             this.ui.execution.future.attr("disabled", "");
             this.ui.beeperInput.attr("disabled", "");
             this.ui.infiniteBeeperInput.attr("disabled", "");
@@ -25604,6 +25610,8 @@
             this.ui.execution.compile.removeAttr("disabled");
             this.ui.execution.run.removeAttr("disabled");
             this.ui.execution.step.removeAttr("disabled");
+            this.ui.execution.stepOver.removeAttr("disabled");
+            this.ui.execution.stepOut.removeAttr("disabled");
             this.ui.execution.future.removeAttr("disabled");
             this.ui.beeperInput.removeAttr("disabled");
             this.ui.infiniteBeeperInput.removeAttr("disabled");
@@ -26710,6 +26718,8 @@
                 compile: $("#desktopCompileKarel"),
                 run: $("#dekstopRunKarel"),
                 step: $("#desktopStepProgram"),
+                stepOut: $("#desktopStepOutProgram"),
+                stepOver: $("#desktopStepOverProgram"),
                 future: $("#desktopFutureProgram"),
             },
             beeperInput: $("#beeperBag"),
