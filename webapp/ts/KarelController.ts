@@ -185,36 +185,24 @@ class KarelController {
       }
 
     Step() {
-        if (this.state === "finished") {
-            //Ignore if the code already finished running
-            return;
-        }
-        if (!this.running) {
-            if (!this.StartRun()) {
-                // Code Failed
-                return;
-            }
-        }
+        if (!this.StartStep()) return;
         
         let runtime = this.GetRuntime();
         runtime.step();
-        this.HighlightCurrentLine();
-        // TODO: Move this to notify step!
-        // this.desktopController.TrackFocusToKarel();
-        // this.desktopController.CheckUpdate();
+        this.EndStep();
+    }
 
-        if (!runtime.state.running) {            
-            this.EndMessage();
-            this.ChangeState("finished");
+    StepOver() {
+        if (!this.StartStep()) return;
+        
+        const runtime = this.GetRuntime();
+        const startWStackSize = runtime.state.stackSize;
+        runtime.step();
+        if (runtime.state.stackSize > startWStackSize) {
+            while (this.PerformAutoStep() && runtime.state.stackSize > startWStackSize);
+            runtime.step();
         }
-        if (this.CheckForBreakPointOnCurrentLine()) {
-            this.Pause();
-            this.NotifyStep();
-            return;
-        }
-
-        this.NotifyStep();
-
+        this.EndStep();
     }
 
     StartAutoStep(delay:number) {        
@@ -276,16 +264,8 @@ class KarelController {
         let runtime = this.GetRuntime();
         // runtime.disableStackEvents= false; // FIXME: This should only be done when no breakpoints
         // runtime.disableStackEvents= true; // FIXME: This should only be done when no breakpoints
-        while ( runtime.step() && (ignoreBreakpoints || !this.CheckForBreakPointOnCurrentLine()) && runtime.state.ic <= 200000);
+        while (this.PerformAutoStep(ignoreBreakpoints));
         
-        if (runtime.state.running && (ignoreBreakpoints || !this.CheckForBreakPointOnCurrentLine())) {
-            runtime.disableStackEvents = true;
-            this.SendMessage("Karel alcanzó las 200,000 instrucciones, Karel cambiará al modo rápido de ejecución, la pila de llamadas dejará de actualizarse", "warning");
-            
-            while ( runtime.step() && (ignoreBreakpoints || !this.CheckForBreakPointOnCurrentLine()));
-            runtime.disableStackEvents = false;
-
-        }
 
         // this.desktopController.CheckUpdate();
         
@@ -343,6 +323,49 @@ class KarelController {
     LoadWorld(world: Document) {
         this.world.load(world);
         this.NotifyNewWorld(false);
+    }
+
+    private StartStep() {
+        if (this.state === "finished") {
+            //Ignore if the code already finished running
+            return false;
+        }
+        if (!this.running) {
+            if (!this.StartRun()) {
+                // Code Failed
+                return false;
+            }
+        }
+        return true;
+    }
+
+    private EndStep() {
+        this.HighlightCurrentLine();
+        
+        if (!this.GetRuntime().state.running) {            
+            this.EndMessage();
+            this.ChangeState("finished");
+        }
+        if (this.CheckForBreakPointOnCurrentLine()) {
+            this.Pause();
+            this.NotifyStep();
+            return;
+        }
+
+        this.NotifyStep();
+    }
+
+    private PerformAutoStep(ignoreBreakpoints:boolean = false) {
+        const runtime = this.GetRuntime();
+        const result = runtime.step();
+        
+        if (runtime.state.ic >= 200000) {
+            runtime.disableStackEvents = true;
+            this.SendMessage("Karel alcanzó las 200,000 instrucciones, Karel cambiará al modo rápido de ejecución, la pila de llamadas dejará de actualizarse", "warning");
+        }
+        
+        
+        return result && (ignoreBreakpoints || !this.CheckForBreakPointOnCurrentLine());
     }
 
     private SendMessage(message: string, type: messageType) {

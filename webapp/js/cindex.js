@@ -24426,32 +24426,24 @@
             }
         }
         Step() {
-            if (this.state === "finished") {
-                //Ignore if the code already finished running
+            if (!this.StartStep())
                 return;
-            }
-            if (!this.running) {
-                if (!this.StartRun()) {
-                    // Code Failed
-                    return;
-                }
-            }
             let runtime = this.GetRuntime();
             runtime.step();
-            this.HighlightCurrentLine();
-            // TODO: Move this to notify step!
-            // this.desktopController.TrackFocusToKarel();
-            // this.desktopController.CheckUpdate();
-            if (!runtime.state.running) {
-                this.EndMessage();
-                this.ChangeState("finished");
-            }
-            if (this.CheckForBreakPointOnCurrentLine()) {
-                this.Pause();
-                this.NotifyStep();
+            this.EndStep();
+        }
+        StepOver() {
+            if (!this.StartStep())
                 return;
+            const runtime = this.GetRuntime();
+            const startWStackSize = runtime.state.stackSize;
+            runtime.step();
+            if (runtime.state.stackSize > startWStackSize) {
+                while (this.PerformAutoStep() && runtime.state.stackSize > startWStackSize)
+                    ;
+                runtime.step();
             }
-            this.NotifyStep();
+            this.EndStep();
         }
         StartAutoStep(delay) {
             this.StopAutoStep(); //Avoid thread leak
@@ -24504,15 +24496,8 @@
             let runtime = this.GetRuntime();
             // runtime.disableStackEvents= false; // FIXME: This should only be done when no breakpoints
             // runtime.disableStackEvents= true; // FIXME: This should only be done when no breakpoints
-            while (runtime.step() && (ignoreBreakpoints || !this.CheckForBreakPointOnCurrentLine()) && runtime.state.ic <= 200000)
+            while (this.PerformAutoStep(ignoreBreakpoints))
                 ;
-            if (runtime.state.running && (ignoreBreakpoints || !this.CheckForBreakPointOnCurrentLine())) {
-                runtime.disableStackEvents = true;
-                this.SendMessage("Karel alcanzó las 200,000 instrucciones, Karel cambiará al modo rápido de ejecución, la pila de llamadas dejará de actualizarse", "warning");
-                while (runtime.step() && (ignoreBreakpoints || !this.CheckForBreakPointOnCurrentLine()))
-                    ;
-                runtime.disableStackEvents = false;
-            }
             // this.desktopController.CheckUpdate();
             this.HighlightCurrentLine();
             if (!runtime.state.running) {
@@ -24558,6 +24543,41 @@
         LoadWorld(world) {
             this.world.load(world);
             this.NotifyNewWorld(false);
+        }
+        StartStep() {
+            if (this.state === "finished") {
+                //Ignore if the code already finished running
+                return false;
+            }
+            if (!this.running) {
+                if (!this.StartRun()) {
+                    // Code Failed
+                    return false;
+                }
+            }
+            return true;
+        }
+        EndStep() {
+            this.HighlightCurrentLine();
+            if (!this.GetRuntime().state.running) {
+                this.EndMessage();
+                this.ChangeState("finished");
+            }
+            if (this.CheckForBreakPointOnCurrentLine()) {
+                this.Pause();
+                this.NotifyStep();
+                return;
+            }
+            this.NotifyStep();
+        }
+        PerformAutoStep(ignoreBreakpoints = false) {
+            const runtime = this.GetRuntime();
+            const result = runtime.step();
+            if (runtime.state.ic >= 200000) {
+                runtime.disableStackEvents = true;
+                this.SendMessage("Karel alcanzó las 200,000 instrucciones, Karel cambiará al modo rápido de ejecución, la pila de llamadas dejará de actualizarse", "warning");
+            }
+            return result && (ignoreBreakpoints || !this.CheckForBreakPointOnCurrentLine());
         }
         SendMessage(message, type) {
             this.onMessage.forEach((callback) => callback(message, type));
@@ -25484,6 +25504,7 @@
             exec.compile.on("click", () => controller.Compile());
             exec.reset.on("click", () => this.ResetExecution());
             exec.step.on("click", () => this.Step());
+            exec.stepOver.on("click", () => this.StepOver());
             exec.future.on("click", () => this.RunTillEnd());
             exec.run.on("click", () => {
                 if (!this.isControlInPlayMode) {
@@ -25533,6 +25554,10 @@
         }
         Step() {
             KarelController.GetInstance().Step();
+            this.UpdateBeeperBag();
+        }
+        StepOver() {
+            KarelController.GetInstance().StepOver();
             this.UpdateBeeperBag();
         }
         OnBeeperInputChange() {
