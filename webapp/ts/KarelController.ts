@@ -1,7 +1,7 @@
 import { World, compile, detectLanguage } from "../../js/karel";
 // import { WorldViewController } from "./worldViewController";
 import { EditorView } from "codemirror";
-import { ERRORCODES } from "./errorCodes";
+import { decodeRuntimeError } from "./errorCodes";
 import { breakpointState, setLanguage } from "./editor/editor";
 
 type messageType = "info"|"success"|"error"|"raw"|"warning";
@@ -280,7 +280,7 @@ class KarelController {
         
         if (runtime.state.running && (ignoreBreakpoints || !this.CheckForBreakPointOnCurrentLine())) {
             runtime.disableStackEvents = true;
-            this.SendMessage("Karel alcanzó las 200,000 instrucciones, Karel cambiara al modo rápido de ejecución, algunas caracteristicas estarán desactivadas", "warning");
+            this.SendMessage("Karel alcanzó las 200,000 instrucciones, Karel cambiará al modo rápido de ejecución, la pila de llamadas dejará de actualizarse", "warning");
             
             while ( runtime.step() && (ignoreBreakpoints || !this.CheckForBreakPointOnCurrentLine()));
         }
@@ -375,7 +375,7 @@ class KarelController {
     private EndMessage() {
         let state = this.GetRuntime().state;
         if (state.error) {
-            this.SendMessage(ERRORCODES[state.error], "error");            
+            this.SendMessage(decodeRuntimeError(state.error, this.world.maxInstructions, this.world.maxStackSize), "error");            
             this.endedOnError = true;
             return;
         }
@@ -400,6 +400,8 @@ class KarelController {
             )
         }
     }
+
+
 
     private BreakPointMessage(line:number) {
         this.SendMessage(`🔴 ${line}) Breakpoint `, "info");

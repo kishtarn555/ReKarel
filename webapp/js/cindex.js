@@ -24288,6 +24288,15 @@
         INSTRUCTION: 'Karel ha superado el límite de instrucciones!',
         STACK: 'La pila de karel se ha desbordado!',
     };
+    function decodeRuntimeError(error, maxInstructions, stackSize) {
+        if (error === "INSTRUCTION") {
+            return `Karel ha superado el límite de ${maxInstructions.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")} instrucciones!`;
+        }
+        if (error === "STACK") {
+            return `La pila de karel se ha desbordado! El tamaño de la pila es de ${stackSize.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}`;
+        }
+        return ERRORCODES[error];
+    }
 
     class KarelController {
         constructor(world, mainEditor) {
@@ -24499,7 +24508,7 @@
                 ;
             if (runtime.state.running && (ignoreBreakpoints || !this.CheckForBreakPointOnCurrentLine())) {
                 runtime.disableStackEvents = true;
-                this.SendMessage("Karel alcanzó las 200,000 instrucciones, Karel cambiara al modo rápido de ejecución, algunas caracteristicas estarán desactivadas", "warning");
+                this.SendMessage("Karel alcanzó las 200,000 instrucciones, Karel cambiará al modo rápido de ejecución, la pila de llamadas dejará de actualizarse", "warning");
                 while (runtime.step() && (ignoreBreakpoints || !this.CheckForBreakPointOnCurrentLine()))
                     ;
             }
@@ -24574,7 +24583,7 @@
         EndMessage() {
             let state = this.GetRuntime().state;
             if (state.error) {
-                this.SendMessage(ERRORCODES[state.error], "error");
+                this.SendMessage(decodeRuntimeError(state.error, this.world.maxInstructions, this.world.maxStackSize), "error");
                 this.endedOnError = true;
                 return;
             }
