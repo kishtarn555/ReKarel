@@ -24720,12 +24720,30 @@
         if (status == null) {
             return "Error de compilación";
         }
-        let message = `Error de compilación en la línea ${status.line + 1}`;
+        let message = `Error de compilación en la línea ${status.line + 1}\n<br>\n<div class="card"><div class="card-body">`;
         if (status.expected) {
-            message += "\n<br>\n";
             let expectations = status.expected.map((x => ERROR_TOKENS[lan][x.replace(/^'+/, "").replace(/'+$/, "")]));
             message += `Se encontró "${status.text}" cuando se esperaba ${expectations.join(", ")}`;
         }
+        else {
+            let errorString = `${e}`;
+            if (errorString.includes("Undefined function")) {
+                message += `La función <b>${status.text}</b> no esta definida`;
+            }
+            else if (errorString.includes("Unrecognized text")) {
+                message += `Se encontro un token ilegal`;
+            }
+            else if (errorString.includes("Function redefinition")) {
+                message += `La función <b>${status.text}</b> ya fue definida previamente`;
+            }
+            else if (errorString.includes("Prototype redefinition")) {
+                message += `El prototipo <b>${status.text}</b> ya fue definido previamente`;
+            }
+            else {
+                message += "Error desconocido";
+            }
+        }
+        message += "</div></div>";
         return message;
     }
 
