@@ -6,6 +6,8 @@ type ExecutionToolbar = {
     compile: JQuery,
     run: JQuery,
     step: JQuery,
+    stepOut: JQuery,
+    stepOver: JQuery,
     future: JQuery,
 }
 
@@ -42,6 +44,8 @@ export class ControlBar  {
         exec.compile.on("click", ()=>controller.Compile());
         exec.reset.on("click", ()=>this.ResetExecution());
         exec.step.on("click", ()=>this.Step());
+        exec.stepOver.on("click", ()=>this.StepOver());
+        exec.stepOut.on("click", ()=>this.StepOut());
         exec.future.on("click", ()=> this.RunTillEnd());
         exec.run.on("click", ()=> {
             if (!this.isControlInPlayMode) {
@@ -98,6 +102,15 @@ export class ControlBar  {
         KarelController.GetInstance().Step();
         this.UpdateBeeperBag();
     }
+    private StepOver() {
+        KarelController.GetInstance().StepOver();
+        this.UpdateBeeperBag();
+    }
+    
+    private StepOut() {
+        KarelController.GetInstance().StepOut();
+        this.UpdateBeeperBag();
+    }
 
     private OnBeeperInputChange() {
         if (KarelController.GetInstance().GetState() !== "unstarted") {
@@ -148,6 +161,8 @@ export class ControlBar  {
 
         this.ui.execution.compile.attr("disabled", "");
         this.ui.execution.step.attr("disabled", "");
+        this.ui.execution.stepOver.attr("disabled", "");
+        this.ui.execution.stepOut.attr("disabled", "");
         this.ui.execution.future.attr("disabled", "");
         this.ui.beeperInput.attr("disabled", "");
         this.ui.infiniteBeeperInput.attr("disabled", "");
@@ -165,6 +180,8 @@ export class ControlBar  {
         this.ui.infiniteBeeperInput.attr("disabled", "");
 
         this.ui.execution.step.removeAttr("disabled");
+        this.ui.execution.stepOver.removeAttr("disabled");
+        this.ui.execution.stepOut.removeAttr("disabled");
         this.ui.execution.future.removeAttr("disabled");
         this.ui.execution.run.removeAttr("disabled");
         
@@ -175,6 +192,8 @@ export class ControlBar  {
         this.ui.execution.compile.attr("disabled", "");
         this.ui.execution.run.attr("disabled", "");
         this.ui.execution.step.attr("disabled", "");
+        this.ui.execution.stepOver.attr("disabled", "");
+        this.ui.execution.stepOut.attr("disabled", "");
         this.ui.execution.future.attr("disabled", "");
         this.ui.beeperInput.attr("disabled", "");
         this.ui.infiniteBeeperInput.attr("disabled", "");
@@ -184,6 +203,8 @@ export class ControlBar  {
         this.ui.execution.compile.removeAttr("disabled");
         this.ui.execution.run.removeAttr("disabled");
         this.ui.execution.step.removeAttr("disabled");
+        this.ui.execution.stepOver.removeAttr("disabled");
+        this.ui.execution.stepOut.removeAttr("disabled");
         this.ui.execution.future.removeAttr("disabled");
         this.ui.beeperInput.removeAttr("disabled");
         this.ui.infiniteBeeperInput.removeAttr("disabled");
