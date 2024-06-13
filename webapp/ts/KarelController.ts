@@ -283,6 +283,8 @@ class KarelController {
             this.SendMessage("Karel alcanzó las 200,000 instrucciones, Karel cambiará al modo rápido de ejecución, la pila de llamadas dejará de actualizarse", "warning");
             
             while ( runtime.step() && (ignoreBreakpoints || !this.CheckForBreakPointOnCurrentLine()));
+            runtime.disableStackEvents = false;
+
         }
 
         // this.desktopController.CheckUpdate();
