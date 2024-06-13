@@ -205,6 +205,19 @@ class KarelController {
         this.EndStep();
     }
 
+    StepOut() {
+        if (!this.StartStep()) return;
+        
+        const runtime = this.GetRuntime();
+        const startWStackSize = runtime.state.stackSize;
+        if (startWStackSize === 0) {
+            this.RunTillEnd();
+            return;
+        }
+        while (this.PerformAutoStep() && runtime.state.stackSize >= startWStackSize);
+        this.EndStep();
+    }
+
     StartAutoStep(delay:number) {        
         this.StopAutoStep(); //Avoid thread leak
         if (this.state === "finished") {

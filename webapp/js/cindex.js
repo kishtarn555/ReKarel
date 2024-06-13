@@ -24445,6 +24445,19 @@
             }
             this.EndStep();
         }
+        StepOut() {
+            if (!this.StartStep())
+                return;
+            const runtime = this.GetRuntime();
+            const startWStackSize = runtime.state.stackSize;
+            if (startWStackSize === 0) {
+                this.RunTillEnd();
+                return;
+            }
+            while (this.PerformAutoStep() && runtime.state.stackSize >= startWStackSize)
+                ;
+            this.EndStep();
+        }
         StartAutoStep(delay) {
             this.StopAutoStep(); //Avoid thread leak
             if (this.state === "finished") {
@@ -25505,6 +25518,7 @@
             exec.reset.on("click", () => this.ResetExecution());
             exec.step.on("click", () => this.Step());
             exec.stepOver.on("click", () => this.StepOver());
+            exec.stepOut.on("click", () => this.StepOut());
             exec.future.on("click", () => this.RunTillEnd());
             exec.run.on("click", () => {
                 if (!this.isControlInPlayMode) {
@@ -25558,6 +25572,10 @@
         }
         StepOver() {
             KarelController.GetInstance().StepOver();
+            this.UpdateBeeperBag();
+        }
+        StepOut() {
+            KarelController.GetInstance().StepOut();
             this.UpdateBeeperBag();
         }
         OnBeeperInputChange() {

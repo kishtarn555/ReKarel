@@ -45,6 +45,7 @@ export class ControlBar  {
         exec.reset.on("click", ()=>this.ResetExecution());
         exec.step.on("click", ()=>this.Step());
         exec.stepOver.on("click", ()=>this.StepOver());
+        exec.stepOut.on("click", ()=>this.StepOut());
         exec.future.on("click", ()=> this.RunTillEnd());
         exec.run.on("click", ()=> {
             if (!this.isControlInPlayMode) {
@@ -103,6 +104,11 @@ export class ControlBar  {
     }
     private StepOver() {
         KarelController.GetInstance().StepOver();
+        this.UpdateBeeperBag();
+    }
+    
+    private StepOut() {
+        KarelController.GetInstance().StepOut();
         this.UpdateBeeperBag();
     }
 
