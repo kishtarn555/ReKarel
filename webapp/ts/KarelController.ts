@@ -372,7 +372,7 @@ class KarelController {
         const runtime = this.GetRuntime();
         const result = runtime.step();
         
-        if (runtime.state.ic >= 200000) {
+        if (runtime.state.ic >= 200000 && !runtime.disableStackEvents) {
             runtime.disableStackEvents = true;
             this.SendMessage("Karel alcanzó las 200,000 instrucciones, Karel cambiará al modo rápido de ejecución, la pila de llamadas dejará de actualizarse", "warning");
         }
