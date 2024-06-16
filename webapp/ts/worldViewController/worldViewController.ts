@@ -318,10 +318,11 @@ class WorldViewController {
         this.Update();
     }
 
-    ToggleKarelPosition() {
+    ToggleKarelPosition(rotate:boolean = false) {
         if (this.lock) return;
         this.karelController.world.move(this.selection.r, this.selection.c);
-        this.karelController.world.orientation = (this.karelController.world.orientation + 3)%4;
+        if (rotate)
+            this.karelController.world.orientation = (this.karelController.world.orientation + 3)%4;
         this.Update();
     }
 

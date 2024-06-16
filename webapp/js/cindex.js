@@ -25084,11 +25084,12 @@
             }
             this.Update();
         }
-        ToggleKarelPosition() {
+        ToggleKarelPosition(rotate = false) {
             if (this.lock)
                 return;
             this.karelController.world.move(this.selection.r, this.selection.c);
-            this.karelController.world.orientation = (this.karelController.world.orientation + 3) % 4;
+            if (rotate)
+                this.karelController.world.orientation = (this.karelController.world.orientation + 3) % 4;
             this.Update();
         }
         FocusOrigin() {
@@ -25809,7 +25810,8 @@
             }
             const overrideShift = new Set([37, 38, 39, 40]);
             let hotkeys = new Map([
-                [71, () => { this.worldController.ToggleKarelPosition(); }],
+                [71, () => { this.worldController.ToggleKarelPosition(true); }],
+                [80, () => { this.worldController.ToggleKarelPosition(false); }],
                 [82, () => { this.worldController.SetBeepers(0); }],
                 [81, () => { this.worldController.ChangeBeepers(-1); }],
                 [69, () => { this.worldController.ChangeBeepers(1); }],

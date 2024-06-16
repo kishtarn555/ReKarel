@@ -260,7 +260,8 @@ class DesktopController {
         const overrideShift = new Set<number>([37, 38, 39, 40]);
 
         let hotkeys = new Map<number, ()=>void>([
-            [71,()=>{this.worldController.ToggleKarelPosition();}],
+            [71,()=>{this.worldController.ToggleKarelPosition(true);}],
+            [80,()=>{this.worldController.ToggleKarelPosition(false);}],
             [82,()=>{this.worldController.SetBeepers(0);}],
             [81,()=>{this.worldController.ChangeBeepers(-1);}],
             [69,()=>{this.worldController.ChangeBeepers(1);}],
