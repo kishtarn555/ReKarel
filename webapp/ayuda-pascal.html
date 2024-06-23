@@ -322,7 +322,42 @@
 <p>La sentencia repetir también acepta parámetros en vez de un número. Puedes leer más al respecto sobre los parámetros <a href="#" onclick="showNav('v-pills-parametros')" class="text-info">aquí</a></p>
                 </div>
                 <div class="tab-pane fade" id="v-pills-mientras" role="tabpanel" aria-labelledby="v-pills-mientras-tab"
-                    tabindex="0">...</div>
+                    tabindex="0"> <h2>Mientras</h2>
+<p>La sentencia <span class="text-info">mientras</span> permite a Karel repetir una instrucción o bloque múltiples veces mientras se cumple el código.</p>
+
+<p>A continuación se muestra la estructura de la sentencia mientras. Lo que hace, es repetir una instrucción si se cumpla la condición <b>al inicio</b> de una iteración.</p>
+
+<div class="border p-2">
+    <span class="text-primary-emphasis">mientras</span> <span class="text-warning-emphasis">CONDICION</span> <span
+        class="text-primary-emphasis">hacer</span>
+        <br>
+    <pre style="display: inline;">    </pre><span class="text-info-emphasis">INSTRUCCION</span>
+</div>
+
+<p>Es importante entender que como se ejecuta un ciclo mientras es de la siguiente forma:</p>
+<ol>
+    <li>Revisar la condición, y de cumplirse, pasar al paso 2, si no al paso 4</li>
+    <li>Ejecutar la instrucción</li>
+    <li>Regresar al paso 1.</li>
+    <li>Terminar el ciclo</li>
+</ol>
+
+<p>Entonces, lo que se debe entender es que la condición es revisada únicamente antes de cada iteración, por lo que si la condición se vuelve falsa temporalmente en partes intermedias de la ejecución del ciclo y al final se vuelve otra vez cierta, esto no detiene el ciclo.</p>
+
+<p>Por ejemplo, un código que avance hasta una pared se ve de la siguiente manera</p>
+
+<div class="border p-2">
+    <span class="text-primary-emphasis">mientras</span> <span class="text-warning-emphasis">frente-libre</span> <span
+        class="text-primary-emphasis">hacer</span>
+        <br>
+        <span class="text-danger-emphasis">inicio</span>
+        <br>
+        <pre style="display: inline;">    </pre><span class="text-info-emphasis">avanza;</span>
+        <br>
+        <span class="text-danger-emphasis">fin;</span>
+</div>
+
+</div>
                                 
                 <div class="tab-pane fade" id="v-pills-funciones" role="tabpanel" aria-labelledby="v-pills-funciones-tab"
                 tabindex="0">
