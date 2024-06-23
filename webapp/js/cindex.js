@@ -26072,6 +26072,7 @@
     function getCode(editor) {
         var file = document.createElement('input');
         file.type = 'file';
+        file.accept = '.kj, .kp';
         file.addEventListener('change', function (evt) {
             //@ts-ignore
             var files = evt.target.files; // @ts-ignore FileList object 
@@ -26102,6 +26103,7 @@
     function getWorldIn(karelController) {
         var file = document.createElement('input');
         file.type = 'file';
+        file.accept = '.in';
         file.addEventListener('change', function (evt) {
             //@ts-ignore
             var files = evt.target.files; // FileList object
