@@ -25969,11 +25969,23 @@
     }
 
     const fileRegex$1 = /^[a-zA-Z0-9._]+$/;
-    function setFileNameLink$1(modal, editor) {
+    function setFileNameLink$1(modal, editor, changeInput = false) {
         let newFilename = $(modal.inputField).val();
+        let extension = "txt";
+        if ((sessionStorage === null || sessionStorage === void 0 ? void 0 : sessionStorage.getItem("rekarel:lang")) === "java") {
+            extension = "kj";
+        }
+        else {
+            extension = "kp";
+        }
         if (!fileRegex$1.test(newFilename)) {
-            $(modal.wrongCodeWarning).removeAttr("hidden");
-            newFilename = "code.txt";
+            newFilename = `code.${extension}`;
+            if (changeInput) {
+                $(modal.inputField).val(newFilename);
+            }
+            else {
+                $(modal.wrongCodeWarning).removeAttr("hidden");
+            }
         }
         else {
             $(modal.wrongCodeWarning).attr("hidden", "");
@@ -25982,8 +25994,23 @@
         $(modal.confirmBtn).attr("href", window.URL.createObjectURL(blob));
         $(modal.confirmBtn).attr("download", newFilename);
     }
+    function openModal(modal, editor) {
+        let extension = "txt";
+        if ((sessionStorage === null || sessionStorage === void 0 ? void 0 : sessionStorage.getItem("rekarel:lang")) === "java") {
+            extension = "kj";
+        }
+        else {
+            extension = "kp";
+        }
+        let newFilename = $(modal.inputField).val();
+        if (newFilename.endsWith('.kj') || newFilename.endsWith('.kp')) {
+            newFilename = newFilename.slice(0, -2) + extension;
+        }
+        $(modal.inputField).val(newFilename);
+        setFileNameLink$1(modal, editor, true);
+    }
     function hookDownloadModel(modal, editor) {
-        $(modal.modal).on('show.bs.modal', () => setFileNameLink$1(modal, editor));
+        $(modal.modal).on('show.bs.modal', () => openModal(modal, editor));
         $(modal.inputField).change(() => setFileNameLink$1(modal, editor));
     }
 
