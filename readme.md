@@ -16,36 +16,50 @@ This new version includes:
 
 
 ## Migrations
-* Migrated to Bootstrap 5.0.2
-* Migrated to JQuery 3.6.1
-* Migrated to CodeMirror 6
-* Migrated Split.js
+* [x] Migrated to Bootstrap 5.3.0
+* [x] Migrated to JQuery 3.6.1
+* [x] Migrated to CodeMirror 6
+* [x] Migrated Split.js
 ## Deprecated
-* Removed Karel Ruby as it didn't worked and it seemed to be in route of deprecation.
+* [x] Removed Karel Ruby as it didn't worked and it seemed to be in route of deprecation.
 ## Mobile
-* Supports touch control on both views.
-* UI changes to one better suited for small screens, similar to "Karel blue", aka Karel.exe
+* [x] Supports touch control on both views.
+* [ ] UI changes to one better suited for small screens, similar to "Karel blue", aka Karel.exe
 * CodeEditor maybe edited without writing.
 
 ## Quality of live
 * Settings that allow to set:
-    * Prefered programming language (default is auto as Karel.js)
-        * If set, syntax higlighting and compile will always try that language.
-    * The view (force one view independent of screen size)
-    * Code Font size
+    * [ ] ~Prefered programming language (default is auto as Karel.js)~ 
+        * ~If set, syntax higlighting and compile will always try that language.~
+    * [ ] The view (force one view independent of screen size)
+    * [x] Code Font size
 * Hotkeys
-    * `Ctrl+K` Decreases editor's font.
-    * `Ctrl+L` Increases editor's font.
-* Added the ability to zoom in and out of the world.
-* Native scrolling with scrollbars for the world renderer.
+    * [x] `Ctrl+K` Decreases editor's font.
+    * [x] `Ctrl+L` Increases editor's font.
+* [x] Added the ability to zoom in and out of the world.
+* [x] Native scrolling with scrollbars for the world renderer.
     * The previous scroll was hard to use imo.
-* Added the ability to specify the name of the file to be downloaded
-* Added clean button to remove old messages.
-* "Are you sure?" before reseting code
-* "Are you sure?" before reseting world
-* Added icons to Karel position.
+* [x] Added the ability to specify the name of the file to be downloaded, either code or world
+* [x] Added clean button to remove old messages from console.
+* [x] "Are you sure?" before reseting code
+* [x] "Are you sure?" before reseting world
+* [x] Added icons to Karel position.
+* [x] If the execution ends in RTE, it is made more noticable by changing the world background color.
+* [x] You can change Karel Codes
+* [x] Dark and Light mode  
 # World Editor
-Reworked world editor.
+[x] Reworked world editor.
 
-Now it is more similar to Google's spreadsheet
+Now, it works similar to a spreadsheet software.
+
 * World edition is based on cell selection and a toolbar.
+* 
+You can select a rectangular selection of cells and:
+* [x] Place walls on the selection border (You may use the toolbar or WASD hot-keys)
+* [x] Add, remove, clear, set the ammount of beepers in the selection (Use 1 ... 9 or Q E R C hot-keys)
+* [x] Move/Rotate Karel (Use G or P hot-keys)
+* [ ] 
+
+# Execution
+* [x] You can step into a function, out of a function or skip a function, similar to other debuggers
+* [x] The stack now also reports what number it is in the stack for readability
