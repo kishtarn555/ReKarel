@@ -781,6 +781,7 @@
         Split(['#splitter-left-top-pane', '#splitter-left-bottom-pane'], {
             sizes: [70, 30],
             direction: 'vertical',
+            minSize: 0,
         });
     }
 
