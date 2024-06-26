@@ -6,6 +6,7 @@ import { breakpointState, clearUnderlineError, setLanguage, underlineError } fro
 import { GetCurrentSetting } from "./settings";
 import { throbber } from "./throbber";
 import { getEditors } from "./editor/editorsInstances";
+import { Callbacks } from "jquery";
 
 type messageType = "info"|"success"|"error"|"raw"|"warning";
 type MessageCallback = (message:string, type:messageType)=>void;
@@ -15,6 +16,7 @@ type StepCallback = (caller:KarelController, newState:ControllerState)=>void;
 type ResetCallback = (caller:KarelController)=>void;
 type NewWorldCallback = (caller:KarelController, world:World, newInstance:boolean)=>void;
 type CompileCallback = (caller:KarelController, success:boolean, language:string)=>void;
+type SlowModeCallback = (caller:KarelController, limit:number)=>void;
 class KarelController {
     
     private static instance:KarelController
@@ -29,6 +31,7 @@ class KarelController {
     private onReset: ResetCallback[];
     private onNewWorld: NewWorldCallback[];
     private onCompile: CompileCallback[];
+    private onSlowMode: SlowModeCallback[];
     private state : ControllerState;
     private endedOnError:boolean;
     private autoStepInterval:number;
@@ -44,6 +47,7 @@ class KarelController {
         this.onReset= [];
         this.onNewWorld= [];
         this.onCompile= [];
+        this.onSlowMode = [];
         this.state = "unstarted";
         this.endedOnError = false;
         this.autoStepInterval = 0;
@@ -311,6 +315,10 @@ class KarelController {
         this.onCompile.push(callback);
     }
 
+    RegisterSlowModeObserver(callback: SlowModeCallback) {
+        this.onSlowMode.push(callback);
+    }
+
     Resize(w:number, h:number) {
         this.Reset();
         this.world.resize(w, h);    
@@ -367,6 +375,7 @@ class KarelController {
         if (runtime.state.ic >=  slowLimit&& !runtime.disableStackEvents) {
             runtime.disableStackEvents = true;
             this.SendMessage(`Karel alcanzó las ${slowLimit.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")} instrucciones, Karel cambiará al modo rápido de ejecución, la pila de llamadas dejará de actualizarse`, "warning");
+            this.NotifySlowMode(slowLimit);
         }
         
         
@@ -394,6 +403,10 @@ class KarelController {
     }
     private NotifyCompile(success:boolean, language:string) {
         this.onCompile.forEach((callback) => callback(this, success, language));
+    }
+
+    private NotifySlowMode(limit:number) {
+        this.onSlowMode.forEach((callback)=>callback(this, limit));
     }
 
     

@@ -25002,6 +25002,7 @@
             this.onReset = [];
             this.onNewWorld = [];
             this.onCompile = [];
+            this.onSlowMode = [];
             this.state = "unstarted";
             this.endedOnError = false;
             this.autoStepInterval = 0;
@@ -25230,6 +25231,9 @@
         RegisterCompileObserver(callback) {
             this.onCompile.push(callback);
         }
+        RegisterSlowModeObserver(callback) {
+            this.onSlowMode.push(callback);
+        }
         Resize(w, h) {
             this.Reset();
             this.world.resize(w, h);
@@ -25279,6 +25283,7 @@
             if (runtime.state.ic >= slowLimit && !runtime.disableStackEvents) {
                 runtime.disableStackEvents = true;
                 this.SendMessage(`Karel alcanzó las ${slowLimit.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")} instrucciones, Karel cambiará al modo rápido de ejecución, la pila de llamadas dejará de actualizarse`, "warning");
+                this.NotifySlowMode(slowLimit);
             }
             return result && (ignoreBreakpoints || !this.CheckForBreakPointOnCurrentLine());
         }
@@ -25299,6 +25304,9 @@
         }
         NotifyCompile(success, language) {
             this.onCompile.forEach((callback) => callback(this, success, language));
+        }
+        NotifySlowMode(limit) {
+            this.onSlowMode.forEach((callback) => callback(this, limit));
         }
         ChangeState(nextState) {
             this.state = nextState;
@@ -26043,6 +26051,7 @@
                 this.OnStackChanges(); });
             this.OnStackChanges();
             KarelController.GetInstance().RegisterResetObserver((_) => this.clearStack());
+            KarelController.GetInstance().RegisterSlowModeObserver((_, limit) => this.slowMode(limit));
         }
         OnStackChanges() {
             //FIXME: Don't hardcode the id. #pilaTab
@@ -26053,13 +26062,13 @@
                 if (runtime.state.stackSize == MAX_STACK_SIZE + 1) {
                     this.panel.prepend('<div class="well well-small">' +
                         `<span class="text-secondary">${MAX_STACK_SIZE + 1} - ${runtime.state.stackSize}</span>` +
-                        '<span class="text-danger"> Hay demasiadas funciones en la pila, las más recientes no se muestran en la interfaz, pero estan ahí </span></div>');
+                        '<span class="text-warning"> Hay demasiadas funciones en la pila, las más recientes no se muestran en la interfaz, pero estan ahí </span></div>');
                     return;
                 }
                 if (runtime.state.stackSize > MAX_STACK_SIZE) {
                     this.panel.find('>:first-child').html('<div class="well well-small">' +
                         `<span class="text-secondary">${MAX_STACK_SIZE + 1} - ${runtime.state.stackSize}</span>` +
-                        '<span class="text-danger"> Hay demasiadas funciones en la pila, las más recientes no se muestran en la interfaz, pero estan ahí </span></div>');
+                        '<span class="text-warning"> Hay demasiadas funciones en la pila, las más recientes no se muestran en la interfaz, pero estan ahí </span></div>');
                     return;
                 }
                 this.panel.prepend('<div class="well well-small">' +
@@ -26084,6 +26093,11 @@
         }
         clearStack() {
             this.panel.empty();
+        }
+        slowMode(limit) {
+            const txt = limit.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+            this.panel.prepend('<div class="well well-small">' +
+                `<span class="text-danger"> <i class="bi bi-exclamation-triangle-fill"></i> Se ejecutaron más de ${txt} instrucciones, por lo que se activo el modo de ejecución rápido, por lo que la pila muestra el estado en el que se encontraba hasta la instrucción ${txt} </span><hr></div>`);
         }
     }
 
