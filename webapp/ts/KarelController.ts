@@ -599,6 +599,8 @@ function decodeError(e, lan : "java"|"pascal"|"ruby"|"none") : string {
             } else {
                 message += `La función <b>${status.text}</b> esperaba un parámetro `;
             }
+        } else if (errorString.includes("Prototype parameter mismatch")) {
+            message += `La función <b>${status.text}</b> tiene un número distinto de parámetros que su prototipo `;
         } else {
             message += "Error desconocido"
         }

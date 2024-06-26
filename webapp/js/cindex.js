@@ -22388,7 +22388,8 @@
                         if (prototypes[function_list[i][0]] != function_list[i][2]) {
                             yy.parser.parseError("Prototype parameter mismatch: " + function_list[i][0], {
                                 text: function_list[i][0],
-                                line: function_list[i][3]
+                                line: function_list[i][3],
+                                loc: function_list[i][5]
                             });
                         }
                     }
@@ -25431,6 +25432,9 @@
                 else {
                     message += `La función <b>${status.text}</b> esperaba un parámetro `;
                 }
+            }
+            else if (errorString.includes("Prototype parameter mismatch")) {
+                message += `La función <b>${status.text}</b> tiene un número distinto de parámetros que su prototipo `;
             }
             else {
                 message += "Error desconocido";
