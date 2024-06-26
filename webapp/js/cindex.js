@@ -26101,7 +26101,7 @@
         slowMode(limit) {
             const txt = limit.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
             this.panel.prepend('<div class="well well-small">' +
-                `<span class="text-danger"> <i class="bi bi-exclamation-triangle-fill"></i> Se ejecutaron más de ${txt} instrucciones, por lo que se activo el modo de ejecución rápido, por lo que la pila muestra el estado en el que se encontraba hasta la instrucción ${txt} </span><hr></div>`);
+                `<span class="text-danger"> <i class="bi bi-exclamation-triangle-fill"></i> Se ejecutaron más de ${txt} instrucciones, por lo que se activo el modo de ejecución rápido, así que la pila muestra el estado en el que se encontraba hasta la instrucción ${txt} </span><hr></div>`);
         }
     }
 
