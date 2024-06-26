@@ -26944,7 +26944,7 @@
         kcInstance.world.setDumps(World.DUMP_LEAVE_BUZZER, ui.countPuts.prop("checked"));
         function validateMax(inputVal, min = 1) {
             const isInteger = Number.isInteger(Number(inputVal));
-            const isValid = isInteger && Number(inputVal) >= 1;
+            const isValid = isInteger && Number(inputVal) >= min;
             return isValid;
         }
         const maxInstructions = ui.maxInstructions.val();

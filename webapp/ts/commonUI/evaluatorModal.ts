@@ -67,7 +67,7 @@ function setData(ui: EvaluatorData) {
     
     function validateMax(inputVal:any, min:number=1) {
         const isInteger = Number.isInteger(Number(inputVal));
-        const isValid = isInteger && Number(inputVal) >= 1;
+        const isValid = isInteger && Number(inputVal) >= min;
         return isValid;
     }
     const maxInstructions = ui.maxInstructions.val();
