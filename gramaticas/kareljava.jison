@@ -67,7 +67,8 @@ function validate(function_list, program, yy) {
 		if (functions[function_list[i][0]]) {
 			yy.parser.parseError("Function redefinition: " + function_list[i][0], {
 				text: function_list[i][0],
-				line: function_list[i][1][0][1]
+				line: function_list[i][1][0][1],
+        loc: function_list[i][3]
 			});
 		}
 
@@ -141,9 +142,19 @@ def_list
 
 def
   : DEF line var '(' ')' block
-    { $$ = [[$var, $line.concat($block).concat([['RET']]), 1]]; }
+    { 
+      @$.first_line = @1.first_line;
+      @$.first_column = @1.first_column;
+      @$.last_line = @3.last_line;
+      @$.last_column = @3.last_column;
+      $$ = [[$var, $line.concat($block).concat([['RET']]), 1, @$]];
+       }
   | DEF line var '(' var ')' block
     %{
+      @$.first_line = @1.first_line;
+      @$.first_column = @1.first_column;
+      @$.last_line = @3.last_line;
+      @$.last_column = @3.last_column;
     	var result = $line.concat($block).concat([['RET']]);
     	for (var i = 0; i < result.length; i++) {
     		if (result[i][0] == 'PARAM') {
@@ -158,7 +169,7 @@ def
     			}
     		}
     	}
-    	$$ = [[$var, result, 2]];
+    	$$ = [[$var, result, 2,@$]];
     %}
   ;
 

@@ -99,10 +99,20 @@ case 5: case 9: case 17: case 18: case 19: case 20: case 29: case 31: case 33: c
  this.$ = $$[$0]; 
 break;
 case 6:
- this.$ = [[$$[$0-3], $$[$0-4].concat($$[$0]).concat([['RET']]), 1]]; 
+ 
+      this._$.first_line = _$[$0-5].first_line;
+      this._$.first_column = _$[$0-5].first_column;
+      this._$.last_line = _$[$0-3].last_line;
+      this._$.last_column = _$[$0-3].last_column;
+      this.$ = [[$$[$0-3], $$[$0-4].concat($$[$0]).concat([['RET']]), 1, this._$]];
+       
 break;
 case 7:
 
+      this._$.first_line = _$[$0-6].first_line;
+      this._$.first_column = _$[$0-6].first_column;
+      this._$.last_line = _$[$0-4].last_line;
+      this._$.last_column = _$[$0-4].last_column;
     	var result = $$[$0-5].concat($$[$0]).concat([['RET']]);
     	for (var i = 0; i < result.length; i++) {
     		if (result[i][0] == 'PARAM') {
@@ -117,7 +127,7 @@ case 7:
     			}
     		}
     	}
-    	this.$ = [[$$[$0-4], result, 2]];
+    	this.$ = [[$$[$0-4], result, 2,this._$]];
     
 break;
 case 10:
@@ -421,7 +431,8 @@ function validate(function_list, program, yy) {
 		if (functions[function_list[i][0]]) {
 			yy.parser.parseError("Function redefinition: " + function_list[i][0], {
 				text: function_list[i][0],
-				line: function_list[i][1][0][1]
+				line: function_list[i][1][0][1],
+        loc: function_list[i][3]
 			});
 		}
 

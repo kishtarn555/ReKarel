@@ -95,7 +95,8 @@ function validate(function_list, program, yy) {
 			if (functions[function_list[i][0]]) {
 				yy.parser.parseError("Function redefinition: " + function_list[i][0], {
 					text: function_list[i][0],
-					line: function_list[i][3]
+					line: function_list[i][3],
+          loc: function_list[i][4]
 				});
 			} else if (prototypes[function_list[i][0]]) {
 				if (prototypes[function_list[i][0]] != function_list[i][2]) {
