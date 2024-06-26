@@ -21,7 +21,7 @@
     "@rollup/plugin-commonjs": "^24.0.0",
     "@rollup/plugin-node-resolve": "^15.0.1",
     "@types/jquery": "^3.5.14",
-    "gulp": "^4.0.2",
+    "gulp": "^5.0.0",
     "gulp-file-include": "^2.3.0",
     "jison": "^0.4.17",
     "rollup": "^3.29.2",
@@ -32,8 +32,8 @@
     "@codemirror/lang-javascript": "^6.1.7",
     "@lezer/highlight": "^1.1.4",
     "@types/bootstrap": "^5.2.6",
+    "@xmldom/xmldom": "^0.8.10",
     "codemirror": "^6.0.1",
-    "split.js": "^1.6.5",
-    "xmldom": "^0.6.0"
+    "split.js": "^1.6.5"
   }
 }

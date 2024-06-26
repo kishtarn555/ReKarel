@@ -8,7 +8,7 @@ var fs = require('fs');
 // .run = the path to a karel program to run before rendering
 // Returns a promise that resolves when the file is done writing.
 var Draw = function (worldString, outputFile, opts) {
-  var DOMParser = require('xmldom').DOMParser;
+  var DOMParser = require('@xmldom/xmldom').DOMParser;
   var WorldRender = require('../js/mundo.js').WorldRender;
   var { createCanvas } = require('canvas');
 
