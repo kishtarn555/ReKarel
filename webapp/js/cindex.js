@@ -21185,10 +21185,20 @@
                         this.$ = [];
                         break;
                     case 22:
-                        this.$ = [['LINE', yylineno], ['LOAD', 0], ['CALL', $$[$0 - 2], 1], ['LINE', yylineno]];
+                        var loc = {
+                            first_line: _$[$0 - 1].first_line,
+                            first_column: _$[$0 - 1].first_column,
+                            last_line: _$[$0].last_line,
+                            last_column: _$[$0].last_column,
+                        };
+                        this.$ = [['LINE', yylineno], ['LOAD', 0], ['CALL', $$[$0 - 2], 1, _$[$0 - 2], loc], ['LINE', yylineno]];
                         break;
                     case 23:
-                        this.$ = [['LINE', yylineno]].concat($$[$0 - 1]).concat([['CALL', $$[$0 - 3], 2], ['LINE', yylineno]]);
+                        this._$.first_column = _$[$0 - 3].first_column;
+                        this._$.first_line = _$[$0 - 3].first_line;
+                        this._$.last_column = _$[$0].last_column;
+                        this._$.last_line = _$[$0].last_line;
+                        this.$ = [['LINE', yylineno]].concat($$[$0 - 1]).concat([['CALL', $$[$0 - 3], 2, _$[$0 - 3], _$[$0 - 1]], ['LINE', yylineno]]);
                         break;
                     case 24:
                         this.$ = $$[$0 - 4].concat($$[$0 - 2]).concat([['JZ', $$[$0].length]]).concat($$[$0]);
@@ -21455,17 +21465,23 @@
                     if (!functions[program[i][1]] || !prototypes[program[i][1]]) {
                         yy.parser.parseError("Undefined function: " + program[i][1], {
                             text: program[i][1],
-                            line: current_line
+                            line: current_line,
+                            loc: program[i][3]
                         });
                     }
                     else if (prototypes[program[i][1]] != program[i][2]) {
                         yy.parser.parseError("Function parameter mismatch: " + program[i][1], {
                             text: program[i][1],
-                            line: current_line
+                            line: current_line,
+                            loc: program[i][4],
+                            parameters: program[i][2],
                         });
                     }
                     program[i][2] = program[i][1];
                     program[i][1] = functions[program[i][1]];
+                    // Remove loc data which is only for error parsing
+                    program[i].pop();
+                    program[i].pop();
                 }
                 else if (program[i][0] == 'PARAM') {
                     if (program[i][1] != 0) {
@@ -22087,10 +22103,10 @@
                         this.$ = [['LINE', yylineno], ['RET']];
                         break;
                     case 24:
-                        this.$ = [['LINE', yylineno], ['LOAD', 0], ['CALL', $$[$0].toLowerCase(), 1], ['LINE', yylineno]];
+                        this.$ = [['LINE', yylineno], ['LOAD', 0], ['CALL', $$[$0].toLowerCase(), 1, _$[$0], _$[$0]], ['LINE', yylineno]];
                         break;
                     case 25:
-                        this.$ = [['LINE', yylineno]].concat($$[$0 - 1]).concat([['CALL', $$[$0 - 3].toLowerCase(), 2], ['LINE', yylineno]]);
+                        this.$ = [['LINE', yylineno]].concat($$[$0 - 1]).concat([['CALL', $$[$0 - 3].toLowerCase(), 2, _$[$0 - 3], _$[$0 - 1]], ['LINE', yylineno]]);
                         break;
                     case 26:
                         this.$ = $$[$0 - 3].concat($$[$0 - 2]).concat([['JZ', $$[$0].length]]).concat($$[$0]);
@@ -22374,7 +22390,8 @@
                             !prototypes[function_list[i][1][j][1]]) {
                             yy.parser.parseError("Undefined function: " + function_list[i][1][j][1], {
                                 text: function_list[i][1][j][1],
-                                line: current_line
+                                line: current_line,
+                                loc: function_list[i][1][j][4]
                             });
                         }
                     }
@@ -22390,17 +22407,23 @@
                     if (!functions[program[i][1]]) {
                         yy.parser.parseError("Undefined function: " + program[i][1], {
                             text: program[i][1],
-                            line: current_line
+                            line: current_line,
+                            loc: program[i][3]
                         });
                     }
                     else if (prototypes[program[i][1]] != program[i][2]) {
                         yy.parser.parseError("Function parameter mismatch: " + program[i][1], {
                             text: program[i][1],
-                            line: current_line
+                            line: current_line,
+                            loc: program[i][4],
+                            parameters: program[i][2],
                         });
                     }
                     program[i][2] = program[i][1];
                     program[i][1] = functions[program[i][1]];
+                    // Remove loc data which is only for error parsing
+                    program[i].pop();
+                    program[i].pop();
                 }
                 else if (program[i][0] == 'PARAM') {
                     if (program[i][1] != 0) {
@@ -25383,6 +25406,14 @@
             }
             else if (errorString.includes("Unknown variable")) {
                 message += `El parámetro <b>${status.text}</b> no está definido`;
+            }
+            else if (errorString.includes("Function parameter mismatch")) {
+                if (status.parameters === 2) {
+                    message += `La función <b>${status.text}</b> no acepta parámetro `;
+                }
+                else {
+                    message += `La función <b>${status.text}</b> esperaba un parámetro `;
+                }
             }
             else {
                 message += "Error desconocido";

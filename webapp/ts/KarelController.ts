@@ -593,6 +593,12 @@ function decodeError(e, lan : "java"|"pascal"|"ruby"|"none") : string {
             message += `El prototipo <b>${status.text}</b> ya fue definido previamente`;
         } else if (errorString.includes("Unknown variable")) {
             message += `El parámetro <b>${status.text}</b> no está definido`;
+        } else if (errorString.includes("Function parameter mismatch")) {
+            if (status.parameters=== 2) {
+                message += `La función <b>${status.text}</b> no acepta parámetro `;
+            } else {
+                message += `La función <b>${status.text}</b> esperaba un parámetro `;
+            }
         } else {
             message += "Error desconocido"
         }

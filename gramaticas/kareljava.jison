@@ -84,17 +84,23 @@ function validate(function_list, program, yy) {
 			if (!functions[program[i][1]] || !prototypes[program[i][1]]) {
 				yy.parser.parseError("Undefined function: " + program[i][1], {
 					text: program[i][1],
-					line: current_line
+					line: current_line,
+          loc: program[i][3]
 				});
 			} else if (prototypes[program[i][1]] != program[i][2]) {
 				yy.parser.parseError("Function parameter mismatch: " + program[i][1], {
 					text: program[i][1],
-					line: current_line
+					line: current_line,
+          loc: program[i][4],
+          parameters: program[i][2],
 				});
 			}
 
 			program[i][2] = program[i][1];
 			program[i][1] = functions[program[i][1]];
+      // Remove loc data which is only for error parsing
+      program[i].pop();
+      program[i].pop(); 
 		} else if (program[i][0] == 'PARAM') {
       if (program[i][1] != 0) {
         yy.parser.parseError("Unknown variable: " + program[i][1], {
@@ -193,9 +199,26 @@ expr
 
 call
   : var '(' ')'
-    { $$ = [['LINE', yylineno], ['LOAD', 0], ['CALL', $var, 1], ['LINE', yylineno]]; }
+    
+    %{ 
+      
+      var loc = {
+        first_line: @2.first_line,
+        first_column: @2.first_column,
+        last_line: @3.last_line,
+        last_column: @3.last_column,
+      };
+      $$ = [['LINE', yylineno], ['LOAD', 0], ['CALL', $var, 1, @1, loc], ['LINE', yylineno]]; 
+    %}
   | var '(' integer ')'
-    { $$ = [['LINE', yylineno]].concat($integer).concat([['CALL', $var, 2], ['LINE', yylineno]]); }
+    { 
+      @$.first_column = @1.first_column;
+      @$.first_line = @1.first_line;
+      @$.last_column = @4.last_column;
+      @$.last_line = @4.last_line;
+      ;
+      $$ = [['LINE', yylineno]].concat($integer).concat([['CALL', $var, 2, @1, @3], ['LINE', yylineno]]); 
+    }
   ;
 
 cond
