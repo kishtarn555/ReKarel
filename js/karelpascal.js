@@ -96,15 +96,40 @@ case 4: case 23: case 38:
  this.$ = $$[$0-1]; 
 break;
 case 5:
- this.$ = [[$$[$0].toLowerCase(), null, 1, $$[$0-1][0][1]]]; 
+ 
+      this._$.first_line = _$[$0-2].first_line;
+      this._$.first_column = _$[$0-2].first_column;
+      this._$.last_line = _$[$0].last_line;
+      this._$.last_column = _$[$0].last_column;
+      this.$ = [[$$[$0].toLowerCase(), null, 1, $$[$0-1][0][1], this._$] ]; 
+    
 break;
 case 6:
- this.$ = [[$$[$0-3].toLowerCase(), null, 2, $$[$0-4][0][1]]]; 
+ 
+      this._$.first_line = _$[$0-5].first_line;
+      this._$.first_column = _$[$0-5].first_column;
+      this._$.last_line = _$[$0].last_line;
+      this._$.last_column = _$[$0].last_column;
+      this.$ = [[$$[$0-3].toLowerCase(), null, 2, $$[$0-4][0][1], this._$]]; 
+      
 break;
 case 7:
- this.$ = [[$$[$0-2].toLowerCase(), $$[$0-3].concat($$[$0]).concat([['RET']]), 1, $$[$0-3][0][1]]]; 
+ 
+      this._$.first_line = _$[$0-4].first_line;
+      this._$.first_column = _$[$0-4].first_column;
+      this._$.last_line = _$[$0-2].last_line;
+      this._$.last_column = _$[$0-2].last_column;
+
+      this.$ = [[$$[$0-2].toLowerCase(), $$[$0-3].concat($$[$0]).concat([['RET']]), 1, $$[$0-3][0][1], this._$, this._$]]; 
+    
 break;
 case 8:
+
+      
+      this._$.first_line = _$[$0-7].first_line;
+      this._$.first_column = _$[$0-7].first_column;
+      this._$.last_line = _$[$0-5].last_line;
+      this._$.last_column = _$[$0-5].last_column;
 
     	var result = $$[$0-6].concat($$[$0]).concat([['RET']]);
       var current_line = $$[$0-6][0][1];
@@ -123,7 +148,7 @@ case 8:
     			}
     		}
     	}
-    	this.$ = [[$$[$0-5].toLowerCase(), result, 2, $$[$0-6][0][1]]];
+    	this.$ = [[$$[$0-5].toLowerCase(), result, 2, $$[$0-6][0][1],this._$, _$[$0-3]]];
     
 break;
 case 9:
@@ -415,7 +440,8 @@ function validate(function_list, program, yy) {
 			if (prototypes[function_list[i][0]] || functions[function_list[i][0]]) {
 				yy.parser.parseError("Prototype redefinition: " + function_list[i][0], {
 					text: function_list[i][0],
-					line: function_list[i][3]
+					line: function_list[i][3],
+          loc: function_list[i][4],
 				});
 			}
 			prototypes[function_list[i][0]] = function_list[i][2];

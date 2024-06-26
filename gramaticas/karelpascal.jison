@@ -86,7 +86,8 @@ function validate(function_list, program, yy) {
 			if (prototypes[function_list[i][0]] || functions[function_list[i][0]]) {
 				yy.parser.parseError("Prototype redefinition: " + function_list[i][0], {
 					text: function_list[i][0],
-					line: function_list[i][3]
+					line: function_list[i][3],
+          loc: function_list[i][4],
 				});
 			}
 			prototypes[function_list[i][0]] = function_list[i][2];
@@ -189,13 +190,38 @@ def_list
 
 def
   : PROTO line var
-    { $$ = [[$var.toLowerCase(), null, 1, $line[0][1]]]; }
+    { 
+      @$.first_line = @1.first_line;
+      @$.first_column = @1.first_column;
+      @$.last_line = @3.last_line;
+      @$.last_column = @3.last_column;
+      $$ = [[$var.toLowerCase(), null, 1, $line[0][1], @$] ]; 
+    }
   | PROTO line var '(' var ')'
-    { $$ = [[$var.toLowerCase(), null, 2, $line[0][1]]]; }
+    { 
+      @$.first_line = @1.first_line;
+      @$.first_column = @1.first_column;
+      @$.last_line = @6.last_line;
+      @$.last_column = @6.last_column;
+      $$ = [[$var.toLowerCase(), null, 2, $line[0][1], @$]]; 
+      }
   | DEF line var AS expr
-    { $$ = [[$var.toLowerCase(), $line.concat($expr).concat([['RET']]), 1, $line[0][1]]]; }
+    { 
+      @$.first_line = @1.first_line;
+      @$.first_column = @1.first_column;
+      @$.last_line = @3.last_line;
+      @$.last_column = @3.last_column;
+
+      $$ = [[$var.toLowerCase(), $line.concat($expr).concat([['RET']]), 1, $line[0][1], @$, @$]]; 
+    }
   | DEF line var '(' var ')' AS expr
     %{
+      
+      @$.first_line = @1.first_line;
+      @$.first_column = @1.first_column;
+      @$.last_line = @3.last_line;
+      @$.last_column = @3.last_column;
+
     	var result = $line.concat($expr).concat([['RET']]);
       var current_line = $line[0][1];
     	for (var i = 0; i < result.length; i++) {
@@ -213,7 +239,7 @@ def
     			}
     		}
     	}
-    	$$ = [[$var.toLowerCase(), result, 2, $line[0][1]]];
+    	$$ = [[$var.toLowerCase(), result, 2, $line[0][1],@$, @5]];
     %}
   ;
 
