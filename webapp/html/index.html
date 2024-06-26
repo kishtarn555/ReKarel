@@ -20,6 +20,18 @@
 </head>
 
 <body>
+    
+    <div id="throbber" class="position-fixed top-50 start-50 translate-middle bg-body p-2 rounded"  style="z-index: 4000;  display: none" role="status" id="loadingSpinner">  
+        <h5 >Procesando</h5>      
+        <hr>
+        <div class="position-absolute start-50 translate-middle-x">
+            <div class="spinner-border text-body">
+                <span class="visually-hidden">Procesando...</span>
+            </div>
+        </div>
+        <br>
+        <br>
+    </div>
     <div id="loadingModal" class="position-absolute w-100 h-100 bg-dark p-5" style="z-index: 4000;">
         <div class="text-center">
             <p class="h1 bg-light p-4">Cargando...</p>

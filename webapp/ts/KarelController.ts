@@ -4,6 +4,7 @@ import { EditorView } from "codemirror";
 import { decodeRuntimeError } from "./errorCodes";
 import { breakpointState, setLanguage } from "./editor/editor";
 import { GetCurrentSetting } from "./settings";
+import { throbber } from "./throbber";
 
 type messageType = "info"|"success"|"error"|"raw"|"warning";
 type MessageCallback = (message:string, type:messageType)=>void;
@@ -200,10 +201,16 @@ class KarelController {
         const startWStackSize = runtime.state.stackSize;
         runtime.step();
         if (runtime.state.stackSize > startWStackSize) {
-            while (this.PerformAutoStep() && runtime.state.stackSize > startWStackSize);
-            runtime.step();
+            throbber.performTask(
+                ()=> {
+                    while (this.PerformAutoStep() && runtime.state.stackSize > startWStackSize);
+                    runtime.step();
+                }
+            )
+            .then(()=> this.EndStep())
+        } else {
+            this.EndStep();
         }
-        this.EndStep();
     }
 
     StepOut() {
@@ -215,8 +222,11 @@ class KarelController {
             this.RunTillEnd();
             return;
         }
-        while (this.PerformAutoStep() && runtime.state.stackSize >= startWStackSize);
-        this.EndStep();
+        throbber.performTask(
+            ()=> {
+                while (this.PerformAutoStep() && runtime.state.stackSize >= startWStackSize);
+            }
+        ).then(_=>this.EndStep());
     }
 
     StartAutoStep(delay:number) {        
@@ -278,21 +288,20 @@ class KarelController {
         let runtime = this.GetRuntime();
         // runtime.disableStackEvents= false; // FIXME: This should only be done when no breakpoints
         // runtime.disableStackEvents= true; // FIXME: This should only be done when no breakpoints
-        while (this.PerformAutoStep(ignoreBreakpoints));
-        
+        throbber.performTask(()=> {
+            while (this.PerformAutoStep(ignoreBreakpoints));
+        }).then(_=> {
+            this.HighlightCurrentLine();
 
-        // this.desktopController.CheckUpdate();
-        
-        this.HighlightCurrentLine();
+            if (!runtime.state.running) {
+                this.EndMessage();
+                this.ChangeState("finished");
+            } else {
+                this.Pause();
+            }
 
-        if (!runtime.state.running) {
-            this.EndMessage();
-            this.ChangeState("finished");
-        } else {
-            this.Pause();
-        }
-
-        this.NotifyStep();
+            this.NotifyStep();
+        });
     }
 
     RegisterMessageCallback(callback: MessageCallback) {

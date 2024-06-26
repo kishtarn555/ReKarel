@@ -24780,6 +24780,53 @@
     }
     function GetCurrentSetting() { return appSettings; }
 
+    var __awaiter = (undefined && undefined.__awaiter) || function (thisArg, _arguments, P, generator) {
+        function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+        return new (P || (P = Promise))(function (resolve, reject) {
+            function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+            function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+            function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+            step((generator = generator.apply(thisArg, _arguments || [])).next());
+        });
+    };
+    class Throbber {
+        constructor(element) {
+            this.element = element;
+            this.shouldBeVisible = false;
+            this.visible = false;
+            this.hide();
+        }
+        show() {
+            this.element.show();
+            this.visible = true;
+        }
+        hide() {
+            this.shouldBeVisible = false;
+            this.visible = false;
+            this.element.hide();
+        }
+        showInSeconds(seconds) {
+            this.shouldBeVisible = true;
+            setTimeout(() => {
+                if (this.shouldBeVisible) {
+                    this.show();
+                }
+            }, seconds * 1000);
+        }
+        performTask(task) {
+            return __awaiter(this, void 0, void 0, function* () {
+                this.show();
+                const promise = new Promise((resolve, reject) => setTimeout(() => {
+                    let result = task();
+                    this.hide();
+                    resolve(result);
+                }));
+                return promise;
+            });
+        }
+    }
+    const throbber = new Throbber($("#throbber"));
+
     class KarelController {
         constructor(world, mainEditor) {
             this.world = world;
@@ -24921,11 +24968,16 @@
             const startWStackSize = runtime.state.stackSize;
             runtime.step();
             if (runtime.state.stackSize > startWStackSize) {
-                while (this.PerformAutoStep() && runtime.state.stackSize > startWStackSize)
-                    ;
-                runtime.step();
+                throbber.performTask(() => {
+                    while (this.PerformAutoStep() && runtime.state.stackSize > startWStackSize)
+                        ;
+                    runtime.step();
+                })
+                    .then(() => this.EndStep());
             }
-            this.EndStep();
+            else {
+                this.EndStep();
+            }
         }
         StepOut() {
             if (!this.StartStep())
@@ -24936,9 +24988,10 @@
                 this.RunTillEnd();
                 return;
             }
-            while (this.PerformAutoStep() && runtime.state.stackSize >= startWStackSize)
-                ;
-            this.EndStep();
+            throbber.performTask(() => {
+                while (this.PerformAutoStep() && runtime.state.stackSize >= startWStackSize)
+                    ;
+            }).then(_ => this.EndStep());
         }
         StartAutoStep(delay) {
             this.StopAutoStep(); //Avoid thread leak
@@ -24991,18 +25044,20 @@
             let runtime = this.GetRuntime();
             // runtime.disableStackEvents= false; // FIXME: This should only be done when no breakpoints
             // runtime.disableStackEvents= true; // FIXME: This should only be done when no breakpoints
-            while (this.PerformAutoStep(ignoreBreakpoints))
-                ;
-            // this.desktopController.CheckUpdate();
-            this.HighlightCurrentLine();
-            if (!runtime.state.running) {
-                this.EndMessage();
-                this.ChangeState("finished");
-            }
-            else {
-                this.Pause();
-            }
-            this.NotifyStep();
+            throbber.performTask(() => {
+                while (this.PerformAutoStep(ignoreBreakpoints))
+                    ;
+            }).then(_ => {
+                this.HighlightCurrentLine();
+                if (!runtime.state.running) {
+                    this.EndMessage();
+                    this.ChangeState("finished");
+                }
+                else {
+                    this.Pause();
+                }
+                this.NotifyStep();
+            });
         }
         RegisterMessageCallback(callback) {
             this.onMessage.push(callback);
