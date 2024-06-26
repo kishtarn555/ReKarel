@@ -215,13 +215,13 @@ class KarelController {
     StartAutoStep(delay:number) {        
         this.StopAutoStep(); //Avoid thread leak
         if (this.state === "finished") {
-            return;
+            return false;
         }
         this.autoStepping = true;
         if (!this.running) {
             if (!this.StartRun()) {
                 //Code Failed
-                return;
+                return false;
             }
         }
         if (this.state !== "running") {
@@ -237,6 +237,7 @@ class KarelController {
             }, 
             delay
         );
+        return true;
     }
 
     ChangeAutoStepDelay(delay:number) {

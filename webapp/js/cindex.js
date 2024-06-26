@@ -25149,13 +25149,13 @@
         StartAutoStep(delay) {
             this.StopAutoStep(); //Avoid thread leak
             if (this.state === "finished") {
-                return;
+                return false;
             }
             this.autoStepping = true;
             if (!this.running) {
                 if (!this.StartRun()) {
                     //Code Failed
-                    return;
+                    return false;
                 }
             }
             if (this.state !== "running") {
@@ -25168,6 +25168,7 @@
                 }
                 this.Step();
             }, delay);
+            return true;
         }
         ChangeAutoStepDelay(delay) {
             if (!this.IsAutoStepping()) {
@@ -26189,8 +26190,8 @@
         }
         AutoStep() {
             let delay = parseInt(this.ui.delayInput.val());
-            KarelController.GetInstance().StartAutoStep(delay);
-            this.SetPlayMode();
+            if (KarelController.GetInstance().StartAutoStep(delay))
+                this.SetPlayMode();
         }
         PauseStep() {
             KarelController.GetInstance().Pause();

@@ -80,8 +80,8 @@ export class ControlBar  {
 
     private AutoStep() {
         let delay:number = parseInt(this.ui.delayInput.val() as string);
-        KarelController.GetInstance().StartAutoStep(delay);
-        this.SetPlayMode();
+        if(KarelController.GetInstance().StartAutoStep(delay))
+            this.SetPlayMode();
     }
 
     
