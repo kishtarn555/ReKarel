@@ -117,7 +117,8 @@ case 8:
     			} else {
     				yy.parser.parseError("Unknown variable: " + $$[$0-3], {
               text: $$[$0-3],
-              line: current_line + 1
+              line: current_line + 1,
+              loc:_$[$0-3]
             });
     			}
     		}

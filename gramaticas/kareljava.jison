@@ -141,7 +141,8 @@ def
     			} else {
 						yy.parser.parseError("Unknown variable: " + $5, {
 							text: $5,
-							line: yylineno
+							line: yylineno,
+              loc:@5
 						});
     			}
     		}
