@@ -2,7 +2,7 @@ import { World, compile, detectLanguage } from "../../js/karel";
 // import { WorldViewController } from "./worldViewController";
 import { EditorView } from "codemirror";
 import { decodeRuntimeError } from "./errorCodes";
-import { breakpointState, setLanguage } from "./editor/editor";
+import { breakpointState, clearUnderlineError, setLanguage, underlineError } from "./editor/editor";
 import { GetCurrentSetting } from "./settings";
 import { throbber } from "./throbber";
 
@@ -75,6 +75,7 @@ class KarelController {
         }
         let response = null;
         try {
+            clearUnderlineError(this.mainEditor)
             response = compile(code);
             //TODO: expand message       
             if (notifyOnSuccess)     
@@ -83,7 +84,10 @@ class KarelController {
         } catch (e) {            
             //TODO: Expand error
             this.SendMessage(decodeError(e, language), "error");
-            
+            if (e.hash.loc) {
+                const status = e.hash;
+                underlineError(this.mainEditor, status.loc.first_line, status.loc.first_column, status.loc.last_column);
+            }
             this.NotifyCompile(false, language);
             return null;
         }
@@ -244,7 +248,7 @@ class KarelController {
         if (this.state !== "running") {
             this.ChangeState("running");
         }
-        this.autoStepInterval = setInterval(
+        this.autoStepInterval = window.setInterval(
             ()=>{
                 if (!this.running) {
                     this.StopAutoStep();
@@ -568,6 +572,8 @@ function decodeError(e, lan : "java"|"pascal"|"ruby"|"none") : string {
         return "Error de compilación, no se puede reconocer el lenguaje";
     }
     let status = e.hash;
+    console.log(JSON.stringify(e))
+    console.log(e)
     if (status == null) {
         return "Error de compilación";
     }

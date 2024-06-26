@@ -20488,6 +20488,53 @@
             }
         })
     ];
+    const parseErrorState = StateEffect.define({
+        map: ({ from, to }, change) => ({ from: change.mapPos(from), to: change.mapPos(to) })
+    });
+    const underlineMark = Decoration.mark({ class: "cm-underline" });
+    const parseErrorField = StateField.define({
+        create() {
+            return Decoration.none;
+        },
+        update(underlines, tr) {
+            underlines = underlines.map(tr.changes);
+            for (let e of tr.effects)
+                if (e.is(parseErrorState)) {
+                    if (e.value.from === -1) {
+                        underlines = RangeSet.empty;
+                    }
+                    else {
+                        underlines = underlines.update({
+                            add: [underlineMark.range(e.value.from, e.value.to)]
+                        });
+                    }
+                }
+            return underlines;
+        },
+        provide: f => EditorView.decorations.from(f)
+    });
+    const underlineTheme = EditorView.baseTheme({
+        ".cm-underline": { textDecoration: "underline 3px red" }
+    });
+    function underlineError(view, line, from, to) {
+        console.log(line, from, to);
+        let real_from = view.state.doc.line(line).from + from;
+        let real_to = view.state.doc.line(line).from + to;
+        let effects = [parseErrorState.of({ from: real_from, to: real_to })];
+        if (!view.state.field(parseErrorField, false))
+            effects.push(StateEffect.appendConfig.of([parseErrorField,
+                underlineTheme]));
+        view.dispatch({ effects });
+        return true;
+    }
+    function clearUnderlineError(view) {
+        let effects = [parseErrorState.of({ from: -1, to: -1 })];
+        if (!view.state.field(parseErrorField, false))
+            effects.push(StateEffect.appendConfig.of([parseErrorField,
+                underlineTheme]));
+        view.dispatch({ effects });
+        return true;
+    }
     function createEditors() {
         let startState = EditorState.create({
             doc: "iniciar-programa\n\tinicia-ejecucion\n\t\t{ TODO poner codigo aqui }\n\t\tapagate;\n\ttermina-ejecucion\nfinalizar-programa",
@@ -21108,7 +21155,8 @@
                                 else {
                                     yy.parser.parseError("Unknown variable: " + $$[$0 - 2], {
                                         text: $$[$0 - 2],
-                                        line: yylineno
+                                        line: yylineno,
+                                        loc: _$[$0 - 2]
                                     });
                                 }
                             }
@@ -21319,7 +21367,7 @@
                             text: lexer.match,
                             token: this.terminals_[symbol] || symbol,
                             line: lexer.yylineno,
-                            loc: yyloc,
+                            loc: lexer.yylloc,
                             expected: expected
                         });
                     }
@@ -21988,7 +22036,8 @@
                                 else {
                                     yy.parser.parseError("Unknown variable: " + $$[$0 - 3], {
                                         text: $$[$0 - 3],
-                                        line: current_line + 1
+                                        line: current_line + 1,
+                                        loc: _$[$0 - 3]
                                     });
                                 }
                             }
@@ -22211,7 +22260,7 @@
                             text: lexer.match,
                             token: this.terminals_[symbol] || symbol,
                             line: lexer.yylineno,
-                            loc: yyloc,
+                            loc: lexer.yylloc,
                             expected: expected
                         });
                     }
@@ -22827,7 +22876,9 @@
             exports.main(process.argv.slice(1));
         }
     }
-    function pascalParser() { return karelpascal.parse.apply(karelpascal, arguments); }
+    function pascalParser() {
+        return karelpascal.parse.apply(karelpascal, arguments);
+    }
 
     if (typeof Event === 'undefined') {
         var Event = function (type) {
@@ -24861,6 +24912,7 @@
             }
             let response = null;
             try {
+                clearUnderlineError(this.mainEditor);
                 response = compile(code);
                 //TODO: expand message       
                 if (notifyOnSuccess)
@@ -24870,6 +24922,10 @@
             catch (e) {
                 //TODO: Expand error
                 this.SendMessage(decodeError(e, language), "error");
+                if (e.hash.loc) {
+                    const status = e.hash;
+                    underlineError(this.mainEditor, status.loc.first_line, status.loc.first_column, status.loc.last_column);
+                }
                 this.NotifyCompile(false, language);
                 return null;
             }
@@ -25008,7 +25064,7 @@
             if (this.state !== "running") {
                 this.ChangeState("running");
             }
-            this.autoStepInterval = setInterval(() => {
+            this.autoStepInterval = window.setInterval(() => {
                 if (!this.running) {
                     this.StopAutoStep();
                     return;
@@ -25289,6 +25345,8 @@
             return "Error de compilación, no se puede reconocer el lenguaje";
         }
         let status = e.hash;
+        console.log(JSON.stringify(e));
+        console.log(e);
         if (status == null) {
             return "Error de compilación";
         }

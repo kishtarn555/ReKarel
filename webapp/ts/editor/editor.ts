@@ -1,6 +1,6 @@
 import {EditorState} from "@codemirror/state"
 import {defaultKeymap, historyKeymap, history} from "@codemirror/commands"
-import {drawSelection, keymap, lineNumbers, highlightActiveLine, GutterMarker,gutter} from "@codemirror/view"
+import {drawSelection, keymap, lineNumbers, highlightActiveLine, GutterMarker,gutter, Decoration, DecorationSet} from "@codemirror/view"
 import {indentWithTab} from "@codemirror/commands"
 import {undo, redo} from "@codemirror/commands"
 import {EditorView} from "@codemirror/view"
@@ -71,6 +71,64 @@ const breakpointGutter = [
     }
   })
 ]
+
+
+
+const parseErrorState = StateEffect.define<{from: number, to: number}>({
+  map: ({from, to}, change) => ({from: change.mapPos(from), to: change.mapPos(to)})
+})
+
+const underlineMark = Decoration.mark({class: "cm-underline"})
+
+const parseErrorField =  StateField.define<DecorationSet>({
+  create() {
+    return Decoration.none
+  },
+  update(underlines, tr) {
+    underlines = underlines.map(tr.changes)
+    for (let e of tr.effects) if (e.is(parseErrorState)) {
+      if (e.value.from === -1) {
+        underlines = RangeSet.empty
+      }else {
+        underlines = underlines.update({
+          add: [underlineMark.range(e.value.from, e.value.to)]
+        })
+      }
+    }
+    return underlines
+  },
+  provide: f => EditorView.decorations.from(f)
+})
+const underlineTheme = EditorView.baseTheme({
+  ".cm-underline": { textDecoration: "underline 3px red" }
+})
+
+export function underlineError(view: EditorView, line:number, from:number, to:number) {
+  console.log(line, from, to);
+  let real_from = view.state.doc.line(line).from + from;
+  let real_to = view.state.doc.line(line).from + to;
+  let effects:StateEffect<unknown>[] =  [parseErrorState.of({from:real_from, to:real_to})]
+
+
+  if (!view.state.field(parseErrorField, false))
+    effects.push(StateEffect.appendConfig.of([parseErrorField,
+                                              underlineTheme]))
+  view.dispatch({effects})
+  return true
+}
+
+
+export function clearUnderlineError(view: EditorView) {
+  let effects:StateEffect<unknown>[] =  [parseErrorState.of({from:-1, to:-1})]
+
+
+  if (!view.state.field(parseErrorField, false))
+    effects.push(StateEffect.appendConfig.of([parseErrorField,
+                                              underlineTheme]))
+  view.dispatch({effects})
+  return true
+}
+
 
 function createEditors() : Array<EditorView> {
   let startState = EditorState.create({
