@@ -6,7 +6,7 @@ import {  WRStyle } from "./worldRenderer";
 import { DarkEditorThemes } from "./editor/themes/themeManager";
 
 const APP_SETTING = 'appSettings';
-const SETTINGS_VERSION = "0.5.0";
+const SETTINGS_VERSION = "0.6.0";
 
 type fontSizes = number;
 type responsiveInterfaces = "auto" | "desktop" | "mobile";
@@ -18,7 +18,8 @@ type AppSettings = {
     theme: themeSettings
     editorTheme:string
     editorFontSize: fontSizes,
-    worldRendererStyle: WRStyle
+    worldRendererStyle: WRStyle,
+    slowExecutionLimit:number
     
 }
 
@@ -28,7 +29,8 @@ let appSettings: AppSettings = {
     editorTheme: "classic",
     editorFontSize: 12,
     theme: "system",
-    worldRendererStyle: DefaultWRStyle
+    worldRendererStyle: DefaultWRStyle,
+    slowExecutionLimit:200000
 }
 
 function isFontSize(str: number): str is fontSizes {
@@ -88,6 +90,7 @@ function applySettings(settings: AppSettings, desktopUI:DesktopController) {
 function setSettings(event:  JQuery.SubmitEvent<HTMLElement, undefined, HTMLElement, HTMLElement>, desktopUI:DesktopController) {
     let interfaceType = <string>$("#settingsForm select[name=interface]").val();
     let fontSize = <number>$("#settingsForm input[name=fontSize]").val();
+    let slowModeLimit = <number>$("#settingsSlowModeLimit").val();
     let theme = <string>$("#settingsForm select[name=theme]").val();
     let style = <string>$("#settingsForm select[name=editorStyle]").val();
     console.log(fontSize);
@@ -100,6 +103,7 @@ function setSettings(event:  JQuery.SubmitEvent<HTMLElement, undefined, HTMLElem
     if (isTheme(theme)) {
         appSettings.theme = theme;
     }
+    appSettings.slowExecutionLimit = slowModeLimit;
     appSettings.editorTheme = style;
 
     console.log(appSettings);
@@ -129,6 +133,8 @@ function loadSettingsToModal() {
     $("#settingsFontSize").val(appSettings.editorFontSize);
     $("#settingsTheme").val(appSettings.theme);
     $("#settingsStyle").val(appSettings.editorTheme);
+    $("#settingsSlowModeLimit").val(appSettings.slowExecutionLimit);
+    showOrHideSlowExecutionLimit();
 }
 
 export function InitSettings(desktopUI:DesktopController) {    
@@ -145,7 +151,15 @@ export function InitSettings(desktopUI:DesktopController) {
     
 }
 
+function showOrHideSlowExecutionLimit () {
+    
+    if ($("#settingsSlowModeLimit").val() as number > 200000) {
+        $("#slowModeWarning").show();
+    } else {
+        $("#slowModeWarning").hide();
+    }
 
+}
 
 export function StartSettings(desktopUI:DesktopController) {
 
@@ -172,6 +186,7 @@ export function StartSettings(desktopUI:DesktopController) {
         }
 
     });
+    $("#settingsSlowModeLimit").on("change", ()=> showOrHideSlowExecutionLimit());
 }
 
 

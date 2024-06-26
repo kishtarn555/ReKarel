@@ -3,6 +3,7 @@ import { World, compile, detectLanguage } from "../../js/karel";
 import { EditorView } from "codemirror";
 import { decodeRuntimeError } from "./errorCodes";
 import { breakpointState, setLanguage } from "./editor/editor";
+import { GetCurrentSetting } from "./settings";
 
 type messageType = "info"|"success"|"error"|"raw"|"warning";
 type MessageCallback = (message:string, type:messageType)=>void;
@@ -371,10 +372,10 @@ class KarelController {
     private PerformAutoStep(ignoreBreakpoints:boolean = false) {
         const runtime = this.GetRuntime();
         const result = runtime.step();
-        
-        if (runtime.state.ic >= 200000 && !runtime.disableStackEvents) {
+        const slowLimit = GetCurrentSetting().slowExecutionLimit; 
+        if (runtime.state.ic >=  slowLimit&& !runtime.disableStackEvents) {
             runtime.disableStackEvents = true;
-            this.SendMessage("Karel alcanzó las 200,000 instrucciones, Karel cambiará al modo rápido de ejecución, la pila de llamadas dejará de actualizarse", "warning");
+            this.SendMessage(`Karel alcanzó las ${slowLimit.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")} instrucciones, Karel cambiará al modo rápido de ejecución, la pila de llamadas dejará de actualizarse`, "warning");
         }
         
         

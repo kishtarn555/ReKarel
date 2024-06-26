@@ -24299,6 +24299,487 @@
         return ERRORCODES[error];
     }
 
+    const DefaultWRStyle = {
+        disabled: '#4f4f4f',
+        exportCellBackground: '#f5f7a8',
+        karelColor: '#3E6AC1',
+        gridBackgroundColor: '#f8f9fA',
+        errorGridBackgroundColor: "#f5d5d5",
+        gridBorderColor: '#c4c4c4',
+        errorGridBorderColor: '#a8838f',
+        gutterBackgroundColor: '#e6e6e6',
+        gutterColor: "#444444",
+        beeperBackgroundColor: "#0ADB23",
+        beeperColor: "#000000",
+        wallColor: "#000000",
+        waffleColor: "#0d6dfd",
+        gutterSelectionBackgroundColor: "#86afd5",
+        gutterSelectionColor: "#000000",
+    };
+    const WR_CLEAN = {
+        disabled: '#4f4f4f',
+        exportCellBackground: '#f5f7a8',
+        karelColor: '#3E6AC1',
+        gridBackgroundColor: '#f8f9fA',
+        errorGridBackgroundColor: "#f5d5d5",
+        gridBorderColor: '#c4c4c4',
+        errorGridBorderColor: '#a8838f',
+        gutterBackgroundColor: '#e6e6e6',
+        gutterColor: "#444444",
+        beeperBackgroundColor: "#ffffff",
+        beeperColor: "#000000",
+        wallColor: "#000000",
+        waffleColor: "#0d6dfd",
+        gutterSelectionBackgroundColor: "#86afd5",
+        gutterSelectionColor: "#000000",
+    };
+    const WR_DARK = {
+        disabled: '#4f4f4f',
+        exportCellBackground: '#f5f7a8',
+        karelColor: '#328EAD',
+        gridBackgroundColor: '#282828',
+        errorGridBackgroundColor: "#5D3D3D",
+        gridBorderColor: '#565656',
+        errorGridBorderColor: '#565656',
+        gutterBackgroundColor: '#3B3B3B',
+        gutterColor: "#E8E8E8",
+        beeperBackgroundColor: "#005608",
+        beeperColor: "#ffffff",
+        wallColor: "#f1f1f1",
+        waffleColor: "#82e8ff",
+        gutterSelectionBackgroundColor: "#352f7f",
+        gutterSelectionColor: "#FCFCFC",
+    };
+    const WR_CONTRAST = {
+        disabled: '#4f4f4f',
+        exportCellBackground: '#f5f7a8',
+        karelColor: '#3F69DB',
+        gridBackgroundColor: '#f3f3f3',
+        errorGridBackgroundColor: "#5D3D3D",
+        gridBorderColor: '#565656',
+        errorGridBorderColor: '#565656',
+        gutterBackgroundColor: '#e3e3e3',
+        gutterColor: "#000000",
+        beeperBackgroundColor: "#000000",
+        beeperColor: "#ffffff",
+        wallColor: "#000000",
+        waffleColor: "#ff0000",
+        gutterSelectionBackgroundColor: "#000000",
+        gutterSelectionColor: "#ffffff",
+    };
+
+    function clearAllDisplayClasses(element) {
+        $(element).removeClass("d-none");
+        $(element).removeClass("d-lg-block");
+        $(element).removeClass("d-lg-none");
+    }
+    function hideElement$1(element) {
+        $(element).addClass("d-none");
+    }
+    function SetResponsiveness() {
+        clearAllDisplayClasses("#desktopView");
+        clearAllDisplayClasses("#phoneView");
+        $("#phoneView").addClass("d-lg-none");
+        $("#desktopView").addClass("d-none");
+        $("#desktopView").addClass("d-lg-block");
+    }
+    function SetDesktopView() {
+        clearAllDisplayClasses("#phoneView");
+        clearAllDisplayClasses("#desktopView");
+        hideElement$1("#phoneView");
+    }
+    function SetPhoneView() {
+        clearAllDisplayClasses("#phoneView");
+        clearAllDisplayClasses("#desktopView");
+        hideElement$1("#desktopView");
+    }
+    function responsiveHack() {
+        $("#phoneView").removeClass("position-absolute");
+        {
+            $("#phoneView").addClass("d-none");
+        }
+        $("#loadingModal").remove();
+    }
+
+    let editors = createEditors();
+    function getEditors() {
+        return editors;
+    }
+
+    function applyTheme(theme) {
+        SetEditorTheme(theme.extensions, getEditors()[0]);
+        const root = $(":root")[0];
+        root.style.setProperty("--editor-color", theme.color);
+        root.style.setProperty("--editor-background", theme.backgroundColor);
+        root.style.setProperty("--editor-gutter-bg", theme.gutterBackgroundColor);
+        root.style.setProperty("--editor-gutter", theme.gutterColor);
+    }
+
+    const DarkCodeTheme = {
+        color: "#9CDCFE",
+        backgroundColor: "#1F1F1F",
+        gutterBackgroundColor: "#1F1F1F",
+        gutterColor: "#6e7681",
+        extensions: [
+            syntaxHighlighting(HighlightStyle.define([
+                { tag: tags.atom, color: "#DCDCAA" },
+                { tag: tags.className, color: "#4EC9B0" },
+                { tag: tags.keyword, color: "#C586C0" },
+                { tag: tags.controlKeyword, color: "#C586C0" },
+                { tag: tags.definitionKeyword, color: "#569CD6" },
+                { tag: tags.number, color: "#b5cea8" },
+                { tag: tags.operator, color: "#efefef" },
+                { tag: tags.brace, color: "#FFD700" },
+                { tag: tags.blockComment, color: "#6A9955", fontStyle: "italic" },
+                { tag: tags.comment, color: "#6A9955", fontStyle: "italic" },
+                { tag: tags.constant(tags.variableName), color: "#DCDCAA" },
+            ])),
+            EditorView.theme({
+                '&.cm-focused .cm-selectionBackground, ::selection': {
+                    backgroundColor: "#b3c6c7"
+                }
+            })
+        ]
+    };
+    const LightCodeTheme = {
+        color: "#0451A5",
+        backgroundColor: "#FAFAFA",
+        gutterBackgroundColor: "#FAFAFA",
+        gutterColor: "#6e7681",
+        extensions: [
+            syntaxHighlighting(HighlightStyle.define([
+                { tag: tags.atom, color: "#795E26" },
+                { tag: tags.className, color: "#4EC9B0" },
+                { tag: tags.keyword, color: "#AF00DB" },
+                { tag: tags.controlKeyword, color: "#AF00DB" },
+                { tag: tags.definitionKeyword, color: "#569CD6" },
+                { tag: tags.number, color: "#098658" },
+                { tag: tags.operator, color: "#050505" },
+                { tag: tags.brace, color: "#0431FA" },
+                { tag: tags.blockComment, color: "#008000", fontStyle: "italic" },
+                { tag: tags.comment, color: "#008000", fontStyle: "italic" },
+                { tag: tags.constant(tags.variableName), color: "#795E26" },
+            ])),
+            EditorView.theme({
+                '&.cm-focused .cm-selectionBackground, ::selection': {
+                    backgroundColor: "#b3c6c7"
+                }
+            })
+        ]
+    };
+
+    const darkClassicHighlight = {
+        color: "var(--bs-body-color)",
+        backgroundColor: "rgba(var(--bs-body-bg-rgb), var(--bs-bg-opacity))",
+        gutterBackgroundColor: "var(--bs-secondary-bg)",
+        gutterColor: "var(--bs-emphasis-color)",
+        extensions: [
+            syntaxHighlighting(HighlightStyle.define([
+                { tag: tags.atom, color: "#93bf74" },
+                { tag: tags.keyword, color: "#C586C0" },
+                { tag: tags.className, color: "#C586C0" },
+                { tag: tags.brace, color: "#94a4cb" },
+                { tag: tags.number, color: "#569CD6" },
+                { tag: tags.operator, color: "#77a1d5" },
+                { tag: tags.blockComment, color: "#a0b6b6", fontStyle: "italic" },
+                { tag: tags.comment, color: "#a0b6b6", fontStyle: "italic" },
+                { tag: tags.constant(tags.variableName), color: "#9CDCFE" },
+            ])),
+            EditorView.theme({
+                '&.cm-focused .cm-selectionBackground, ::selection': {
+                    backgroundColor: "#4e4d48"
+                }
+            })
+        ]
+    };
+
+    const OMIHighlight = {
+        color: "#FFFF00",
+        backgroundColor: "#000080",
+        gutterBackgroundColor: "#F5F5F5",
+        gutterColor: "#000000",
+        extensions: [
+            syntaxHighlighting(HighlightStyle.define([
+                { tag: tags.atom, color: "#00FFFF" },
+                { tag: tags.keyword, color: "#00FFFF" },
+                { tag: tags.controlKeyword, color: "#00FFFF" },
+                { tag: tags.definitionKeyword, color: "#00FFFF" },
+                { tag: tags.number, color: "#FF00FF" },
+                { tag: tags.operator, color: "#00FFFF" },
+                { tag: tags.brace, color: "#00FFFF" },
+                { tag: tags.constant(tags.variableName), color: "#00FFFF" },
+            ])),
+            EditorView.theme({
+                '&.cm-focused .cm-selectionBackground, ::selection': {
+                    backgroundColor: "#0000FF"
+                }
+            })
+        ]
+    };
+
+    const ReKarelHighlight = {
+        color: "#fafafa",
+        backgroundColor: "var(--bs-dark)",
+        gutterBackgroundColor: "var(--bs-secondary-bg)",
+        gutterColor: "var(--bs-emphasis-color)",
+        extensions: [
+            syntaxHighlighting(HighlightStyle.define([
+                { tag: tags.atom, color: "#ffda6a" },
+                { tag: tags.keyword, color: "#ea868f" },
+                { tag: tags.brace, color: "#ea868f" },
+                { tag: tags.controlKeyword, color: "#6ea8fe" },
+                { tag: tags.definitionKeyword, color: "#6ea8fe" },
+                { tag: tags.number, color: "#ffda6a" },
+                { tag: tags.operator, color: "#77a1d5" },
+                { tag: tags.blockComment, color: "#75b798", fontStyle: "italic" },
+                { tag: tags.comment, color: "#75b798", fontStyle: "italic" },
+                { tag: tags.constant(tags.variableName), color: "#6edff6" },
+            ])),
+            EditorView.theme({
+                '&.cm-focused .cm-selectionBackground, ::selection': {
+                    backgroundColor: "#4e4d48"
+                }
+            })
+        ]
+    };
+    const LightReKarelHighlight = {
+        color: "#2e2e2e",
+        backgroundColor: "var(--bs-light)",
+        gutterBackgroundColor: "var(--bs-secondary-bg)",
+        gutterColor: "var(--bs-emphasis-color)",
+        extensions: [
+            syntaxHighlighting(HighlightStyle.define([
+                { tag: tags.atom, color: "#ff9c07" },
+                { tag: tags.keyword, color: "#c62e3d" },
+                { tag: tags.brace, color: "#c62e3d" },
+                { tag: tags.controlKeyword, color: "#0d6efd " },
+                { tag: tags.definitionKeyword, color: "#0d6efd " },
+                { tag: tags.number, color: "#ff9c07" },
+                { tag: tags.operator, color: "#77a1d5" },
+                { tag: tags.blockComment, color: "#198754", fontStyle: "italic" },
+                { tag: tags.comment, color: "#198754", fontStyle: "italic" },
+                { tag: tags.constant(tags.variableName), color: "#24a7db" },
+            ])),
+        ]
+    };
+
+    const SepiaTheme = {
+        color: "#3a3d42",
+        backgroundColor: "#fffde5",
+        gutterBackgroundColor: "#d9ceb6",
+        gutterColor: "#2d2e3b",
+        extensions: [
+            syntaxHighlighting(HighlightStyle.define([
+                { tag: tags.atom, color: "#707894" },
+                { tag: tags.keyword, color: "#cb3551" },
+                { tag: tags.controlKeyword, color: "#3f9c4f" },
+                { tag: tags.definitionKeyword, color: "#3f9c4f" },
+                { tag: tags.number, color: "#22867e" },
+                { tag: tags.operator, color: "#3f9c4f" },
+                { tag: tags.blockComment, color: "#973d1a", fontStyle: "italic" },
+                { tag: tags.comment, color: "#973d1a", fontStyle: "italic" },
+                { tag: tags.constant(tags.variableName), color: "#1f34a1" },
+            ])),
+            EditorView.theme({
+                '&.cm-focused .cm-selectionBackground, ::selection': {
+                    backgroundColor: "#b3c6c7"
+                }
+            })
+        ]
+    };
+
+    const DarkEditorThemes = {
+        'classic': darkClassicHighlight,
+        'rekarel': ReKarelHighlight,
+        'sepia': SepiaTheme,
+        'omi': OMIHighlight,
+        'code': DarkCodeTheme,
+    };
+    const LightEditorThemes = {
+        'classic': classicHighlight,
+        'rekarel': LightReKarelHighlight,
+        'sepia': SepiaTheme,
+        'omi': OMIHighlight,
+        'code': LightCodeTheme,
+    };
+
+    function SetLightTheme(theme) {
+        $(":root").attr("data-bs-theme", "light");
+        applyTheme(LightEditorThemes[theme]);
+    }
+    function SetDarkTheme(theme) {
+        $(":root").attr("data-bs-theme", "dark");
+        applyTheme(DarkEditorThemes[theme]);
+    }
+    function SetSystemTheme(theme) {
+        if (window.matchMedia) {
+            if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+                SetDarkTheme(theme);
+            }
+            else {
+                SetLightTheme(theme);
+            }
+            return;
+        }
+        SetLightTheme(theme); //Default light theme
+    }
+
+    const APP_SETTING = 'appSettings';
+    const SETTINGS_VERSION = "0.6.0";
+    let appSettings = {
+        version: SETTINGS_VERSION,
+        interface: "desktop",
+        editorTheme: "classic",
+        editorFontSize: 12,
+        theme: "system",
+        worldRendererStyle: DefaultWRStyle,
+        slowExecutionLimit: 200000
+    };
+    function isFontSize(str) {
+        return 6 < str && str < 31;
+    }
+    function isResponsiveInterfaces(str) {
+        return ["auto", "desktop", "mobile"].indexOf(str) > -1;
+    }
+    function isTheme(str) {
+        return ["system", "light", "dark"].indexOf(str) > -1;
+    }
+    let DesktopUI$1;
+    function applySettings(settings, desktopUI) {
+        switch (settings.interface) {
+            case "auto":
+                SetResponsiveness();
+                break;
+            case "desktop":
+                SetDesktopView();
+                break;
+            case "mobile":
+                SetPhoneView();
+                break;
+            default:
+                SetDesktopView();
+                break;
+        }
+        if (!(settings.editorTheme in DarkEditorThemes))
+            settings.editorTheme = "classic";
+        switch (settings.theme) {
+            case "system":
+                SetSystemTheme(settings.editorTheme);
+                break;
+            case "light":
+                SetLightTheme(settings.editorTheme);
+                break;
+            case "dark":
+                SetDarkTheme(settings.editorTheme);
+                break;
+            default:
+                SetDarkTheme(settings.editorTheme);
+        }
+        const root = $(":root")[0];
+        root.style.setProperty("--editor-font-size", `${settings.editorFontSize}pt`);
+        root.style.setProperty("--waffle-color", `${settings.worldRendererStyle.waffleColor}`);
+        if (settings.interface == "desktop")
+            desktopUI.ResizeCanvas();
+        desktopUI.worldController.renderer.style = settings.worldRendererStyle;
+        desktopUI.worldController.Update();
+        if (localStorage)
+            localStorage.setItem(APP_SETTING, JSON.stringify(appSettings));
+    }
+    function setSettings(event, desktopUI) {
+        let interfaceType = $("#settingsForm select[name=interface]").val();
+        let fontSize = $("#settingsForm input[name=fontSize]").val();
+        let slowModeLimit = $("#settingsSlowModeLimit").val();
+        let theme = $("#settingsForm select[name=theme]").val();
+        let style = $("#settingsForm select[name=editorStyle]").val();
+        console.log(fontSize);
+        if (isResponsiveInterfaces(interfaceType)) {
+            appSettings.interface = interfaceType;
+        }
+        if (isFontSize(fontSize)) {
+            appSettings.editorFontSize = fontSize;
+        }
+        if (isTheme(theme)) {
+            appSettings.theme = theme;
+        }
+        appSettings.slowExecutionLimit = slowModeLimit;
+        appSettings.editorTheme = style;
+        console.log(appSettings);
+        applySettings(appSettings, desktopUI);
+        event.preventDefault();
+        return false;
+    }
+    function loadSettingsFromMemory() {
+        const jsonString = localStorage === null || localStorage === void 0 ? void 0 : localStorage.getItem(APP_SETTING);
+        if (jsonString) {
+            const memorySettings = JSON.parse(jsonString);
+            if (memorySettings.version == null)
+                return;
+            if (memorySettings.version !== SETTINGS_VERSION) {
+                localStorage.removeItem(memorySettings);
+                return;
+            }
+            appSettings = memorySettings;
+        }
+    }
+    function loadSettingsToModal() {
+        console.log("show", appSettings);
+        $("#settingsInterface").val(appSettings.interface);
+        $("#settingsFontSize").val(appSettings.editorFontSize);
+        $("#settingsTheme").val(appSettings.theme);
+        $("#settingsStyle").val(appSettings.editorTheme);
+        $("#settingsSlowModeLimit").val(appSettings.slowExecutionLimit);
+        showOrHideSlowExecutionLimit();
+    }
+    function InitSettings(desktopUI) {
+        DesktopUI$1 = desktopUI;
+        loadSettingsFromMemory();
+        $("#settingsModal").on("show.bs.modal", (e) => {
+            loadSettingsToModal();
+        });
+        $("#settingsForm").on("submit", (e) => {
+            setSettings(e, desktopUI);
+        });
+    }
+    function showOrHideSlowExecutionLimit() {
+        if ($("#settingsSlowModeLimit").val() > 200000) {
+            $("#slowModeWarning").show();
+        }
+        else {
+            $("#slowModeWarning").hide();
+        }
+    }
+    function StartSettings(desktopUI) {
+        applySettings(appSettings, desktopUI);
+        $(document).on("keydown", (e) => {
+            if (e.ctrlKey && e.which === 75) {
+                let fontSize = appSettings.editorFontSize;
+                fontSize--;
+                if (fontSize < 7)
+                    fontSize = 7;
+                appSettings.editorFontSize = fontSize;
+                applySettings(appSettings, desktopUI);
+                e.preventDefault();
+                return false;
+            }
+            if (e.ctrlKey && e.which === 76) {
+                let fontSize = appSettings.editorFontSize;
+                fontSize++;
+                if (fontSize > 30)
+                    fontSize = 30;
+                appSettings.editorFontSize = fontSize;
+                applySettings(appSettings, desktopUI);
+                e.preventDefault();
+                return false;
+            }
+        });
+        $("#settingsSlowModeLimit").on("change", () => showOrHideSlowExecutionLimit());
+    }
+    function SetWorldRendererStyle(style) {
+        appSettings.worldRendererStyle = style;
+        applySettings(appSettings, DesktopUI$1);
+    }
+    function GetCurrentSetting() { return appSettings; }
+
     class KarelController {
         constructor(world, mainEditor) {
             this.world = world;
@@ -24587,9 +25068,10 @@
         PerformAutoStep(ignoreBreakpoints = false) {
             const runtime = this.GetRuntime();
             const result = runtime.step();
-            if (runtime.state.ic >= 200000 && !runtime.disableStackEvents) {
+            const slowLimit = GetCurrentSetting().slowExecutionLimit;
+            if (runtime.state.ic >= slowLimit && !runtime.disableStackEvents) {
                 runtime.disableStackEvents = true;
-                this.SendMessage("Karel alcanzó las 200,000 instrucciones, Karel cambiará al modo rápido de ejecución, la pila de llamadas dejará de actualizarse", "warning");
+                this.SendMessage(`Karel alcanzó las ${slowLimit.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")} instrucciones, Karel cambiará al modo rápido de ejecución, la pila de llamadas dejará de actualizarse`, "warning");
             }
             return result && (ignoreBreakpoints || !this.CheckForBreakPointOnCurrentLine());
         }
@@ -25434,75 +25916,6 @@
         }
     }
 
-    const DefaultWRStyle = {
-        disabled: '#4f4f4f',
-        exportCellBackground: '#f5f7a8',
-        karelColor: '#3E6AC1',
-        gridBackgroundColor: '#f8f9fA',
-        errorGridBackgroundColor: "#f5d5d5",
-        gridBorderColor: '#c4c4c4',
-        errorGridBorderColor: '#a8838f',
-        gutterBackgroundColor: '#e6e6e6',
-        gutterColor: "#444444",
-        beeperBackgroundColor: "#0ADB23",
-        beeperColor: "#000000",
-        wallColor: "#000000",
-        waffleColor: "#0d6dfd",
-        gutterSelectionBackgroundColor: "#86afd5",
-        gutterSelectionColor: "#000000",
-    };
-    const WR_CLEAN = {
-        disabled: '#4f4f4f',
-        exportCellBackground: '#f5f7a8',
-        karelColor: '#3E6AC1',
-        gridBackgroundColor: '#f8f9fA',
-        errorGridBackgroundColor: "#f5d5d5",
-        gridBorderColor: '#c4c4c4',
-        errorGridBorderColor: '#a8838f',
-        gutterBackgroundColor: '#e6e6e6',
-        gutterColor: "#444444",
-        beeperBackgroundColor: "#ffffff",
-        beeperColor: "#000000",
-        wallColor: "#000000",
-        waffleColor: "#0d6dfd",
-        gutterSelectionBackgroundColor: "#86afd5",
-        gutterSelectionColor: "#000000",
-    };
-    const WR_DARK = {
-        disabled: '#4f4f4f',
-        exportCellBackground: '#f5f7a8',
-        karelColor: '#328EAD',
-        gridBackgroundColor: '#282828',
-        errorGridBackgroundColor: "#5D3D3D",
-        gridBorderColor: '#565656',
-        errorGridBorderColor: '#565656',
-        gutterBackgroundColor: '#3B3B3B',
-        gutterColor: "#E8E8E8",
-        beeperBackgroundColor: "#005608",
-        beeperColor: "#ffffff",
-        wallColor: "#f1f1f1",
-        waffleColor: "#82e8ff",
-        gutterSelectionBackgroundColor: "#352f7f",
-        gutterSelectionColor: "#FCFCFC",
-    };
-    const WR_CONTRAST = {
-        disabled: '#4f4f4f',
-        exportCellBackground: '#f5f7a8',
-        karelColor: '#3F69DB',
-        gridBackgroundColor: '#f3f3f3',
-        errorGridBackgroundColor: "#5D3D3D",
-        gridBorderColor: '#565656',
-        errorGridBorderColor: '#565656',
-        gutterBackgroundColor: '#e3e3e3',
-        gutterColor: "#000000",
-        beeperBackgroundColor: "#000000",
-        beeperColor: "#ffffff",
-        wallColor: "#000000",
-        waffleColor: "#ff0000",
-        gutterSelectionBackgroundColor: "#000000",
-        gutterSelectionColor: "#ffffff",
-    };
-
     class ControlBar {
         constructor(ui, worldController) {
             this.ui = ui;
@@ -26159,404 +26572,6 @@
         $(navbar.openCode).on("click", () => getCode(editor));
         $(navbar.openWorldIn).on("click", () => getWorldIn(karelController));
     }
-
-    function clearAllDisplayClasses(element) {
-        $(element).removeClass("d-none");
-        $(element).removeClass("d-lg-block");
-        $(element).removeClass("d-lg-none");
-    }
-    function hideElement$1(element) {
-        $(element).addClass("d-none");
-    }
-    function SetResponsiveness() {
-        clearAllDisplayClasses("#desktopView");
-        clearAllDisplayClasses("#phoneView");
-        $("#phoneView").addClass("d-lg-none");
-        $("#desktopView").addClass("d-none");
-        $("#desktopView").addClass("d-lg-block");
-    }
-    function SetDesktopView() {
-        clearAllDisplayClasses("#phoneView");
-        clearAllDisplayClasses("#desktopView");
-        hideElement$1("#phoneView");
-    }
-    function SetPhoneView() {
-        clearAllDisplayClasses("#phoneView");
-        clearAllDisplayClasses("#desktopView");
-        hideElement$1("#desktopView");
-    }
-    function responsiveHack() {
-        $("#phoneView").removeClass("position-absolute");
-        {
-            $("#phoneView").addClass("d-none");
-        }
-        $("#loadingModal").remove();
-    }
-
-    let editors = createEditors();
-    function getEditors() {
-        return editors;
-    }
-
-    function applyTheme(theme) {
-        SetEditorTheme(theme.extensions, getEditors()[0]);
-        const root = $(":root")[0];
-        root.style.setProperty("--editor-color", theme.color);
-        root.style.setProperty("--editor-background", theme.backgroundColor);
-        root.style.setProperty("--editor-gutter-bg", theme.gutterBackgroundColor);
-        root.style.setProperty("--editor-gutter", theme.gutterColor);
-    }
-
-    const DarkCodeTheme = {
-        color: "#9CDCFE",
-        backgroundColor: "#1F1F1F",
-        gutterBackgroundColor: "#1F1F1F",
-        gutterColor: "#6e7681",
-        extensions: [
-            syntaxHighlighting(HighlightStyle.define([
-                { tag: tags.atom, color: "#DCDCAA" },
-                { tag: tags.className, color: "#4EC9B0" },
-                { tag: tags.keyword, color: "#C586C0" },
-                { tag: tags.controlKeyword, color: "#C586C0" },
-                { tag: tags.definitionKeyword, color: "#569CD6" },
-                { tag: tags.number, color: "#b5cea8" },
-                { tag: tags.operator, color: "#efefef" },
-                { tag: tags.brace, color: "#FFD700" },
-                { tag: tags.blockComment, color: "#6A9955", fontStyle: "italic" },
-                { tag: tags.comment, color: "#6A9955", fontStyle: "italic" },
-                { tag: tags.constant(tags.variableName), color: "#DCDCAA" },
-            ])),
-            EditorView.theme({
-                '&.cm-focused .cm-selectionBackground, ::selection': {
-                    backgroundColor: "#b3c6c7"
-                }
-            })
-        ]
-    };
-    const LightCodeTheme = {
-        color: "#0451A5",
-        backgroundColor: "#FAFAFA",
-        gutterBackgroundColor: "#FAFAFA",
-        gutterColor: "#6e7681",
-        extensions: [
-            syntaxHighlighting(HighlightStyle.define([
-                { tag: tags.atom, color: "#795E26" },
-                { tag: tags.className, color: "#4EC9B0" },
-                { tag: tags.keyword, color: "#AF00DB" },
-                { tag: tags.controlKeyword, color: "#AF00DB" },
-                { tag: tags.definitionKeyword, color: "#569CD6" },
-                { tag: tags.number, color: "#098658" },
-                { tag: tags.operator, color: "#050505" },
-                { tag: tags.brace, color: "#0431FA" },
-                { tag: tags.blockComment, color: "#008000", fontStyle: "italic" },
-                { tag: tags.comment, color: "#008000", fontStyle: "italic" },
-                { tag: tags.constant(tags.variableName), color: "#795E26" },
-            ])),
-            EditorView.theme({
-                '&.cm-focused .cm-selectionBackground, ::selection': {
-                    backgroundColor: "#b3c6c7"
-                }
-            })
-        ]
-    };
-
-    const darkClassicHighlight = {
-        color: "var(--bs-body-color)",
-        backgroundColor: "rgba(var(--bs-body-bg-rgb), var(--bs-bg-opacity))",
-        gutterBackgroundColor: "var(--bs-secondary-bg)",
-        gutterColor: "var(--bs-emphasis-color)",
-        extensions: [
-            syntaxHighlighting(HighlightStyle.define([
-                { tag: tags.atom, color: "#93bf74" },
-                { tag: tags.keyword, color: "#C586C0" },
-                { tag: tags.className, color: "#C586C0" },
-                { tag: tags.brace, color: "#94a4cb" },
-                { tag: tags.number, color: "#569CD6" },
-                { tag: tags.operator, color: "#77a1d5" },
-                { tag: tags.blockComment, color: "#a0b6b6", fontStyle: "italic" },
-                { tag: tags.comment, color: "#a0b6b6", fontStyle: "italic" },
-                { tag: tags.constant(tags.variableName), color: "#9CDCFE" },
-            ])),
-            EditorView.theme({
-                '&.cm-focused .cm-selectionBackground, ::selection': {
-                    backgroundColor: "#4e4d48"
-                }
-            })
-        ]
-    };
-
-    const OMIHighlight = {
-        color: "#FFFF00",
-        backgroundColor: "#000080",
-        gutterBackgroundColor: "#F5F5F5",
-        gutterColor: "#000000",
-        extensions: [
-            syntaxHighlighting(HighlightStyle.define([
-                { tag: tags.atom, color: "#00FFFF" },
-                { tag: tags.keyword, color: "#00FFFF" },
-                { tag: tags.controlKeyword, color: "#00FFFF" },
-                { tag: tags.definitionKeyword, color: "#00FFFF" },
-                { tag: tags.number, color: "#FF00FF" },
-                { tag: tags.operator, color: "#00FFFF" },
-                { tag: tags.brace, color: "#00FFFF" },
-                { tag: tags.constant(tags.variableName), color: "#00FFFF" },
-            ])),
-            EditorView.theme({
-                '&.cm-focused .cm-selectionBackground, ::selection': {
-                    backgroundColor: "#0000FF"
-                }
-            })
-        ]
-    };
-
-    const ReKarelHighlight = {
-        color: "#fafafa",
-        backgroundColor: "var(--bs-dark)",
-        gutterBackgroundColor: "var(--bs-secondary-bg)",
-        gutterColor: "var(--bs-emphasis-color)",
-        extensions: [
-            syntaxHighlighting(HighlightStyle.define([
-                { tag: tags.atom, color: "#ffda6a" },
-                { tag: tags.keyword, color: "#ea868f" },
-                { tag: tags.brace, color: "#ea868f" },
-                { tag: tags.controlKeyword, color: "#6ea8fe" },
-                { tag: tags.definitionKeyword, color: "#6ea8fe" },
-                { tag: tags.number, color: "#ffda6a" },
-                { tag: tags.operator, color: "#77a1d5" },
-                { tag: tags.blockComment, color: "#75b798", fontStyle: "italic" },
-                { tag: tags.comment, color: "#75b798", fontStyle: "italic" },
-                { tag: tags.constant(tags.variableName), color: "#6edff6" },
-            ])),
-            EditorView.theme({
-                '&.cm-focused .cm-selectionBackground, ::selection': {
-                    backgroundColor: "#4e4d48"
-                }
-            })
-        ]
-    };
-    const LightReKarelHighlight = {
-        color: "#2e2e2e",
-        backgroundColor: "var(--bs-light)",
-        gutterBackgroundColor: "var(--bs-secondary-bg)",
-        gutterColor: "var(--bs-emphasis-color)",
-        extensions: [
-            syntaxHighlighting(HighlightStyle.define([
-                { tag: tags.atom, color: "#ff9c07" },
-                { tag: tags.keyword, color: "#c62e3d" },
-                { tag: tags.brace, color: "#c62e3d" },
-                { tag: tags.controlKeyword, color: "#0d6efd " },
-                { tag: tags.definitionKeyword, color: "#0d6efd " },
-                { tag: tags.number, color: "#ff9c07" },
-                { tag: tags.operator, color: "#77a1d5" },
-                { tag: tags.blockComment, color: "#198754", fontStyle: "italic" },
-                { tag: tags.comment, color: "#198754", fontStyle: "italic" },
-                { tag: tags.constant(tags.variableName), color: "#24a7db" },
-            ])),
-        ]
-    };
-
-    const SepiaTheme = {
-        color: "#3a3d42",
-        backgroundColor: "#fffde5",
-        gutterBackgroundColor: "#d9ceb6",
-        gutterColor: "#2d2e3b",
-        extensions: [
-            syntaxHighlighting(HighlightStyle.define([
-                { tag: tags.atom, color: "#707894" },
-                { tag: tags.keyword, color: "#cb3551" },
-                { tag: tags.controlKeyword, color: "#3f9c4f" },
-                { tag: tags.definitionKeyword, color: "#3f9c4f" },
-                { tag: tags.number, color: "#22867e" },
-                { tag: tags.operator, color: "#3f9c4f" },
-                { tag: tags.blockComment, color: "#973d1a", fontStyle: "italic" },
-                { tag: tags.comment, color: "#973d1a", fontStyle: "italic" },
-                { tag: tags.constant(tags.variableName), color: "#1f34a1" },
-            ])),
-            EditorView.theme({
-                '&.cm-focused .cm-selectionBackground, ::selection': {
-                    backgroundColor: "#b3c6c7"
-                }
-            })
-        ]
-    };
-
-    const DarkEditorThemes = {
-        'classic': darkClassicHighlight,
-        'rekarel': ReKarelHighlight,
-        'sepia': SepiaTheme,
-        'omi': OMIHighlight,
-        'code': DarkCodeTheme,
-    };
-    const LightEditorThemes = {
-        'classic': classicHighlight,
-        'rekarel': LightReKarelHighlight,
-        'sepia': SepiaTheme,
-        'omi': OMIHighlight,
-        'code': LightCodeTheme,
-    };
-
-    function SetLightTheme(theme) {
-        $(":root").attr("data-bs-theme", "light");
-        applyTheme(LightEditorThemes[theme]);
-    }
-    function SetDarkTheme(theme) {
-        $(":root").attr("data-bs-theme", "dark");
-        applyTheme(DarkEditorThemes[theme]);
-    }
-    function SetSystemTheme(theme) {
-        if (window.matchMedia) {
-            if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
-                SetDarkTheme(theme);
-            }
-            else {
-                SetLightTheme(theme);
-            }
-            return;
-        }
-        SetLightTheme(theme); //Default light theme
-    }
-
-    const APP_SETTING = 'appSettings';
-    const SETTINGS_VERSION = "0.5.0";
-    let appSettings = {
-        version: SETTINGS_VERSION,
-        interface: "desktop",
-        editorTheme: "classic",
-        editorFontSize: 12,
-        theme: "system",
-        worldRendererStyle: DefaultWRStyle
-    };
-    function isFontSize(str) {
-        return 6 < str && str < 31;
-    }
-    function isResponsiveInterfaces(str) {
-        return ["auto", "desktop", "mobile"].indexOf(str) > -1;
-    }
-    function isTheme(str) {
-        return ["system", "light", "dark"].indexOf(str) > -1;
-    }
-    let DesktopUI$1;
-    function applySettings(settings, desktopUI) {
-        switch (settings.interface) {
-            case "auto":
-                SetResponsiveness();
-                break;
-            case "desktop":
-                SetDesktopView();
-                break;
-            case "mobile":
-                SetPhoneView();
-                break;
-            default:
-                SetDesktopView();
-                break;
-        }
-        if (!(settings.editorTheme in DarkEditorThemes))
-            settings.editorTheme = "classic";
-        switch (settings.theme) {
-            case "system":
-                SetSystemTheme(settings.editorTheme);
-                break;
-            case "light":
-                SetLightTheme(settings.editorTheme);
-                break;
-            case "dark":
-                SetDarkTheme(settings.editorTheme);
-                break;
-            default:
-                SetDarkTheme(settings.editorTheme);
-        }
-        const root = $(":root")[0];
-        root.style.setProperty("--editor-font-size", `${settings.editorFontSize}pt`);
-        root.style.setProperty("--waffle-color", `${settings.worldRendererStyle.waffleColor}`);
-        if (settings.interface == "desktop")
-            desktopUI.ResizeCanvas();
-        desktopUI.worldController.renderer.style = settings.worldRendererStyle;
-        desktopUI.worldController.Update();
-        if (localStorage)
-            localStorage.setItem(APP_SETTING, JSON.stringify(appSettings));
-    }
-    function setSettings(event, desktopUI) {
-        let interfaceType = $("#settingsForm select[name=interface]").val();
-        let fontSize = $("#settingsForm input[name=fontSize]").val();
-        let theme = $("#settingsForm select[name=theme]").val();
-        let style = $("#settingsForm select[name=editorStyle]").val();
-        console.log(fontSize);
-        if (isResponsiveInterfaces(interfaceType)) {
-            appSettings.interface = interfaceType;
-        }
-        if (isFontSize(fontSize)) {
-            appSettings.editorFontSize = fontSize;
-        }
-        if (isTheme(theme)) {
-            appSettings.theme = theme;
-        }
-        appSettings.editorTheme = style;
-        console.log(appSettings);
-        applySettings(appSettings, desktopUI);
-        event.preventDefault();
-        return false;
-    }
-    function loadSettingsFromMemory() {
-        const jsonString = localStorage === null || localStorage === void 0 ? void 0 : localStorage.getItem(APP_SETTING);
-        if (jsonString) {
-            const memorySettings = JSON.parse(jsonString);
-            if (memorySettings.version == null)
-                return;
-            if (memorySettings.version !== SETTINGS_VERSION) {
-                localStorage.removeItem(memorySettings);
-                return;
-            }
-            appSettings = memorySettings;
-        }
-    }
-    function loadSettingsToModal() {
-        console.log("show", appSettings);
-        $("#settingsInterface").val(appSettings.interface);
-        $("#settingsFontSize").val(appSettings.editorFontSize);
-        $("#settingsTheme").val(appSettings.theme);
-        $("#settingsStyle").val(appSettings.editorTheme);
-    }
-    function InitSettings(desktopUI) {
-        DesktopUI$1 = desktopUI;
-        loadSettingsFromMemory();
-        $("#settingsModal").on("show.bs.modal", (e) => {
-            loadSettingsToModal();
-        });
-        $("#settingsForm").on("submit", (e) => {
-            setSettings(e, desktopUI);
-        });
-    }
-    function StartSettings(desktopUI) {
-        applySettings(appSettings, desktopUI);
-        $(document).on("keydown", (e) => {
-            if (e.ctrlKey && e.which === 75) {
-                let fontSize = appSettings.editorFontSize;
-                fontSize--;
-                if (fontSize < 7)
-                    fontSize = 7;
-                appSettings.editorFontSize = fontSize;
-                applySettings(appSettings, desktopUI);
-                e.preventDefault();
-                return false;
-            }
-            if (e.ctrlKey && e.which === 76) {
-                let fontSize = appSettings.editorFontSize;
-                fontSize++;
-                if (fontSize > 30)
-                    fontSize = 30;
-                appSettings.editorFontSize = fontSize;
-                applySettings(appSettings, desktopUI);
-                e.preventDefault();
-                return false;
-            }
-        });
-    }
-    function SetWorldRendererStyle(style) {
-        appSettings.worldRendererStyle = style;
-        applySettings(appSettings, DesktopUI$1);
-    }
-    function GetCurrentSetting() { return appSettings; }
 
     function parseFormData() {
         return {
