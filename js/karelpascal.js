@@ -118,7 +118,7 @@ case 8:
     				yy.parser.parseError("Unknown variable: " + $$[$0-3], {
               text: $$[$0-3],
               line: current_line + 1,
-              loc:_$[$0-3]
+              loc:result[i][2]
             });
     			}
     		}
@@ -476,11 +476,16 @@ function validate(function_list, program, yy) {
 			}
 			program[i][2] = program[i][1];
 			program[i][1] = functions[program[i][1]];
-		} else if (program[i][0] == 'PARAM' && program[i][1] != 0) {
-			yy.parser.parseError("Unknown variable: " + program[i][1], {
-				text: program[i][1],
-				line: current_line
-			});
+		} else if (program[i][0] == 'PARAM') {
+      if (program[i][1] != 0) {
+        yy.parser.parseError("Unknown variable: " + program[i][1], {
+          text: program[i][1],
+          line: current_line,
+          loc: program[i][2]
+        });
+      } else {
+        program[i].pop();
+      }
 		}
 	}
 
