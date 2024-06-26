@@ -16,7 +16,12 @@ export type EvaluatorData = {
     countPicks: JQuery,
     countPuts: JQuery,
 
-    
+    maxInstructions:JQuery,
+    maxStackSize:JQuery,
+    maxMove:JQuery,
+    maxTurnLeft:JQuery,
+    maxPickBuzzer:JQuery,
+    maxLeaveBuzzer:JQuery,
 
 }
 
@@ -35,6 +40,14 @@ function getData(ui:EvaluatorData) {
     ui.countPicks.prop("checked", kcInstance.world.getDumps(World.DUMP_PICK_BUZZER));
     ui.countPuts.prop("checked", kcInstance.world.getDumps(World.DUMP_LEAVE_BUZZER));
 
+    ui.maxInstructions.val(kcInstance.world.maxInstructions);
+    ui.maxStackSize.val(kcInstance.world.maxStackSize);
+    ui.maxMove.val(kcInstance.world.maxMove);
+    ui.maxTurnLeft.val(kcInstance.world.maxTurnLeft);
+    ui.maxPickBuzzer.val(kcInstance.world.maxPickBuzzer);
+    ui.maxLeaveBuzzer.val(kcInstance.world.maxLeaveBuzzer);
+
+
     
 }
 
@@ -50,6 +63,31 @@ function setData(ui: EvaluatorData) {
     kcInstance.world.setDumps(World.DUMP_LEFT, ui.countTurns.prop("checked"));
     kcInstance.world.setDumps(World.DUMP_PICK_BUZZER, ui.countPicks.prop("checked"));
     kcInstance.world.setDumps(World.DUMP_LEAVE_BUZZER, ui.countPuts.prop("checked"));
+
+    
+    function validateMax(inputVal:any, min:number=1) {
+        const isInteger = Number.isInteger(Number(inputVal));
+        const isValid = isInteger && Number(inputVal) >= 1;
+        return isValid;
+    }
+    const maxInstructions = ui.maxInstructions.val();
+    const maxStackSize = ui.maxStackSize.val();
+    const maxMove = ui.maxMove.val();
+    const maxTurnLeft = ui.maxTurnLeft.val();
+    const maxPickBuzzer = ui.maxPickBuzzer.val();
+    const maxLeaveBuzzer = ui.maxLeaveBuzzer.val();
+    if (validateMax(maxInstructions))
+        kcInstance.world.maxInstructions = maxInstructions as number;    
+    if (validateMax(maxStackSize))
+        kcInstance.world.maxStackSize = maxStackSize as number;
+    if (validateMax(maxMove,-1))
+        kcInstance.world.maxMove = maxMove as number;    
+    if (validateMax(maxTurnLeft,-1))
+        kcInstance.world.maxTurnLeft = maxTurnLeft as number;
+    if (validateMax(maxPickBuzzer,-1))
+        kcInstance.world.maxPickBuzzer = maxPickBuzzer as number;    
+    if (validateMax(maxLeaveBuzzer,-1))
+        kcInstance.world.maxLeaveBuzzer = maxLeaveBuzzer as number;
 }
 
 

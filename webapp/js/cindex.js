@@ -26668,6 +26668,12 @@
         ui.countTurns.prop("checked", kcInstance.world.getDumps(World.DUMP_LEFT));
         ui.countPicks.prop("checked", kcInstance.world.getDumps(World.DUMP_PICK_BUZZER));
         ui.countPuts.prop("checked", kcInstance.world.getDumps(World.DUMP_LEAVE_BUZZER));
+        ui.maxInstructions.val(kcInstance.world.maxInstructions);
+        ui.maxStackSize.val(kcInstance.world.maxStackSize);
+        ui.maxMove.val(kcInstance.world.maxMove);
+        ui.maxTurnLeft.val(kcInstance.world.maxTurnLeft);
+        ui.maxPickBuzzer.val(kcInstance.world.maxPickBuzzer);
+        ui.maxLeaveBuzzer.val(kcInstance.world.maxLeaveBuzzer);
     }
     function setData(ui) {
         console.log("SetDATA?");
@@ -26680,6 +26686,29 @@
         kcInstance.world.setDumps(World.DUMP_LEFT, ui.countTurns.prop("checked"));
         kcInstance.world.setDumps(World.DUMP_PICK_BUZZER, ui.countPicks.prop("checked"));
         kcInstance.world.setDumps(World.DUMP_LEAVE_BUZZER, ui.countPuts.prop("checked"));
+        function validateMax(inputVal, min = 1) {
+            const isInteger = Number.isInteger(Number(inputVal));
+            const isValid = isInteger && Number(inputVal) >= 1;
+            return isValid;
+        }
+        const maxInstructions = ui.maxInstructions.val();
+        const maxStackSize = ui.maxStackSize.val();
+        const maxMove = ui.maxMove.val();
+        const maxTurnLeft = ui.maxTurnLeft.val();
+        const maxPickBuzzer = ui.maxPickBuzzer.val();
+        const maxLeaveBuzzer = ui.maxLeaveBuzzer.val();
+        if (validateMax(maxInstructions))
+            kcInstance.world.maxInstructions = maxInstructions;
+        if (validateMax(maxStackSize))
+            kcInstance.world.maxStackSize = maxStackSize;
+        if (validateMax(maxMove, -1))
+            kcInstance.world.maxMove = maxMove;
+        if (validateMax(maxTurnLeft, -1))
+            kcInstance.world.maxTurnLeft = maxTurnLeft;
+        if (validateMax(maxPickBuzzer, -1))
+            kcInstance.world.maxPickBuzzer = maxPickBuzzer;
+        if (validateMax(maxLeaveBuzzer, -1))
+            kcInstance.world.maxLeaveBuzzer = maxLeaveBuzzer;
     }
     function HookEvaluatorModal(ui) {
         ui.modal.on("show.bs.modal", () => getData(ui));
@@ -26970,6 +26999,12 @@
             countPicks: $("#countPicks"),
             countPuts: $("#countPuts"),
             countTurns: $("#countTurns"),
+            maxInstructions: $("#maxInstructions"),
+            maxStackSize: $("#maxStack"),
+            maxMove: $("#maxMove"),
+            maxTurnLeft: $("#maxTurnLeft"),
+            maxPickBuzzer: $("#maxPickBuzzer"),
+            maxLeaveBuzzer: $("#maxLeaveBuzzer"),
         },
         confirmModal: {
             modal: "#confirmModal",

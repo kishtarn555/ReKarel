@@ -275,6 +275,12 @@ HookUpCommonUI(
             countPicks:$("#countPicks"),
             countPuts:$("#countPuts"),
             countTurns:$("#countTurns"),
+            maxInstructions:$("#maxInstructions"),
+            maxStackSize:$("#maxStack"),
+            maxMove:$("#maxMove"),
+            maxTurnLeft:$("#maxTurnLeft"),
+            maxPickBuzzer:$("#maxPickBuzzer"),
+            maxLeaveBuzzer:$("#maxLeaveBuzzer"),
         },
         confirmModal: {
             modal: "#confirmModal",
