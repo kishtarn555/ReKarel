@@ -20514,7 +20514,12 @@
         provide: f => EditorView.decorations.from(f)
     });
     const underlineTheme = EditorView.baseTheme({
-        ".cm-underline": { textDecoration: "underline 3px red" }
+        ".cm-underline": {
+            backgroundImage: `url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="6" height="3">%3Cpath%20d%3D%22m0%202.5%20l2%20-1.5%20l1%200%20l2%201.5%20l1%200%22%20stroke%3D%22%23d11%22%20fill%3D%22none%22%20stroke-width%3D%22.9%22%2F%3E</svg>')`,
+            backgroundPosition: "left bottom",
+            backgroundRepeat: "repeat-x",
+            paddingBottom: "0.7px",
+        }
     });
     function underlineError(view, line, from, to) {
         console.log(line, from, to);
