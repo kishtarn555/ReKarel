@@ -10,9 +10,13 @@ import { responsiveHack } from "./responsive-load";
 import { InitSettings, StartSettings } from "./settings";
 import { getEditors } from "./editor/editorsInstances";
 import { HookSession, RestoreSession } from "./session";
+import { RegisterHighlightListeners } from "./editor/editor.listeners";
 
 
+let KarelWorld: World = new World(100, 100);
+let karelController = new KarelController(KarelWorld);
 var [desktopEditor, phoneEditor] = getEditors();
+RegisterHighlightListeners()
 //TODO: ThisShouldnt be here
 function hideElement(element: string) {
     $(element).addClass("d-none");
@@ -22,8 +26,6 @@ function showElement(element: string) {
 }
 
 
-let KarelWorld: World = new World(100, 100);
-let karelController = new KarelController(KarelWorld, desktopEditor);
 
 const pascalConfirm = {
     accept: () => {

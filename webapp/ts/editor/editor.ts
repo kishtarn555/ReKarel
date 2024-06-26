@@ -1,6 +1,6 @@
-import {EditorState} from "@codemirror/state"
+import {EditorState, Facet,RangeSetBuilder} from "@codemirror/state"
 import {defaultKeymap, historyKeymap, history} from "@codemirror/commands"
-import {drawSelection, keymap, lineNumbers, highlightActiveLine, GutterMarker,gutter, Decoration, DecorationSet} from "@codemirror/view"
+import {drawSelection, keymap, lineNumbers, highlightActiveLine, GutterMarker,gutter, Decoration, DecorationSet, ViewPlugin,  ViewUpdate} from "@codemirror/view"
 import {indentWithTab} from "@codemirror/commands"
 import {undo, redo} from "@codemirror/commands"
 import {EditorView} from "@codemirror/view"
@@ -13,6 +13,8 @@ import { closeBrackets, autocompletion } from "@codemirror/autocomplete"
 import { darkClassicHighlight } from "./themes/darkClassicHighlight"
 import { classicHighlight } from "./themes/classicHighlight"
 import {HighlightStyle} from "@codemirror/language"
+import { highlightKarelActiveLine } from "./karelHighlight.editor"
+import { main } from "../../js/cindex"
 
 let language = new Compartment, tabSize = new Compartment
 let theme = new Compartment
@@ -110,6 +112,7 @@ const underlineTheme = EditorView.baseTheme({
    
 })
 
+
 export function underlineError(view: EditorView, line:number, from:number, to:number) {
   console.log(line, from, to);
   let real_from = view.state.doc.line(line).from + from;
@@ -145,6 +148,7 @@ function createEditors() : Array<EditorView> {
       theme.of(classicHighlight.extensions),
       syntaxHighlighting(defaultHighlightStyle, {fallback:true}),
       history(),
+      highlightKarelActiveLine(),
       breakpointGutter,
       drawSelection(),
       lineNumbers(),
@@ -163,7 +167,6 @@ function createEditors() : Array<EditorView> {
       ])
     ]
   })
-  
   let otherState = EditorState.create({
     doc: startState.doc,
     extensions: [
@@ -179,14 +182,14 @@ function createEditors() : Array<EditorView> {
     ]
   })
   let syncAnnotation = Annotation.define<boolean>()
-
+  
   function syncDispatch(tr: Transaction, view: EditorView, other: EditorView) {
     view.update([tr])
     if (!tr.changes.empty && !tr.annotation(syncAnnotation)) {
       let annotations: Annotation<any>[] = [syncAnnotation.of(true)]
       let userEvent = tr.annotation(Transaction.userEvent)
       if (userEvent) annotations.push(Transaction.userEvent.of(userEvent))
-      other.dispatch({changes: tr.changes, annotations})
+        other.dispatch({changes: tr.changes, annotations})
     }
   }
   let mainView = new EditorView({

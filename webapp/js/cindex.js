@@ -20434,6 +20434,51 @@
         ]))
     };
 
+    let highlightedLine = new Compartment;
+    const karelLineTheme = EditorView.baseTheme({
+        ".cm-karelLine.cm-activeLine": { backgroundColor: "rgba(255, 255, 0, 0.5)" },
+        ".cm-karelLine": { backgroundColor: "#22872a44" }, //TODO: Edit this based on the theme
+    });
+    const karelLineFacet = Facet.define({
+        combine: values => values.length ? Math.min(...values) : -1
+    });
+    function highlightKarelActiveLine() {
+        return [
+            karelLineTheme,
+            highlightedLine.of(karelLineFacet.of(-1)),
+            lineHighlighting
+        ];
+    }
+    const lineHighlight = Decoration.line({
+        attributes: { class: "cm-karelLine" }
+    });
+    function lineHighlightDeco(view) {
+        let pos = view.state.facet(karelLineFacet);
+        console.log(pos);
+        let builder = new RangeSetBuilder();
+        if (pos !== -1) {
+            let line = view.state.doc.line(pos);
+            builder.add(line.from, line.from, lineHighlight);
+        }
+        return builder.finish();
+    }
+    const lineHighlighting = ViewPlugin.fromClass(class {
+        constructor(view) {
+            this.decorations = lineHighlightDeco(view);
+        }
+        update(update) {
+            if (update.startState.facet(karelLineFacet) != update.state.facet(karelLineFacet))
+                this.decorations = lineHighlightDeco(update.view);
+        }
+    }, {
+        decorations: v => v.decorations
+    });
+    function HighlightKarelLine(editor, line) {
+        editor.dispatch({
+            effects: highlightedLine.reconfigure(karelLineFacet.of(line))
+        });
+    }
+
     let language = new Compartment, tabSize = new Compartment;
     let theme = new Compartment;
     let readOnly = new Compartment;
@@ -20548,6 +20593,7 @@
                 theme.of(classicHighlight.extensions),
                 syntaxHighlighting(defaultHighlightStyle, { fallback: true }),
                 history(),
+                highlightKarelActiveLine(),
                 breakpointGutter,
                 drawSelection(),
                 lineNumbers(),
@@ -24947,10 +24993,9 @@
     const throbber = new Throbber($("#throbber"));
 
     class KarelController {
-        constructor(world, mainEditor) {
+        constructor(world) {
             this.world = world;
             this.running = false;
-            this.mainEditor = mainEditor;
             this.onMessage = [];
             this.onStateChange = [];
             this.onStep = [];
@@ -24972,15 +25017,16 @@
         //     this.OnStackChanges();
         // }
         Compile(notifyOnSuccess = true) {
-            let code = this.mainEditor.state.doc.toString();
+            const mainEditor = getEditors()[0];
+            let code = mainEditor.state.doc.toString();
             // let language: string = detectLanguage(code);
             let language = detectLanguage(code);
             if (language === "java" || language === "pascal") {
-                setLanguage(this.mainEditor, language);
+                setLanguage(mainEditor, language);
             }
             let response = null;
             try {
-                clearUnderlineError(this.mainEditor);
+                clearUnderlineError(mainEditor);
                 response = compile(code);
                 //TODO: expand message       
                 if (notifyOnSuccess)
@@ -24992,7 +25038,7 @@
                 this.SendMessage(decodeError(e, language), "error");
                 if (e.hash.loc) {
                     const status = e.hash;
-                    underlineError(this.mainEditor, status.loc.first_line, status.loc.first_column, status.loc.last_column);
+                    underlineError(mainEditor, status.loc.first_line, status.loc.first_column, status.loc.last_column);
                 }
                 this.NotifyCompile(false, language);
                 return null;
@@ -25045,13 +25091,13 @@
         CheckForBreakPointOnCurrentLine() {
             let runtime = this.GetRuntime();
             if (runtime.state.line >= 0) {
-                let codeLine = this
-                    .mainEditor
+                const mainEditor = getEditors()[0];
+                let codeLine = mainEditor
                     .state
                     .doc
                     .line(runtime.state.line + 1);
                 codeLine.from;
-                let breakpoints = this.mainEditor.state.field(breakpointState);
+                let breakpoints = mainEditor.state.field(breakpointState);
                 let hasBreakpoint = false;
                 breakpoints.between(codeLine.from, codeLine.from, () => { hasBreakpoint = true; });
                 if (hasBreakpoint) {
@@ -25060,23 +25106,6 @@
                 return hasBreakpoint;
             }
             return false;
-        }
-        HighlightCurrentLine() {
-            let runtime = this.GetRuntime();
-            if (runtime.state.line >= 0) {
-                let codeLine = this
-                    .mainEditor
-                    .state
-                    .doc
-                    .line(runtime.state.line + 1);
-                this.mainEditor.dispatch({
-                    selection: {
-                        anchor: codeLine.from,
-                        head: codeLine.from
-                    },
-                    scrollIntoView: true,
-                });
-            }
         }
         Step() {
             if (!this.StartStep())
@@ -25172,7 +25201,6 @@
                 while (this.PerformAutoStep(ignoreBreakpoints))
                     ;
             }).then(_ => {
-                this.HighlightCurrentLine();
                 if (!runtime.state.running) {
                     this.EndMessage();
                     this.ChangeState("finished");
@@ -25232,7 +25260,6 @@
             return true;
         }
         EndStep() {
-            this.HighlightCurrentLine();
             if (!this.GetRuntime().state.running) {
                 this.EndMessage();
                 this.ChangeState("finished");
@@ -26985,7 +27012,26 @@
         }
     }
 
+    function RegisterHighlightListeners() {
+        const editor = getEditors()[0];
+        const controller = KarelController.GetInstance();
+        controller.RegisterStepController((_, state) => {
+            const line = controller.GetRuntime().state.line + 1;
+            const codeLine = editor.state.doc.line(line);
+            HighlightKarelLine(editor, line);
+            editor.dispatch({
+                effects: EditorView.scrollIntoView(codeLine.from)
+            });
+        });
+        controller.RegisterResetObserver((_) => {
+            HighlightKarelLine(editor, -1);
+        });
+    }
+
+    let KarelWorld = new World(100, 100);
+    let karelController = new KarelController(KarelWorld);
     var [desktopEditor, phoneEditor] = getEditors();
+    RegisterHighlightListeners();
     //TODO: ThisShouldnt be here
     function hideElement(element) {
         $(element).addClass("d-none");
@@ -26993,8 +27039,6 @@
     function showElement(element) {
         $(element).removeClass("d-none");
     }
-    let KarelWorld = new World(100, 100);
-    let karelController = new KarelController(KarelWorld, desktopEditor);
     const pascalConfirm = {
         accept: () => {
             SetText(desktopEditor, "iniciar-programa\n\tinicia-ejecucion\n\t\t{ TODO poner codigo aqui }\n\t\tapagate;\n\ttermina-ejecucion\nfinalizar-programa");

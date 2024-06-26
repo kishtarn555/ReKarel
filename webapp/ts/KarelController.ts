@@ -5,6 +5,7 @@ import { decodeRuntimeError } from "./errorCodes";
 import { breakpointState, clearUnderlineError, setLanguage, underlineError } from "./editor/editor";
 import { GetCurrentSetting } from "./settings";
 import { throbber } from "./throbber";
+import { getEditors } from "./editor/editorsInstances";
 
 type messageType = "info"|"success"|"error"|"raw"|"warning";
 type MessageCallback = (message:string, type:messageType)=>void;
@@ -22,7 +23,6 @@ class KarelController {
     world: World;
     // desktopController: WorldViewController;
     running: boolean;
-    mainEditor: EditorView;
     private onMessage: MessageCallback[];
     private onStateChange: StateChangeCallback[];
     private onStep: StepCallback[];
@@ -35,10 +35,9 @@ class KarelController {
     private drawFrameRequest : number;
     private autoStepping: boolean;
 
-    constructor(world: World, mainEditor: EditorView) {
+    constructor(world: World) {
         this.world = world;
         this.running = false;
-        this.mainEditor = mainEditor;
         this.onMessage = [];
         this.onStateChange = [];
         this.onStep = [];
@@ -65,17 +64,18 @@ class KarelController {
     // }
 
     Compile(notifyOnSuccess:boolean = true) {
-        let code = this.mainEditor.state.doc.toString();
+        const mainEditor = getEditors()[0];
+        let code = mainEditor.state.doc.toString();
 
         // let language: string = detectLanguage(code);
         let language = detectLanguage(code) as "java" | "pascal" | "ruby" | "none";
             
         if (language === "java" || language === "pascal") {
-            setLanguage(this.mainEditor, language);
+            setLanguage(mainEditor, language);
         }
         let response = null;
         try {
-            clearUnderlineError(this.mainEditor)
+            clearUnderlineError(mainEditor)
             response = compile(code);
             //TODO: expand message       
             if (notifyOnSuccess)     
@@ -86,7 +86,7 @@ class KarelController {
             this.SendMessage(decodeError(e, language), "error");
             if (e.hash.loc) {
                 const status = e.hash;
-                underlineError(this.mainEditor, status.loc.first_line, status.loc.first_column, status.loc.last_column);
+                underlineError(mainEditor, status.loc.first_line, status.loc.first_column, status.loc.last_column);
             }
             this.NotifyCompile(false, language);
             return null;
@@ -148,16 +148,15 @@ class KarelController {
     CheckForBreakPointOnCurrentLine():boolean {
         let runtime= this.GetRuntime();
         if (runtime.state.line >= 0) {          
-            
-            let codeLine = this
-                .mainEditor
+            const mainEditor = getEditors()[0];
+            let codeLine = mainEditor
                 .state
                 .doc
                 .line(
                     runtime.state.line+1
                 );
                 codeLine.from
-                let breakpoints = this.mainEditor.state.field(breakpointState)
+                let breakpoints = mainEditor.state.field(breakpointState)
                 let hasBreakpoint = false
                 breakpoints.between(codeLine.from,codeLine.from, () => {hasBreakpoint = true})
                 if (hasBreakpoint) {                    
@@ -169,26 +168,6 @@ class KarelController {
       }
     
 
-    HighlightCurrentLine() {
-        let runtime= this.GetRuntime();
-        if (runtime.state.line >= 0) {          
-            
-            let codeLine = this
-                .mainEditor
-                .state
-                .doc
-                .line(
-                    runtime.state.line+1
-                );
-            this.mainEditor.dispatch({
-                selection:{
-                    anchor: codeLine.from,
-                    head: codeLine.from
-                },
-                scrollIntoView: true,             
-            });
-        }
-      }
 
     Step() {
         if (!this.StartStep()) return;
@@ -295,7 +274,6 @@ class KarelController {
         throbber.performTask(()=> {
             while (this.PerformAutoStep(ignoreBreakpoints));
         }).then(_=> {
-            this.HighlightCurrentLine();
 
             if (!runtime.state.running) {
                 this.EndMessage();
@@ -367,7 +345,6 @@ class KarelController {
     }
 
     private EndStep() {
-        this.HighlightCurrentLine();
         
         if (!this.GetRuntime().state.running) {            
             this.EndMessage();
