@@ -21154,7 +21154,7 @@
                                 }
                                 else {
                                     yy.parser.parseError("Unknown variable: " + $$[$0 - 2], {
-                                        text: $$[$0 - 2],
+                                        text: result[i][1],
                                         line: yylineno,
                                         loc: result[i][2]
                                     });
@@ -22041,7 +22041,7 @@
                                 }
                                 else {
                                     yy.parser.parseError("Unknown variable: " + $$[$0 - 3], {
-                                        text: $$[$0 - 3],
+                                        text: result[i][1],
                                         line: current_line + 1,
                                         loc: result[i][2]
                                     });
@@ -25380,6 +25380,9 @@
             }
             else if (errorString.includes("Prototype redefinition")) {
                 message += `El prototipo <b>${status.text}</b> ya fue definido previamente`;
+            }
+            else if (errorString.includes("Unknown variable")) {
+                message += `El parámetro <b>${status.text}</b> no está definido`;
             }
             else {
                 message += "Error desconocido";

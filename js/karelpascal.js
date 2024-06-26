@@ -116,7 +116,7 @@ case 8:
     				result[i][1] = 0;
     			} else {
     				yy.parser.parseError("Unknown variable: " + $$[$0-3], {
-              text: $$[$0-3],
+              text: result[i][1],
               line: current_line + 1,
               loc:result[i][2]
             });

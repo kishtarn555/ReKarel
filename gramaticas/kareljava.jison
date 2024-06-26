@@ -145,7 +145,7 @@ def
     				result[i][1] = 0;
     			} else {
 						yy.parser.parseError("Unknown variable: " + $5, {
-							text: $5,
+							text: result[i][1],
 							line: yylineno,
               loc:result[i][2]
 						});

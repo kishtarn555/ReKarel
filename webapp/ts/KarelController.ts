@@ -591,6 +591,8 @@ function decodeError(e, lan : "java"|"pascal"|"ruby"|"none") : string {
             message += `La función <b>${status.text}</b> ya fue definida previamente`;
         } else if (errorString.includes("Prototype redefinition")) {
             message += `El prototipo <b>${status.text}</b> ya fue definido previamente`;
+        } else if (errorString.includes("Unknown variable")) {
+            message += `El parámetro <b>${status.text}</b> no está definido`;
         } else {
             message += "Error desconocido"
         }
