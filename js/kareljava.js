@@ -325,7 +325,7 @@ parse: function parse(input) {
                     text: lexer.match,
                     token: this.terminals_[symbol] || symbol,
                     line: lexer.yylineno,
-                    loc: yyloc,
+                    loc: lexer.yylloc, // Implement fix: https://github.com/zaach/jison/pull/356
                     expected: expected
                 });
             }
@@ -903,7 +903,6 @@ if (typeof module !== 'undefined' && require.main === module) {
   exports.main(process.argv.slice(1));
 }
 }
-
 function javaParser() {
     return kareljava.parse.apply(kareljava, arguments);
 }

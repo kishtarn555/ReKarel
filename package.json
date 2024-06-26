@@ -8,8 +8,8 @@
     "build": "npx tsc && rollup --config",
     "lezer_java": "npx lezer-generator .\\webapp\\codemirror\\java.grammar -o .\\webapp\\js\\lezer_java.js ",
     "lezer_pascal": "npx lezer-generator .\\webapp\\codemirror\\pascal.grammar -o .\\webapp\\js\\lezer_pascal.js ",
-    "jison_java": "npx jison .\\gramaticas\\kareljava.jison -o .\\js\\kareljava.js",
-    "jison_pascal": "npx jison .\\gramaticas\\karelpascal.jison -o .\\js\\karelpascal.js"
+    "jison_java": "npx jison .\\gramaticas\\kareljava.jison -o .\\js\\kareljava.js  && npx gulp process-jison-java",
+    "jison_pascal": "npx jison .\\gramaticas\\karelpascal.jison -o .\\js\\karelpascal.js && npx gulp process-jison-pascal"
   },
   "type": "module",
   "keywords": [],
@@ -23,6 +23,8 @@
     "@types/jquery": "^3.5.14",
     "gulp": "^5.0.0",
     "gulp-file-include": "^2.3.0",
+    "gulp-insert": "^0.5.0",
+    "gulp-replace": "^1.1.4",
     "jison": "^0.4.17",
     "rollup": "^3.29.2",
     "typescript": "^4.9.4"
