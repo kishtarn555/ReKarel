@@ -28,6 +28,9 @@
                 <button class="nav-link" id="v-pills-conditions-tab" data-bs-toggle="pill"
                     data-bs-target="#v-pills-conditions" type="button" role="tab" aria-controls="v-pills-conditions"
                     aria-selected="false">Condiciones</button>
+                <button class="nav-link" id="v-pills-logic-tab" data-bs-toggle="pill"
+                    data-bs-target="#v-pills-logic" type="button" role="tab" aria-controls="v-pills-logic"
+                    aria-selected="false">Operadores lógicos</button>
                 <button class="nav-link" id="v-pills-repetir-tab" data-bs-toggle="pill"
                     data-bs-target="#v-pills-repetir" type="button" role="tab" aria-controls="v-pills-repetir"
                     aria-selected="false">Sentencia Iterate</button>
@@ -281,6 +284,173 @@
     <span class="text-danger-emphasis">}</span>
 </div>
 
+                </div>
+                <div class="tab-pane fade" id="v-pills-logic" role="tabpanel"
+                    aria-labelledby="v-pills-logic-tab" tabindex="0">
+                    <h2>Operadores lógicos</h2>
+<p>Karel dispone de varios operadores lógicos que puede utilizar para la creación de condiciones más avanzadas</p>
+
+
+<h3>Operador y (&&)</h3>
+<p>El operador y, que se escribe como <span class="text-primary-emphasis">&&</span>, junta combina dos condiciones en una que es cierta solo
+    cuando ambas lo sean.</p>
+
+
+<p>Por ejemplo, si tenemos el siguiente pseudo-código, entonces la condicional se comportará de acuerdo a la tabla de
+    abajo</p>
+
+<div class="border p-2">
+    <span class="text-primary-emphasis">if</span> (<span class="text-warning-emphasis">condicion1</span> <span
+        style="color:#77a1d5">&&</span> <span class="text-warning-emphasis">condicion2</span>)
+    <br>
+    <pre style="display: inline;">    </pre><span class="text-info-emphasis">INSTRUCCION</span>
+</div>
+
+<table class="table table-dark table-striped">
+    <tr>
+        <th>Condicion1</th>
+        <th>Condicion2</th>
+        <th>Condicion1 <span style="color:#77a1d5">&&</span> Condicion2</th>
+    </tr>
+    <tr>
+        <td>Falso</td>
+        <td>Falso</td>
+        <td>Falso, <b>no</b> se ejecuta el condicional</td>
+    </tr>
+    <tr>
+        <td>Falso</td>
+        <td>Verdadero</td>
+        <td>Falso, <b>no</b> se ejecuta el condicional</td>
+    </tr>
+    <tr>
+        <td>Verdadero</td>
+        <td>Falso</td>
+        <td>Falso, <b>no</b> se ejecuta el condicional</td>
+    </tr>
+    <tr>
+        <td>Verdadero</td>
+        <td>Verdadero</td>
+        <td>Verdadero, <b>sí</b> se ejecuta el condicional</td>
+    </tr>
+</table>
+
+<h3>Operador o (||)</h3>
+<p>El operador o, que se escribe <span class="text-primary-emphasis">||</span>, junta combina dos condiciones en una que es cierta al menos
+    una de ellas lo sean.</p>
+
+
+<p>Por ejemplo, si tenemos el siguiente pseudo-código, entonces la condicional se comportará de acuerdo a la tabla de
+    abajo</p>
+
+<div class="border p-2">
+    <span class="text-primary-emphasis">if</span> (<span class="text-warning-emphasis">condicion1</span> <span
+        style="color:#77a1d5">||</span> <span class="text-warning-emphasis">condicion2</span>)
+    <br>
+    <pre style="display: inline;">    </pre><span class="text-info-emphasis">INSTRUCCION</span>
+</div>
+
+<table class="table table-dark table-striped">
+    <tr>
+        <th>Condicion1</th>
+        <th>Condicion2</th>
+        <th>Condicion1 <span style="color:#77a1d5">||</span> Condicion2</th>
+    </tr>
+    <tr>
+        <td>Falso</td>
+        <td>Falso</td>
+        <td>Falso, <b>no</b> se ejecuta el condicional</td>
+    </tr>
+    <tr>
+        <td>Falso</td>
+        <td>Verdadero</td>
+        <td>Verdadero, <b>sí</b> se ejecuta el condicional</td>
+    </tr>
+    <tr>
+        <td>Verdadero</td>
+        <td>Falso</td>
+        <td>Verdadero, <b>sí</b> se ejecuta el condicional</td>
+    </tr>
+    <tr>
+        <td>Verdadero</td>
+        <td>Verdadero</td>
+        <td>Verdadero, <b>sí</b> se ejecuta el condicional</td>
+    </tr>
+</table>
+
+<h3>Operador no (!)</h3>
+<p>El operador no, que se escribe <span class="text-primary-emphasis">!</span>, niega la condición que aparezca después de este</p>
+
+
+<p>Por ejemplo, si tenemos el siguiente pseudo-código, entonces la condicional se comportará de acuerdo a la tabla de
+    abajo</p>
+
+<div class="border p-2">
+    <span class="text-primary-emphasis">if</span> (<span style="color:#77a1d5">!</span><span
+        class="text-warning-emphasis">condicion</span>)
+    <br>
+    <pre style="display: inline;">    </pre><span class="text-info-emphasis">INSTRUCCION</span>
+</div>
+
+<table class="table table-dark table-striped">
+    <tr>
+        <th>Condicion</th>
+        <th><span style="color:#77a1d5">no</span> Condicion</th>
+    </tr>
+    <tr>
+        <td>Falso</td>
+        <td>Verdadero, <b>sí</b> se ejecuta el condicional</td>
+    </tr>
+    <tr>
+        <td>Verdadero</td>
+        <td>Falso, <b>no</b> se ejecuta el condicional</td>
+    </tr>
+</table>
+
+
+<h3>Paréntesis</h3>
+<p>Se pueden utilizar paréntesis para cambiar el orden de los operadores o aclarar la condición</p>
+
+
+
+<p>Por ejemplo, podemos hacer una condicion que se ejecute unicamente cuando exactamente una de dos condiciones sea cierta. Podemos lograr esto revisando que se cumpla al menos una de las condiciones y que no se cumplan ambas, lo cual en código se ve de la siguiente manera:</p>
+
+<div class="border p-2">
+    <span class="text-primary-emphasis">if</span> ((<span class="text-warning-emphasis">condicion1</span> <span
+        style="color:#77a1d5">||</span> <span class="text-warning-emphasis">condicion2</span>) <span
+        style="color:#77a1d5">&&</span> <span
+        style="color:#77a1d5">!</span>(<span class="text-warning-emphasis">condicion1</span> <span
+        style="color:#77a1d5">&&</span> <span class="text-warning-emphasis">condicion2</span>)) 
+    <br>
+    <pre style="display: inline;">    </pre><span class="text-info-emphasis">INSTRUCCION</span>
+</div>
+
+<table class="table table-dark table-striped">
+    <tr>
+        <th>Condicion1</th>
+        <th>Condicion2</th>
+        <th>Resultado</th>
+    </tr>
+    <tr>
+        <td>Falso</td>
+        <td>Falso</td>
+        <td>Falso, <b>no</b> se ejecuta el condicional</td>
+    </tr>
+    <tr>
+        <td>Falso</td>
+        <td>Verdadero</td>
+        <td>Verdadero, <b>sí</b> se ejecuta el condicional</td>
+    </tr>
+    <tr>
+        <td>Verdadero</td>
+        <td>Falso</td>
+        <td>Verdadero, <b>sí</b> se ejecuta el condicional</td>
+    </tr>
+    <tr>
+        <td>Verdadero</td>
+        <td>Verdadero</td>
+        <td>Falso, <b>no</b> se ejecuta el condicional</td>
+    </tr>
+</table>
                 </div>
                 <div class="tab-pane fade" id="v-pills-repetir" role="tabpanel" aria-labelledby="v-pills-repetir-tab"
                     tabindex="0">
