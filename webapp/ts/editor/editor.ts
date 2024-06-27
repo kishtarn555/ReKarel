@@ -13,131 +13,15 @@ import { closeBrackets, autocompletion } from "@codemirror/autocomplete"
 import { darkClassicHighlight } from "./themes/darkClassicHighlight"
 import { classicHighlight } from "./themes/classicHighlight"
 import {HighlightStyle} from "@codemirror/language"
-import { highlightKarelActiveLine } from "./karelHighlight.editor"
+import { highlightKarelActiveLine } from "./editor.highlightLine"
 import { main } from "../../js/cindex"
+import { breakpointGutter } from "./editor.breakpoint"
 
 let language = new Compartment, tabSize = new Compartment
 let theme = new Compartment
 let readOnly = new Compartment
 
-const breakpointEffect = StateEffect.define<{pos:number, on:boolean}>({
-  map:(val, mapping)=> ({pos:mapping.mapPos(val.pos), on:val.on})
-});
-const breakpointMarker = new class extends GutterMarker {
-  toDOM() { return document.createTextNode("🔴") }
-}
 
-export const breakpointState = StateField.define<RangeSet<GutterMarker>>({
-  create() { return RangeSet.empty },
-  update(set, transaction) {
-    set = set.map(transaction.changes)
-    for (let e of transaction.effects) {
-      if (e.is(breakpointEffect)) {
-        if (e.value.on)
-          set = set.update({add: [breakpointMarker.range(e.value.pos)]})
-        else
-          set = set.update({filter: from => from != e.value.pos})
-      }
-    }
-    return set
-  }
-});
-
-function toggleBreakpoint(view: EditorView, pos: number) {
-  let breakpoints = view.state.field(breakpointState)
-  let hasBreakpoint = false
-  breakpoints.between(pos, pos, () => {hasBreakpoint = true})
-  view.dispatch({
-    effects: breakpointEffect.of({pos, on: !hasBreakpoint})
-  })
-}
-const breakpointGutter = [
-  breakpointState,
-  gutter({
-    class: "cm-breakpoint-gutter",
-    markers: v => v.state.field(breakpointState),
-    initialSpacer: () => breakpointMarker,
-    domEventHandlers: {
-      mousedown(view, line) {
-        toggleBreakpoint(view, line.from)
-        return true
-      }
-    }
-  }),
-  EditorView.baseTheme({
-    ".cm-breakpoint-gutter .cm-gutterElement": {
-      color: "red",
-      paddingLeft: "2px",
-      cursor: "default",
-      fontSize: "var(--editor-font-size)"
-    }
-  })
-]
-
-
-
-const parseErrorState = StateEffect.define<{from: number, to: number}>({
-  map: ({from, to}, change) => ({from: change.mapPos(from), to: change.mapPos(to)})
-})
-
-const underlineMark = Decoration.mark({class: "cm-underline"})
-
-const parseErrorField =  StateField.define<DecorationSet>({
-  create() {
-    return Decoration.none
-  },
-  update(underlines, tr) {
-    underlines = underlines.map(tr.changes)
-    for (let e of tr.effects) if (e.is(parseErrorState)) {
-      if (e.value.from === -1) {
-        underlines = RangeSet.empty
-      }else {
-        underlines = underlines.update({
-          add: [underlineMark.range(e.value.from, e.value.to)]
-        })
-      }
-    }
-    return underlines
-  },
-  provide: f => EditorView.decorations.from(f)
-})
-const underlineTheme = EditorView.baseTheme({
-  ".cm-underline": { 
-    backgroundImage: `url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="6" height="3">%3Cpath%20d%3D%22m0%202.5%20l2%20-1.5%20l1%200%20l2%201.5%20l1%200%22%20stroke%3D%22%23d11%22%20fill%3D%22none%22%20stroke-width%3D%22.9%22%2F%3E</svg>')`,
-    backgroundPosition: "left bottom",
-    backgroundRepeat: "repeat-x",
-    paddingBottom: "0.7px",
-
-   }
-   
-})
-
-
-export function underlineError(view: EditorView, line:number, from:number, to:number) {
-  console.log(line, from, to);
-  let real_from = view.state.doc.line(line).from + from;
-  let real_to = view.state.doc.line(line).from + to;
-  let effects:StateEffect<unknown>[] =  [parseErrorState.of({from:real_from, to:real_to})]
-
-
-  if (!view.state.field(parseErrorField, false))
-    effects.push(StateEffect.appendConfig.of([parseErrorField,
-                                              underlineTheme]))
-  view.dispatch({effects})
-  return true
-}
-
-
-export function clearUnderlineError(view: EditorView) {
-  let effects:StateEffect<unknown>[] =  [parseErrorState.of({from:-1, to:-1})]
-
-
-  if (!view.state.field(parseErrorField, false))
-    effects.push(StateEffect.appendConfig.of([parseErrorField,
-                                              underlineTheme]))
-  view.dispatch({effects})
-  return true
-}
 
 
 function createEditors() : Array<EditorView> {

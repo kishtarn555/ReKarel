@@ -20479,9 +20479,6 @@
         });
     }
 
-    let language = new Compartment, tabSize = new Compartment;
-    let theme = new Compartment;
-    let readOnly = new Compartment;
     const breakpointEffect = StateEffect.define({
         map: (val, mapping) => ({ pos: mapping.mapPos(val.pos), on: val.on })
     });
@@ -20533,24 +20530,39 @@
             }
         })
     ];
-    const parseErrorState = StateEffect.define({
+    function CheckForBreakPointOnLine(editor, line) {
+        let codeLine = editor
+            .state
+            .doc
+            .line(line);
+        codeLine.from;
+        let breakpoints = editor.state.field(breakpointState);
+        let hasBreakpoint = false;
+        breakpoints.between(codeLine.from, codeLine.from, () => { hasBreakpoint = true; });
+        return hasBreakpoint;
+    }
+
+    let language = new Compartment, tabSize = new Compartment;
+    let theme = new Compartment;
+    let readOnly = new Compartment;
+    const parseErrorState$1 = StateEffect.define({
         map: ({ from, to }, change) => ({ from: change.mapPos(from), to: change.mapPos(to) })
     });
-    const underlineMark = Decoration.mark({ class: "cm-underline" });
-    const parseErrorField = StateField.define({
+    const underlineMark$1 = Decoration.mark({ class: "cm-underline" });
+    StateField.define({
         create() {
             return Decoration.none;
         },
         update(underlines, tr) {
             underlines = underlines.map(tr.changes);
             for (let e of tr.effects)
-                if (e.is(parseErrorState)) {
+                if (e.is(parseErrorState$1)) {
                     if (e.value.from === -1) {
                         underlines = RangeSet.empty;
                     }
                     else {
                         underlines = underlines.update({
-                            add: [underlineMark.range(e.value.from, e.value.to)]
+                            add: [underlineMark$1.range(e.value.from, e.value.to)]
                         });
                     }
                 }
@@ -20558,7 +20570,7 @@
         },
         provide: f => EditorView.decorations.from(f)
     });
-    const underlineTheme = EditorView.baseTheme({
+    EditorView.baseTheme({
         ".cm-underline": {
             backgroundImage: `url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="6" height="3">%3Cpath%20d%3D%22m0%202.5%20l2%20-1.5%20l1%200%20l2%201.5%20l1%200%22%20stroke%3D%22%23d11%22%20fill%3D%22none%22%20stroke-width%3D%22.9%22%2F%3E</svg>')`,
             backgroundPosition: "left bottom",
@@ -20566,25 +20578,6 @@
             paddingBottom: "0.7px",
         }
     });
-    function underlineError(view, line, from, to) {
-        console.log(line, from, to);
-        let real_from = view.state.doc.line(line).from + from;
-        let real_to = view.state.doc.line(line).from + to;
-        let effects = [parseErrorState.of({ from: real_from, to: real_to })];
-        if (!view.state.field(parseErrorField, false))
-            effects.push(StateEffect.appendConfig.of([parseErrorField,
-                underlineTheme]));
-        view.dispatch({ effects });
-        return true;
-    }
-    function clearUnderlineError(view) {
-        let effects = [parseErrorState.of({ from: -1, to: -1 })];
-        if (!view.state.field(parseErrorField, false))
-            effects.push(StateEffect.appendConfig.of([parseErrorField,
-                underlineTheme]));
-        view.dispatch({ effects });
-        return true;
-    }
     function createEditors() {
         let startState = EditorState.create({
             doc: "iniciar-programa\n\tinicia-ejecucion\n\t\t{ TODO poner codigo aqui }\n\t\tapagate;\n\ttermina-ejecucion\nfinalizar-programa",
@@ -24992,6 +24985,59 @@
     }
     const throbber = new Throbber($("#throbber"));
 
+    const parseErrorState = StateEffect.define({
+        map: ({ from, to }, change) => ({ from: change.mapPos(from), to: change.mapPos(to) })
+    });
+    const underlineMark = Decoration.mark({ class: "cm-underline" });
+    const parseErrorField = StateField.define({
+        create() {
+            return Decoration.none;
+        },
+        update(underlines, tr) {
+            underlines = underlines.map(tr.changes);
+            for (let e of tr.effects)
+                if (e.is(parseErrorState)) {
+                    if (e.value.from === -1) {
+                        underlines = RangeSet.empty;
+                    }
+                    else {
+                        underlines = underlines.update({
+                            add: [underlineMark.range(e.value.from, e.value.to)]
+                        });
+                    }
+                }
+            return underlines;
+        },
+        provide: f => EditorView.decorations.from(f)
+    });
+    const underlineTheme = EditorView.baseTheme({
+        ".cm-underline": {
+            backgroundImage: `url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="6" height="3">%3Cpath%20d%3D%22m0%202.5%20l2%20-1.5%20l1%200%20l2%201.5%20l1%200%22%20stroke%3D%22%23d11%22%20fill%3D%22none%22%20stroke-width%3D%22.9%22%2F%3E</svg>')`,
+            backgroundPosition: "left bottom",
+            backgroundRepeat: "repeat-x",
+            paddingBottom: "0.7px",
+        }
+    });
+    function underlineError(view, line, from, to) {
+        console.log(line, from, to);
+        let real_from = view.state.doc.line(line).from + from;
+        let real_to = view.state.doc.line(line).from + to;
+        let effects = [parseErrorState.of({ from: real_from, to: real_to })];
+        if (!view.state.field(parseErrorField, false))
+            effects.push(StateEffect.appendConfig.of([parseErrorField,
+                underlineTheme]));
+        view.dispatch({ effects });
+        return true;
+    }
+    function clearUnderlineError(view) {
+        let effects = [parseErrorState.of({ from: -1, to: -1 })];
+        if (!view.state.field(parseErrorField, false))
+            effects.push(StateEffect.appendConfig.of([parseErrorField,
+                underlineTheme]));
+        view.dispatch({ effects });
+        return true;
+    }
+
     class KarelController {
         constructor(world) {
             this.world = world;
@@ -25093,16 +25139,9 @@
             let runtime = this.GetRuntime();
             if (runtime.state.line >= 0) {
                 const mainEditor = getEditors()[0];
-                let codeLine = mainEditor
-                    .state
-                    .doc
-                    .line(runtime.state.line + 1);
-                codeLine.from;
-                let breakpoints = mainEditor.state.field(breakpointState);
-                let hasBreakpoint = false;
-                breakpoints.between(codeLine.from, codeLine.from, () => { hasBreakpoint = true; });
+                let hasBreakpoint = CheckForBreakPointOnLine(mainEditor, runtime.state.line + 1);
                 if (hasBreakpoint) {
-                    this.BreakPointMessage(codeLine.number);
+                    this.BreakPointMessage(runtime.state.line + 1);
                 }
                 return hasBreakpoint;
             }
