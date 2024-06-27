@@ -8,7 +8,8 @@ export default {
       format: 'iife',
       globals: {
         "bootstrap":"bootstrap"
-      }
+      },
+      name:"karel"
     },
     
     plugins: [
