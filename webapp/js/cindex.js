@@ -20479,9 +20479,6 @@
         });
     }
 
-    let language = new Compartment, tabSize = new Compartment;
-    let theme = new Compartment;
-    let readOnly = new Compartment;
     const breakpointEffect = StateEffect.define({
         map: (val, mapping) => ({ pos: mapping.mapPos(val.pos), on: val.on })
     });
@@ -20533,6 +20530,21 @@
             }
         })
     ];
+    function CheckForBreakPointOnLine(editor, line) {
+        let codeLine = editor
+            .state
+            .doc
+            .line(line);
+        codeLine.from;
+        let breakpoints = editor.state.field(breakpointState);
+        let hasBreakpoint = false;
+        breakpoints.between(codeLine.from, codeLine.from, () => { hasBreakpoint = true; });
+        return hasBreakpoint;
+    }
+
+    let language = new Compartment, tabSize = new Compartment;
+    let theme = new Compartment;
+    let readOnly = new Compartment;
     const parseErrorState = StateEffect.define({
         map: ({ from, to }, change) => ({ from: change.mapPos(from), to: change.mapPos(to) })
     });
@@ -25093,16 +25105,9 @@
             let runtime = this.GetRuntime();
             if (runtime.state.line >= 0) {
                 const mainEditor = getEditors()[0];
-                let codeLine = mainEditor
-                    .state
-                    .doc
-                    .line(runtime.state.line + 1);
-                codeLine.from;
-                let breakpoints = mainEditor.state.field(breakpointState);
-                let hasBreakpoint = false;
-                breakpoints.between(codeLine.from, codeLine.from, () => { hasBreakpoint = true; });
+                let hasBreakpoint = CheckForBreakPointOnLine(mainEditor, runtime.state.line + 1);
                 if (hasBreakpoint) {
-                    this.BreakPointMessage(codeLine.number);
+                    this.BreakPointMessage(runtime.state.line + 1);
                 }
                 return hasBreakpoint;
             }

@@ -2,11 +2,12 @@ import { World, compile, detectLanguage } from "../../js/karel";
 // import { WorldViewController } from "./worldViewController";
 import { EditorView } from "codemirror";
 import { decodeRuntimeError } from "./errorCodes";
-import { breakpointState, clearUnderlineError, setLanguage, underlineError } from "./editor/editor";
+import { clearUnderlineError, setLanguage, underlineError } from "./editor/editor";
 import { GetCurrentSetting } from "./settings";
 import { throbber } from "./throbber";
 import { getEditors } from "./editor/editorsInstances";
 import { Callbacks } from "jquery";
+import { CheckForBreakPointOnLine } from "./editor/editor.breakpoint";
 
 type messageType = "info"|"success"|"error"|"raw"|"warning";
 type MessageCallback = (message:string, type:messageType)=>void;
@@ -151,22 +152,14 @@ class KarelController {
 
     CheckForBreakPointOnCurrentLine():boolean {
         let runtime= this.GetRuntime();
-        if (runtime.state.line >= 0) {          
+        if (runtime.state.line >= 0) {            
             const mainEditor = getEditors()[0];
-            let codeLine = mainEditor
-                .state
-                .doc
-                .line(
-                    runtime.state.line+1
-                );
-                codeLine.from
-                let breakpoints = mainEditor.state.field(breakpointState)
-                let hasBreakpoint = false
-                breakpoints.between(codeLine.from,codeLine.from, () => {hasBreakpoint = true})
-                if (hasBreakpoint) {                    
-                    this.BreakPointMessage(codeLine.number);
-                }
-                return hasBreakpoint;
+            let hasBreakpoint = CheckForBreakPointOnLine(mainEditor, runtime.state.line+1)       
+            if (hasBreakpoint) {                    
+                this.BreakPointMessage(runtime.state.line +1);
+            }
+            return hasBreakpoint;
+           
         }
         return false;
       }
