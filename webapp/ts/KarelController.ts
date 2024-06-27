@@ -2,12 +2,13 @@ import { World, compile, detectLanguage } from "../../js/karel";
 // import { WorldViewController } from "./worldViewController";
 import { EditorView } from "codemirror";
 import { decodeRuntimeError } from "./errorCodes";
-import { clearUnderlineError, setLanguage, underlineError } from "./editor/editor";
+import { setLanguage } from "./editor/editor";
 import { GetCurrentSetting } from "./settings";
 import { throbber } from "./throbber";
 import { getEditors } from "./editor/editorsInstances";
 import { Callbacks } from "jquery";
 import { CheckForBreakPointOnLine } from "./editor/editor.breakpoint";
+import { clearUnderlineError, underlineError } from "./editor/editor.parseErrorUnderline";
 
 type messageType = "info"|"success"|"error"|"raw"|"warning";
 type MessageCallback = (message:string, type:messageType)=>void;
