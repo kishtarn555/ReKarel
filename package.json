@@ -36,6 +36,7 @@
     "@types/bootstrap": "^5.2.6",
     "@xmldom/xmldom": "^0.8.10",
     "codemirror": "^6.0.1",
+    "gulp-clean": "^0.4.0",
     "split.js": "^1.6.5"
   }
 }

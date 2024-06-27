@@ -11,6 +11,7 @@ karel-distrib.min.js
 test/.cache/
 test/results/
 test/**/*.png
-
 cpp/sol.kx
 cpp/karel
+
+build/*
