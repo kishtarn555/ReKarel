@@ -1,4 +1,4 @@
-(function (bootstrap) {
+var karel = (function (exports, bootstrap) {
     'use strict';
 
     // The programming goals of Split.js are to deliver readable, understandable and
@@ -20545,39 +20545,6 @@
     let language = new Compartment, tabSize = new Compartment;
     let theme = new Compartment;
     let readOnly = new Compartment;
-    const parseErrorState$1 = StateEffect.define({
-        map: ({ from, to }, change) => ({ from: change.mapPos(from), to: change.mapPos(to) })
-    });
-    const underlineMark$1 = Decoration.mark({ class: "cm-underline" });
-    StateField.define({
-        create() {
-            return Decoration.none;
-        },
-        update(underlines, tr) {
-            underlines = underlines.map(tr.changes);
-            for (let e of tr.effects)
-                if (e.is(parseErrorState$1)) {
-                    if (e.value.from === -1) {
-                        underlines = RangeSet.empty;
-                    }
-                    else {
-                        underlines = underlines.update({
-                            add: [underlineMark$1.range(e.value.from, e.value.to)]
-                        });
-                    }
-                }
-            return underlines;
-        },
-        provide: f => EditorView.decorations.from(f)
-    });
-    EditorView.baseTheme({
-        ".cm-underline": {
-            backgroundImage: `url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="6" height="3">%3Cpath%20d%3D%22m0%202.5%20l2%20-1.5%20l1%200%20l2%201.5%20l1%200%22%20stroke%3D%22%23d11%22%20fill%3D%22none%22%20stroke-width%3D%22.9%22%2F%3E</svg>')`,
-            backgroundPosition: "left bottom",
-            backgroundRepeat: "repeat-x",
-            paddingBottom: "0.7px",
-        }
-    });
     function createEditors() {
         let startState = EditorState.create({
             doc: "iniciar-programa\n\tinicia-ejecucion\n\t\t{ TODO poner codigo aqui }\n\t\tapagate;\n\ttermina-ejecucion\nfinalizar-programa",
@@ -20682,6 +20649,20 @@
         }
         catch (_a) {
             console.log("ERROR loading extension");
+        }
+    }
+    function SelectLine(editor, line, column = 0, shouldFocus = true) {
+        const docLine = editor.state.doc.line(line);
+        const jumpTo = docLine.from + column;
+        editor.dispatch({
+            selection: {
+                anchor: jumpTo,
+                head: jumpTo
+            },
+            scrollIntoView: true
+        });
+        if (shouldFocus) {
+            editor.focus();
         }
     }
 
@@ -25483,6 +25464,14 @@
             EOF: 'el final del programa',
         },
     };
+    function jumpable(line, column) {
+        let c = column;
+        if (column == null) {
+            c = 0;
+        }
+        const onclick = `karel.MoveEditorCursorToLine(${line}, ${c})`;
+        return `<a class="text-decoration-underline" href="#" title="Haz clic para ir al error" onclick="${onclick}">línea ${line}</a>`;
+    }
     function decodeError(e, lan) {
         if (lan === "ruby" || lan === "none") {
             return "Error de compilación, no se puede reconocer el lenguaje";
@@ -25493,7 +25482,7 @@
         if (status == null) {
             return "Error de compilación";
         }
-        let message = `Error de compilación en la línea ${status.line + 1}\n<br>\n<div class="card"><div class="card-body">`;
+        let message = `Error de compilación en  la ${jumpable(status.line + 1, status === null || status === void 0 ? void 0 : status.loc.first_column)}\n<br>\n<div class="card"><div class="card-body">`;
         if (status.expected) {
             let expectations = status.expected.map((x => ERROR_TOKENS[lan][x.replace(/^'+/, "").replace(/'+$/, "")]));
             message += `Se encontró "${status.text}" cuando se esperaba ${expectations.join(", ")}`;
@@ -27379,5 +27368,12 @@
         StartSettings(DesktopUI);
         RestoreSession();
     });
+    function MoveEditorCursorToLine(line, column = 0) {
+        SelectLine(desktopEditor, line, column);
+    }
 
-})(bootstrap);
+    exports.MoveEditorCursorToLine = MoveEditorCursorToLine;
+
+    return exports;
+
+})({}, bootstrap);

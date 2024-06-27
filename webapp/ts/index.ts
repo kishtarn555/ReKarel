@@ -1,5 +1,5 @@
 import { splitPanels } from "./split";
-import { setLanguage, SetText } from "./editor/editor";
+import { SelectLine, setLanguage, SetText } from "./editor/editor";
 import { DesktopController } from "./desktop/desktop-ui";
 import { GetPhoneUIHelper } from "./phone-ui";
 import { HookUpCommonUI } from "./common-ui";
@@ -351,3 +351,9 @@ $(document).ready(() => {
     StartSettings(DesktopUI);
     RestoreSession();
 })
+
+
+
+export function MoveEditorCursorToLine(line:number, column:number=0) {
+    SelectLine(desktopEditor, line, column);
+}

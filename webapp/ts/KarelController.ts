@@ -552,6 +552,15 @@ const ERROR_TOKENS = {
     },
   };
 
+function jumpable(line:number, column:number | null) {
+    let c = column;
+    if (column == null) {
+        c=0;
+    }
+    const onclick = `karel.MoveEditorCursorToLine(${line}, ${c})`
+    return `<a class="text-decoration-underline" href="#" title="Haz clic para ir al error" onclick="${onclick}">línea ${line}</a>`;
+}
+
 function decodeError(e, lan : "java"|"pascal"|"ruby"|"none") : string {
     if (lan === "ruby" || lan === "none") {
         return "Error de compilación, no se puede reconocer el lenguaje";
@@ -562,7 +571,7 @@ function decodeError(e, lan : "java"|"pascal"|"ruby"|"none") : string {
     if (status == null) {
         return "Error de compilación";
     }
-    let message = `Error de compilación en la línea ${status.line +1}\n<br>\n<div class="card"><div class="card-body">`
+    let message = `Error de compilación en  la ${jumpable(status.line+1,status?.loc.first_column )}\n<br>\n<div class="card"><div class="card-body">`
     if (status.expected) {        
         let expectations = status.expected.map((x=>ERROR_TOKENS[lan][x.replace(/^'+/,"").replace(/'+$/,"") ]))        
         message += `Se encontró "${status.text}" cuando se esperaba ${ expectations.join(", ")}`

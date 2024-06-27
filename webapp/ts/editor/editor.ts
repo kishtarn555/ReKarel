@@ -140,4 +140,24 @@ function SetEditorTheme (extension:Extension, editor:EditorView) {
   
 }
 
-export {createEditors, freezeEditors, unfreezeEditors, setLanguage, SetText, SetEditorTheme}
+
+function SelectLine(editor:EditorView, line:number, column:number=0, shouldFocus:boolean=true) {
+  const docLine = editor.state.doc.line(line);
+  const jumpTo = docLine.from +column;
+  editor.dispatch({
+    selection: {
+      anchor: jumpTo, 
+      head: jumpTo
+      
+    },
+    scrollIntoView:true
+  });
+  if (shouldFocus) {
+    editor.focus();
+  }
+
+
+
+}
+
+export {createEditors, freezeEditors, unfreezeEditors, setLanguage, SetText, SetEditorTheme, SelectLine}
