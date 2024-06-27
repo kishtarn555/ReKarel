@@ -28,6 +28,9 @@
                 <button class="nav-link" id="v-pills-conditions-tab" data-bs-toggle="pill"
                     data-bs-target="#v-pills-conditions" type="button" role="tab" aria-controls="v-pills-conditions"
                     aria-selected="false">Condiciones</button>
+                <button class="nav-link" id="v-pills-logic-tab" data-bs-toggle="pill"
+                    data-bs-target="#v-pills-logic" type="button" role="tab" aria-controls="v-pills-logic"
+                    aria-selected="false">Operadores lógicos</button>
                 <button class="nav-link" id="v-pills-repetir-tab" data-bs-toggle="pill"
                     data-bs-target="#v-pills-repetir" type="button" role="tab" aria-controls="v-pills-repetir"
                     aria-selected="false">Sentencia Repetir</button>
@@ -56,6 +59,10 @@
                 <div class="tab-pane fade" id="v-pills-conditional" role="tabpanel"
                     aria-labelledby="v-pills-conditional-tab" tabindex="0">
                     @@include('./conditionals.html')
+                </div>                
+                <div class="tab-pane fade" id="v-pills-logic" role="tabpanel"
+                    aria-labelledby="v-pills-logic-tab" tabindex="0">
+                    @@include('./logic.html')
                 </div>
                 <!-- Conditions that Karel can check -->
                 <div class="tab-pane fade" id="v-pills-conditions" role="tabpanel"

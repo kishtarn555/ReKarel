@@ -1,0 +1,167 @@
+<h2>Operadores lógicos</h2>
+<p>Karel dispone de varios operadores lógicos que puede utilizar para la creación de condiciones más avanzadas</p>
+
+
+<h3>Operador y</h3>
+<p>El operador <span class="text-primary-emphasis">y</span> junta combina dos condiciones en una que es cierta solo
+    cuando ambas lo sean.</p>
+
+
+<p>Por ejemplo, si tenemos el siguiente pseudo-código, entonces la condicional se comportará de acuerdo a la tabla de
+    abajo</p>
+
+<div class="border p-2">
+    <span class="text-primary-emphasis">si</span> <span class="text-warning-emphasis">condicion1</span> <span
+        style="color:#77a1d5">y</span> <span class="text-warning-emphasis">condicion2</span> <span
+        class="text-primary-emphasis">entonces</span>
+    <br>
+    <pre style="display: inline;">    </pre><span class="text-info-emphasis">INSTRUCCION</span>
+</div>
+
+<table class="table table-dark table-striped">
+    <tr>
+        <th>Condicion1</th>
+        <th>Condicion2</th>
+        <th>Condicion1 <span style="color:#77a1d5">y</span> Condicion2</th>
+    </tr>
+    <tr>
+        <td>Falso</td>
+        <td>Falso</td>
+        <td>Falso, <b>no</b> se ejecuta el condicional</td>
+    </tr>
+    <tr>
+        <td>Falso</td>
+        <td>Verdadero</td>
+        <td>Falso, <b>no</b> se ejecuta el condicional</td>
+    </tr>
+    <tr>
+        <td>Verdadero</td>
+        <td>Falso</td>
+        <td>Falso, <b>no</b> se ejecuta el condicional</td>
+    </tr>
+    <tr>
+        <td>Verdadero</td>
+        <td>Verdadero</td>
+        <td>Verdadero, <b>sí</b> se ejecuta el condicional</td>
+    </tr>
+</table>
+
+<h3>Operador o</h3>
+<p>El operador <span class="text-primary-emphasis">o</span> junta combina dos condiciones en una que es cierta al menos
+    una de ellas lo sean.</p>
+
+
+<p>Por ejemplo, si tenemos el siguiente pseudo-código, entonces la condicional se comportará de acuerdo a la tabla de
+    abajo</p>
+
+<div class="border p-2">
+    <span class="text-primary-emphasis">si</span> <span class="text-warning-emphasis">condicion1</span> <span
+        style="color:#77a1d5">o</span> <span class="text-warning-emphasis">condicion2</span> <span
+        class="text-primary-emphasis">entonces</span>
+    <br>
+    <pre style="display: inline;">    </pre><span class="text-info-emphasis">INSTRUCCION</span>
+</div>
+
+<table class="table table-dark table-striped">
+    <tr>
+        <th>Condicion1</th>
+        <th>Condicion2</th>
+        <th>Condicion1 <span style="color:#77a1d5">o</span> Condicion2</th>
+    </tr>
+    <tr>
+        <td>Falso</td>
+        <td>Falso</td>
+        <td>Falso, <b>no</b> se ejecuta el condicional</td>
+    </tr>
+    <tr>
+        <td>Falso</td>
+        <td>Verdadero</td>
+        <td>Verdadero, <b>sí</b> se ejecuta el condicional</td>
+    </tr>
+    <tr>
+        <td>Verdadero</td>
+        <td>Falso</td>
+        <td>Verdadero, <b>sí</b> se ejecuta el condicional</td>
+    </tr>
+    <tr>
+        <td>Verdadero</td>
+        <td>Verdadero</td>
+        <td>Verdadero, <b>sí</b> se ejecuta el condicional</td>
+    </tr>
+</table>
+
+<h3>Operador no</h3>
+<p>El operador <span class="text-primary-emphasis">no</span> niega la siguiente condición</p>
+
+
+<p>Por ejemplo, si tenemos el siguiente pseudo-código, entonces la condicional se comportará de acuerdo a la tabla de
+    abajo</p>
+
+<div class="border p-2">
+    <span class="text-primary-emphasis">si</span> <span style="color:#77a1d5">no</span> <span
+        class="text-warning-emphasis">condicion</span> <span class="text-primary-emphasis">entonces</span>
+    <br>
+    <pre style="display: inline;">    </pre><span class="text-info-emphasis">INSTRUCCION</span>
+</div>
+
+<table class="table table-dark table-striped">
+    <tr>
+        <th>Condicion</th>
+        <th><span style="color:#77a1d5">no</span> Condicion</th>
+    </tr>
+    <tr>
+        <td>Falso</td>
+        <td>Verdadero, <b>sí</b> se ejecuta el condicional</td>
+    </tr>
+    <tr>
+        <td>Verdadero</td>
+        <td>Falso, <b>no</b> se ejecuta el condicional</td>
+    </tr>
+</table>
+
+
+<h3>Paréntesis</h3>
+<p>Se pueden utilizar paréntesis para cambiar el orden de los operadores o aclarar la condición</p>
+
+
+
+<p>Por ejemplo, podemos hacer una condicion que se ejecute unicamente cuando exactamente una de dos condiciones sea cierta. Podemos lograr esto revisando que se cumpla al menos una de las condiciones y que no se cumplan ambas, lo cual en código se ve de la siguiente manera:</p>
+
+<div class="border p-2">
+    <span class="text-primary-emphasis">si</span> (<span class="text-warning-emphasis">condicion1</span> <span
+        style="color:#77a1d5">o</span> <span class="text-warning-emphasis">condicion2</span>) <span
+        style="color:#77a1d5">y</span> <span
+        style="color:#77a1d5">no</span> (<span class="text-warning-emphasis">condicion1</span> <span
+        style="color:#77a1d5">y</span> <span class="text-warning-emphasis">condicion2</span>) <span
+        class="text-primary-emphasis">entonces</span>
+    <br>
+    <pre style="display: inline;">    </pre><span class="text-info-emphasis">INSTRUCCION</span>
+</div>
+
+<table class="table table-dark table-striped">
+    <tr>
+        <th>Condicion1</th>
+        <th>Condicion2</th>
+        <th>Resultado</th>
+    </tr>
+    <tr>
+        <td>Falso</td>
+        <td>Falso</td>
+        <td>Falso, <b>no</b> se ejecuta el condicional</td>
+    </tr>
+    <tr>
+        <td>Falso</td>
+        <td>Verdadero</td>
+        <td>Verdadero, <b>sí</b> se ejecuta el condicional</td>
+    </tr>
+    <tr>
+        <td>Verdadero</td>
+        <td>Falso</td>
+        <td>Verdadero, <b>sí</b> se ejecuta el condicional</td>
+    </tr>
+    <tr>
+        <td>Verdadero</td>
+        <td>Verdadero</td>
+        <td>Falso, <b>no</b> se ejecuta el condicional</td>
+    </tr>
+</table>
