@@ -13,7 +13,7 @@ import { closeBrackets, autocompletion } from "@codemirror/autocomplete"
 import { darkClassicHighlight } from "./themes/darkClassicHighlight"
 import { classicHighlight } from "./themes/classicHighlight"
 import {HighlightStyle} from "@codemirror/language"
-import { highlightKarelActiveLine } from "./karelHighlight.editor"
+import { highlightKarelActiveLine } from "./editor.highlightLine"
 import { main } from "../../js/cindex"
 import { breakpointGutter } from "./editor.breakpoint"
 

@@ -1,7 +1,7 @@
 import { EditorView } from "codemirror";
 import { KarelController } from "../KarelController";
 import { getEditors } from "./editorsInstances";
-import { HighlightKarelLine } from "./karelHighlight.editor";
+import { HighlightKarelLine } from "./editor.highlightLine";
 
 
 
