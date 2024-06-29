@@ -1,6 +1,6 @@
 import {EditorState} from "@codemirror/state"
 import {defaultKeymap, historyKeymap, history} from "@codemirror/commands"
-import {drawSelection, keymap, lineNumbers, highlightActiveLine} from "@codemirror/view"
+import {drawSelection, keymap, lineNumbers, highlightActiveLine, rectangularSelection, crosshairCursor} from "@codemirror/view"
 import {indentWithTab} from "@codemirror/commands"
 import {undo, redo} from "@codemirror/commands"
 import {EditorView} from "@codemirror/view"
@@ -13,6 +13,8 @@ import { closeBrackets } from "@codemirror/autocomplete"
 import { classicHighlight } from "./themes/classicHighlight"
 import { highlightKarelActiveLine } from "./editor.highlightLine"
 import { breakpointGutter } from "./editor.breakpoint"
+import {searchKeymap, highlightSelectionMatches} from "@codemirror/search"
+
 
 let language = new Compartment, tabSize = new Compartment
 let theme = new Compartment
@@ -28,16 +30,20 @@ function createEditors() : Array<EditorView> {
       language.of(kpascal()),
       theme.of(classicHighlight.extensions),
       syntaxHighlighting(defaultHighlightStyle, {fallback:true}),
-      history(),
-      highlightKarelActiveLine(),
       breakpointGutter,
+      highlightKarelActiveLine(),
+      
+      history(),
       drawSelection(),
       lineNumbers(),
       highlightActiveLine(),
       foldGutter(),
       bracketMatching(),
       // autocompletion(),
+      rectangularSelection(),
+      crosshairCursor(),
       closeBrackets(),
+      highlightSelectionMatches(),
       indentUnit.of("\t"),
       readOnly.of(EditorState.readOnly.of(false)),      
       tabSize.of(EditorState.tabSize.of(4)),
@@ -45,6 +51,7 @@ function createEditors() : Array<EditorView> {
         indentWithTab,
         ...defaultKeymap,
         ...historyKeymap,
+        ...searchKeymap,
       ])
     ]
   })
