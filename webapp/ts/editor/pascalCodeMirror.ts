@@ -46,6 +46,10 @@ let pascalWithContext = pascalparser.configure({
         }),
         indentNodeProp.add({
             Function: continuedIndent({except:/^\s*(inicio\b)/}),
+            WhileStatement: continuedIndent({except:/^\s*(inicio\b)/}),
+            IterateStatement: continuedIndent({except:/^\s*(inicio\b)/}),
+            IfStatement: continuedIndent({except:/^\s*(inicio|sino|si\-no)\b/}),
+            
             Block: (context: TreeIndentContext) => {
                 let after = context.textAfter;
                 let closed = /^\s*fin\b/.test(after)
@@ -74,13 +78,13 @@ const pascalLanguage = LRLanguage.define({
           close:"}"
         }
       },
-      indentOnInput: /^\s*(inicio|fin)\;?$/
+      indentOnInput: /^\s*(inicio|fin|sino|si\-no)\b$/
     }
   })
 
 
   import {completeFromList} from "@codemirror/autocomplete"
-import { BuiltIn, Prototipo } from "../../js/lezer_pascal.terms";
+import { BuiltIn, IfStatement, IterateStatement, Prototipo, WhileStatement } from "../../js/lezer_pascal.terms";
 import { Define } from "../../js/lezer_java.terms";
 
   const pascalCompletion = pascalLanguage.data.of({
