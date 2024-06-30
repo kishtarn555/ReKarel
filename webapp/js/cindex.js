@@ -16553,6 +16553,50 @@ var karel = (function (exports, bootstrap) {
             return context.baseIndent + (matchExcept ? 0 : units * context.unit);
         };
     }
+    const DontIndentBeyond = 200;
+    /**
+    Enables reindentation on input. When a language defines an
+    `indentOnInput` field in its [language
+    data](https://codemirror.net/6/docs/ref/#state.EditorState.languageDataAt), which must hold a regular
+    expression, the line at the cursor will be reindented whenever new
+    text is typed and the input from the start of the line up to the
+    cursor matches that regexp.
+
+    To avoid unneccesary reindents, it is recommended to start the
+    regexp with `^` (usually followed by `\s*`), and end it with `$`.
+    For example, `/^\s*\}$/` will reindent when a closing brace is
+    added at the start of a line.
+    */
+    function indentOnInput() {
+        return EditorState.transactionFilter.of(tr => {
+            if (!tr.docChanged || !tr.isUserEvent("input.type") && !tr.isUserEvent("input.complete"))
+                return tr;
+            let rules = tr.startState.languageDataAt("indentOnInput", tr.startState.selection.main.head);
+            if (!rules.length)
+                return tr;
+            let doc = tr.newDoc, { head } = tr.newSelection.main, line = doc.lineAt(head);
+            if (head > line.from + DontIndentBeyond)
+                return tr;
+            let lineStart = doc.sliceString(line.from, head);
+            if (!rules.some(r => r.test(lineStart)))
+                return tr;
+            let { state } = tr, last = -1, changes = [];
+            for (let { head } of state.selection.ranges) {
+                let line = state.doc.lineAt(head);
+                if (line.from == last)
+                    continue;
+                last = line.from;
+                let indent = getIndentation(state, line.from);
+                if (indent == null)
+                    continue;
+                let cur = /^\s*/.exec(line.text)[0];
+                let norm = indentString(state, indent);
+                if (cur != norm)
+                    changes.push({ from: line.from, to: line.from + cur.length, insert: norm });
+            }
+            return changes.length ? [tr, { changes, sequential: true }] : tr;
+        });
+    }
 
     /**
     A facet that registers a code folding service. When called with
@@ -20669,9 +20713,17 @@ var karel = (function (exports, bootstrap) {
                 Pred: tags.operator
             }),
             indentNodeProp.add({
-                Function: continuedIndent({}),
-                Script: continuedIndent({}),
-                Block: delimitedIndent({ closing: "fin" }),
+                Function: continuedIndent({ except: /^\s*(inicio\b)/ }),
+                Block: (context) => {
+                    let after = context.textAfter;
+                    let closed = /^\s*fin\b/.test(after);
+                    return context.baseIndent + (closed ? 0 : context.unit);
+                },
+                Script: (context) => {
+                    if (/^\s*(iniciar\-programa|finalizar\-programa)\b/.test(context.textAfter))
+                        return 0;
+                    return context.unit;
+                },
                 Execution: delimitedIndent({ closing: "termina-ejecucion" }),
             }),
             foldNodeProp.add({
@@ -20689,7 +20741,7 @@ var karel = (function (exports, bootstrap) {
                     close: "}"
                 }
             },
-            // indentOnInput: /^\s*fin$/
+            indentOnInput: /^\s*(inicio|fin)\;?$/
         }
     });
     const pascalCompletion = pascalLanguage.data.of({
@@ -22076,6 +22128,7 @@ var karel = (function (exports, bootstrap) {
                 rectangularSelection(),
                 crosshairCursor(),
                 closeBrackets(),
+                indentOnInput(),
                 highlightSelectionMatches(),
                 indentUnit.of("\t"),
                 readOnly.of(EditorState.readOnly.of(false)),

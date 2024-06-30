@@ -8,7 +8,7 @@ import {Transaction, Annotation, Compartment, Extension} from "@codemirror/state
 import { kjava } from "./javaCodeMirror"
 import { kpascal } from "./pascalCodeMirror"
 
-import {defaultHighlightStyle, syntaxHighlighting, foldGutter, bracketMatching, indentUnit} from "@codemirror/language"
+import {defaultHighlightStyle, syntaxHighlighting, foldGutter, bracketMatching, indentUnit, indentOnInput} from "@codemirror/language"
 import { closeBrackets } from "@codemirror/autocomplete"
 import { classicHighlight } from "./themes/classicHighlight"
 import { highlightKarelActiveLine } from "./editor.highlightLine"
@@ -43,6 +43,7 @@ function createEditors() : Array<EditorView> {
       rectangularSelection(),
       crosshairCursor(),
       closeBrackets(),
+      indentOnInput(),
       highlightSelectionMatches(),
       indentUnit.of("\t"),
       readOnly.of(EditorState.readOnly.of(false)),      

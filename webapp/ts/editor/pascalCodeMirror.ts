@@ -4,7 +4,8 @@ import {LanguageSupport} from "@codemirror/language"
 
 import {foldNodeProp, foldInside, indentNodeProp} from "@codemirror/language"
 import {styleTags, tags as t} from "@lezer/highlight"
-import {LRLanguage, continuedIndent, delimitedIndent} from "@codemirror/language"
+import {LRLanguage, continuedIndent, delimitedIndent, TreeIndentContext} from "@codemirror/language"
+
 
 let pascalWithContext = pascalparser.configure({
     props: [
@@ -44,9 +45,16 @@ let pascalWithContext = pascalparser.configure({
             Pred: t.operator
         }),
         indentNodeProp.add({
-            Function: continuedIndent({}),
-            Script: continuedIndent({}),
-            Block: delimitedIndent({closing:"fin"}),
+            Function: continuedIndent({except:/^\s*(inicio\b)/}),
+            Block: (context: TreeIndentContext) => {
+                let after = context.textAfter;
+                let closed = /^\s*fin\b/.test(after)
+                return context.baseIndent + (closed ? 0 : context.unit);
+            },
+            Script: (context: TreeIndentContext) => {
+              if (/^\s*(iniciar\-programa|finalizar\-programa)\b/.test(context.textAfter)) return 0;             
+              return  context.unit
+            },
             Execution: delimitedIndent({closing:"termina-ejecucion"}),
           }),           
         foldNodeProp.add({
@@ -66,7 +74,7 @@ const pascalLanguage = LRLanguage.define({
           close:"}"
         }
       },
-      // indentOnInput: /^\s*fin$/
+      indentOnInput: /^\s*(inicio|fin)\;?$/
     }
   })
 
