@@ -116,8 +116,14 @@ IFZ {
 }
 
 numberStatement {
-    Number
+    Number | Identifier | numberFunction
 }
+
+
+numberFunction {(Succ | Pred)"(" numberStatement ")" }
+
+Succ { @specialize<Identifier, "succ"> }
+Pred { @specialize<Identifier, "pred"> }
 
 Start[closedBy="End"] {
     start
