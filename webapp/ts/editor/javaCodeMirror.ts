@@ -31,6 +31,8 @@ let javaWithContext = javaparser.configure({
             BuiltIn: t.constant(t.variableName),
             Start: t.brace,
             End: t.brace,
+            Succ: t.operator,
+            Pred: t.operator,
 
         }),
         indentNodeProp.add({
