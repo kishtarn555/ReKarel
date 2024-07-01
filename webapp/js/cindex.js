@@ -9165,11 +9165,11 @@ var karel = (function (exports, bootstrap) {
             return new BlockInfo(this.from, this.length + other.length, this.top, this.height + other.height, detail);
         }
     }
-    var QueryType = /*@__PURE__*/(function (QueryType) {
+    var QueryType$1 = /*@__PURE__*/(function (QueryType) {
         QueryType[QueryType["ByPos"] = 0] = "ByPos";
         QueryType[QueryType["ByHeight"] = 1] = "ByHeight";
         QueryType[QueryType["ByPosNoHeight"] = 2] = "ByPosNoHeight";
-    return QueryType})(QueryType || (QueryType = {}));
+    return QueryType})(QueryType$1 || (QueryType$1 = {}));
     const Epsilon = 1e-3;
     class HeightMap {
         constructor(length, // The number of characters covered
@@ -9201,8 +9201,8 @@ var karel = (function (exports, bootstrap) {
             let me = this;
             for (let i = changes.length - 1; i >= 0; i--) {
                 let { fromA, toA, fromB, toB } = changes[i];
-                let start = me.lineAt(fromA, QueryType.ByPosNoHeight, oldDoc, 0, 0);
-                let end = start.to >= toA ? start : me.lineAt(toA, QueryType.ByPosNoHeight, oldDoc, 0, 0);
+                let start = me.lineAt(fromA, QueryType$1.ByPosNoHeight, oldDoc, 0, 0);
+                let end = start.to >= toA ? start : me.lineAt(toA, QueryType$1.ByPosNoHeight, oldDoc, 0, 0);
                 toB += end.to - toA;
                 toA = end.to;
                 while (i > 0 && start.from <= changes[i - 1].toA) {
@@ -9210,7 +9210,7 @@ var karel = (function (exports, bootstrap) {
                     fromB = changes[i - 1].fromB;
                     i--;
                     if (fromA < start.from)
-                        start = me.lineAt(fromA, QueryType.ByPosNoHeight, oldDoc, 0, 0);
+                        start = me.lineAt(fromA, QueryType$1.ByPosNoHeight, oldDoc, 0, 0);
                 }
                 fromB += start.from - fromA;
                 fromA = start.from;
@@ -9346,9 +9346,9 @@ var karel = (function (exports, bootstrap) {
             return new BlockInfo(from, length, top + lineHeight * line, lineHeight, BlockType.Text);
         }
         lineAt(value, type, doc, top, offset) {
-            if (type == QueryType.ByHeight)
+            if (type == QueryType$1.ByHeight)
                 return this.blockAt(value, doc, top, offset);
-            if (type == QueryType.ByPosNoHeight) {
+            if (type == QueryType$1.ByPosNoHeight) {
                 let { from, to } = doc.lineAt(value);
                 return new BlockInfo(from, to - from, 0, 0, BlockType.Text);
             }
@@ -9446,12 +9446,12 @@ var karel = (function (exports, bootstrap) {
         }
         lineAt(value, type, doc, top, offset) {
             let rightTop = top + this.left.height, rightOffset = offset + this.left.length + this.break;
-            let left = type == QueryType.ByHeight ? value < rightTop : value < rightOffset;
+            let left = type == QueryType$1.ByHeight ? value < rightTop : value < rightOffset;
             let base = left ? this.left.lineAt(value, type, doc, top, offset)
                 : this.right.lineAt(value, type, doc, rightTop, rightOffset);
             if (this.break || (left ? base.to < rightOffset : base.from > rightOffset))
                 return base;
-            let subQuery = type == QueryType.ByPosNoHeight ? QueryType.ByPosNoHeight : QueryType.ByPos;
+            let subQuery = type == QueryType$1.ByPosNoHeight ? QueryType$1.ByPosNoHeight : QueryType$1.ByPos;
             if (left)
                 return base.join(this.right.lineAt(rightOffset, subQuery, doc, rightTop, rightOffset));
             else
@@ -9466,7 +9466,7 @@ var karel = (function (exports, bootstrap) {
                     this.right.forEachLine(from, to, doc, rightTop, rightOffset, f);
             }
             else {
-                let mid = this.lineAt(rightOffset, QueryType.ByPos, doc, top, offset);
+                let mid = this.lineAt(rightOffset, QueryType$1.ByPos, doc, top, offset);
                 if (from < mid.from)
                     this.left.forEachLine(from, mid.from - 1, doc, top, offset, f);
                 if (mid.to >= from && mid.from <= to)
@@ -9953,35 +9953,35 @@ var karel = (function (exports, bootstrap) {
             // since the last update). It'll hold a number between 0 and 1
             let marginTop = 0.5 - Math.max(-0.5, Math.min(0.5, bias / 1000 /* VP.Margin */ / 2));
             let map = this.heightMap, doc = this.state.doc, { visibleTop, visibleBottom } = this;
-            let viewport = new Viewport(map.lineAt(visibleTop - marginTop * 1000 /* VP.Margin */, QueryType.ByHeight, doc, 0, 0).from, map.lineAt(visibleBottom + (1 - marginTop) * 1000 /* VP.Margin */, QueryType.ByHeight, doc, 0, 0).to);
+            let viewport = new Viewport(map.lineAt(visibleTop - marginTop * 1000 /* VP.Margin */, QueryType$1.ByHeight, doc, 0, 0).from, map.lineAt(visibleBottom + (1 - marginTop) * 1000 /* VP.Margin */, QueryType$1.ByHeight, doc, 0, 0).to);
             // If scrollTarget is given, make sure the viewport includes that position
             if (scrollTarget) {
                 let { head } = scrollTarget.range;
                 if (head < viewport.from || head > viewport.to) {
                     let viewHeight = Math.min(this.editorHeight, this.pixelViewport.bottom - this.pixelViewport.top);
-                    let block = map.lineAt(head, QueryType.ByPos, doc, 0, 0), topPos;
+                    let block = map.lineAt(head, QueryType$1.ByPos, doc, 0, 0), topPos;
                     if (scrollTarget.y == "center")
                         topPos = (block.top + block.bottom) / 2 - viewHeight / 2;
                     else if (scrollTarget.y == "start" || scrollTarget.y == "nearest" && head < viewport.from)
                         topPos = block.top;
                     else
                         topPos = block.bottom - viewHeight;
-                    viewport = new Viewport(map.lineAt(topPos - 1000 /* VP.Margin */ / 2, QueryType.ByHeight, doc, 0, 0).from, map.lineAt(topPos + viewHeight + 1000 /* VP.Margin */ / 2, QueryType.ByHeight, doc, 0, 0).to);
+                    viewport = new Viewport(map.lineAt(topPos - 1000 /* VP.Margin */ / 2, QueryType$1.ByHeight, doc, 0, 0).from, map.lineAt(topPos + viewHeight + 1000 /* VP.Margin */ / 2, QueryType$1.ByHeight, doc, 0, 0).to);
                 }
             }
             return viewport;
         }
         mapViewport(viewport, changes) {
             let from = changes.mapPos(viewport.from, -1), to = changes.mapPos(viewport.to, 1);
-            return new Viewport(this.heightMap.lineAt(from, QueryType.ByPos, this.state.doc, 0, 0).from, this.heightMap.lineAt(to, QueryType.ByPos, this.state.doc, 0, 0).to);
+            return new Viewport(this.heightMap.lineAt(from, QueryType$1.ByPos, this.state.doc, 0, 0).from, this.heightMap.lineAt(to, QueryType$1.ByPos, this.state.doc, 0, 0).to);
         }
         // Checks if a given viewport covers the visible part of the
         // document and not too much beyond that.
         viewportIsAppropriate({ from, to }, bias = 0) {
             if (!this.inView)
                 return true;
-            let { top } = this.heightMap.lineAt(from, QueryType.ByPos, this.state.doc, 0, 0);
-            let { bottom } = this.heightMap.lineAt(to, QueryType.ByPos, this.state.doc, 0, 0);
+            let { top } = this.heightMap.lineAt(from, QueryType$1.ByPos, this.state.doc, 0, 0);
+            let { bottom } = this.heightMap.lineAt(to, QueryType$1.ByPos, this.state.doc, 0, 0);
             let { visibleTop, visibleBottom } = this;
             return (from == 0 || top <= visibleTop - Math.max(10 /* VP.MinCoverMargin */, Math.min(-bias, 250 /* VP.MaxCoverMargin */))) &&
                 (to == this.state.doc.length ||
@@ -10118,10 +10118,10 @@ var karel = (function (exports, bootstrap) {
         }
         lineBlockAt(pos) {
             return (pos >= this.viewport.from && pos <= this.viewport.to && this.viewportLines.find(b => b.from <= pos && b.to >= pos)) ||
-                scaleBlock(this.heightMap.lineAt(pos, QueryType.ByPos, this.state.doc, 0, 0), this.scaler);
+                scaleBlock(this.heightMap.lineAt(pos, QueryType$1.ByPos, this.state.doc, 0, 0), this.scaler);
         }
         lineBlockAtHeight(height) {
-            return scaleBlock(this.heightMap.lineAt(this.scaler.fromDOM(height), QueryType.ByHeight, this.state.doc, 0, 0), this.scaler);
+            return scaleBlock(this.heightMap.lineAt(this.scaler.fromDOM(height), QueryType$1.ByHeight, this.state.doc, 0, 0), this.scaler);
         }
         elementAtHeight(height) {
             return scaleBlock(this.heightMap.blockAt(this.scaler.fromDOM(height), this.state.doc, 0, 0), this.scaler);
@@ -10201,8 +10201,8 @@ var karel = (function (exports, bootstrap) {
         constructor(doc, heightMap, viewports) {
             let vpHeight = 0, base = 0, domBase = 0;
             this.viewports = viewports.map(({ from, to }) => {
-                let top = heightMap.lineAt(from, QueryType.ByPos, doc, 0, 0).top;
-                let bottom = heightMap.lineAt(to, QueryType.ByPos, doc, 0, 0).bottom;
+                let top = heightMap.lineAt(from, QueryType$1.ByPos, doc, 0, 0).top;
+                let bottom = heightMap.lineAt(to, QueryType$1.ByPos, doc, 0, 0).bottom;
                 vpHeight += bottom - top;
                 return { from, to, top, bottom, domTop: 0, domBottom: 0 };
             });
@@ -10260,7 +10260,7 @@ var karel = (function (exports, bootstrap) {
             }
         });
     }
-    const baseTheme$1$1 = /*@__PURE__*/buildTheme("." + baseThemeID, {
+    const baseTheme$1$2 = /*@__PURE__*/buildTheme("." + baseThemeID, {
         "&.cm-editor": {
             position: "relative !important",
             boxSizing: "border-box",
@@ -11589,7 +11589,7 @@ var karel = (function (exports, bootstrap) {
         }
         mountStyles() {
             this.styleModules = this.state.facet(styleModule);
-            StyleModule.mount(this.root, this.styleModules.concat(baseTheme$1$1).reverse());
+            StyleModule.mount(this.root, this.styleModules.concat(baseTheme$1$2).reverse());
         }
         readMeasured() {
             if (this.updateState == 2 /* UpdateState.Updating */)
@@ -12197,6 +12197,14 @@ var karel = (function (exports, bootstrap) {
             Keymaps.set(bindings, map = buildKeymap(bindings.reduce((a, b) => a.concat(b), [])));
         return map;
     }
+    /**
+    Run the key handlers registered for a given scope. The event
+    object should be a `"keydown"` event. Returns true if any of the
+    handlers handled it.
+    */
+    function runScopeHandlers(view, event, scope) {
+        return runHandlers(getKeymap(view.state), event, view, scope);
+    }
     let storedPrefix = null;
     const PrefixTimeout = 4000;
     function buildKeymap(bindings, platform = currentPlatform) {
@@ -12662,6 +12670,302 @@ var karel = (function (exports, bootstrap) {
         }
     }, {
         decorations: v => v.decorations
+    });
+
+    // Don't compute precise column positions for line offsets above this
+    // (since it could get expensive). Assume offset==column for them.
+    const MaxOff = 2000;
+    function rectangleFor(state, a, b) {
+        let startLine = Math.min(a.line, b.line), endLine = Math.max(a.line, b.line);
+        let ranges = [];
+        if (a.off > MaxOff || b.off > MaxOff || a.col < 0 || b.col < 0) {
+            let startOff = Math.min(a.off, b.off), endOff = Math.max(a.off, b.off);
+            for (let i = startLine; i <= endLine; i++) {
+                let line = state.doc.line(i);
+                if (line.length <= endOff)
+                    ranges.push(EditorSelection.range(line.from + startOff, line.to + endOff));
+            }
+        }
+        else {
+            let startCol = Math.min(a.col, b.col), endCol = Math.max(a.col, b.col);
+            for (let i = startLine; i <= endLine; i++) {
+                let line = state.doc.line(i);
+                let start = findColumn(line.text, startCol, state.tabSize, true);
+                if (start < 0) {
+                    ranges.push(EditorSelection.cursor(line.to));
+                }
+                else {
+                    let end = findColumn(line.text, endCol, state.tabSize);
+                    ranges.push(EditorSelection.range(line.from + start, line.from + end));
+                }
+            }
+        }
+        return ranges;
+    }
+    function absoluteColumn(view, x) {
+        let ref = view.coordsAtPos(view.viewport.from);
+        return ref ? Math.round(Math.abs((ref.left - x) / view.defaultCharacterWidth)) : -1;
+    }
+    function getPos(view, event) {
+        let offset = view.posAtCoords({ x: event.clientX, y: event.clientY }, false);
+        let line = view.state.doc.lineAt(offset), off = offset - line.from;
+        let col = off > MaxOff ? -1
+            : off == line.length ? absoluteColumn(view, event.clientX)
+                : countColumn(line.text, view.state.tabSize, offset - line.from);
+        return { line: line.number, col, off };
+    }
+    function rectangleSelectionStyle(view, event) {
+        let start = getPos(view, event), startSel = view.state.selection;
+        if (!start)
+            return null;
+        return {
+            update(update) {
+                if (update.docChanged) {
+                    let newStart = update.changes.mapPos(update.startState.doc.line(start.line).from);
+                    let newLine = update.state.doc.lineAt(newStart);
+                    start = { line: newLine.number, col: start.col, off: Math.min(start.off, newLine.length) };
+                    startSel = startSel.map(update.changes);
+                }
+            },
+            get(event, _extend, multiple) {
+                let cur = getPos(view, event);
+                if (!cur)
+                    return startSel;
+                let ranges = rectangleFor(view.state, start, cur);
+                if (!ranges.length)
+                    return startSel;
+                if (multiple)
+                    return EditorSelection.create(ranges.concat(startSel.ranges));
+                else
+                    return EditorSelection.create(ranges);
+            }
+        };
+    }
+    /**
+    Create an extension that enables rectangular selections. By
+    default, it will react to left mouse drag with the Alt key held
+    down. When such a selection occurs, the text within the rectangle
+    that was dragged over will be selected, as one selection
+    [range](https://codemirror.net/6/docs/ref/#state.SelectionRange) per line.
+    */
+    function rectangularSelection(options) {
+        let filter = (options === null || options === void 0 ? void 0 : options.eventFilter) || (e => e.altKey && e.button == 0);
+        return EditorView.mouseSelectionStyle.of((view, event) => filter(event) ? rectangleSelectionStyle(view, event) : null);
+    }
+    const keys = {
+        Alt: [18, e => e.altKey],
+        Control: [17, e => e.ctrlKey],
+        Shift: [16, e => e.shiftKey],
+        Meta: [91, e => e.metaKey]
+    };
+    const showCrosshair = { style: "cursor: crosshair" };
+    /**
+    Returns an extension that turns the pointer cursor into a
+    crosshair when a given modifier key, defaulting to Alt, is held
+    down. Can serve as a visual hint that rectangular selection is
+    going to happen when paired with
+    [`rectangularSelection`](https://codemirror.net/6/docs/ref/#view.rectangularSelection).
+    */
+    function crosshairCursor(options = {}) {
+        let [code, getter] = keys[options.key || "Alt"];
+        let plugin = ViewPlugin.fromClass(class {
+            constructor(view) {
+                this.view = view;
+                this.isDown = false;
+            }
+            set(isDown) {
+                if (this.isDown != isDown) {
+                    this.isDown = isDown;
+                    this.view.update([]);
+                }
+            }
+        }, {
+            eventHandlers: {
+                keydown(e) {
+                    this.set(e.keyCode == code || getter(e));
+                },
+                keyup(e) {
+                    if (e.keyCode == code || !getter(e))
+                        this.set(false);
+                },
+                mousemove(e) {
+                    this.set(getter(e));
+                }
+            }
+        });
+        return [
+            plugin,
+            EditorView.contentAttributes.of(view => { var _a; return ((_a = view.plugin(plugin)) === null || _a === void 0 ? void 0 : _a.isDown) ? showCrosshair : null; })
+        ];
+    }
+
+    const panelConfig = /*@__PURE__*/Facet.define({
+        combine(configs) {
+            let topContainer, bottomContainer;
+            for (let c of configs) {
+                topContainer = topContainer || c.topContainer;
+                bottomContainer = bottomContainer || c.bottomContainer;
+            }
+            return { topContainer, bottomContainer };
+        }
+    });
+    /**
+    Get the active panel created by the given constructor, if any.
+    This can be useful when you need access to your panels' DOM
+    structure.
+    */
+    function getPanel(view, panel) {
+        let plugin = view.plugin(panelPlugin);
+        let index = plugin ? plugin.specs.indexOf(panel) : -1;
+        return index > -1 ? plugin.panels[index] : null;
+    }
+    const panelPlugin = /*@__PURE__*/ViewPlugin.fromClass(class {
+        constructor(view) {
+            this.input = view.state.facet(showPanel);
+            this.specs = this.input.filter(s => s);
+            this.panels = this.specs.map(spec => spec(view));
+            let conf = view.state.facet(panelConfig);
+            this.top = new PanelGroup(view, true, conf.topContainer);
+            this.bottom = new PanelGroup(view, false, conf.bottomContainer);
+            this.top.sync(this.panels.filter(p => p.top));
+            this.bottom.sync(this.panels.filter(p => !p.top));
+            for (let p of this.panels) {
+                p.dom.classList.add("cm-panel");
+                if (p.mount)
+                    p.mount();
+            }
+        }
+        update(update) {
+            let conf = update.state.facet(panelConfig);
+            if (this.top.container != conf.topContainer) {
+                this.top.sync([]);
+                this.top = new PanelGroup(update.view, true, conf.topContainer);
+            }
+            if (this.bottom.container != conf.bottomContainer) {
+                this.bottom.sync([]);
+                this.bottom = new PanelGroup(update.view, false, conf.bottomContainer);
+            }
+            this.top.syncClasses();
+            this.bottom.syncClasses();
+            let input = update.state.facet(showPanel);
+            if (input != this.input) {
+                let specs = input.filter(x => x);
+                let panels = [], top = [], bottom = [], mount = [];
+                for (let spec of specs) {
+                    let known = this.specs.indexOf(spec), panel;
+                    if (known < 0) {
+                        panel = spec(update.view);
+                        mount.push(panel);
+                    }
+                    else {
+                        panel = this.panels[known];
+                        if (panel.update)
+                            panel.update(update);
+                    }
+                    panels.push(panel);
+                    (panel.top ? top : bottom).push(panel);
+                }
+                this.specs = specs;
+                this.panels = panels;
+                this.top.sync(top);
+                this.bottom.sync(bottom);
+                for (let p of mount) {
+                    p.dom.classList.add("cm-panel");
+                    if (p.mount)
+                        p.mount();
+                }
+            }
+            else {
+                for (let p of this.panels)
+                    if (p.update)
+                        p.update(update);
+            }
+        }
+        destroy() {
+            this.top.sync([]);
+            this.bottom.sync([]);
+        }
+    }, {
+        provide: plugin => EditorView.scrollMargins.of(view => {
+            let value = view.plugin(plugin);
+            return value && { top: value.top.scrollMargin(), bottom: value.bottom.scrollMargin() };
+        })
+    });
+    class PanelGroup {
+        constructor(view, top, container) {
+            this.view = view;
+            this.top = top;
+            this.container = container;
+            this.dom = undefined;
+            this.classes = "";
+            this.panels = [];
+            this.syncClasses();
+        }
+        sync(panels) {
+            for (let p of this.panels)
+                if (p.destroy && panels.indexOf(p) < 0)
+                    p.destroy();
+            this.panels = panels;
+            this.syncDOM();
+        }
+        syncDOM() {
+            if (this.panels.length == 0) {
+                if (this.dom) {
+                    this.dom.remove();
+                    this.dom = undefined;
+                }
+                return;
+            }
+            if (!this.dom) {
+                this.dom = document.createElement("div");
+                this.dom.className = this.top ? "cm-panels cm-panels-top" : "cm-panels cm-panels-bottom";
+                this.dom.style[this.top ? "top" : "bottom"] = "0";
+                let parent = this.container || this.view.dom;
+                parent.insertBefore(this.dom, this.top ? parent.firstChild : null);
+            }
+            let curDOM = this.dom.firstChild;
+            for (let panel of this.panels) {
+                if (panel.dom.parentNode == this.dom) {
+                    while (curDOM != panel.dom)
+                        curDOM = rm(curDOM);
+                    curDOM = curDOM.nextSibling;
+                }
+                else {
+                    this.dom.insertBefore(panel.dom, curDOM);
+                }
+            }
+            while (curDOM)
+                curDOM = rm(curDOM);
+        }
+        scrollMargin() {
+            return !this.dom || this.container ? 0
+                : Math.max(0, this.top ?
+                    this.dom.getBoundingClientRect().bottom - Math.max(0, this.view.scrollDOM.getBoundingClientRect().top) :
+                    Math.min(innerHeight, this.view.scrollDOM.getBoundingClientRect().bottom) - this.dom.getBoundingClientRect().top);
+        }
+        syncClasses() {
+            if (!this.container || this.classes == this.view.themeClasses)
+                return;
+            for (let cls of this.classes.split(" "))
+                if (cls)
+                    this.container.classList.remove(cls);
+            for (let cls of (this.classes = this.view.themeClasses).split(" "))
+                if (cls)
+                    this.container.classList.add(cls);
+        }
+    }
+    function rm(node) {
+        let next = node.nextSibling;
+        node.remove();
+        return next;
+    }
+    /**
+    Opening a panel is done by providing a constructor function for
+    the panel through this facet. (The panel is closed again when its
+    constructor is no longer provided.) Values of `null` are ignored.
+    */
+    const showPanel = /*@__PURE__*/Facet.define({
+        enables: panelPlugin
     });
 
     /**
@@ -16249,6 +16553,50 @@ var karel = (function (exports, bootstrap) {
             return context.baseIndent + (matchExcept ? 0 : units * context.unit);
         };
     }
+    const DontIndentBeyond = 200;
+    /**
+    Enables reindentation on input. When a language defines an
+    `indentOnInput` field in its [language
+    data](https://codemirror.net/6/docs/ref/#state.EditorState.languageDataAt), which must hold a regular
+    expression, the line at the cursor will be reindented whenever new
+    text is typed and the input from the start of the line up to the
+    cursor matches that regexp.
+
+    To avoid unneccesary reindents, it is recommended to start the
+    regexp with `^` (usually followed by `\s*`), and end it with `$`.
+    For example, `/^\s*\}$/` will reindent when a closing brace is
+    added at the start of a line.
+    */
+    function indentOnInput() {
+        return EditorState.transactionFilter.of(tr => {
+            if (!tr.docChanged || !tr.isUserEvent("input.type") && !tr.isUserEvent("input.complete"))
+                return tr;
+            let rules = tr.startState.languageDataAt("indentOnInput", tr.startState.selection.main.head);
+            if (!rules.length)
+                return tr;
+            let doc = tr.newDoc, { head } = tr.newSelection.main, line = doc.lineAt(head);
+            if (head > line.from + DontIndentBeyond)
+                return tr;
+            let lineStart = doc.sliceString(line.from, head);
+            if (!rules.some(r => r.test(lineStart)))
+                return tr;
+            let { state } = tr, last = -1, changes = [];
+            for (let { head } of state.selection.ranges) {
+                let line = state.doc.lineAt(head);
+                if (line.from == last)
+                    continue;
+                last = line.from;
+                let indent = getIndentation(state, line.from);
+                if (indent == null)
+                    continue;
+                let cur = /^\s*/.exec(line.text)[0];
+                let norm = indentString(state, indent);
+                if (cur != norm)
+                    changes.push({ from: line.from, to: line.from + cur.length, insert: norm });
+            }
+            return changes.length ? [tr, { changes, sequential: true }] : tr;
+        });
+    }
 
     /**
     A facet that registers a code folding service. When called with
@@ -16408,7 +16756,7 @@ var karel = (function (exports, bootstrap) {
     Create an extension that configures code folding.
     */
     function codeFolding(config) {
-        let result = [foldState, baseTheme$1];
+        let result = [foldState, baseTheme$1$1];
         if (config)
             result.push(foldConfig.of(config));
         return result;
@@ -16517,7 +16865,7 @@ var karel = (function (exports, bootstrap) {
             codeFolding()
         ];
     }
-    const baseTheme$1 = /*@__PURE__*/EditorView.baseTheme({
+    const baseTheme$1$1 = /*@__PURE__*/EditorView.baseTheme({
         ".cm-foldPlaceholder": {
             backgroundColor: "#eee",
             border: "1px solid #ddd",
@@ -16691,7 +17039,7 @@ var karel = (function (exports, bootstrap) {
             color: "#f00" }
     ]);
 
-    const baseTheme = /*@__PURE__*/EditorView.baseTheme({
+    const baseTheme$2 = /*@__PURE__*/EditorView.baseTheme({
         "&.cm-focused .cm-matchingBracket": { backgroundColor: "#328c8252" },
         "&.cm-focused .cm-nonmatchingBracket": { backgroundColor: "#bb555544" }
     });
@@ -16739,7 +17087,7 @@ var karel = (function (exports, bootstrap) {
     });
     const bracketMatchingUnique = [
         bracketMatchingState,
-        baseTheme
+        baseTheme$2
     ];
     /**
     Create an extension that enables bracket matching. Whenever the
@@ -19937,22 +20285,22 @@ var karel = (function (exports, bootstrap) {
     }
 
     // This file was generated by lezer-generator. You probably shouldn't edit it.
-    const spec_Identifier$1 = { __proto__: null, move: 90, turnleft: 92, putbeeper: 94, pickbeeper: 96, turnoff: 98, while: 102, iszero: 108, nextToABeeper: 110, notNextToABeeper: 112, frontIsClear: 114, leftIsClear: 116, rightIsClear: 118, frontIsBlocked: 120, leftIsBlocked: 122, rightIsBlocked: 124, facingNorth: 126, facingSouth: 128, facingEast: 130, facingWest: 132, notFacingNorth: 134, notFacingSouth: 136, notFacingEast: 138, notFacingWest: 140, anyBeepersInBeeperBag: 142, noBeepersInBeeperBag: 144, iterate: 156, if: 160, else: 162 };
+    const spec_Identifier$1 = { __proto__: null, move: 100, turnleft: 102, putbeeper: 104, pickbeeper: 106, turnoff: 108, succ: 114, pred: 116, while: 118, iszero: 124, nextToABeeper: 126, notNextToABeeper: 128, frontIsClear: 130, leftIsClear: 132, rightIsClear: 134, frontIsBlocked: 136, leftIsBlocked: 138, rightIsBlocked: 140, facingNorth: 142, facingSouth: 144, facingEast: 146, facingWest: 148, notFacingNorth: 150, notFacingSouth: 152, notFacingEast: 154, notFacingWest: 156, anyBeepersInBeeperBag: 158, noBeepersInBeeperBag: 160, iterate: 170, if: 172, else: 174 };
     const parser$1 = LRParser.deserialize({
         version: 14,
-        states: ",rO]QPOOPbOPOOOgQPOOPlOSO'#C^POOO)C>r)C>rOOQO'#Ca'#CaOwQPOOPOOO'#Cx'#CxP|OSO,58xPOOO,58x,58xOOQO'#Cc'#CcO!XQPO'#CbQOQPOOPOOO-E6v-E6vPOOO1G.d1G.dO!aQQO'#CdOOQO'#Cy'#CyO!XQPO'#DUOOQO'#Cw'#CwO!fQPO'#EROOQO'#DU'#DUO!kQPO,58|O!pQPO,59OOOQO-E6w-E6wOOQO,59p,59pO!uQPO,5:mOOQO'#Cv'#CvOOQO1G.h1G.hO!zQQO1G.jOwQPO1G0XOwQPO7+$UO#SQPO7+$UO#yQQO'#CgOOQO7+%s7+%sOOQO<<Gp<<GpOwQPO<<GpOOQO'#Ci'#CiO$QQPO'#DYOOQO'#Ck'#CkO$VQPO'#D`OOQO'#Cs'#CsOOQO'#Ct'#CtO$VQPO'#D}OOQO'#DX'#DXOOQO'#Cz'#CzO$[QQO'#ChO!kQPO,59RO$cQPO'#D{OOQOAN=[AN=[O$hQPO,59tO$pQQO'#ClO#XQQO,59zO#XQQO,5:iOOQO-E6x-E6xOOQO1G.m1G.mO&WQPO,5:gOOQO1G/`1G/`O&]QPO1G/`OOQO'#Cn'#CnOOQO'#Co'#CoOOQO'#Dc'#DcO&bQPO'#DcO$pQQO'#DcOOQO'#Cr'#CrOOQO'#Db'#DbO&pQPO,59WO$pQQO'#DbO&{QPO'#CmOOQO1G/f1G/fO'QQQO1G0TO'xQPO1G0ROOQO7+$z7+$zO'}QPO,59}O(SQPO,59}OOQO'#Cp'#CpOOQO'#Cq'#CqOOQO'#Dw'#DwO$pQQO,59|OOQO1G.r1G.rO(_QPO,59|O(jQPO,59XOOQO'#Cu'#CuO#XQQO7+%oO#XQQO7+%mOOQO1G/i1G/iOOQO1G/h1G/hO(oQPO1G.sOOQO<<IZ<<IZOOQO<<IX<<IXOOQO7+$_7+$_",
-        stateData: "(t~OqOSPOSrPQ~OSQO~OrRO~OvTO~OsVOtVOuXO~OwYO~OsVOtVOu^O~OX_OvbO~OYfO~OyiO~O!tjO~OylO~OzmO~OYoOznO~OzsO~OYuOwYO}tO!OtO!PtO!QtO!RtO!TvO!pxO!ryO~O!t[P~P#XOy!RO~Oy!SO~O!t[X~P#XOy!XO~O^!ZOz!YO~OY!^Oy!`O!W![O!X!]O!Y!]O!Z!]O![!]O!]!]O!^!]O!_!]O!`!]O!a!]O!b!]O!c!]O!d!]O!e!]O!f!]O!g!]O!h!]O!i!]O!j!]O!n!aO~O^!hO~Oz!iO~Oy!jOz!VX!l!VX!m!VX~Oz!pO!l!lO!m!mO~Oy!rO~O!s!sOY!qiw!qi}!qi!O!qi!P!qi!Q!qi!R!qi!T!qi!p!qi!r!qi!t!qi~Oz!uO~Oz!vO~Oz!vO!l!lO!m!mO~O!l!lO!m!mOz!Ua~O^!xO~Oz!{O~O",
-        goto: "'Y!vPP!wPP!z!}#Q#`PP#d#u#xP$Q$Y$`$f$l$r$r$w$}%V%_%b%h%l%r%xPPPPPPPPP&OPP&R&cPPPPP&cP&k&wPPPPPPPPPPPPPPPPPPP&}PPP&cP&cPPP'SRSPRUQR[UQZUcpmnps}!T!U!t!uT`ZaQqmQrn[{p}!T!U!t!uR!QsR!Op]up}!T!U!t!u]wp}!T!U!t!uQ!TwR!UzX!^!S!`!d!oX!e!S!`!d!oX!_!S!`!d!oV!n!c!k!qX!d!S!`!d!o]!Pp}!T!U!t!u]zp}!T!U!t!uR!t!gQkeR!W!OTcZaQWRR]WQaZRgaQ}pR!V}ReZS|p}Q!f!TQ!g!UQ!y!tR!z!u]{p}!T!U!t!uQ!c!SQ!k!`Q!q!dR!w!oX!b!S!`!d!oV!o!c!k!qQdZRha",
-        nodeNames: "⚠ Comment BlockComment Script Class ProgramClass ScriptBlock Start Function Define Identifier Block InnerBlock BuiltIn Number While BooleanHeader IFZ Ifzero BoolFunc Or And Not Iterate If Else End ProgramMain",
-        maxTerm: 83,
+        states: "-nO]QPOOPbOPOOOgQPOOPlOSO'#C^POOO)C>w)C>wOOQO'#Ca'#CaOwQPOOPOOO'#C}'#C}P|OSO,58xPOOO,58x,58xOOQO'#Cc'#CcO!XQPO'#CbQOQPOOPOOO-E6{-E6{POOO1G.d1G.dO!aQQO'#CdOOQO'#DO'#DOO!XQPO'#DZOOQO'#C|'#C|O!fQPO'#EXOOQO'#DZ'#DZO!kQPO,58|O!pQPO,59OOOQO-E6|-E6|OOQO,59u,59uO!uQPO,5:sOOQO'#C{'#C{OOQO1G.h1G.hO!zQQO1G.jOwQPO1G0_OwQPO7+$UO#SQPO7+$UO#yQQO'#CgOOQO7+%y7+%yOOQO<<Gp<<GpOwQPO<<GpOOQO'#Ci'#CiO$QQPO'#D_OOQO'#Cn'#CnO$VQPO'#CmOOQO'#Cw'#CwO$[QPO'#CvOOQO'#Cy'#CyO$VQPO'#CxOOQO'#D^'#D^OOQO'#DP'#DPO$aQQO'#ChO!kQPO,59ROOQOAN=[AN=[O$hQQO,59yO$yQQO'#CoO#XQQO,59XO&aQQO,59bO#XQQO,59dOOQO-E6}-E6}OOQO1G.m1G.mOOQO'#Ck'#CkOOQO'#Cl'#ClO&oQPO'#DfOOQO'#De'#DeOOQO1G/e1G/eO&tQPO1G/eOOQO'#Cq'#CqO&yQPO'#CpOOQO'#Cr'#CrOOQO'#Dk'#DkO'OQPO'#DkO$yQQO'#DkOOQO'#Cu'#CuOOQO'#Dj'#DjO'^QPO,59ZO$yQQO'#DjOOQO1G.s1G.sO'iQPO1G.|O'nQQO1G/OO&aQQO,5:QOOQO7+%P7+%PO&aQQO,59[O(fQPO,5:VO(kQPO,5:VOOQO'#Cs'#CsOOQO'#Ct'#CtOOQO'#EP'#EPO$yQQO,5:UOOQO1G.u1G.uO(vQPO,5:UO#XQQO7+$hOOQO'#Cz'#CzO#XQQO7+$jO)RQPO1G/lO)WQPO1G.vOOQO1G/q1G/qOOQO1G/p1G/pOOQO<<HS<<HSOOQO<<HU<<HUOOQO7+%W7+%WOOQO7+$b7+$b",
+        stateData: ")]~OvOSPOSwPQ~OSQO~OwRO~O{TO~OxVOyVOzXO~O|YO~OxVOyVOz^O~OX_O{bO~OYfO~O!OiO~O!zjO~O!OlO~O!PmO~OYoO!PnO~O!PsO~OYuO|YO!StO!TtO!UtO!VtO!WtO!]vO!wxO!xzO~O!z[P~P#XO!O!RO~O!O!SO~O!O!UO~O!z[X~P#XOY!]O^!]O!P!^O!Z!YO![!ZO~OY!cO!O!eO!`!`O!a!bO!b!bO!c!bO!d!bO!e!bO!f!bO!g!bO!h!bO!i!bO!j!bO!k!bO!l!bO!m!bO!n!bO!o!bO!p!bO!q!bO!r!bO!v!fO~OY!]O^!]O!Z!YO![!ZO~O!O!mO~O!P!nO~O!O!oO~O!O!pO!P!_X!t!_X!u!_X~O!P!vO!t!rO!u!sO~O!P!xO~O!y!yOYli|li!Sli!Tli!Uli!Vli!Wli!]li!wli!xli!zli~O!P!}O~O!P!}O!t!rO!u!sO~O!t!rO!u!sO!P!^a~O!P#RO~O!P#SO~O",
+        goto: "'x!|PP!}PP#Q#T#W#fPP#j#{$OP$W$W$^$f$n$t$z%Q%W%W%]$^%c$^%k%s%v%|&Q&W&^PPPPPPPPP&dPP&g$^PPPPP&w'TPPP'Z'gPPPPPPPPPPPPPPPPPPP'mPPPPPPP'rRSPRUQR[UQZUcpmnps!O!T!V!x!zT`ZaQqmQrn[|p!O!T!V!x!zR!QsR!Pp]up!O!T!V!x!zX![!R!U!m!o]|p!O!T!V!x!z]wp!O!T!V!x!zQ!TwR!V{X!c!S!e!i!uX!a!S!e!i!uX!d!S!e!i!uV!t!h!q!wX!i!S!e!i!u]yp!O!T!V!x!z]{p!O!T!V!x!zR!z!lQkeR!X!PTcZaQWRR]WQaZRgaQ!OpR!W!OReZS}p!OQ!j!TQ!l!VQ#P!xR#Q!zQ!_!RQ!k!UQ!{!mR!|!oX!]!R!U!m!oQ!h!SQ!q!eQ!w!iR#O!uX!g!S!e!i!uV!u!h!q!wQdZRha",
+        nodeNames: "⚠ Comment BlockComment Script Class ProgramClass ScriptBlock Start Function Define Identifier Block InnerBlock BuiltIn Number Succ Pred WhileStatement While BooleanHeader IFZ Ifzero BoolFunc Or And Not IterateStatement Iterate IfStatement If Else End ProgramMain",
+        maxTerm: 89,
         nodeProps: [
             ["closedBy", 7, "End"],
-            ["openedBy", 26, "Start"]
+            ["openedBy", 31, "Start"]
         ],
-        skippedNodes: [0, 1, 2, 28],
+        skippedNodes: [0, 1, 2, 33],
         repeatNodeCount: 3,
-        tokenData: "0U~RlX^!ypq!yqr#nvw#sxy$Oyz$T!P!Q$Y!Q![%P!c!}%X#T#V%X#V#W%j#W#X'z#X#d%X#d#e*v#e#j%X#j#k.W#k#o%X#o#p/o#p#q/t#q#r0P#y#z!y$f$g!y#BY#BZ!y$IS$I_!y$I|$JO!y$JT$JU!y$KV$KW!y&FU&FV!y~#OYq~X^!ypq!y#y#z!y$f$g!y#BY#BZ!y$IS$I_!y$I|$JO!y$JT$JU!y$KV$KW!y&FU&FV!y~#sO!n~~#vPvw#y~$OO!m~~$TOy~~$YOz~~$]Qz{$c!P!Q$h~$hOr~~$mSP~OY$hZ;'S$h;'S;=`$y<%lO$h~$|P;=`<%l$h~%UP^~!Q![%PS%^SYS!Q![%X!c!}%X#R#S%X#T#o%XU%oUYS!Q![%X!c!}%X#R#S%X#T#`%X#`#a&R#a#o%XU&WTYS!Q![%X!c!}%X#R#S%X#T#U&g#U#o%XU&lUYS!Q![%X!c!}%X#R#S%X#T#g%X#g#h'O#h#o%XU'TUYS!Q![%X!c!}%X#R#S%X#T#g%X#g#h'g#h#o%XU'nSSQYS!Q![%X!c!}%X#R#S%X#T#o%XU(PUYS!Q![%X!c!}%X#R#S%X#T#X%X#X#Y(c#Y#o%XU(hUYS!Q![%X!c!}%X#R#S%X#T#Y%X#Y#Z(z#Z#o%XU)PUYS!Q![%X!c!}%X#R#S%X#T#]%X#]#^)c#^#o%XU)hUYS!Q![%X!c!}%X#R#S%X#T#b%X#b#c)z#c#o%XU*PUYS!Q![%X!c!}%X#R#S%X#T#X%X#X#Y*c#Y#o%XU*jSXQYS!Q![%X!c!}%X#R#S%X#T#o%XU*{UYS!Q![%X!c!}%X#R#S%X#T#f%X#f#g+_#g#o%XU+dUYS!Q![%X!c!}%X#R#S%X#T#c%X#c#d+v#d#o%XU+{UYS!Q![%X!c!}%X#R#S%X#T#Z%X#Z#[,_#[#o%XU,dUYS!Q![%X!c!}%X#R#S%X#T#f%X#f#g,v#g#o%XU,{TYS!Q![%X!c!}%X#R#S%X#T#U-[#U#o%XU-aUYS!Q![%X!c!}%X#R#S%X#T#a%X#a#b-s#b#o%XU-zSYSvQ!Q![%X!c!}%X#R#S%X#T#o%XU.]UYS!Q![%X!c!}%X#R#S%X#T#c%X#c#d.o#d#o%XU.tUYS!Q![%X!c!}%X#R#S%X#T#]%X#]#^/W#^#o%XU/]UYS!Q![%X!c!}%X#R#S%X#T#W%X#W#X*c#X#o%X~/tOw~~/wP#p#q/z~0PO!l~~0UO!t~",
-        tokenizers: [1, 2, new LocalTokenGroup("j~RQYZXz{^~^Ot~~aP!P!Qd~iOu~~", 25, 35)],
+        tokenData: "0U~RlX^!ypq!yqr#nvw#sxy$Oyz$T!P!Q$Y!Q![%P!c!}%X#T#V%X#V#W%j#W#X'z#X#d%X#d#e*v#e#j%X#j#k.W#k#o%X#o#p/o#p#q/t#q#r0P#y#z!y$f$g!y#BY#BZ!y$IS$I_!y$I|$JO!y$JT$JU!y$KV$KW!y&FU&FV!y~#OYv~X^!ypq!y#y#z!y$f$g!y#BY#BZ!y$IS$I_!y$I|$JO!y$JT$JU!y$KV$KW!y&FU&FV!y~#sO!v~~#vPvw#y~$OO!u~~$TO!O~~$YO!P~~$]Qz{$c!P!Q$h~$hOw~~$mSP~OY$hZ;'S$h;'S;=`$y<%lO$h~$|P;=`<%l$h~%UP^~!Q![%PS%^SYS!Q![%X!c!}%X#R#S%X#T#o%XU%oUYS!Q![%X!c!}%X#R#S%X#T#`%X#`#a&R#a#o%XU&WTYS!Q![%X!c!}%X#R#S%X#T#U&g#U#o%XU&lUYS!Q![%X!c!}%X#R#S%X#T#g%X#g#h'O#h#o%XU'TUYS!Q![%X!c!}%X#R#S%X#T#g%X#g#h'g#h#o%XU'nSSQYS!Q![%X!c!}%X#R#S%X#T#o%XU(PUYS!Q![%X!c!}%X#R#S%X#T#X%X#X#Y(c#Y#o%XU(hUYS!Q![%X!c!}%X#R#S%X#T#Y%X#Y#Z(z#Z#o%XU)PUYS!Q![%X!c!}%X#R#S%X#T#]%X#]#^)c#^#o%XU)hUYS!Q![%X!c!}%X#R#S%X#T#b%X#b#c)z#c#o%XU*PUYS!Q![%X!c!}%X#R#S%X#T#X%X#X#Y*c#Y#o%XU*jSXQYS!Q![%X!c!}%X#R#S%X#T#o%XU*{UYS!Q![%X!c!}%X#R#S%X#T#f%X#f#g+_#g#o%XU+dUYS!Q![%X!c!}%X#R#S%X#T#c%X#c#d+v#d#o%XU+{UYS!Q![%X!c!}%X#R#S%X#T#Z%X#Z#[,_#[#o%XU,dUYS!Q![%X!c!}%X#R#S%X#T#f%X#f#g,v#g#o%XU,{TYS!Q![%X!c!}%X#R#S%X#T#U-[#U#o%XU-aUYS!Q![%X!c!}%X#R#S%X#T#a%X#a#b-s#b#o%XU-zSYS{Q!Q![%X!c!}%X#R#S%X#T#o%XU.]UYS!Q![%X!c!}%X#R#S%X#T#c%X#c#d.o#d#o%XU.tUYS!Q![%X!c!}%X#R#S%X#T#]%X#]#^/W#^#o%XU/]UYS!Q![%X!c!}%X#R#S%X#T#W%X#W#X*c#X#o%X~/tO|~~/wP#p#q/z~0PO!t~~0UO!z~",
+        tokenizers: [1, 2, new LocalTokenGroup("j~RQYZXz{^~^Oy~~aP!P!Qd~iOz~~", 25, 40)],
         topRules: { "Script": [0, 3] },
         specialized: [{ term: 10, get: value => spec_Identifier$1[value] || -1 }],
         tokenPrec: 0
@@ -20035,10 +20383,16 @@ var karel = (function (exports, bootstrap) {
                 BuiltIn: tags.constant(tags.variableName),
                 Start: tags.brace,
                 End: tags.brace,
+                Succ: tags.operator,
+                Pred: tags.operator,
             }),
             indentNodeProp.add({
-                Function: continuedIndent({}),
-                Script: continuedIndent({}),
+                Script: (_) => 0,
+                Block: delimitedIndent({ closing: "}" }),
+                ScriptBlock: delimitedIndent({ closing: "}" }),
+                WhileStatement: continuedIndent({ except: /^\s*\{/ }),
+                IterateStatement: continuedIndent({ except: /^\s*\{/ }),
+                IfStatement: continuedIndent({ except: /^\s*(\{|else\b)/ }),
             }),
             foldNodeProp.add({
                 Block: foldInside
@@ -20048,7 +20402,12 @@ var karel = (function (exports, bootstrap) {
     const javaLanguage = LRLanguage.define({
         parser: javaWithContext,
         languageData: {
-            commentTokens: { line: "//" }
+            commentTokens: {
+                line: "//", block: {
+                    open: "/*", close: "*/"
+                }
+            },
+            indentOnInput: /^\s*(\{|\})\b$/
         }
     });
     const javaCompletion = javaLanguage.data.of({
@@ -20059,22 +20418,22 @@ var karel = (function (exports, bootstrap) {
     }
 
     // This file was generated by lezer-generator. You probably shouldn't edit it.
-    const spec_Identifier = { __proto__: null, "iniciar-programa": 98, "define-nueva-instruccion": 100, como: 102, avanza: 108, "gira-izquierda": 110, "deja-zumbador": 112, "coge-zumbador": 114, apagate: 116, sucede: 124, precede: 126, mientras: 132, "si-es-cero": 138, "junto-a-zumbador": 140, "no-junto-a-zumbador": 142, "frente-libre": 144, "izquierda-libre": 146, "derecha-libre": 148, "frente-bloqueado": 150, "izquierda-bloqueada": 152, "derecha-bloqueada": 154, "orientado-al-norte": 156, "orientado-al-sur": 158, "orientado-al-este": 160, "orientado-al-oeste": 162, "no-orientado-al-norte": 164, "no-orientado-al-sur": 166, "no-orientado-al-este": 168, "no-orientado-al-oeste": 170, "algun-zumbador-en-la-mochila": 172, "ningun-zumbador-en-la-mochila": 174, o: 178, y: 180, no: 182, hacer: 184, repetir: 188, veces: 190, si: 194, entonces: 196, sino: 198, "si-no": 200, inicio: 202, fin: 204, "define-prototipo-instruccion": 210, "inicia-ejecucion": 212, "termina-ejecucion": 214, "finalizar-programa": 216 };
+    const spec_Identifier = { __proto__: null, "iniciar-programa": 104, "define-nueva-instruccion": 106, como: 108, avanza: 114, "gira-izquierda": 116, "deja-zumbador": 118, "coge-zumbador": 120, apagate: 122, sucede: 130, precede: 132, mientras: 136, "si-es-cero": 142, "junto-a-zumbador": 144, "no-junto-a-zumbador": 146, "frente-libre": 148, "izquierda-libre": 150, "derecha-libre": 152, "frente-bloqueado": 154, "izquierda-bloqueada": 156, "derecha-bloqueada": 158, "orientado-al-norte": 160, "orientado-al-sur": 162, "orientado-al-este": 164, "orientado-al-oeste": 166, "no-orientado-al-norte": 168, "no-orientado-al-sur": 170, "no-orientado-al-este": 172, "no-orientado-al-oeste": 174, "algun-zumbador-en-la-mochila": 176, "ningun-zumbador-en-la-mochila": 178, o: 182, y: 184, no: 186, hacer: 188, repetir: 190, veces: 192, si: 194, entonces: 196, sino: 198, "si-no": 200, inicio: 202, fin: 204, "define-prototipo-instruccion": 210, "inicia-ejecucion": 212, "termina-ejecucion": 214, "finalizar-programa": 216 };
     const parser = LRParser.deserialize({
         version: 14,
-        states: ".|O]QPOOPbOPOOOOQO'#C`'#C`OjQPOOPuOQO'#C]P!QOSO'#C^POOO)C>y)C>yOOQO'#Cc'#CcO!]QPO'#CbOOQO'#Cz'#CzO!bQPO'#CyOOQO'#DR'#DROjQPOOOOQO'#C|'#C|O!gQPO'#C{O#XQPOOPOOO'#DP'#DPP#^OQO,58wPOOO,58w,58wPOOO'#DQ'#DQP#iOSO,58xPOOO,58x,58xO#tQPO,58|O#|QPO,59eOOQO-E7P-E7POOQO'#Ce'#CeOOQO'#Dc'#DcO$RQPO'#DcOOQO'#Ci'#CiO$pQPO'#DoOOQO'#Cq'#CqO&TQPO'#E]OOQO'#Cs'#CsO$pQPO'#E`OOQO'#Eg'#EgO&cQPO,59gO&kQPO'#CvOOQO'#Db'#DbOOQO'#Cw'#CwOOQO'#DO'#DOQOQPOOPOOO-E6}-E6}POOO1G.c1G.cPOOO-E7O-E7OPOOO1G.d1G.dOOQO'#Cd'#CdO!gQPO1G.hO&rQPO1G.hOOQO1G/P1G/PO&TQPO,59}OOQO'#Ck'#CkO&wQPO'#CjOOQO'#Cl'#ClOOQO'#Dr'#DrO$pQPO'#DrOOQO'#Co'#CoOOQO'#Dq'#DqO&|QPO,5:ZO$pQPO'#DqOOQO'#Cg'#CgOOQO'#Ch'#ChO'XQPO'#DkOOQO'#Dj'#DjO'^QPO,5:wO'cQPO,5:zO'nQPO,5;ROOQO'#C}'#C}OOQO1G/R1G/RO'{QPO,59bOOQO,59b,59bOOQO'#Cx'#CxOOQO7+$S7+$SO(TQPO7+$SO(YQPO1G/iO&TQPO,59UO(_QPO,5:^OOQO'#Cm'#CmOOQO'#Cn'#CnOOQO'#EW'#EWO$pQPO,5:]OOQO'#Cp'#CpO!gQPO1G/uO(jQPO,5:]O&TQPO,5:VOOQO'#Cr'#CrO!gQPO1G0cOOQO'#Ct'#CtO!gQPO1G0fOOQO1G0m1G0mOOQO1G.|1G.|O({QPO<<GnOOQO7+%T7+%TO)QQPO1G.pOOQO1G/x1G/xOOQO1G/w1G/wOOQO7+%a7+%aO)VQPO1G/qOOQO7+%}7+%}O)[QPO7+&QO!gQPOAN=YOOQO7+$[7+$[OOQO7+%]7+%]OOQO'#Cu'#CuO!gQPO<<IlO)vQPOG22tOOQOAN?WAN?WOOQOLD(`LD(`",
-        stateData: "){~OxOSyPQ}PQ~O!RQO~OySO}TO~O!SVO#]XO#^]O~Oz`O{`O|bO~O!OcO!PcO!QeO~OTfO~OTgO~OTkO!WiO!XiO!YiO!ZiO![iO!dlO#QnO#TpO#XvO~O#`wO~Oz`O{`O|zO~O!OcO!PcO!Q|O~O!T}O!]!PO~O#[!QO~O!]!RO#[!VX#_!VX#Y!VX!S!VX#]!VX#^!VX#V!VX#W!VX~O!]!WO!g!SO!h!UO!i!UO!j!UO!k!UO!l!UO!m!UO!n!UO!o!UO!p!UO!q!UO!r!UO!s!UO!t!UO!u!UO!v!UO!w!UO!x!UO!y!UO!}!XO~OT!`OY!`O!`!]O!a!^O~O#[!cO#_!dO~O#Y!hO~P!gOT!jO~O!]!lO~O!{!nO!|!oO#O!rO~O!]!uO~O#R!vO~O!{!nO!|!oO#U!xO~O#[#Za#_#Za#Y#Za~P!gO#Y!hO#[!cO~O!b!|O~O!b!}O~O!b#PO!{!nO!|!oO~O!{!nO!|!oO#O!ea#U!ea!b!ea~O!T}O~O!b#WO~O!b#XO~O#V#YO#W#YO#[#Sq#_#Sq#Y#Sq!S#Sq#]#Sq#^#Sq~O#[#^O~O",
-        goto: "(q#[P#]#]P#`P#c#g#k#qP#|#|$S$_$f$_$m$m$s$z$}%Y%]%h%k%n%y&U#c&[&`&d&h&k&n&t&zPPPPPPPPPPPPPP'Q%nPPPPPP'k'wPPP%nP'}(^PPPPPPPPPPPPPPPPPPP(ePPPP%nPP%nPPPPPP(kRUPRROTZR[TWR[Q!OfR#V!|cj^t!O!c!s!w!y#V#ZX!_o!R!l!ucm^t!O!c!s!w!y#V#ZZ!Vmq!W![!qZ!Tmq!W![!qX!p!Z!b!m!tZ![mq!W![!qR!s!Zco^t!O!c!s!w!y#V#ZR!w!acq^t!O!c!s!w!y#V#ZR!y!bR#Z#Ucu^t!O!c!s!w!y#V#Zct^t!O!c!s!w!y#V#ZQ!gtR!{!fTYR[T_R[T^R[R!esRx_QaSRyaQdTR{dQ[RRh[Sr^tQ!i!OQ!z!cQ#R!sQ#T!wQ#U!yQ#[#VR#]#ZQ!aoQ!k!RQ#O!lR#S!uX!`o!R!l!uQ!ZmQ!bqQ!m!WQ!t![R#Q!qZ!Ymq!W![!qX!q!Z!b!m!tQs^R!ft",
-        nodeNames: "⚠ BlockComment BlockComment2 Script StartProgram Identifier Function Define As BuiltIn Number Succ Pred While IFZ Ifzero BoolFunc Or And Not Do Iterate Times If Then Else Block Begin End Prototype Prototipo Execution StartExecution EndExecution EndProgram",
+        states: ".|O]QPOOPbOPOOOOQO'#C`'#C`OjQPOOPuOQO'#C]P!QOSO'#C^POOO)C>|)C>|OOQO'#Cc'#CcO!]QPO'#CbOOQO'#C}'#C}O!bQPO'#C|OOQO'#DU'#DUOjQPOOOOQO'#DP'#DPO!gQPO'#DOO#XQPOOPOOO'#DS'#DSP#^OQO,58wPOOO,58w,58wPOOO'#DT'#DTP#iOSO,58xPOOO,58x,58xO#tQPO,58|O#|QPO,59hOOQO-E7S-E7SOOQO'#Ce'#CeOOQO'#Df'#DfO$RQPO'#DfOOQO'#Cj'#CjO$pQPO'#CiOOQO'#Cs'#CsO&TQPO'#CrOOQO'#Cv'#CvO$pQPO'#CuOOQO'#Eg'#EgO&cQPO,59jO&kQPO'#CyOOQO'#De'#DeOOQO'#Cz'#CzOOQO'#DR'#DRQOQPOOPOOO-E7Q-E7QPOOO1G.c1G.cPOOO-E7R-E7RPOOO1G.d1G.dOOQO'#Cd'#CdO!gQPO1G.hO&rQPO1G.hOOQO1G/S1G/SO&TQPO,5:QOOQO'#Cl'#ClO&wQPO'#CkOOQO'#Cm'#CmOOQO'#Dt'#DtO$pQPO'#DtOOQO'#Cp'#CpOOQO'#Ds'#DsO&|QPO,59TO$pQPO'#DsOOQO'#Cg'#CgOOQO'#Ch'#ChO'XQPO'#DnOOQO'#Dm'#DmO'^QPO,59^O'cQPO,59aO'nQPO,5;ROOQO'#DQ'#DQOOQO1G/U1G/UO'{QPO,59eOOQO,59e,59eOOQO'#C{'#C{OOQO7+$S7+$SO(TQPO7+$SO(YQPO1G/lO&TQPO,59VO(_QPO,5:`OOQO'#Cn'#CnOOQO'#Co'#CoOOQO'#EY'#EYO$pQPO,5:_OOQO'#Cq'#CqO!gQPO1G.oO(jQPO,5:_O&TQPO,5:YOOQO'#Ct'#CtO!gQPO1G.xOOQO'#Cw'#CwO!gQPO1G.{OOQO1G0m1G0mOOQO1G/P1G/PO({QPO<<GnOOQO7+%W7+%WO)QQPO1G.qOOQO1G/z1G/zOOQO1G/y1G/yOOQO7+$Z7+$ZO)VQPO1G/tOOQO7+$d7+$dO)[QPO7+$gO!gQPOAN=YOOQO7+$]7+$]OOQO7+%`7+%`OOQO'#Cx'#CxO!gQPO<<HRO)vQPOG22tOOQOAN=mAN=mOOQOLD(`LD(`",
+        stateData: "){~O{OS|PQ!QPQ~O!UQO~O|SO!QTO~O!VVO#]XO#^]O~O}`O!O`O!PbO~O!RcO!ScO!TeO~OTfO~OTgO~OTkO!ZiO![iO!]iO!^iO!_iO!flO#RnO#TpO#XvO~O#`wO~O}`O!O`O!PzO~O!RcO!ScO!T|O~O!W}O!`!PO~O#[!QO~O!`!RO#[!YX#_!YX#Y!YX!V!YX#]!YX#^!YX#V!YX#W!YX~O!`!WO!i!SO!j!UO!k!UO!l!UO!m!UO!n!UO!o!UO!p!UO!q!UO!r!UO!s!UO!t!UO!u!UO!v!UO!w!UO!x!UO!y!UO!z!UO!{!UO#P!XO~OT!`OY!`O!c!]O!d!^O~O#[!cO#_!dO~O#Y!hO~P!gOT!jO~O!`!lO~O!}!nO#O!oO#Q!rO~O!`!uO~O#S!vO~O!}!nO#O!oO#U!xO~O#[#Za#_#Za#Y#Za~P!gO#Y!hO#[!cO~O!e!|O~O!e!}O~O!e#PO!}!nO#O!oO~O!}!nO#O!oO#Q!ga#U!ga!e!ga~O!W}O~O!e#WO~O!e#XO~O#V#YO#W#YO#[iq#_iq#Yiq!Viq#]iq#^iq~O#[#^O~O",
+        goto: "(q#[P#]#]P#`P#c#g#k#qP#|#|$S$_$j$q$j$x$x%O%V$S%Y%e$S%h%s%v$S%y&U#c&[&`&d&h&k&n&t&zPPPPPPPPPPPPPP'Q$SPPPPPP'k'wPPPP'}(^PPPPPPPPPPPPPPPPPPP(ePPPPPPPPPPPP(kRUPRROTZR[TWR[Q!OfR#V!|cj^t!O!c!s!w!y#V#ZX!_o!R!l!ucu^t!O!c!s!w!y#V#Zcm^t!O!c!s!w!y#V#ZZ!Vmq!W![!qZ!Tmq!W![!qX!p!Z!b!m!tZ![mq!W![!qR!s!Zco^t!O!c!s!w!y#V#ZR!w!acq^t!O!c!s!w!y#V#ZR!y!bR#Z#Uct^t!O!c!s!w!y#V#ZQ!gtR!{!fTYR[T_R[T^R[R!esRx_QaSRyaQdTR{dQ[RRh[Sr^tQ!i!OQ!z!cQ#R!sQ#T!wQ#U!yQ#[#VR#]#ZQ!aoQ!k!RQ#O!lR#S!uX!`o!R!l!uQ!ZmQ!bqQ!m!WQ!t![R#Q!qZ!Ymq!W![!qX!q!Z!b!m!tQs^R!ft",
+        nodeNames: "⚠ BlockComment BlockComment2 Script StartProgram Identifier Function Define As BuiltIn Number Succ Pred WhileStatement While IFZ Ifzero BoolFunc Or And Not Do IterateStatement Iterate Times IfStatement If Then Else Block Begin End Prototype Prototipo Execution StartExecution EndExecution EndProgram",
         maxTerm: 108,
         nodeProps: [
-            ["closedBy", 27, "End"],
-            ["openedBy", 28, "Begin"]
+            ["closedBy", 30, "End"],
+            ["openedBy", 31, "Begin"]
         ],
-        skippedNodes: [0, 1, 2, 35, 36],
+        skippedNodes: [0, 1, 2, 38, 39],
         repeatNodeCount: 3,
-        tokenData: "$l~ReX^!dpq!dxy#Xyz#f!Q![#k!]!^#s!c!}#x#R#S#x#T#o#x#o#p$g#y#z!d$f$g!d%W%o#x%p&a#x&b&j#x#BY#BZ!d$IS$I_!d$I|$JO!d$JT$JU!d$KV$KW!d&FU&FV!d~!iYx~X^!dpq!d#y#z!d$f$g!d#BY#BZ!d$IS$I_!d$I|$JO!d$JT$JU!d$KV$KW!d&FU&FV!d~#^P!]~z{#a~#fO}~~#kO!b~~#pPY~!Q![#k~#xO#[~~#}WT~}!O#x!Q![#x!c!}#x#R#S#x#T#o#x%W%o#x%p&a#x&b&j#x~$lOy~",
-        tokenizers: [2, new LocalTokenGroup("d~RQYZX#q#r^~^O{~~cO|~~", 19, 42), new LocalTokenGroup("j~RQYZXz{^~^O!P~~aPyzd~iO!Q~~", 25, 46)],
+        tokenData: "$l~ReX^!dpq!dxy#Xyz#f!Q![#k!]!^#s!c!}#x#R#S#x#T#o#x#o#p$g#y#z!d$f$g!d%W%o#x%p&a#x&b&j#x#BY#BZ!d$IS$I_!d$I|$JO!d$JT$JU!d$KV$KW!d&FU&FV!d~!iY{~X^!dpq!d#y#z!d$f$g!d#BY#BZ!d$IS$I_!d$I|$JO!d$JT$JU!d$KV$KW!d&FU&FV!d~#^P!`~z{#a~#fO!Q~~#kO!e~~#pPY~!Q![#k~#xO#[~~#}WT~}!O#x!Q![#x!c!}#x#R#S#x#T#o#x%W%o#x%p&a#x&b&j#x~$lO|~",
+        tokenizers: [2, new LocalTokenGroup("d~RQYZX#q#r^~^O!O~~cO!P~~", 19, 45), new LocalTokenGroup("j~RQYZXz{^~^O!S~~aPyzd~iO!T~~", 25, 49)],
         topRules: { "Script": [0, 3] },
         specialized: [{ term: 5, get: value => spec_Identifier[value] || -1 }],
         tokenPrec: 0
@@ -20365,9 +20724,20 @@ var karel = (function (exports, bootstrap) {
                 Pred: tags.operator
             }),
             indentNodeProp.add({
-                Function: continuedIndent({}),
-                Script: continuedIndent({}),
-                Block: delimitedIndent({ closing: "fin" }),
+                Function: continuedIndent({ except: /^\s*(inicio\b)/ }),
+                WhileStatement: continuedIndent({ except: /^\s*(inicio\b)/ }),
+                IterateStatement: continuedIndent({ except: /^\s*(inicio\b)/ }),
+                IfStatement: continuedIndent({ except: /^\s*(inicio|sino|si\-no)\b/ }),
+                Block: (context) => {
+                    let after = context.textAfter;
+                    let closed = /^\s*fin\b/.test(after);
+                    return context.baseIndent + (closed ? 0 : context.unit);
+                },
+                Script: (context) => {
+                    if (/^\s*(iniciar\-programa|finalizar\-programa)\b/.test(context.textAfter))
+                        return 0;
+                    return context.unit;
+                },
                 Execution: delimitedIndent({ closing: "termina-ejecucion" }),
             }),
             foldNodeProp.add({
@@ -20385,7 +20755,7 @@ var karel = (function (exports, bootstrap) {
                     close: "}"
                 }
             },
-            // indentOnInput: /^\s*fin$/
+            indentOnInput: /^\s*(inicio|fin|sino|si\-no)\b$/
         }
     });
     const pascalCompletion = pascalLanguage.data.of({
@@ -20542,6 +20912,1214 @@ var karel = (function (exports, bootstrap) {
         return hasBreakpoint;
     }
 
+    function crelt() {
+      var elt = arguments[0];
+      if (typeof elt == "string") elt = document.createElement(elt);
+      var i = 1, next = arguments[1];
+      if (next && typeof next == "object" && next.nodeType == null && !Array.isArray(next)) {
+        for (var name in next) if (Object.prototype.hasOwnProperty.call(next, name)) {
+          var value = next[name];
+          if (typeof value == "string") elt.setAttribute(name, value);
+          else if (value != null) elt[name] = value;
+        }
+        i++;
+      }
+      for (; i < arguments.length; i++) add(elt, arguments[i]);
+      return elt
+    }
+
+    function add(elt, child) {
+      if (typeof child == "string") {
+        elt.appendChild(document.createTextNode(child));
+      } else if (child == null) ; else if (child.nodeType != null) {
+        elt.appendChild(child);
+      } else if (Array.isArray(child)) {
+        for (var i = 0; i < child.length; i++) add(elt, child[i]);
+      } else {
+        throw new RangeError("Unsupported child node: " + child)
+      }
+    }
+
+    const basicNormalize = typeof String.prototype.normalize == "function"
+        ? x => x.normalize("NFKD") : x => x;
+    /**
+    A search cursor provides an iterator over text matches in a
+    document.
+    */
+    class SearchCursor {
+        /**
+        Create a text cursor. The query is the search string, `from` to
+        `to` provides the region to search.
+        
+        When `normalize` is given, it will be called, on both the query
+        string and the content it is matched against, before comparing.
+        You can, for example, create a case-insensitive search by
+        passing `s => s.toLowerCase()`.
+        
+        Text is always normalized with
+        [`.normalize("NFKD")`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/normalize)
+        (when supported).
+        */
+        constructor(text, query, from = 0, to = text.length, normalize, test) {
+            this.test = test;
+            /**
+            The current match (only holds a meaningful value after
+            [`next`](https://codemirror.net/6/docs/ref/#search.SearchCursor.next) has been called and when
+            `done` is false).
+            */
+            this.value = { from: 0, to: 0 };
+            /**
+            Whether the end of the iterated region has been reached.
+            */
+            this.done = false;
+            this.matches = [];
+            this.buffer = "";
+            this.bufferPos = 0;
+            this.iter = text.iterRange(from, to);
+            this.bufferStart = from;
+            this.normalize = normalize ? x => normalize(basicNormalize(x)) : basicNormalize;
+            this.query = this.normalize(query);
+        }
+        peek() {
+            if (this.bufferPos == this.buffer.length) {
+                this.bufferStart += this.buffer.length;
+                this.iter.next();
+                if (this.iter.done)
+                    return -1;
+                this.bufferPos = 0;
+                this.buffer = this.iter.value;
+            }
+            return codePointAt(this.buffer, this.bufferPos);
+        }
+        /**
+        Look for the next match. Updates the iterator's
+        [`value`](https://codemirror.net/6/docs/ref/#search.SearchCursor.value) and
+        [`done`](https://codemirror.net/6/docs/ref/#search.SearchCursor.done) properties. Should be called
+        at least once before using the cursor.
+        */
+        next() {
+            while (this.matches.length)
+                this.matches.pop();
+            return this.nextOverlapping();
+        }
+        /**
+        The `next` method will ignore matches that partially overlap a
+        previous match. This method behaves like `next`, but includes
+        such matches.
+        */
+        nextOverlapping() {
+            for (;;) {
+                let next = this.peek();
+                if (next < 0) {
+                    this.done = true;
+                    return this;
+                }
+                let str = fromCodePoint(next), start = this.bufferStart + this.bufferPos;
+                this.bufferPos += codePointSize(next);
+                let norm = this.normalize(str);
+                for (let i = 0, pos = start;; i++) {
+                    let code = norm.charCodeAt(i);
+                    let match = this.match(code, pos);
+                    if (match) {
+                        this.value = match;
+                        return this;
+                    }
+                    if (i == norm.length - 1)
+                        break;
+                    if (pos == start && i < str.length && str.charCodeAt(i) == code)
+                        pos++;
+                }
+            }
+        }
+        match(code, pos) {
+            let match = null;
+            for (let i = 0; i < this.matches.length; i += 2) {
+                let index = this.matches[i], keep = false;
+                if (this.query.charCodeAt(index) == code) {
+                    if (index == this.query.length - 1) {
+                        match = { from: this.matches[i + 1], to: pos + 1 };
+                    }
+                    else {
+                        this.matches[i]++;
+                        keep = true;
+                    }
+                }
+                if (!keep) {
+                    this.matches.splice(i, 2);
+                    i -= 2;
+                }
+            }
+            if (this.query.charCodeAt(0) == code) {
+                if (this.query.length == 1)
+                    match = { from: pos, to: pos + 1 };
+                else
+                    this.matches.push(1, pos);
+            }
+            if (match && this.test && !this.test(match.from, match.to, this.buffer, this.bufferPos))
+                match = null;
+            return match;
+        }
+    }
+    if (typeof Symbol != "undefined")
+        SearchCursor.prototype[Symbol.iterator] = function () { return this; };
+
+    const empty = { from: -1, to: -1, match: /*@__PURE__*//.*/.exec("") };
+    const baseFlags = "gm" + (/x/.unicode == null ? "" : "u");
+    /**
+    This class is similar to [`SearchCursor`](https://codemirror.net/6/docs/ref/#search.SearchCursor)
+    but searches for a regular expression pattern instead of a plain
+    string.
+    */
+    class RegExpCursor {
+        /**
+        Create a cursor that will search the given range in the given
+        document. `query` should be the raw pattern (as you'd pass it to
+        `new RegExp`).
+        */
+        constructor(text, query, options, from = 0, to = text.length) {
+            this.text = text;
+            this.to = to;
+            this.curLine = "";
+            /**
+            Set to `true` when the cursor has reached the end of the search
+            range.
+            */
+            this.done = false;
+            /**
+            Will contain an object with the extent of the match and the
+            match object when [`next`](https://codemirror.net/6/docs/ref/#search.RegExpCursor.next)
+            sucessfully finds a match.
+            */
+            this.value = empty;
+            if (/\\[sWDnr]|\n|\r|\[\^/.test(query))
+                return new MultilineRegExpCursor(text, query, options, from, to);
+            this.re = new RegExp(query, baseFlags + ((options === null || options === void 0 ? void 0 : options.ignoreCase) ? "i" : ""));
+            this.test = options === null || options === void 0 ? void 0 : options.test;
+            this.iter = text.iter();
+            let startLine = text.lineAt(from);
+            this.curLineStart = startLine.from;
+            this.matchPos = toCharEnd(text, from);
+            this.getLine(this.curLineStart);
+        }
+        getLine(skip) {
+            this.iter.next(skip);
+            if (this.iter.lineBreak) {
+                this.curLine = "";
+            }
+            else {
+                this.curLine = this.iter.value;
+                if (this.curLineStart + this.curLine.length > this.to)
+                    this.curLine = this.curLine.slice(0, this.to - this.curLineStart);
+                this.iter.next();
+            }
+        }
+        nextLine() {
+            this.curLineStart = this.curLineStart + this.curLine.length + 1;
+            if (this.curLineStart > this.to)
+                this.curLine = "";
+            else
+                this.getLine(0);
+        }
+        /**
+        Move to the next match, if there is one.
+        */
+        next() {
+            for (let off = this.matchPos - this.curLineStart;;) {
+                this.re.lastIndex = off;
+                let match = this.matchPos <= this.to && this.re.exec(this.curLine);
+                if (match) {
+                    let from = this.curLineStart + match.index, to = from + match[0].length;
+                    this.matchPos = toCharEnd(this.text, to + (from == to ? 1 : 0));
+                    if (from == this.curLineStart + this.curLine.length)
+                        this.nextLine();
+                    if ((from < to || from > this.value.to) && (!this.test || this.test(from, to, match))) {
+                        this.value = { from, to, match };
+                        return this;
+                    }
+                    off = this.matchPos - this.curLineStart;
+                }
+                else if (this.curLineStart + this.curLine.length < this.to) {
+                    this.nextLine();
+                    off = 0;
+                }
+                else {
+                    this.done = true;
+                    return this;
+                }
+            }
+        }
+    }
+    const flattened = /*@__PURE__*/new WeakMap();
+    // Reusable (partially) flattened document strings
+    class FlattenedDoc {
+        constructor(from, text) {
+            this.from = from;
+            this.text = text;
+        }
+        get to() { return this.from + this.text.length; }
+        static get(doc, from, to) {
+            let cached = flattened.get(doc);
+            if (!cached || cached.from >= to || cached.to <= from) {
+                let flat = new FlattenedDoc(from, doc.sliceString(from, to));
+                flattened.set(doc, flat);
+                return flat;
+            }
+            if (cached.from == from && cached.to == to)
+                return cached;
+            let { text, from: cachedFrom } = cached;
+            if (cachedFrom > from) {
+                text = doc.sliceString(from, cachedFrom) + text;
+                cachedFrom = from;
+            }
+            if (cached.to < to)
+                text += doc.sliceString(cached.to, to);
+            flattened.set(doc, new FlattenedDoc(cachedFrom, text));
+            return new FlattenedDoc(from, text.slice(from - cachedFrom, to - cachedFrom));
+        }
+    }
+    class MultilineRegExpCursor {
+        constructor(text, query, options, from, to) {
+            this.text = text;
+            this.to = to;
+            this.done = false;
+            this.value = empty;
+            this.matchPos = toCharEnd(text, from);
+            this.re = new RegExp(query, baseFlags + ((options === null || options === void 0 ? void 0 : options.ignoreCase) ? "i" : ""));
+            this.test = options === null || options === void 0 ? void 0 : options.test;
+            this.flat = FlattenedDoc.get(text, from, this.chunkEnd(from + 5000 /* Chunk.Base */));
+        }
+        chunkEnd(pos) {
+            return pos >= this.to ? this.to : this.text.lineAt(pos).to;
+        }
+        next() {
+            for (;;) {
+                let off = this.re.lastIndex = this.matchPos - this.flat.from;
+                let match = this.re.exec(this.flat.text);
+                // Skip empty matches directly after the last match
+                if (match && !match[0] && match.index == off) {
+                    this.re.lastIndex = off + 1;
+                    match = this.re.exec(this.flat.text);
+                }
+                if (match) {
+                    let from = this.flat.from + match.index, to = from + match[0].length;
+                    // If a match goes almost to the end of a noncomplete chunk, try
+                    // again, since it'll likely be able to match more
+                    if ((this.flat.to >= this.to || match.index + match[0].length <= this.flat.text.length - 10) &&
+                        (!this.test || this.test(from, to, match))) {
+                        this.value = { from, to, match };
+                        this.matchPos = toCharEnd(this.text, to + (from == to ? 1 : 0));
+                        return this;
+                    }
+                }
+                if (this.flat.to == this.to) {
+                    this.done = true;
+                    return this;
+                }
+                // Grow the flattened doc
+                this.flat = FlattenedDoc.get(this.text, this.flat.from, this.chunkEnd(this.flat.from + this.flat.text.length * 2));
+            }
+        }
+    }
+    if (typeof Symbol != "undefined") {
+        RegExpCursor.prototype[Symbol.iterator] = MultilineRegExpCursor.prototype[Symbol.iterator] =
+            function () { return this; };
+    }
+    function validRegExp(source) {
+        try {
+            new RegExp(source, baseFlags);
+            return true;
+        }
+        catch (_a) {
+            return false;
+        }
+    }
+    function toCharEnd(text, pos) {
+        if (pos >= text.length)
+            return pos;
+        let line = text.lineAt(pos), next;
+        while (pos < line.to && (next = line.text.charCodeAt(pos - line.from)) >= 0xDC00 && next < 0xE000)
+            pos++;
+        return pos;
+    }
+
+    function createLineDialog(view) {
+        let input = crelt("input", { class: "cm-textfield", name: "line" });
+        let dom = crelt("form", {
+            class: "cm-gotoLine",
+            onkeydown: (event) => {
+                if (event.keyCode == 27) { // Escape
+                    event.preventDefault();
+                    view.dispatch({ effects: dialogEffect.of(false) });
+                    view.focus();
+                }
+                else if (event.keyCode == 13) { // Enter
+                    event.preventDefault();
+                    go();
+                }
+            },
+            onsubmit: (event) => {
+                event.preventDefault();
+                go();
+            }
+        }, crelt("label", view.state.phrase("Go to line"), ": ", input), " ", crelt("button", { class: "cm-button", type: "submit" }, view.state.phrase("go")));
+        function go() {
+            let match = /^([+-])?(\d+)?(:\d+)?(%)?$/.exec(input.value);
+            if (!match)
+                return;
+            let { state } = view, startLine = state.doc.lineAt(state.selection.main.head);
+            let [, sign, ln, cl, percent] = match;
+            let col = cl ? +cl.slice(1) : 0;
+            let line = ln ? +ln : startLine.number;
+            if (ln && percent) {
+                let pc = line / 100;
+                if (sign)
+                    pc = pc * (sign == "-" ? -1 : 1) + (startLine.number / state.doc.lines);
+                line = Math.round(state.doc.lines * pc);
+            }
+            else if (ln && sign) {
+                line = line * (sign == "-" ? -1 : 1) + startLine.number;
+            }
+            let docLine = state.doc.line(Math.max(1, Math.min(state.doc.lines, line)));
+            view.dispatch({
+                effects: dialogEffect.of(false),
+                selection: EditorSelection.cursor(docLine.from + Math.max(0, Math.min(col, docLine.length))),
+                scrollIntoView: true
+            });
+            view.focus();
+        }
+        return { dom };
+    }
+    const dialogEffect = /*@__PURE__*/StateEffect.define();
+    const dialogField = /*@__PURE__*/StateField.define({
+        create() { return true; },
+        update(value, tr) {
+            for (let e of tr.effects)
+                if (e.is(dialogEffect))
+                    value = e.value;
+            return value;
+        },
+        provide: f => showPanel.from(f, val => val ? createLineDialog : null)
+    });
+    /**
+    Command that shows a dialog asking the user for a line number, and
+    when a valid position is provided, moves the cursor to that line.
+
+    Supports line numbers, relative line offsets prefixed with `+` or
+    `-`, document percentages suffixed with `%`, and an optional
+    column position by adding `:` and a second number after the line
+    number.
+
+    The dialog can be styled with the `panel.gotoLine` theme
+    selector.
+    */
+    const gotoLine = view => {
+        let panel = getPanel(view, createLineDialog);
+        if (!panel) {
+            let effects = [dialogEffect.of(true)];
+            if (view.state.field(dialogField, false) == null)
+                effects.push(StateEffect.appendConfig.of([dialogField, baseTheme$1]));
+            view.dispatch({ effects });
+            panel = getPanel(view, createLineDialog);
+        }
+        if (panel)
+            panel.dom.querySelector("input").focus();
+        return true;
+    };
+    const baseTheme$1 = /*@__PURE__*/EditorView.baseTheme({
+        ".cm-panel.cm-gotoLine": {
+            padding: "2px 6px 4px",
+            "& label": { fontSize: "80%" }
+        }
+    });
+
+    const defaultHighlightOptions = {
+        highlightWordAroundCursor: false,
+        minSelectionLength: 1,
+        maxMatches: 100,
+        wholeWords: false
+    };
+    const highlightConfig = /*@__PURE__*/Facet.define({
+        combine(options) {
+            return combineConfig(options, defaultHighlightOptions, {
+                highlightWordAroundCursor: (a, b) => a || b,
+                minSelectionLength: Math.min,
+                maxMatches: Math.min
+            });
+        }
+    });
+    /**
+    This extension highlights text that matches the selection. It uses
+    the `"cm-selectionMatch"` class for the highlighting. When
+    `highlightWordAroundCursor` is enabled, the word at the cursor
+    itself will be highlighted with `"cm-selectionMatch-main"`.
+    */
+    function highlightSelectionMatches(options) {
+        let ext = [defaultTheme, matchHighlighter];
+        if (options)
+            ext.push(highlightConfig.of(options));
+        return ext;
+    }
+    const matchDeco = /*@__PURE__*/Decoration.mark({ class: "cm-selectionMatch" });
+    const mainMatchDeco = /*@__PURE__*/Decoration.mark({ class: "cm-selectionMatch cm-selectionMatch-main" });
+    // Whether the characters directly outside the given positions are non-word characters
+    function insideWordBoundaries(check, state, from, to) {
+        return (from == 0 || check(state.sliceDoc(from - 1, from)) != CharCategory.Word) &&
+            (to == state.doc.length || check(state.sliceDoc(to, to + 1)) != CharCategory.Word);
+    }
+    // Whether the characters directly at the given positions are word characters
+    function insideWord(check, state, from, to) {
+        return check(state.sliceDoc(from, from + 1)) == CharCategory.Word
+            && check(state.sliceDoc(to - 1, to)) == CharCategory.Word;
+    }
+    const matchHighlighter = /*@__PURE__*/ViewPlugin.fromClass(class {
+        constructor(view) {
+            this.decorations = this.getDeco(view);
+        }
+        update(update) {
+            if (update.selectionSet || update.docChanged || update.viewportChanged)
+                this.decorations = this.getDeco(update.view);
+        }
+        getDeco(view) {
+            let conf = view.state.facet(highlightConfig);
+            let { state } = view, sel = state.selection;
+            if (sel.ranges.length > 1)
+                return Decoration.none;
+            let range = sel.main, query, check = null;
+            if (range.empty) {
+                if (!conf.highlightWordAroundCursor)
+                    return Decoration.none;
+                let word = state.wordAt(range.head);
+                if (!word)
+                    return Decoration.none;
+                check = state.charCategorizer(range.head);
+                query = state.sliceDoc(word.from, word.to);
+            }
+            else {
+                let len = range.to - range.from;
+                if (len < conf.minSelectionLength || len > 200)
+                    return Decoration.none;
+                if (conf.wholeWords) {
+                    query = state.sliceDoc(range.from, range.to); // TODO: allow and include leading/trailing space?
+                    check = state.charCategorizer(range.head);
+                    if (!(insideWordBoundaries(check, state, range.from, range.to)
+                        && insideWord(check, state, range.from, range.to)))
+                        return Decoration.none;
+                }
+                else {
+                    query = state.sliceDoc(range.from, range.to).trim();
+                    if (!query)
+                        return Decoration.none;
+                }
+            }
+            let deco = [];
+            for (let part of view.visibleRanges) {
+                let cursor = new SearchCursor(state.doc, query, part.from, part.to);
+                while (!cursor.next().done) {
+                    let { from, to } = cursor.value;
+                    if (!check || insideWordBoundaries(check, state, from, to)) {
+                        if (range.empty && from <= range.from && to >= range.to)
+                            deco.push(mainMatchDeco.range(from, to));
+                        else if (from >= range.to || to <= range.from)
+                            deco.push(matchDeco.range(from, to));
+                        if (deco.length > conf.maxMatches)
+                            return Decoration.none;
+                    }
+                }
+            }
+            return Decoration.set(deco);
+        }
+    }, {
+        decorations: v => v.decorations
+    });
+    const defaultTheme = /*@__PURE__*/EditorView.baseTheme({
+        ".cm-selectionMatch": { backgroundColor: "#99ff7780" },
+        ".cm-searchMatch .cm-selectionMatch": { backgroundColor: "transparent" }
+    });
+    // Select the words around the cursors.
+    const selectWord = ({ state, dispatch }) => {
+        let { selection } = state;
+        let newSel = EditorSelection.create(selection.ranges.map(range => state.wordAt(range.head) || EditorSelection.cursor(range.head)), selection.mainIndex);
+        if (newSel.eq(selection))
+            return false;
+        dispatch(state.update({ selection: newSel }));
+        return true;
+    };
+    // Find next occurrence of query relative to last cursor. Wrap around
+    // the document if there are no more matches.
+    function findNextOccurrence(state, query) {
+        let { main, ranges } = state.selection;
+        let word = state.wordAt(main.head), fullWord = word && word.from == main.from && word.to == main.to;
+        for (let cycled = false, cursor = new SearchCursor(state.doc, query, ranges[ranges.length - 1].to);;) {
+            cursor.next();
+            if (cursor.done) {
+                if (cycled)
+                    return null;
+                cursor = new SearchCursor(state.doc, query, 0, Math.max(0, ranges[ranges.length - 1].from - 1));
+                cycled = true;
+            }
+            else {
+                if (cycled && ranges.some(r => r.from == cursor.value.from))
+                    continue;
+                if (fullWord) {
+                    let word = state.wordAt(cursor.value.from);
+                    if (!word || word.from != cursor.value.from || word.to != cursor.value.to)
+                        continue;
+                }
+                return cursor.value;
+            }
+        }
+    }
+    /**
+    Select next occurrence of the current selection. Expand selection
+    to the surrounding word when the selection is empty.
+    */
+    const selectNextOccurrence = ({ state, dispatch }) => {
+        let { ranges } = state.selection;
+        if (ranges.some(sel => sel.from === sel.to))
+            return selectWord({ state, dispatch });
+        let searchedText = state.sliceDoc(ranges[0].from, ranges[0].to);
+        if (state.selection.ranges.some(r => state.sliceDoc(r.from, r.to) != searchedText))
+            return false;
+        let range = findNextOccurrence(state, searchedText);
+        if (!range)
+            return false;
+        dispatch(state.update({
+            selection: state.selection.addRange(EditorSelection.range(range.from, range.to), false),
+            effects: EditorView.scrollIntoView(range.to)
+        }));
+        return true;
+    };
+
+    const searchConfigFacet = /*@__PURE__*/Facet.define({
+        combine(configs) {
+            return combineConfig(configs, {
+                top: false,
+                caseSensitive: false,
+                literal: false,
+                wholeWord: false,
+                createPanel: view => new SearchPanel(view)
+            });
+        }
+    });
+    /**
+    A search query. Part of the editor's search state.
+    */
+    class SearchQuery {
+        /**
+        Create a query object.
+        */
+        constructor(config) {
+            this.search = config.search;
+            this.caseSensitive = !!config.caseSensitive;
+            this.literal = !!config.literal;
+            this.regexp = !!config.regexp;
+            this.replace = config.replace || "";
+            this.valid = !!this.search && (!this.regexp || validRegExp(this.search));
+            this.unquoted = this.unquote(this.search);
+            this.wholeWord = !!config.wholeWord;
+        }
+        /**
+        @internal
+        */
+        unquote(text) {
+            return this.literal ? text :
+                text.replace(/\\([nrt\\])/g, (_, ch) => ch == "n" ? "\n" : ch == "r" ? "\r" : ch == "t" ? "\t" : "\\");
+        }
+        /**
+        Compare this query to another query.
+        */
+        eq(other) {
+            return this.search == other.search && this.replace == other.replace &&
+                this.caseSensitive == other.caseSensitive && this.regexp == other.regexp &&
+                this.wholeWord == other.wholeWord;
+        }
+        /**
+        @internal
+        */
+        create() {
+            return this.regexp ? new RegExpQuery(this) : new StringQuery(this);
+        }
+        /**
+        Get a search cursor for this query, searching through the given
+        range in the given state.
+        */
+        getCursor(state, from = 0, to) {
+            let st = state.doc ? state : EditorState.create({ doc: state });
+            if (to == null)
+                to = st.doc.length;
+            return this.regexp ? regexpCursor(this, st, from, to) : stringCursor(this, st, from, to);
+        }
+    }
+    class QueryType {
+        constructor(spec) {
+            this.spec = spec;
+        }
+    }
+    function stringCursor(spec, state, from, to) {
+        return new SearchCursor(state.doc, spec.unquoted, from, to, spec.caseSensitive ? undefined : x => x.toLowerCase(), spec.wholeWord ? stringWordTest(state.doc, state.charCategorizer(state.selection.main.head)) : undefined);
+    }
+    function stringWordTest(doc, categorizer) {
+        return (from, to, buf, bufPos) => {
+            if (bufPos > from || bufPos + buf.length < to) {
+                bufPos = Math.max(0, from - 2);
+                buf = doc.sliceString(bufPos, Math.min(doc.length, to + 2));
+            }
+            return (categorizer(charBefore(buf, from - bufPos)) != CharCategory.Word ||
+                categorizer(charAfter(buf, from - bufPos)) != CharCategory.Word) &&
+                (categorizer(charAfter(buf, to - bufPos)) != CharCategory.Word ||
+                    categorizer(charBefore(buf, to - bufPos)) != CharCategory.Word);
+        };
+    }
+    class StringQuery extends QueryType {
+        constructor(spec) {
+            super(spec);
+        }
+        nextMatch(state, curFrom, curTo) {
+            let cursor = stringCursor(this.spec, state, curTo, state.doc.length).nextOverlapping();
+            if (cursor.done)
+                cursor = stringCursor(this.spec, state, 0, curFrom).nextOverlapping();
+            return cursor.done ? null : cursor.value;
+        }
+        // Searching in reverse is, rather than implementing inverted search
+        // cursor, done by scanning chunk after chunk forward.
+        prevMatchInRange(state, from, to) {
+            for (let pos = to;;) {
+                let start = Math.max(from, pos - 10000 /* FindPrev.ChunkSize */ - this.spec.unquoted.length);
+                let cursor = stringCursor(this.spec, state, start, pos), range = null;
+                while (!cursor.nextOverlapping().done)
+                    range = cursor.value;
+                if (range)
+                    return range;
+                if (start == from)
+                    return null;
+                pos -= 10000 /* FindPrev.ChunkSize */;
+            }
+        }
+        prevMatch(state, curFrom, curTo) {
+            return this.prevMatchInRange(state, 0, curFrom) ||
+                this.prevMatchInRange(state, curTo, state.doc.length);
+        }
+        getReplacement(_result) { return this.spec.unquote(this.spec.replace); }
+        matchAll(state, limit) {
+            let cursor = stringCursor(this.spec, state, 0, state.doc.length), ranges = [];
+            while (!cursor.next().done) {
+                if (ranges.length >= limit)
+                    return null;
+                ranges.push(cursor.value);
+            }
+            return ranges;
+        }
+        highlight(state, from, to, add) {
+            let cursor = stringCursor(this.spec, state, Math.max(0, from - this.spec.unquoted.length), Math.min(to + this.spec.unquoted.length, state.doc.length));
+            while (!cursor.next().done)
+                add(cursor.value.from, cursor.value.to);
+        }
+    }
+    function regexpCursor(spec, state, from, to) {
+        return new RegExpCursor(state.doc, spec.search, {
+            ignoreCase: !spec.caseSensitive,
+            test: spec.wholeWord ? regexpWordTest(state.charCategorizer(state.selection.main.head)) : undefined
+        }, from, to);
+    }
+    function charBefore(str, index) {
+        return str.slice(findClusterBreak(str, index, false), index);
+    }
+    function charAfter(str, index) {
+        return str.slice(index, findClusterBreak(str, index));
+    }
+    function regexpWordTest(categorizer) {
+        return (_from, _to, match) => !match[0].length ||
+            (categorizer(charBefore(match.input, match.index)) != CharCategory.Word ||
+                categorizer(charAfter(match.input, match.index)) != CharCategory.Word) &&
+                (categorizer(charAfter(match.input, match.index + match[0].length)) != CharCategory.Word ||
+                    categorizer(charBefore(match.input, match.index + match[0].length)) != CharCategory.Word);
+    }
+    class RegExpQuery extends QueryType {
+        nextMatch(state, curFrom, curTo) {
+            let cursor = regexpCursor(this.spec, state, curTo, state.doc.length).next();
+            if (cursor.done)
+                cursor = regexpCursor(this.spec, state, 0, curFrom).next();
+            return cursor.done ? null : cursor.value;
+        }
+        prevMatchInRange(state, from, to) {
+            for (let size = 1;; size++) {
+                let start = Math.max(from, to - size * 10000 /* FindPrev.ChunkSize */);
+                let cursor = regexpCursor(this.spec, state, start, to), range = null;
+                while (!cursor.next().done)
+                    range = cursor.value;
+                if (range && (start == from || range.from > start + 10))
+                    return range;
+                if (start == from)
+                    return null;
+            }
+        }
+        prevMatch(state, curFrom, curTo) {
+            return this.prevMatchInRange(state, 0, curFrom) ||
+                this.prevMatchInRange(state, curTo, state.doc.length);
+        }
+        getReplacement(result) {
+            return this.spec.unquote(this.spec.replace.replace(/\$([$&\d+])/g, (m, i) => i == "$" ? "$"
+                : i == "&" ? result.match[0]
+                    : i != "0" && +i < result.match.length ? result.match[i]
+                        : m));
+        }
+        matchAll(state, limit) {
+            let cursor = regexpCursor(this.spec, state, 0, state.doc.length), ranges = [];
+            while (!cursor.next().done) {
+                if (ranges.length >= limit)
+                    return null;
+                ranges.push(cursor.value);
+            }
+            return ranges;
+        }
+        highlight(state, from, to, add) {
+            let cursor = regexpCursor(this.spec, state, Math.max(0, from - 250 /* RegExp.HighlightMargin */), Math.min(to + 250 /* RegExp.HighlightMargin */, state.doc.length));
+            while (!cursor.next().done)
+                add(cursor.value.from, cursor.value.to);
+        }
+    }
+    /**
+    A state effect that updates the current search query. Note that
+    this only has an effect if the search state has been initialized
+    (by including [`search`](https://codemirror.net/6/docs/ref/#search.search) in your configuration or
+    by running [`openSearchPanel`](https://codemirror.net/6/docs/ref/#search.openSearchPanel) at least
+    once).
+    */
+    const setSearchQuery = /*@__PURE__*/StateEffect.define();
+    const togglePanel = /*@__PURE__*/StateEffect.define();
+    const searchState = /*@__PURE__*/StateField.define({
+        create(state) {
+            return new SearchState(defaultQuery(state).create(), null);
+        },
+        update(value, tr) {
+            for (let effect of tr.effects) {
+                if (effect.is(setSearchQuery))
+                    value = new SearchState(effect.value.create(), value.panel);
+                else if (effect.is(togglePanel))
+                    value = new SearchState(value.query, effect.value ? createSearchPanel : null);
+            }
+            return value;
+        },
+        provide: f => showPanel.from(f, val => val.panel)
+    });
+    class SearchState {
+        constructor(query, panel) {
+            this.query = query;
+            this.panel = panel;
+        }
+    }
+    const matchMark = /*@__PURE__*/Decoration.mark({ class: "cm-searchMatch" }), selectedMatchMark = /*@__PURE__*/Decoration.mark({ class: "cm-searchMatch cm-searchMatch-selected" });
+    const searchHighlighter = /*@__PURE__*/ViewPlugin.fromClass(class {
+        constructor(view) {
+            this.view = view;
+            this.decorations = this.highlight(view.state.field(searchState));
+        }
+        update(update) {
+            let state = update.state.field(searchState);
+            if (state != update.startState.field(searchState) || update.docChanged || update.selectionSet || update.viewportChanged)
+                this.decorations = this.highlight(state);
+        }
+        highlight({ query, panel }) {
+            if (!panel || !query.spec.valid)
+                return Decoration.none;
+            let { view } = this;
+            let builder = new RangeSetBuilder();
+            for (let i = 0, ranges = view.visibleRanges, l = ranges.length; i < l; i++) {
+                let { from, to } = ranges[i];
+                while (i < l - 1 && to > ranges[i + 1].from - 2 * 250 /* RegExp.HighlightMargin */)
+                    to = ranges[++i].to;
+                query.highlight(view.state, from, to, (from, to) => {
+                    let selected = view.state.selection.ranges.some(r => r.from == from && r.to == to);
+                    builder.add(from, to, selected ? selectedMatchMark : matchMark);
+                });
+            }
+            return builder.finish();
+        }
+    }, {
+        decorations: v => v.decorations
+    });
+    function searchCommand(f) {
+        return view => {
+            let state = view.state.field(searchState, false);
+            return state && state.query.spec.valid ? f(view, state) : openSearchPanel(view);
+        };
+    }
+    /**
+    Open the search panel if it isn't already open, and move the
+    selection to the first match after the current main selection.
+    Will wrap around to the start of the document when it reaches the
+    end.
+    */
+    const findNext = /*@__PURE__*/searchCommand((view, { query }) => {
+        let { to } = view.state.selection.main;
+        let next = query.nextMatch(view.state, to, to);
+        if (!next)
+            return false;
+        view.dispatch({
+            selection: { anchor: next.from, head: next.to },
+            scrollIntoView: true,
+            effects: announceMatch(view, next),
+            userEvent: "select.search"
+        });
+        return true;
+    });
+    /**
+    Move the selection to the previous instance of the search query,
+    before the current main selection. Will wrap past the start
+    of the document to start searching at the end again.
+    */
+    const findPrevious = /*@__PURE__*/searchCommand((view, { query }) => {
+        let { state } = view, { from } = state.selection.main;
+        let range = query.prevMatch(state, from, from);
+        if (!range)
+            return false;
+        view.dispatch({
+            selection: { anchor: range.from, head: range.to },
+            scrollIntoView: true,
+            effects: announceMatch(view, range),
+            userEvent: "select.search"
+        });
+        return true;
+    });
+    /**
+    Select all instances of the search query.
+    */
+    const selectMatches = /*@__PURE__*/searchCommand((view, { query }) => {
+        let ranges = query.matchAll(view.state, 1000);
+        if (!ranges || !ranges.length)
+            return false;
+        view.dispatch({
+            selection: EditorSelection.create(ranges.map(r => EditorSelection.range(r.from, r.to))),
+            userEvent: "select.search.matches"
+        });
+        return true;
+    });
+    /**
+    Select all instances of the currently selected text.
+    */
+    const selectSelectionMatches = ({ state, dispatch }) => {
+        let sel = state.selection;
+        if (sel.ranges.length > 1 || sel.main.empty)
+            return false;
+        let { from, to } = sel.main;
+        let ranges = [], main = 0;
+        for (let cur = new SearchCursor(state.doc, state.sliceDoc(from, to)); !cur.next().done;) {
+            if (ranges.length > 1000)
+                return false;
+            if (cur.value.from == from)
+                main = ranges.length;
+            ranges.push(EditorSelection.range(cur.value.from, cur.value.to));
+        }
+        dispatch(state.update({
+            selection: EditorSelection.create(ranges, main),
+            userEvent: "select.search.matches"
+        }));
+        return true;
+    };
+    /**
+    Replace the current match of the search query.
+    */
+    const replaceNext = /*@__PURE__*/searchCommand((view, { query }) => {
+        let { state } = view, { from, to } = state.selection.main;
+        if (state.readOnly)
+            return false;
+        let next = query.nextMatch(state, from, from);
+        if (!next)
+            return false;
+        let changes = [], selection, replacement;
+        let announce = [];
+        if (next.from == from && next.to == to) {
+            replacement = state.toText(query.getReplacement(next));
+            changes.push({ from: next.from, to: next.to, insert: replacement });
+            next = query.nextMatch(state, next.from, next.to);
+            announce.push(EditorView.announce.of(state.phrase("replaced match on line $", state.doc.lineAt(from).number) + "."));
+        }
+        if (next) {
+            let off = changes.length == 0 || changes[0].from >= next.to ? 0 : next.to - next.from - replacement.length;
+            selection = { anchor: next.from - off, head: next.to - off };
+            announce.push(announceMatch(view, next));
+        }
+        view.dispatch({
+            changes, selection,
+            scrollIntoView: !!selection,
+            effects: announce,
+            userEvent: "input.replace"
+        });
+        return true;
+    });
+    /**
+    Replace all instances of the search query with the given
+    replacement.
+    */
+    const replaceAll = /*@__PURE__*/searchCommand((view, { query }) => {
+        if (view.state.readOnly)
+            return false;
+        let changes = query.matchAll(view.state, 1e9).map(match => {
+            let { from, to } = match;
+            return { from, to, insert: query.getReplacement(match) };
+        });
+        if (!changes.length)
+            return false;
+        let announceText = view.state.phrase("replaced $ matches", changes.length) + ".";
+        view.dispatch({
+            changes,
+            effects: EditorView.announce.of(announceText),
+            userEvent: "input.replace.all"
+        });
+        return true;
+    });
+    function createSearchPanel(view) {
+        return view.state.facet(searchConfigFacet).createPanel(view);
+    }
+    function defaultQuery(state, fallback) {
+        var _a, _b, _c, _d;
+        let sel = state.selection.main;
+        let selText = sel.empty || sel.to > sel.from + 100 ? "" : state.sliceDoc(sel.from, sel.to);
+        if (fallback && !selText)
+            return fallback;
+        let config = state.facet(searchConfigFacet);
+        return new SearchQuery({
+            search: ((_a = fallback === null || fallback === void 0 ? void 0 : fallback.literal) !== null && _a !== void 0 ? _a : config.literal) ? selText : selText.replace(/\n/g, "\\n"),
+            caseSensitive: (_b = fallback === null || fallback === void 0 ? void 0 : fallback.caseSensitive) !== null && _b !== void 0 ? _b : config.caseSensitive,
+            literal: (_c = fallback === null || fallback === void 0 ? void 0 : fallback.literal) !== null && _c !== void 0 ? _c : config.literal,
+            wholeWord: (_d = fallback === null || fallback === void 0 ? void 0 : fallback.wholeWord) !== null && _d !== void 0 ? _d : config.wholeWord
+        });
+    }
+    /**
+    Make sure the search panel is open and focused.
+    */
+    const openSearchPanel = view => {
+        let state = view.state.field(searchState, false);
+        if (state && state.panel) {
+            let panel = getPanel(view, createSearchPanel);
+            if (!panel)
+                return false;
+            let searchInput = panel.dom.querySelector("[main-field]");
+            if (searchInput && searchInput != view.root.activeElement) {
+                let query = defaultQuery(view.state, state.query.spec);
+                if (query.valid)
+                    view.dispatch({ effects: setSearchQuery.of(query) });
+                searchInput.focus();
+                searchInput.select();
+            }
+        }
+        else {
+            view.dispatch({ effects: [
+                    togglePanel.of(true),
+                    state ? setSearchQuery.of(defaultQuery(view.state, state.query.spec)) : StateEffect.appendConfig.of(searchExtensions)
+                ] });
+        }
+        return true;
+    };
+    /**
+    Close the search panel.
+    */
+    const closeSearchPanel = view => {
+        let state = view.state.field(searchState, false);
+        if (!state || !state.panel)
+            return false;
+        let panel = getPanel(view, createSearchPanel);
+        if (panel && panel.dom.contains(view.root.activeElement))
+            view.focus();
+        view.dispatch({ effects: togglePanel.of(false) });
+        return true;
+    };
+    /**
+    Default search-related key bindings.
+
+     - Mod-f: [`openSearchPanel`](https://codemirror.net/6/docs/ref/#search.openSearchPanel)
+     - F3, Mod-g: [`findNext`](https://codemirror.net/6/docs/ref/#search.findNext)
+     - Shift-F3, Shift-Mod-g: [`findPrevious`](https://codemirror.net/6/docs/ref/#search.findPrevious)
+     - Alt-g: [`gotoLine`](https://codemirror.net/6/docs/ref/#search.gotoLine)
+     - Mod-d: [`selectNextOccurrence`](https://codemirror.net/6/docs/ref/#search.selectNextOccurrence)
+    */
+    const searchKeymap = [
+        { key: "Mod-f", run: openSearchPanel, scope: "editor search-panel" },
+        { key: "F3", run: findNext, shift: findPrevious, scope: "editor search-panel", preventDefault: true },
+        { key: "Mod-g", run: findNext, shift: findPrevious, scope: "editor search-panel", preventDefault: true },
+        { key: "Escape", run: closeSearchPanel, scope: "editor search-panel" },
+        { key: "Mod-Shift-l", run: selectSelectionMatches },
+        { key: "Alt-g", run: gotoLine },
+        { key: "Mod-d", run: selectNextOccurrence, preventDefault: true },
+    ];
+    class SearchPanel {
+        constructor(view) {
+            this.view = view;
+            let query = this.query = view.state.field(searchState).query.spec;
+            this.commit = this.commit.bind(this);
+            this.searchField = crelt("input", {
+                value: query.search,
+                placeholder: phrase(view, "Find"),
+                "aria-label": phrase(view, "Find"),
+                class: "cm-textfield",
+                name: "search",
+                form: "",
+                "main-field": "true",
+                onchange: this.commit,
+                onkeyup: this.commit
+            });
+            this.replaceField = crelt("input", {
+                value: query.replace,
+                placeholder: phrase(view, "Replace"),
+                "aria-label": phrase(view, "Replace"),
+                class: "cm-textfield",
+                name: "replace",
+                form: "",
+                onchange: this.commit,
+                onkeyup: this.commit
+            });
+            this.caseField = crelt("input", {
+                type: "checkbox",
+                name: "case",
+                form: "",
+                checked: query.caseSensitive,
+                onchange: this.commit
+            });
+            this.reField = crelt("input", {
+                type: "checkbox",
+                name: "re",
+                form: "",
+                checked: query.regexp,
+                onchange: this.commit
+            });
+            this.wordField = crelt("input", {
+                type: "checkbox",
+                name: "word",
+                form: "",
+                checked: query.wholeWord,
+                onchange: this.commit
+            });
+            function button(name, onclick, content) {
+                return crelt("button", { class: "cm-button", name, onclick, type: "button" }, content);
+            }
+            this.dom = crelt("div", { onkeydown: (e) => this.keydown(e), class: "cm-search" }, [
+                this.searchField,
+                button("next", () => findNext(view), [phrase(view, "next")]),
+                button("prev", () => findPrevious(view), [phrase(view, "previous")]),
+                button("select", () => selectMatches(view), [phrase(view, "all")]),
+                crelt("label", null, [this.caseField, phrase(view, "match case")]),
+                crelt("label", null, [this.reField, phrase(view, "regexp")]),
+                crelt("label", null, [this.wordField, phrase(view, "by word")]),
+                ...view.state.readOnly ? [] : [
+                    crelt("br"),
+                    this.replaceField,
+                    button("replace", () => replaceNext(view), [phrase(view, "replace")]),
+                    button("replaceAll", () => replaceAll(view), [phrase(view, "replace all")])
+                ],
+                crelt("button", {
+                    name: "close",
+                    onclick: () => closeSearchPanel(view),
+                    "aria-label": phrase(view, "close"),
+                    type: "button"
+                }, ["×"])
+            ]);
+        }
+        commit() {
+            let query = new SearchQuery({
+                search: this.searchField.value,
+                caseSensitive: this.caseField.checked,
+                regexp: this.reField.checked,
+                wholeWord: this.wordField.checked,
+                replace: this.replaceField.value,
+            });
+            if (!query.eq(this.query)) {
+                this.query = query;
+                this.view.dispatch({ effects: setSearchQuery.of(query) });
+            }
+        }
+        keydown(e) {
+            if (runScopeHandlers(this.view, e, "search-panel")) {
+                e.preventDefault();
+            }
+            else if (e.keyCode == 13 && e.target == this.searchField) {
+                e.preventDefault();
+                (e.shiftKey ? findPrevious : findNext)(this.view);
+            }
+            else if (e.keyCode == 13 && e.target == this.replaceField) {
+                e.preventDefault();
+                replaceNext(this.view);
+            }
+        }
+        update(update) {
+            for (let tr of update.transactions)
+                for (let effect of tr.effects) {
+                    if (effect.is(setSearchQuery) && !effect.value.eq(this.query))
+                        this.setQuery(effect.value);
+                }
+        }
+        setQuery(query) {
+            this.query = query;
+            this.searchField.value = query.search;
+            this.replaceField.value = query.replace;
+            this.caseField.checked = query.caseSensitive;
+            this.reField.checked = query.regexp;
+            this.wordField.checked = query.wholeWord;
+        }
+        mount() {
+            this.searchField.select();
+        }
+        get pos() { return 80; }
+        get top() { return this.view.state.facet(searchConfigFacet).top; }
+    }
+    function phrase(view, phrase) { return view.state.phrase(phrase); }
+    const AnnounceMargin = 30;
+    const Break = /[\s\.,:;?!]/;
+    function announceMatch(view, { from, to }) {
+        let line = view.state.doc.lineAt(from), lineEnd = view.state.doc.lineAt(to).to;
+        let start = Math.max(line.from, from - AnnounceMargin), end = Math.min(lineEnd, to + AnnounceMargin);
+        let text = view.state.sliceDoc(start, end);
+        if (start != line.from) {
+            for (let i = 0; i < AnnounceMargin; i++)
+                if (!Break.test(text[i + 1]) && Break.test(text[i])) {
+                    text = text.slice(i);
+                    break;
+                }
+        }
+        if (end != lineEnd) {
+            for (let i = text.length - 1; i > text.length - AnnounceMargin; i--)
+                if (!Break.test(text[i - 1]) && Break.test(text[i])) {
+                    text = text.slice(0, i);
+                    break;
+                }
+        }
+        return EditorView.announce.of(`${view.state.phrase("current match")}. ${text} ${view.state.phrase("on line")} ${line.number}.`);
+    }
+    const baseTheme = /*@__PURE__*/EditorView.baseTheme({
+        ".cm-panel.cm-search": {
+            padding: "2px 6px 4px",
+            position: "relative",
+            "& [name=close]": {
+                position: "absolute",
+                top: "0",
+                right: "4px",
+                backgroundColor: "inherit",
+                border: "none",
+                font: "inherit",
+                padding: 0,
+                margin: 0
+            },
+            "& input, & button, & label": {
+                margin: ".2em .6em .2em 0"
+            },
+            "& input[type=checkbox]": {
+                marginRight: ".2em"
+            },
+            "& label": {
+                fontSize: "80%",
+                whiteSpace: "pre"
+            }
+        },
+        "&light .cm-searchMatch": { backgroundColor: "#ffff0054" },
+        "&dark .cm-searchMatch": { backgroundColor: "#00ffff8a" },
+        "&light .cm-searchMatch-selected": { backgroundColor: "#ff6a0054" },
+        "&dark .cm-searchMatch-selected": { backgroundColor: "#ff00ff8a" }
+    });
+    const searchExtensions = [
+        searchState,
+        /*@__PURE__*/Prec.lowest(searchHighlighter),
+        baseTheme
+    ];
+
     let language = new Compartment, tabSize = new Compartment;
     let theme = new Compartment;
     let readOnly = new Compartment;
@@ -20552,16 +22130,20 @@ var karel = (function (exports, bootstrap) {
                 language.of(kpascal()),
                 theme.of(classicHighlight.extensions),
                 syntaxHighlighting(defaultHighlightStyle, { fallback: true }),
-                history(),
-                highlightKarelActiveLine(),
                 breakpointGutter,
+                highlightKarelActiveLine(),
+                history(),
                 drawSelection(),
                 lineNumbers(),
                 highlightActiveLine(),
                 foldGutter(),
                 bracketMatching(),
                 // autocompletion(),
+                rectangularSelection(),
+                crosshairCursor(),
                 closeBrackets(),
+                indentOnInput(),
+                highlightSelectionMatches(),
                 indentUnit.of("\t"),
                 readOnly.of(EditorState.readOnly.of(false)),
                 tabSize.of(EditorState.tabSize.of(4)),
@@ -20569,6 +22151,7 @@ var karel = (function (exports, bootstrap) {
                     indentWithTab,
                     ...defaultKeymap,
                     ...historyKeymap,
+                    ...searchKeymap,
                 ])
             ]
         });

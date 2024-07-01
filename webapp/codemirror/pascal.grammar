@@ -22,17 +22,17 @@ Execution {
 }
 
 
-whileStatement {
+WhileStatement {
     While boolStatement Do
     expression
 }
 
-iterateStatement {
+IterateStatement {
     Iterate  numberStatement  Times
     expression
 }
 
-ifStatement {
+IfStatement {
     If boolStatement Then expression (!sino Else expression)?
     
 }
@@ -42,7 +42,7 @@ Block {
 }
 
 expression {
-    call |  whileStatement | iterateStatement | ifStatement |
+    call |  WhileStatement | IterateStatement | IfStatement |
     Block
 }
 

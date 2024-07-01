@@ -1,21 +1,20 @@
-import {EditorState, Facet,RangeSetBuilder} from "@codemirror/state"
+import {EditorState} from "@codemirror/state"
 import {defaultKeymap, historyKeymap, history} from "@codemirror/commands"
-import {drawSelection, keymap, lineNumbers, highlightActiveLine, GutterMarker,gutter, Decoration, DecorationSet, ViewPlugin,  ViewUpdate} from "@codemirror/view"
+import {drawSelection, keymap, lineNumbers, highlightActiveLine, rectangularSelection, crosshairCursor} from "@codemirror/view"
 import {indentWithTab} from "@codemirror/commands"
 import {undo, redo} from "@codemirror/commands"
 import {EditorView} from "@codemirror/view"
-import {Transaction, Annotation, Compartment, StateField, StateEffect, RangeSet, Extension} from "@codemirror/state"
+import {Transaction, Annotation, Compartment, Extension} from "@codemirror/state"
 import { kjava } from "./javaCodeMirror"
 import { kpascal } from "./pascalCodeMirror"
 
-import {defaultHighlightStyle, syntaxHighlighting, foldGutter, bracketMatching, indentUnit} from "@codemirror/language"
-import { closeBrackets, autocompletion } from "@codemirror/autocomplete"
-import { darkClassicHighlight } from "./themes/darkClassicHighlight"
+import {defaultHighlightStyle, syntaxHighlighting, foldGutter, bracketMatching, indentUnit, indentOnInput} from "@codemirror/language"
+import { closeBrackets } from "@codemirror/autocomplete"
 import { classicHighlight } from "./themes/classicHighlight"
-import {HighlightStyle} from "@codemirror/language"
 import { highlightKarelActiveLine } from "./editor.highlightLine"
-import { main } from "../../js/cindex"
 import { breakpointGutter } from "./editor.breakpoint"
+import {searchKeymap, highlightSelectionMatches} from "@codemirror/search"
+
 
 let language = new Compartment, tabSize = new Compartment
 let theme = new Compartment
@@ -31,16 +30,21 @@ function createEditors() : Array<EditorView> {
       language.of(kpascal()),
       theme.of(classicHighlight.extensions),
       syntaxHighlighting(defaultHighlightStyle, {fallback:true}),
-      history(),
-      highlightKarelActiveLine(),
       breakpointGutter,
+      highlightKarelActiveLine(),
+      
+      history(),
       drawSelection(),
       lineNumbers(),
       highlightActiveLine(),
       foldGutter(),
       bracketMatching(),
       // autocompletion(),
+      rectangularSelection(),
+      crosshairCursor(),
       closeBrackets(),
+      indentOnInput(),
+      highlightSelectionMatches(),
       indentUnit.of("\t"),
       readOnly.of(EditorState.readOnly.of(false)),      
       tabSize.of(EditorState.tabSize.of(4)),
@@ -48,6 +52,7 @@ function createEditors() : Array<EditorView> {
         indentWithTab,
         ...defaultKeymap,
         ...historyKeymap,
+        ...searchKeymap,
       ])
     ]
   })

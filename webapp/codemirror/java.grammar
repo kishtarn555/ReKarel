@@ -29,7 +29,7 @@ InnerBlock {
 }
 
 expression {
-    call | Block | whileStatement | iterateStatement | ifStatement
+    call | Block | WhileStatement | IterateStatement | IfStatement
 }
 
 call {
@@ -48,11 +48,11 @@ BuiltIn {
 BooleanHeader {
      "(" booleanStatement ")"
 }
-whileStatement {
+WhileStatement {
     While BooleanHeader expression
 }
 
-iterateStatement {
+IterateStatement {
     Iterate "(" numberStatement ")" expression
 }
 
@@ -65,7 +65,7 @@ iterateStatement {
 
 
 
-ifStatement {
+IfStatement {
     If BooleanHeader expression (!else elseStatement)?
     
 }
@@ -116,8 +116,14 @@ IFZ {
 }
 
 numberStatement {
-    Number
+    Number | Identifier | numberFunction
 }
+
+
+numberFunction {(Succ | Pred)"(" numberStatement ")" }
+
+Succ { @specialize<Identifier, "succ"> }
+Pred { @specialize<Identifier, "pred"> }
 
 Start[closedBy="End"] {
     start

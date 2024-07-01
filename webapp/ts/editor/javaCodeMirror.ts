@@ -4,7 +4,7 @@ import {LanguageSupport} from "@codemirror/language"
 
 import {foldNodeProp, foldInside, indentNodeProp} from "@codemirror/language"
 import {styleTags, tags as t} from "@lezer/highlight"
-import {LRLanguage, continuedIndent} from "@codemirror/language"
+import {LRLanguage, delimitedIndent, continuedIndent} from "@codemirror/language"
 
 let javaWithContext = javaparser.configure({
     props: [
@@ -31,12 +31,19 @@ let javaWithContext = javaparser.configure({
             BuiltIn: t.constant(t.variableName),
             Start: t.brace,
             End: t.brace,
+            Succ: t.operator,
+            Pred: t.operator,
 
         }),
         indentNodeProp.add({
-            Function: continuedIndent({}),
-            Script: continuedIndent({}),
-          }),           
+          Script: (_)=>0,
+          Block: delimitedIndent({closing: "}"}),
+          ScriptBlock: delimitedIndent({closing: "}"}),
+          WhileStatement:continuedIndent ({except: /^\s*\{/ }),
+          IterateStatement:continuedIndent ({except: /^\s*\{/ }),
+          IfStatement:continuedIndent ({except: /^\s*(\{|else\b)/ }),
+
+        }),           
         foldNodeProp.add({
             Block: foldInside
         })
@@ -47,13 +54,16 @@ let javaWithContext = javaparser.configure({
 const javaLanguage = LRLanguage.define({
     parser: javaWithContext,
     languageData: {
-      commentTokens: {line: "//"}
+      commentTokens: {
+        line: "//", block: {
+        open:"/*", close:"*/"}
+      },
+      indentOnInput: /^\s*(\{|\})\b$/
+
     }
   })
 
 
-  import {completeFromList} from "@codemirror/autocomplete"
-import { BuiltIn } from "../../js/lezer_java.terms";
 import { completeKarelJava } from "./completionJava";
 
   const javaCompletion = javaLanguage.data.of({
