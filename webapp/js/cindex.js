@@ -26025,7 +26025,7 @@ var karel = (function (exports, bootstrap) {
         disabled: '#4f4f4f',
         exportCellBackground: '#f5f7a8',
         karelColor: '#3E6AC1',
-        gridBackgroundColor: '#f8f9fA',
+        gridBackgroundColor: '#ffffff',
         errorGridBackgroundColor: "#f5d5d5",
         gridBorderColor: '#c4c4c4',
         errorGridBorderColor: '#a8838f',
@@ -26042,7 +26042,7 @@ var karel = (function (exports, bootstrap) {
         disabled: '#4f4f4f',
         exportCellBackground: '#f5f7a8',
         karelColor: '#3E6AC1',
-        gridBackgroundColor: '#f8f9fA',
+        gridBackgroundColor: '#ffffff',
         errorGridBackgroundColor: "#f5d5d5",
         gridBorderColor: '#c4c4c4',
         errorGridBorderColor: '#a8838f',
@@ -26076,7 +26076,7 @@ var karel = (function (exports, bootstrap) {
         disabled: '#4f4f4f',
         exportCellBackground: '#f5f7a8',
         karelColor: '#3F69DB',
-        gridBackgroundColor: '#f3f3f3',
+        gridBackgroundColor: '#ffffff',
         errorGridBackgroundColor: "#5D3D3D",
         gridBorderColor: '#565656',
         errorGridBorderColor: '#565656',
@@ -26241,7 +26241,7 @@ var karel = (function (exports, bootstrap) {
 
     const ReKarelHighlight = {
         color: "#fafafa",
-        backgroundColor: "var(--bs-dark)",
+        backgroundColor: "rgb(var(--bs-body-bg-rgb))",
         gutterBackgroundColor: "var(--bs-secondary-bg)",
         gutterColor: "var(--bs-emphasis-color)",
         extensions: [
@@ -26266,7 +26266,7 @@ var karel = (function (exports, bootstrap) {
     };
     const LightReKarelHighlight = {
         color: "#2e2e2e",
-        backgroundColor: "var(--bs-light)",
+        backgroundColor: "rgb(var(--bs-body-bg-rgb))",
         gutterBackgroundColor: "var(--bs-secondary-bg)",
         gutterColor: "var(--bs-emphasis-color)",
         extensions: [
