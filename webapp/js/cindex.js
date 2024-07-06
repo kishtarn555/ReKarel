@@ -25830,8 +25830,9 @@ var karel = (function (exports, bootstrap) {
             if (this.lock)
                 return;
             this.karelController.world.move(this.selection.r, this.selection.c);
-            if (rotate)
-                this.karelController.world.orientation = (this.karelController.world.orientation + 3) % 4;
+            if (rotate) {
+                this.karelController.world.rotate(['OESTE', 'NORTE', 'ESTE', 'SUR'][(this.karelController.world.orientation + 3) % 4]);
+            }
             this.Update();
         }
         FocusOrigin() {

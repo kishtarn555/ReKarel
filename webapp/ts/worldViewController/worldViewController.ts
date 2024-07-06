@@ -321,9 +321,14 @@ class WorldViewController {
     ToggleKarelPosition(rotate:boolean = false) {
         if (this.lock) return;
         this.karelController.world.move(this.selection.r, this.selection.c);
-        if (rotate)
-            this.karelController.world.orientation = (this.karelController.world.orientation + 3)%4;
-        this.Update();
+        if (rotate) {
+            this.karelController.world.rotate(
+                ['OESTE', 'NORTE', 'ESTE', 'SUR'][
+                 (this.karelController.world.orientation + 3)%4
+                ]
+            );
+        }
+            this.Update();
     }
 
     FocusOrigin() {
