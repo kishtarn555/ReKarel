@@ -37,18 +37,20 @@ function setOutputWorld(modal:WorldSaveModal, karelController: KarelController) 
     setFileNameLink(modal);
     let result = KarelController.GetInstance().Compile(false);
     let output;
+    $(modal.worldData).val("Procesando...");
     if (result == null) {
         output = "ERROR DE COMPILACION";
     } else {
-
-        KarelController.GetInstance().RunTillEnd(false);
-        if (KarelController.GetInstance().EndedOnError()) {
-            output = "ERROR DE EJECUCION"
-        } else {
-            output = karelController.world.output();
-        }
+        
+        KarelController.GetInstance().RunTillEnd(false).then(()=> {
+            if (KarelController.GetInstance().EndedOnError()) {
+                output = "ERROR DE EJECUCION"
+            } else {
+                output = karelController.world.output();
+            }
+            $(modal.worldData).val(output);
+        })
     }
-    $(modal.worldData).val(output);
     setWorldData(output, modal);
 }
 

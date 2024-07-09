@@ -24919,7 +24919,7 @@ var karel = (function (exports, bootstrap) {
     }
     function GetCurrentSetting() { return appSettings; }
 
-    var __awaiter = (undefined && undefined.__awaiter) || function (thisArg, _arguments, P, generator) {
+    var __awaiter$1 = (undefined && undefined.__awaiter) || function (thisArg, _arguments, P, generator) {
         function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
         return new (P || (P = Promise))(function (resolve, reject) {
             function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
@@ -24953,7 +24953,7 @@ var karel = (function (exports, bootstrap) {
             }, seconds * 1000);
         }
         performTask(task) {
-            return __awaiter(this, void 0, void 0, function* () {
+            return __awaiter$1(this, void 0, void 0, function* () {
                 this.show();
                 const promise = new Promise((resolve, reject) => setTimeout(() => {
                     let result = task();
@@ -25019,6 +25019,15 @@ var karel = (function (exports, bootstrap) {
         return true;
     }
 
+    var __awaiter = (undefined && undefined.__awaiter) || function (thisArg, _arguments, P, generator) {
+        function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+        return new (P || (P = Promise))(function (resolve, reject) {
+            function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+            function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+            function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+            step((generator = generator.apply(thisArg, _arguments || [])).next());
+        });
+    };
     class KarelController {
         constructor(world) {
             this.world = world;
@@ -25208,29 +25217,31 @@ var karel = (function (exports, bootstrap) {
             return this.endedOnError;
         }
         RunTillEnd(ignoreBreakpoints = false) {
-            if (this.state === "finished") {
-                return;
-            }
-            if (!this.running) {
-                if (!this.StartRun()) {
+            return __awaiter(this, void 0, void 0, function* () {
+                if (this.state === "finished") {
                     return;
                 }
-            }
-            let runtime = this.GetRuntime();
-            // runtime.disableStackEvents= false; // FIXME: This should only be done when no breakpoints
-            // runtime.disableStackEvents= true; // FIXME: This should only be done when no breakpoints
-            throbber.performTask(() => {
-                while (this.PerformAutoStep(ignoreBreakpoints))
-                    ;
-            }).then(_ => {
-                if (!runtime.state.running) {
-                    this.EndMessage();
-                    this.ChangeState("finished");
+                if (!this.running) {
+                    if (!this.StartRun()) {
+                        return;
+                    }
                 }
-                else {
-                    this.Pause();
-                }
-                this.NotifyStep();
+                let runtime = this.GetRuntime();
+                // runtime.disableStackEvents= false; // FIXME: This should only be done when no breakpoints
+                // runtime.disableStackEvents= true; // FIXME: This should only be done when no breakpoints
+                yield throbber.performTask(() => {
+                    while (this.PerformAutoStep(ignoreBreakpoints))
+                        ;
+                }).then(_ => {
+                    if (!runtime.state.running) {
+                        this.EndMessage();
+                        this.ChangeState("finished");
+                    }
+                    else {
+                        this.Pause();
+                    }
+                    this.NotifyStep();
+                });
             });
         }
         RegisterMessageCallback(callback) {
@@ -26745,19 +26756,21 @@ var karel = (function (exports, bootstrap) {
         setFileNameLink(modal);
         let result = KarelController.GetInstance().Compile(false);
         let output;
+        $(modal.worldData).val("Procesando...");
         if (result == null) {
             output = "ERROR DE COMPILACION";
         }
         else {
-            KarelController.GetInstance().RunTillEnd(false);
-            if (KarelController.GetInstance().EndedOnError()) {
-                output = "ERROR DE EJECUCION";
-            }
-            else {
-                output = karelController.world.output();
-            }
+            KarelController.GetInstance().RunTillEnd(false).then(() => {
+                if (KarelController.GetInstance().EndedOnError()) {
+                    output = "ERROR DE EJECUCION";
+                }
+                else {
+                    output = karelController.world.output();
+                }
+                $(modal.worldData).val(output);
+            });
         }
-        $(modal.worldData).val(output);
         setWorldData(output, modal);
     }
     const fileRegex = /^[a-zA-Z0-9._]+$/;

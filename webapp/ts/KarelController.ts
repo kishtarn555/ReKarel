@@ -257,7 +257,7 @@ class KarelController {
     EndedOnError() {
         return this.endedOnError;
     }
-    RunTillEnd(ignoreBreakpoints:boolean = false) {
+    async RunTillEnd(ignoreBreakpoints:boolean = false) {
         if (this.state === "finished") {
             return;
         }
@@ -270,7 +270,7 @@ class KarelController {
         let runtime = this.GetRuntime();
         // runtime.disableStackEvents= false; // FIXME: This should only be done when no breakpoints
         // runtime.disableStackEvents= true; // FIXME: This should only be done when no breakpoints
-        throbber.performTask(()=> {
+        await throbber.performTask(()=> {
             while (this.PerformAutoStep(ignoreBreakpoints));
         }).then(_=> {
 
