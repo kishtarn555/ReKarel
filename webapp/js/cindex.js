@@ -27103,6 +27103,7 @@ var karel = (function (exports, bootstrap) {
         return `<a class="text-decoration-underline" href="#" title="Haz clic para ir al error" onclick="${onclick}">línea ${line}</a>`;
     }
     function decodeError(e, lan) {
+        var _a;
         if (lan === "ruby" || lan === "none") {
             return "Error de compilación, no se puede reconocer el lenguaje";
         }
@@ -27112,7 +27113,7 @@ var karel = (function (exports, bootstrap) {
         if (status == null) {
             return "Error de compilación";
         }
-        let message = `Error de compilación en  la ${jumpable(status.line + 1, status === null || status === void 0 ? void 0 : status.loc.first_column)}\n<br>\n<div class="card"><div class="card-body">`;
+        let message = `Error de compilación en  la ${jumpable(status.line + 1, (_a = status.loc) === null || _a === void 0 ? void 0 : _a.first_column)}\n<br>\n<div class="card"><div class="card-body">`;
         if (status.expected) {
             let expectations = status.expected.map((x => ERROR_TOKENS[lan][x.replace(/^'+/, "").replace(/'+$/, "")]));
             message += `Se encontró "${status.text}" cuando se esperaba ${expectations.join(", ")}`;

@@ -586,7 +586,7 @@ function decodeError(e, lan : "java"|"pascal"|"ruby"|"none") : string {
     if (status == null) {
         return "Error de compilación";
     }
-    let message = `Error de compilación en  la ${jumpable(status.line+1,status?.loc.first_column )}\n<br>\n<div class="card"><div class="card-body">`
+    let message = `Error de compilación en  la ${jumpable(status.line+1,status.loc?.first_column )}\n<br>\n<div class="card"><div class="card-body">`
     if (status.expected) {        
         let expectations = status.expected.map((x=>ERROR_TOKENS[lan][x.replace(/^'+/,"").replace(/'+$/,"") ]))        
         message += `Se encontró "${status.text}" cuando se esperaba ${ expectations.join(", ")}`
