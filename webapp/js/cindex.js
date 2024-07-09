@@ -26602,6 +26602,13 @@ var karel = (function (exports, bootstrap) {
         return true;
     }
 
+    function testSkipFlag(editor, line) {
+        const text = editor.state.doc.line(line).text;
+        const pascal = /\@saltatela/g;
+        const java = /\@autoSkip/g;
+        return pascal.test(text) || java.test(text);
+    }
+
     var __awaiter = (undefined && undefined.__awaiter) || function (thisArg, _arguments, P, generator) {
         function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
         return new (P || (P = Promise))(function (resolve, reject) {
@@ -26626,6 +26633,7 @@ var karel = (function (exports, bootstrap) {
             this.endedOnError = false;
             this.autoStepInterval = 0;
             this.autoStepping = false;
+            this.futureStepping = false;
             KarelController.instance = this;
         }
         static GetInstance() {
@@ -26725,7 +26733,13 @@ var karel = (function (exports, bootstrap) {
                 return;
             let runtime = this.GetRuntime();
             runtime.step();
-            this.EndStep();
+            const mainEditor = getEditors()[0];
+            if (testSkipFlag(mainEditor, runtime.state.line !== 0 ? runtime.state.line : 1)) {
+                this.StepOut();
+            }
+            else {
+                this.EndStep();
+            }
         }
         StepOver() {
             if (!this.StartStep())
@@ -26754,9 +26768,11 @@ var karel = (function (exports, bootstrap) {
                 this.RunTillEnd();
                 return;
             }
+            this.futureStepping = true;
             throbber.performTask(() => {
                 while (this.PerformAutoStep() && runtime.state.stackSize >= startWStackSize)
                     ;
+                this.futureStepping = false;
             }).then(_ => this.EndStep());
         }
         StartAutoStep(delay) {
@@ -26777,6 +26793,10 @@ var karel = (function (exports, bootstrap) {
             this.autoStepInterval = window.setInterval(() => {
                 if (!this.running) {
                     this.StopAutoStep();
+                    return;
+                }
+                if (this.futureStepping) {
+                    //Is futureStepping, wait for it to end.
                     return;
                 }
                 this.Step();
@@ -26809,6 +26829,7 @@ var karel = (function (exports, bootstrap) {
                         return;
                     }
                 }
+                this.futureStepping = true;
                 let runtime = this.GetRuntime();
                 // runtime.disableStackEvents= false; // FIXME: This should only be done when no breakpoints
                 // runtime.disableStackEvents= true; // FIXME: This should only be done when no breakpoints
@@ -26816,6 +26837,7 @@ var karel = (function (exports, bootstrap) {
                     while (this.PerformAutoStep(ignoreBreakpoints))
                         ;
                 }).then(_ => {
+                    this.futureStepping = false;
                     if (!runtime.state.running) {
                         this.EndMessage();
                         this.ChangeState("finished");

@@ -9,6 +9,7 @@ import { getEditors } from "./editor/editorsInstances";
 import { Callbacks } from "jquery";
 import { CheckForBreakPointOnLine } from "./editor/editor.breakpoint";
 import { clearUnderlineError, underlineError } from "./editor/editor.parseErrorUnderline";
+import { testSkipFlag } from "./editor/editor.skippable";
 
 type messageType = "info"|"success"|"error"|"raw"|"warning";
 type MessageCallback = (message:string, type:messageType)=>void;
@@ -39,6 +40,7 @@ class KarelController {
     private autoStepInterval:number;
     private drawFrameRequest : number;
     private autoStepping: boolean;
+    private futureStepping:boolean
 
     constructor(world: World) {
         this.world = world;
@@ -54,6 +56,7 @@ class KarelController {
         this.endedOnError = false;
         this.autoStepInterval = 0;
         this.autoStepping = false;
+        this.futureStepping = false;
 
         KarelController.instance = this;
     }
@@ -172,7 +175,13 @@ class KarelController {
         
         let runtime = this.GetRuntime();
         runtime.step();
-        this.EndStep();
+        const mainEditor = getEditors()[0];
+
+        if (testSkipFlag(mainEditor, runtime.state.line !== 0?runtime.state.line:1)) {
+            this.StepOut();
+        } else { 
+            this.EndStep();
+        }
     }
 
     StepOver() {
@@ -196,16 +205,17 @@ class KarelController {
 
     StepOut() {
         if (!this.StartStep()) return;
-        
         const runtime = this.GetRuntime();
         const startWStackSize = runtime.state.stackSize;
         if (startWStackSize === 0) {
             this.RunTillEnd();
             return;
         }
+        this.futureStepping = true;
         throbber.performTask(
             ()=> {
                 while (this.PerformAutoStep() && runtime.state.stackSize >= startWStackSize);
+                this.futureStepping = false;
             }
         ).then(_=>this.EndStep());
     }
@@ -231,12 +241,17 @@ class KarelController {
                     this.StopAutoStep();
                     return;
                 }
+                if (this.futureStepping) {
+                    //Is futureStepping, wait for it to end.
+                    return;
+                }
                 this.Step();
             }, 
             delay
         );
         return true;
     }
+
 
     ChangeAutoStepDelay(delay:number) {
         if (!this.IsAutoStepping()) {
@@ -266,14 +281,14 @@ class KarelController {
                 return;
             }
         }
-
+        this.futureStepping = true;
         let runtime = this.GetRuntime();
         // runtime.disableStackEvents= false; // FIXME: This should only be done when no breakpoints
         // runtime.disableStackEvents= true; // FIXME: This should only be done when no breakpoints
         await throbber.performTask(()=> {
             while (this.PerformAutoStep(ignoreBreakpoints));
         }).then(_=> {
-
+            this.futureStepping = false;
             if (!runtime.state.running) {
                 this.EndMessage();
                 this.ChangeState("finished");
