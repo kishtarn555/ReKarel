@@ -26537,11 +26537,25 @@ var karel = (function (exports, bootstrap) {
         }
         performTask(task) {
             return __awaiter$1(this, void 0, void 0, function* () {
+                const iter = task();
+                let curr = iter.next();
+                let last = curr.value;
+                const startTime = Date.now();
+                while (!curr.done && (Date.now() - startTime) < 1000) {
+                    last = curr.value;
+                    curr = iter.next();
+                }
+                if (curr.done) {
+                    return last;
+                }
                 this.show();
                 const promise = new Promise((resolve, reject) => setTimeout(() => {
-                    let result = task();
+                    while (!curr.done) {
+                        last = curr.value;
+                        curr = iter.next();
+                    }
                     this.hide();
-                    resolve(result);
+                    resolve(last);
                 }));
                 return promise;
             });
@@ -26748,11 +26762,11 @@ var karel = (function (exports, bootstrap) {
             const startWStackSize = runtime.state.stackSize;
             runtime.step();
             if (runtime.state.stackSize > startWStackSize) {
-                throbber.performTask(() => {
+                throbber.performTask(function* () {
                     while (this.PerformAutoStep() && runtime.state.stackSize > startWStackSize)
-                        ;
+                        yield;
                     runtime.step();
-                })
+                }.bind(this))
                     .then(() => this.EndStep());
             }
             else {
@@ -26769,11 +26783,11 @@ var karel = (function (exports, bootstrap) {
                 return;
             }
             this.futureStepping = true;
-            throbber.performTask(() => {
+            throbber.performTask(function* () {
                 while (this.PerformAutoStep() && runtime.state.stackSize >= startWStackSize)
-                    ;
+                    yield;
                 this.futureStepping = false;
-            }).then(_ => this.EndStep());
+            }.bind(this)).then(_ => this.EndStep());
         }
         StartAutoStep(delay) {
             this.StopAutoStep(); //Avoid thread leak
@@ -26833,10 +26847,10 @@ var karel = (function (exports, bootstrap) {
                 let runtime = this.GetRuntime();
                 // runtime.disableStackEvents= false; // FIXME: This should only be done when no breakpoints
                 // runtime.disableStackEvents= true; // FIXME: This should only be done when no breakpoints
-                yield throbber.performTask(() => {
+                yield throbber.performTask(function* () {
                     while (this.PerformAutoStep(ignoreBreakpoints))
-                        ;
-                }).then(_ => {
+                        yield;
+                }.bind(this)).then(() => {
                     this.futureStepping = false;
                     if (!runtime.state.running) {
                         this.EndMessage();

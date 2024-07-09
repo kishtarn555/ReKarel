@@ -192,10 +192,10 @@ class KarelController {
         runtime.step();
         if (runtime.state.stackSize > startWStackSize) {
             throbber.performTask(
-                ()=> {
-                    while (this.PerformAutoStep() && runtime.state.stackSize > startWStackSize);
+                function  * () {
+                    while (this.PerformAutoStep() && runtime.state.stackSize > startWStackSize) yield;
                     runtime.step();
-                }
+                }.bind(this)
             )
             .then(()=> this.EndStep())
         } else {
@@ -213,10 +213,10 @@ class KarelController {
         }
         this.futureStepping = true;
         throbber.performTask(
-            ()=> {
-                while (this.PerformAutoStep() && runtime.state.stackSize >= startWStackSize);
+            function * () {
+                while (this.PerformAutoStep() && runtime.state.stackSize >= startWStackSize) yield;
                 this.futureStepping = false;
-            }
+            }.bind(this)
         ).then(_=>this.EndStep());
     }
 
@@ -285,9 +285,9 @@ class KarelController {
         let runtime = this.GetRuntime();
         // runtime.disableStackEvents= false; // FIXME: This should only be done when no breakpoints
         // runtime.disableStackEvents= true; // FIXME: This should only be done when no breakpoints
-        await throbber.performTask(()=> {
-            while (this.PerformAutoStep(ignoreBreakpoints));
-        }).then(_=> {
+        await throbber.performTask(function * () {
+            while (this.PerformAutoStep(ignoreBreakpoints)) yield;
+        }.bind(this)).then(()=> {
             this.futureStepping = false;
             if (!runtime.state.running) {
                 this.EndMessage();
