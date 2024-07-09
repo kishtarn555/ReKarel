@@ -27694,12 +27694,13 @@ var karel = (function (exports, bootstrap) {
                         '<span class="text-warning"> Hay demasiadas funciones en la pila, las más recientes no se muestran en la interfaz, pero estan ahí </span></div>');
                     return;
                 }
+                const onclick = `karel.MoveEditorCursorToLine(${evt.line + 1})`;
                 this.panel.prepend('<div class="well well-small">' +
                     `<span class="text-info">${runtime.state.stackSize}</span> - ` +
                     evt.function +
                     ' (' +
                     `<span class="text-warning">${evt.param}</span>` +
-                    ') <span class="badge bg-info"> Desde línea ' +
+                    `) <span class="badge bg-info" onclick="${onclick}"> Desde línea ` +
                     (evt.line + 1) +
                     '</span></div>');
             });
