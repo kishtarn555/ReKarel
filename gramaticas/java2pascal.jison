@@ -60,43 +60,103 @@
 
 %{
 function validate(function_list, program, yy) {
-	var functions = {};
-	var prototypes = {};
+	let functions = {};
+	let prototypes = {};
 
-    var code = "";
-    var indent = 0;
+    let code = "";
+    let indent = 0;
 
     function addline(line) {
-        for (var ii =0; ii < indent; i++) code+="\t";
-        code+=line+"\n";
+        if (code!=="") code+="\n"
+        for (let ii =0; ii < indent; ii++) code+="\t";
+        code+=line;
+    }
+    function processLines(array) {
+        for (let i = 0; i < array.length; i++) {
+            let semicolon = true;
+            if (i+1 < array.length) {
+                if (array[i+1][0] ==="sino") semicolon=false;
+            }
+
+            if (array[i].length > 1) {
+                semicolon = false;
+            }
+            if (array[i][0] === "inicio") {
+                semicolon=false;
+                addline("inicio");
+                indent++;
+            } else if (array[i][0]==="fin") {
+                indent--;
+                addline("fin");
+            } else {
+                if (i !== 0 && array[i-1].length > 1) indent++;
+                addline(array[i][0])
+                
+                if (i !== 0 && array[i-1].length > 1) indent--;
+            }
+            if (semicolon) {
+                code+=";";
+            }
+        }
     }
 
     addline("iniciar-programa")
     indent++;
+    const builtin = ["turnoff", "move", "return", "putbeeper", "pickbeeper", "turnleft"];
 
-	for (var i = 0; i < function_list.length; i++) {
-        break;
-		if (functions[function_list[i][0]]) {
-			yy.parser.parseError("Function redefinition: " + function_list[i][0], {
-				text: function_list[i][0],
-				line: function_list[i][1][0][1],
-        loc: function_list[i][3]
-			});
-		}
+	for (let i = 0; i < function_list.length; i++) {
+        functions[function_list[i][0]]="true";
+        let inner = function_list[i][1];
+        for (let j = 0; j < inner.length; j++) {
+            if (inner[j].length > 1) continue;
+             const tokenMatch = /^[a-zA-Z][a-zA-Z0-9_]*/.exec(inner[j][0]);
+            
+            if (tokenMatch) {
+                const token = tokenMatch[0];
+                
+                if (builtin.includes(token)) {
+                    continue;
+                }
 
-		functions[function_list[i][0]] = program.length;
-		prototypes[function_list[i][0]] = function_list[i][2];
-		program = program.concat(function_list[i][1]);
+                if (functions[token]) continue;
+                prototypes[token] = true;
+
+            }
+
+        }
+        
+	}
+    for (let i = 0; i < function_list.length; i++) {
+        if (prototypes[function_list[i][0]]) {
+            addline(`define-prototipo-instruccion ${function_list[i][0]}`);
+            if (function_list[i].length === 3) {
+                code+=`(${function_list[i][2]})`;//This function accepts parameters
+
+            }
+            code+=";"
+        }        
+	}
+    code+="\n";
+    
+    for (let i = 0; i < function_list.length; i++) {
+        addline(`define-nueva-instruccion ${function_list[i][0]}`);
+        if (function_list[i].length === 3) {
+            code+=`(${function_list[i][2]})`;//This function accepts parameters
+        }
+        code+=" como";
+        processLines(function_list[i][1]);
+        code+="\n";              
 	}
 
-	var current_line = 1;
+    
 
-	for (var i = 0; i < program.length; i++) {
-		if (program[i][0] === "inicio") {
-            addline("inicio");
-            indent++;
-        } 
-	}
+    
+    
+    addline("inicia-ejecucion");
+    indent++;
+    processLines(program);
+    indent--;
+    addline("termina-ejecucion");
     indent--;
     addline("finalizar-programa")
     
@@ -108,14 +168,14 @@ function validate(function_list, program, yy) {
 
 program
   : CLASS PROG BEGIN def_list PROG '(' ')' block END EOF
-    { return validate($def_list, $PROG, yy); }
+    { return validate($def_list, $block.slice(1, -1), yy); }
   | CLASS PROG BEGIN PROG '(' ')' block END EOF
-    { return validate([], $PROG, yy); }
+    { return validate([], $block.slice(1, -1), yy); }
   ;
 
 block
   : BEGIN expr_list END
-    { $$ = [["inicio"], $expr_list ,["fin"]]; }
+    { $$ = [["inicio"]].concat( $expr_list).concat([["fin"]]); }
   ;
 
 def_list
@@ -126,36 +186,12 @@ def_list
   ;
 
 def
-  : DEF line var '(' ')' block
+  : DEF var '(' ')' block
     { 
-      @$.first_line = @1.first_line;
-      @$.first_column = @1.first_column;
-      @$.last_line = @3.last_line;
-      @$.last_column = @3.last_column;
-      $$ = [[$var, $line.concat($block).concat([['RET']]), 1, @$]];
+       $$ = [[$var, $block]]
        }
-  | DEF line var '(' var ')' block
-    %{
-      @$.first_line = @1.first_line;
-      @$.first_column = @1.first_column;
-      @$.last_line = @3.last_line;
-      @$.last_column = @3.last_column;
-    	var result = $line.concat($block).concat([['RET']]);
-    	for (var i = 0; i < result.length; i++) {
-    		if (result[i][0] == 'PARAM') {
-    			if (result[i][1] == $5) {
-    				result[i][1] = 0;
-    			} else {
-						yy.parser.parseError("Unknown variable: " + $5, {
-							text: result[i][1],
-							line: yylineno,
-              loc:result[i][2]
-						});
-    			}
-    		}
-    	}
-    	$$ = [[$var, result, 2,@$]];
-    %}
+  | DEF var '(' var ')' block
+    { $$ = [[$2, $block, $4]] }
   ;
 
 
@@ -172,7 +208,7 @@ expr
   | LEFT '(' ')' ';'
     { $$ = [['gira-izquierda']]; }
   | PICKBUZZER '(' ')' ';'
-    { $$ = ['coge-zumbador']; }
+    { $$ = [['coge-zumbador']]; }
   | LEAVEBUZZER '(' ')' ';'
     { $$ = [['deja-zumbador']]; }
   | HALT '(' ')' ';'
@@ -196,7 +232,7 @@ expr
 call
   : var '(' ')'
     
-   [[ $var ]]
+   { $$=[[ $var ]]}
   | var '(' integer ')'
     { 
       $$ = [[ `${$var}(${$integer})` ]]
@@ -204,20 +240,20 @@ call
   ;
 
 cond
-  : IF line '(' term ')' expr %prec XIF
-    { $$ = [['IF',$term]].concat(expr) }
-  | IF line '(' term ')' expr ELSE expr
-    { $$ = [['IF',$term]].concat(expr).concat([['ELSE']]).concat($8); }
+  : IF '(' term ')' expr %prec XIF
+    { $$ = [[`si ${$term} entonces`, "n"]].concat($expr) }
+  | IF '(' term ')' expr ELSE expr
+    { $$ = [[`si ${$term} entonces`, "n"]].concat($expr).concat([['sino', "n"]]).concat($7); }
   ;
 
 loop
-  : WHILE line '(' term ')' expr
-    { $$ = [['LOOP', $term]].concat($expr);}
+  : WHILE '(' term ')' expr
+    { $$ = [[`mientras ${$term} hacer`, "n"]].concat($expr);}
   ;
 
 repeat
-  : REPEAT line '(' integer ')' expr
-    { $$ = [['REPEAT', $integer]].concat(expr) }
+  : REPEAT '(' integer ')' expr
+    { $$ = [[`repetir ${$integer} veces`,"n"]].concat($expr) }
   ;
 
 term

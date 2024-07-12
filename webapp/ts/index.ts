@@ -11,7 +11,7 @@ import { InitSettings, StartSettings } from "./settings";
 import { getEditors } from "./editor/editorsInstances";
 import { HookSession, RestoreSession } from "./session";
 import { RegisterHighlightListeners } from "./editor/editor.listeners";
-import { editorJava2pascal } from "./editor/java2pascal.editor";
+import { editorJava2pascal } from "./editor/transpiler";
 
 
 let KarelWorld: World = new World(100, 100);
