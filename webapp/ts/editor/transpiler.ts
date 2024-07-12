@@ -13,7 +13,7 @@ export function editorJava2pascal() {
         console.log(response)
         SetText(editor,`${response}`);
     } catch (e) {
-        KarelConsole.GetInstance().SendMessageToConsole("El codigo no compila", "danger")
+        KarelConsole.GetInstance().SendMessageToConsole("Para cambiar el lenguaje, el código debe compilar", "danger")
     }
 
 }
@@ -26,6 +26,6 @@ export function editorPascal2Java() {
         console.log(response)
         SetText(editor,`${response}`);
     } catch (e) {
-        KarelConsole.GetInstance().SendMessageToConsole("El codigo no compila", "danger")
+        KarelConsole.GetInstance().SendMessageToConsole("Para cambiar el lenguaje, el código debe compilar", "danger")
     }
 }

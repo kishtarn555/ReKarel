@@ -29600,7 +29600,7 @@ var karel = (function (exports, bootstrap) {
             SetText(editor, `${response}`);
         }
         catch (e) {
-            KarelConsole.GetInstance().SendMessageToConsole("El codigo no compila", "danger");
+            KarelConsole.GetInstance().SendMessageToConsole("Para cambiar el lenguaje, el código debe compilar", "danger");
         }
     }
 
