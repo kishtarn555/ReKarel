@@ -26537,11 +26537,25 @@ var karel = (function (exports, bootstrap) {
         }
         performTask(task) {
             return __awaiter$1(this, void 0, void 0, function* () {
+                const iter = task();
+                let curr = iter.next();
+                let last = curr.value;
+                const startTime = Date.now();
+                while (!curr.done && (Date.now() - startTime) < 1000) {
+                    last = curr.value;
+                    curr = iter.next();
+                }
+                if (curr.done) {
+                    return last;
+                }
                 this.show();
                 const promise = new Promise((resolve, reject) => setTimeout(() => {
-                    let result = task();
+                    while (!curr.done) {
+                        last = curr.value;
+                        curr = iter.next();
+                    }
                     this.hide();
-                    resolve(result);
+                    resolve(last);
                 }));
                 return promise;
             });
@@ -26602,6 +26616,13 @@ var karel = (function (exports, bootstrap) {
         return true;
     }
 
+    function testSkipFlag(editor, line) {
+        const text = editor.state.doc.line(line).text;
+        const pascal = /\@saltatela/g;
+        const java = /\@autoSkip/g;
+        return pascal.test(text) || java.test(text);
+    }
+
     var __awaiter = (undefined && undefined.__awaiter) || function (thisArg, _arguments, P, generator) {
         function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
         return new (P || (P = Promise))(function (resolve, reject) {
@@ -26626,6 +26647,7 @@ var karel = (function (exports, bootstrap) {
             this.endedOnError = false;
             this.autoStepInterval = 0;
             this.autoStepping = false;
+            this.futureStepping = false;
             KarelController.instance = this;
         }
         static GetInstance() {
@@ -26725,7 +26747,13 @@ var karel = (function (exports, bootstrap) {
                 return;
             let runtime = this.GetRuntime();
             runtime.step();
-            this.EndStep();
+            const mainEditor = getEditors()[0];
+            if (testSkipFlag(mainEditor, runtime.state.line !== 0 ? runtime.state.line : 1)) {
+                this.StepOut();
+            }
+            else {
+                this.EndStep();
+            }
         }
         StepOver() {
             if (!this.StartStep())
@@ -26734,11 +26762,11 @@ var karel = (function (exports, bootstrap) {
             const startWStackSize = runtime.state.stackSize;
             runtime.step();
             if (runtime.state.stackSize > startWStackSize) {
-                throbber.performTask(() => {
+                throbber.performTask(function* () {
                     while (this.PerformAutoStep() && runtime.state.stackSize > startWStackSize)
-                        ;
+                        yield;
                     runtime.step();
-                })
+                }.bind(this))
                     .then(() => this.EndStep());
             }
             else {
@@ -26754,10 +26782,12 @@ var karel = (function (exports, bootstrap) {
                 this.RunTillEnd();
                 return;
             }
-            throbber.performTask(() => {
+            this.futureStepping = true;
+            throbber.performTask(function* () {
                 while (this.PerformAutoStep() && runtime.state.stackSize >= startWStackSize)
-                    ;
-            }).then(_ => this.EndStep());
+                    yield;
+                this.futureStepping = false;
+            }.bind(this)).then(_ => this.EndStep());
         }
         StartAutoStep(delay) {
             this.StopAutoStep(); //Avoid thread leak
@@ -26777,6 +26807,10 @@ var karel = (function (exports, bootstrap) {
             this.autoStepInterval = window.setInterval(() => {
                 if (!this.running) {
                     this.StopAutoStep();
+                    return;
+                }
+                if (this.futureStepping) {
+                    //Is futureStepping, wait for it to end.
                     return;
                 }
                 this.Step();
@@ -26809,13 +26843,15 @@ var karel = (function (exports, bootstrap) {
                         return;
                     }
                 }
+                this.futureStepping = true;
                 let runtime = this.GetRuntime();
                 // runtime.disableStackEvents= false; // FIXME: This should only be done when no breakpoints
                 // runtime.disableStackEvents= true; // FIXME: This should only be done when no breakpoints
-                yield throbber.performTask(() => {
+                yield throbber.performTask(function* () {
                     while (this.PerformAutoStep(ignoreBreakpoints))
-                        ;
-                }).then(_ => {
+                        yield;
+                }.bind(this)).then(() => {
+                    this.futureStepping = false;
                     if (!runtime.state.running) {
                         this.EndMessage();
                         this.ChangeState("finished");
@@ -27067,6 +27103,7 @@ var karel = (function (exports, bootstrap) {
         return `<a class="text-decoration-underline" href="#" title="Haz clic para ir al error" onclick="${onclick}">línea ${line}</a>`;
     }
     function decodeError(e, lan) {
+        var _a;
         if (lan === "ruby" || lan === "none") {
             return "Error de compilación, no se puede reconocer el lenguaje";
         }
@@ -27076,7 +27113,7 @@ var karel = (function (exports, bootstrap) {
         if (status == null) {
             return "Error de compilación";
         }
-        let message = `Error de compilación en  la ${jumpable(status.line + 1, status === null || status === void 0 ? void 0 : status.loc.first_column)}\n<br>\n<div class="card"><div class="card-body">`;
+        let message = `Error de compilación en  la ${jumpable(status.line + 1, (_a = status.loc) === null || _a === void 0 ? void 0 : _a.first_column)}\n<br>\n<div class="card"><div class="card-body">`;
         if (status.expected) {
             let expectations = status.expected.map((x => ERROR_TOKENS[lan][x.replace(/^'+/, "").replace(/'+$/, "")]));
             message += `Se encontró "${status.text}" cuando se esperaba ${expectations.join(", ")}`;
