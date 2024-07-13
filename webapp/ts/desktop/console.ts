@@ -10,6 +10,7 @@ export type ConsoleTab = {
 export class KarelConsole {
     consoleTab:ConsoleTab
     private unreadMessages;
+    private static instance:KarelConsole
 
     constructor (data:ConsoleTab) {
         this.consoleTab = data;
@@ -20,6 +21,7 @@ export class KarelConsole {
             this.unreadMessages = 0;
             this.UpdateUnreadPill();
         })
+        KarelConsole.instance = this;
 
     }
 
@@ -51,7 +53,6 @@ export class KarelConsole {
     }
 
     
-    
     ClearConsole() {
         this.unreadMessages = 0;
         this.UpdateUnreadPill();
@@ -71,6 +72,11 @@ export class KarelConsole {
                 this.consoleTab.parent.prop("scrollHeight")
             );
         }
+    }
+
+    
+    static GetInstance() {
+        return KarelConsole.instance;
     }
 
 }
