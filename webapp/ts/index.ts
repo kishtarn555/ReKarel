@@ -11,7 +11,7 @@ import { InitSettings, StartSettings } from "./settings";
 import { getEditors } from "./editor/editorsInstances";
 import { HookSession, RestoreSession } from "./session";
 import { RegisterHighlightListeners } from "./editor/editor.listeners";
-import { editorJava2pascal } from "./editor/transpiler";
+import { editorJava2pascal, editorPascal2Java } from "./editor/transpiler";
 
 
 let KarelWorld: World = new World(100, 100);
@@ -68,6 +68,14 @@ const java2pascalConfirm = {
         editorJava2pascal()
     },
     message: "¿Quieres convertir tu código a Karel Pascal?",
+    title: "Cambiar lenguaje",
+    reject: () => { },
+};
+const pascal2javaConfirm = {
+    accept: () => {
+        editorPascal2Java()
+    },
+    message: "¿Quieres convertir tu código a Karel Java?",
     title: "Cambiar lenguaje",
     reject: () => { },
 };
@@ -326,6 +334,10 @@ HookUpCommonUI(
             {
                 button: "#java2pascalBtn",
                 data: java2pascalConfirm
+            },
+            {
+                button: "#pascal2javaBtn",
+                data: pascal2javaConfirm
             }
         ],
         amountModal: {
