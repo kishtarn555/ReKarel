@@ -141,22 +141,22 @@ case 25:
  this.$ = [[`${$$[$0-3]}(${$$[$0-1]});`]]; 
 break;
 case 26:
- this.$ = [[`if (${$$[$0-2]})`]].concat($$[$0]) 
+ this.$ = [[`if (${$$[$0-2]})`, 'n']].concat($$[$0]) 
 break;
 case 27:
- this.$ = [[`if (${$$[$0-4]})`]].concat($$[$0-2]).concat([["else"]].concat($$[$0])) 
+ this.$ = [[`if (${$$[$0-4]})`, 'n']].concat($$[$0-2]).concat([["else", 'n']].concat($$[$0])) 
 break;
 case 28:
- this.$ = [[`while (${$$[$0-2]})`]].concat($$[$0]) 
+ this.$ = [[`while (${$$[$0-2]})`, 'n']].concat($$[$0]) 
 break;
 case 29:
- this.$ =  [[`iterate (${$$[$0-2]})`]].concat($$[$0]) 
+ this.$ =  [[`iterate (${$$[$0-2]})`, 'n']].concat($$[$0]) 
 break;
 case 30:
- this.$ = `${$$[$0-2]} || $$[$0]` 
+ this.$ = `${$$[$0-2]} || ${$$[$0]}` 
 break;
 case 32:
- this.$ = `${$$[$0-2]} && $$[$0]`; 
+ this.$ = `${$$[$0-2]} && ${$$[$0]}`; 
 break;
 case 34:
  this.$ =`!${$$[$0]}`; 
@@ -392,21 +392,32 @@ function validate(function_list, program, yy) {
   let code = "";
   let indent = 0;
 
-  function addline(line) {
-      if (code!=="") code+="\n"
-      for (let ii =0; ii < indent; ii++) code+="\t";
+  function addline(line, addLB = true) {
+      if (addLB) {
+        if (code!=="") code+="\n"        
+        for (let ii =0; ii < indent; ii++) code+="\t";
+      } else {
+        code+=" ";
+      }
       code+=line;
   }
   function processLines(array) {
       for (let i = 0; i < array.length; i++) {
           if (array[i][0]==="BEGIN") {
-            addline("{");
+            addline("{", false);
             indent++;
           } else if (array[i][0]==="END") {
             indent--;
             addline("}");            
           } else {
+            if (i !== 0 && array[i-1].length > 1) {
+              indent++;
+            }
             addline(array[i][0]);
+            
+            if (i !== 0 && array[i-1].length > 1) {
+              indent--;
+            }
           }
       }
   }
@@ -415,8 +426,16 @@ function validate(function_list, program, yy) {
     
     for (let i = 0; i < function_list.length; i++) {
         addline(`define ${function_list[i][0]}`);
-        
+          console.log(function_list[i])
+        if (function_list[i][1][0][0] !== "BEGIN") {
+          addline("{", false);
+          indent++;
+        }
         processLines(function_list[i][1]);
+        if (function_list[i][1][0][0] !== "BEGIN") {
+          indent--;
+          addline("}");
+        }
         code+="\n";              
 	}
 

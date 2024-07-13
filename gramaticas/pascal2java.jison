@@ -82,21 +82,32 @@ function validate(function_list, program, yy) {
   let code = "";
   let indent = 0;
 
-  function addline(line) {
-      if (code!=="") code+="\n"
-      for (let ii =0; ii < indent; ii++) code+="\t";
+  function addline(line, addLB = true) {
+      if (addLB) {
+        if (code!=="") code+="\n"        
+        for (let ii =0; ii < indent; ii++) code+="\t";
+      } else {
+        code+=" ";
+      }
       code+=line;
   }
   function processLines(array) {
       for (let i = 0; i < array.length; i++) {
           if (array[i][0]==="BEGIN") {
-            addline("{");
+            addline("{", false);
             indent++;
           } else if (array[i][0]==="END") {
             indent--;
             addline("}");            
           } else {
+            if (i !== 0 && array[i-1].length > 1) {
+              indent++;
+            }
             addline(array[i][0]);
+            
+            if (i !== 0 && array[i-1].length > 1) {
+              indent--;
+            }
           }
       }
   }
@@ -105,8 +116,16 @@ function validate(function_list, program, yy) {
     
     for (let i = 0; i < function_list.length; i++) {
         addline(`define ${function_list[i][0]}`);
-        
+          console.log(function_list[i])
+        if (function_list[i][1][0][0] !== "BEGIN") {
+          addline("{", false);
+          indent++;
+        }
         processLines(function_list[i][1]);
+        if (function_list[i][1][0][0] !== "BEGIN") {
+          indent--;
+          addline("}");
+        }
         code+="\n";              
 	}
 
@@ -202,31 +221,31 @@ call
 
 cond
   : IF line term THEN expr %prec XIF
-    { $$ = [[`if (${$term})`]].concat($expr) }
+    { $$ = [[`if (${$term})`, 'n']].concat($expr) }
   | IF line term THEN expr ELSE expr
-    { $$ = [[`if (${$term})`]].concat($5).concat([["else"]].concat($7)) }
+    { $$ = [[`if (${$term})`, 'n']].concat($5).concat([["else", 'n']].concat($7)) }
   ;
 
 loop
   : WHILE line term DO expr
-    { $$ = [[`while (${$term})`]].concat($expr) }
+    { $$ = [[`while (${$term})`, 'n']].concat($expr) }
   ;
 
 repeat
   : REPEAT line integer TIMES expr
-    { $$ =  [[`iterate (${$integer})`]].concat($expr) }
+    { $$ =  [[`iterate (${$integer})`, 'n']].concat($expr) }
   ;
 
 term
   : term OR and_term
-    { $$ = `${$term} || $and_term` }
+    { $$ = `${$term} || ${$and_term}` }
   | and_term
     { $$ = $and_term; }
   ;
 
 and_term
   : and_term AND not_term
-    { $$ = `${$and_term} && $not_term`; }
+    { $$ = `${$and_term} && ${$not_term}`; }
   | not_term
     { $$ = $not_term; }
   ;
