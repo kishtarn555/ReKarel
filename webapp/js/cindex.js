@@ -25004,7 +25004,20 @@ var karel = (function (exports, bootstrap) {
                     self.state.fp = self.state.stack[self.state.fp];
                     self.state.stackSize--;
                     if (!self.disableStackEvents) {
-                        self.fireEvent('return', { target: self });
+                        let param = self.state.stack[self.state.fp + 3];
+                        let fname = "N/A";
+                        let line = -2;
+                        if (self.state.stackSize >= 1) {
+                            let npc = self.state.stack[self.state.fp + 2]; //Get the function name from the function that called me
+                            fname = self.function_names[self.program[3 * npc + 2]];
+                            line = self.program[3 * (npc + 1) + 1]; //Get line. A call always is LINE -> LOAD PARAM -> CALL -> LINE
+                        }
+                        self.fireEvent('return', {
+                            target: self,
+                            param: param,
+                            function: fname,
+                            line: line
+                        });
                     }
                     break;
                 }
@@ -27713,6 +27726,29 @@ var karel = (function (exports, bootstrap) {
             KarelController.GetInstance().RegisterResetObserver((_) => this.clearStack());
             KarelController.GetInstance().RegisterSlowModeObserver((_, limit) => this.slowMode(limit));
         }
+        getCollapsedHTML(evt) {
+            const karelController = KarelController.GetInstance();
+            let runtime = karelController.GetRuntime();
+            let msg = this.getCallInfo(evt);
+            if (runtime.state.stackSize === MAX_STACK_SIZE + 1) {
+                return msg;
+            }
+            msg += `<br><span class="text-primary">${MAX_STACK_SIZE + 1} - ${runtime.state.stackSize - 1}</span>` +
+                '<span> Funciones ocultas </span><br/><span>Hay demasiadas funciones en la pila, las más recientes no se muestran en la interfaz, pero estan ahí </span>';
+            return msg;
+        }
+        getCallInfo(evt) {
+            const karelController = KarelController.GetInstance();
+            let runtime = karelController.GetRuntime();
+            const onclick = `karel.MoveEditorCursorToLine(${evt.line + 1})`;
+            return `<span class="text-info">${runtime.state.stackSize}</span> - ` +
+                evt.function +
+                ' (' +
+                `<span class="text-primary"><b>${evt.param}</b></span>` +
+                `) <a href="#" class="badge bg-primary text-decoration-none" onclick="${onclick}"> Desde línea ` +
+                (evt.line + 1) +
+                '</a>';
+        }
         OnStackChanges() {
             //FIXME: Don't hardcode the id. #pilaTab
             const karelController = KarelController.GetInstance();
@@ -27720,33 +27756,22 @@ var karel = (function (exports, bootstrap) {
             // @ts-ignore
             runtime.addEventListener('call', evt => {
                 if (runtime.state.stackSize == MAX_STACK_SIZE + 1) {
-                    this.panel.prepend('<div class="well well-small">' +
-                        `<span class="text-secondary">${MAX_STACK_SIZE + 1} - ${runtime.state.stackSize}</span>` +
-                        '<span class="text-warning"> Hay demasiadas funciones en la pila, las más recientes no se muestran en la interfaz, pero estan ahí </span></div>');
+                    this.panel.prepend('<div class="alert alert-warning">' +
+                        this.getCollapsedHTML(evt) +
+                        '</div>');
                     return;
                 }
                 if (runtime.state.stackSize > MAX_STACK_SIZE) {
-                    this.panel.find('>:first-child').html('<div class="well well-small">' +
-                        `<span class="text-secondary">${MAX_STACK_SIZE + 1} - ${runtime.state.stackSize}</span>` +
-                        '<span class="text-warning"> Hay demasiadas funciones en la pila, las más recientes no se muestran en la interfaz, pero estan ahí </span></div>');
+                    this.panel.find('>:first-child').html(this.getCollapsedHTML(evt));
                     return;
                 }
-                const onclick = `karel.MoveEditorCursorToLine(${evt.line + 1})`;
-                this.panel.prepend('<div class="well well-small">' +
-                    `<span class="text-info">${runtime.state.stackSize}</span> - ` +
-                    evt.function +
-                    ' (' +
-                    `<span class="text-warning">${evt.param}</span>` +
-                    `) <span class="badge bg-info" onclick="${onclick}"> Desde línea ` +
-                    (evt.line + 1) +
-                    '</span></div>');
+                this.panel.prepend('<div class="well well-small">' + this.getCallInfo(evt) + '</div>');
             });
             // @ts-ignore
             runtime.addEventListener('return', evt => {
                 if (runtime.state.stackSize > MAX_STACK_SIZE) {
-                    this.panel.find('>:first-child').html('<div class="well well-small">' +
-                        `<span class="text-secondary">${MAX_STACK_SIZE + 1} - ${runtime.state.stackSize}</span>` +
-                        '<span class="text-warning"> Hay demasiadas funciones en la pila, las más recientes no se muestran en la interfaz, pero estan ahí </span></div>');
+                    runtime.raw_opcodes;
+                    this.panel.find('>:first-child').html(this.getCollapsedHTML(evt));
                     return;
                 }
                 this.panel.find('>:first-child').remove();
@@ -27761,8 +27786,13 @@ var karel = (function (exports, bootstrap) {
         }
         slowMode(limit) {
             const txt = limit.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-            this.panel.prepend('<div class="well well-small">' +
-                `<span class="text-danger"> <i class="bi bi-exclamation-triangle-fill"></i> Se ejecutaron más de ${txt} instrucciones, por lo que se activo el modo de ejecución rápido, así que la pila muestra el estado en el que se encontraba hasta la instrucción ${txt} </span><hr></div>`);
+            this.panel.prepend('<div class="alert alert-danger">' +
+                `<span> <i class="bi bi-exclamation-triangle-fill"></i> Se ejecutaron más de ${txt} instrucciones,` +
+                `por lo que se activo el modo de ejecución rápido, así que la pila muestra el` +
+                ` estado en el que se encontraba hasta la instrucción ${txt} </span>` +
+                `<br>` +
+                "<span>Esto se puede cambiar en la configuración de ReKarel</span>" +
+                `</div>`);
         }
     }
 

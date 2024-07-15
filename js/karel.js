@@ -526,9 +526,25 @@ Runtime.prototype.next = function () {
         self.state.pc = self.state.stack[self.state.fp + 2];
         self.state.sp = self.state.stack[self.state.fp + 1];
         self.state.fp = self.state.stack[self.state.fp];
-        self.state.stackSize--;
+        self.state.stackSize--;        
         if (!self.disableStackEvents) {
-          self.fireEvent('return', { target: self });
+          let param = self.state.stack[self.state.fp + 3];
+
+
+          let fname = "N/A";
+          let line =-2;
+          if (self.state.stackSize >= 1) {
+            let npc = self.state.stack[self.state.fp + 2]; //Get the function name from the function that called me
+            fname = self.function_names[self.program[3 * npc + 2]];
+            line = self.program[3 * (npc+1)+ 1]; //Get line. A call always is LINE -> LOAD PARAM -> CALL -> LINE
+          }
+          
+          self.fireEvent('return', { 
+            target: self,
+            param: param,
+            function: fname,
+            line: line
+           });
         }
         break;
       }
