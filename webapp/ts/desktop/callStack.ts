@@ -95,7 +95,12 @@ export class CallStack {
       this.panel.prepend(
         '<div class="alert alert-danger">'+
 
-        `<span> <i class="bi bi-exclamation-triangle-fill"></i> Se ejecutaron más de ${txt} instrucciones, por lo que se activo el modo de ejecución rápido, así que la pila muestra el estado en el que se encontraba hasta la instrucción ${txt} </span></div>`
+        `<span> <i class="bi bi-exclamation-triangle-fill"></i> Se ejecutaron más de ${txt} instrucciones,`+
+        `por lo que se activo el modo de ejecución rápido, así que la pila muestra el`+
+        ` estado en el que se encontraba hasta la instrucción ${txt} </span>`+
+        `<br>`+
+        "<span>Esto se puede cambiar en la configuración de ReKarel</span>"+
+        `</div>`
       );
     }
 
