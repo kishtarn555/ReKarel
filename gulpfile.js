@@ -7,6 +7,7 @@ import clean  from 'gulp-clean'
 const mainPath = "webapp/html/index.html"
 const pascalPath = "webapp/html/docs/pascal/ayuda-pascal.html"
 const javaPath = "webapp/html/docs/java/ayuda-java.html"
+const rekarelDocsPath = "webapp/html/docs/rekarel/ayuda-rekarel.html"
 const mainPathDist = "webapp/"
 
 gulp.task('bundle-html', ()=> {
@@ -35,6 +36,18 @@ gulp.task('bundle-pascal', ()=> {
 
 gulp.task('bundle-java', ()=> {
     return gulp.src([javaPath])
+    .pipe(
+        fileInclude({
+            prefix: '@@',
+            basepath: '@file'
+        }))
+    .pipe(gulp.dest(mainPathDist))
+    
+})
+
+
+gulp.task('bundle-rekarel', ()=> {
+    return gulp.src([rekarelDocsPath])
     .pipe(
         fileInclude({
             prefix: '@@',
@@ -136,5 +149,5 @@ gulp.task('copy-license', () => {
         .pipe(gulp.dest(`${paths.build}`));
 });
 
- gulp.task('default', gulp.series('bundle-html', 'bundle-pascal', 'bundle-java'));
+ gulp.task('default', gulp.series('bundle-html', 'bundle-pascal', 'bundle-java', 'bundle-rekarel'));
  gulp.task('build', gulp.series('clean', 'copy-html', 'copy-js', 'copy-img', 'copy-css','copy-license'));
