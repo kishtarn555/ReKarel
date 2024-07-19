@@ -27440,6 +27440,24 @@ var karel = (function (exports, bootstrap) {
             }
             this.Update();
         }
+        SetRandomBeepers(minimum, maximum) {
+            if (this.lock)
+                return;
+            let rmin = Math.min(this.selection.r, this.selection.r + (this.selection.rows - 1) * this.selection.dr);
+            let rmax = Math.max(this.selection.r, this.selection.r + (this.selection.rows - 1) * this.selection.dr);
+            let cmin = Math.min(this.selection.c, this.selection.c + (this.selection.cols - 1) * this.selection.dc);
+            let cmax = Math.max(this.selection.c, this.selection.c + (this.selection.cols - 1) * this.selection.dc);
+            for (let i = rmin; i <= rmax; i++) {
+                for (let j = cmin; j <= cmax; j++) {
+                    let ammount = Math.round(Math.random() * (maximum - minimum) + minimum);
+                    if (this.karelController.world.buzzers(i, j) === ammount) {
+                        continue;
+                    }
+                    this.karelController.world.setBuzzers(i, j, ammount);
+                }
+            }
+            this.Update();
+        }
         SetBeepers(ammount) {
             if (this.lock)
                 return;
@@ -28162,7 +28180,7 @@ var karel = (function (exports, bootstrap) {
             let hotkeys = new Map([
                 [71, () => { this.worldController.ToggleKarelPosition(true); }],
                 [80, () => { this.worldController.ToggleKarelPosition(false); }],
-                [82, () => { this.worldController.SetBeepers(0); }],
+                [82, () => { this.worldController.SetRandomBeepers(1, 99); }],
                 [81, () => { this.worldController.ChangeBeepers(-1); }],
                 [69, () => { this.worldController.ChangeBeepers(1); }],
                 [48, () => { this.worldController.SetBeepers(0); }],

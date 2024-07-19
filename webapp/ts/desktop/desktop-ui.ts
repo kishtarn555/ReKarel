@@ -262,7 +262,7 @@ class DesktopController {
         let hotkeys = new Map<number, ()=>void>([
             [71,()=>{this.worldController.ToggleKarelPosition(true);}],
             [80,()=>{this.worldController.ToggleKarelPosition(false);}],
-            [82,()=>{this.worldController.SetBeepers(0);}],
+            [82,()=>{this.worldController.SetRandomBeepers(1,99);}],
             [81,()=>{this.worldController.ChangeBeepers(-1);}],
             [69,()=>{this.worldController.ChangeBeepers(1);}],
             [48,()=>{this.worldController.SetBeepers(0);}],
