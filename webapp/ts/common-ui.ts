@@ -10,6 +10,7 @@ import { HookWorldSaveModal, WorldSaveModal } from './commonUI/worldSaveModal'
 import { HookNavbar, NavbarData } from './commonUI/navbar'
 import { HookStyleModal } from './commonUI/karelStyleModal'
 import { EvaluatorData, HookEvaluatorModal } from './commonUI/evaluatorModal'
+import { HookRandomBeepersModal } from './commonUI/randomBeepersModal'
 
 
 
@@ -38,6 +39,7 @@ function HookUpCommonUI(uiData: UiData) {
     HookNavbar(uiData.navbar, uiData.editor, uiData.karelController);
     HookStyleModal(uiData.worldController);
     HookEvaluatorModal(uiData.evaluatorModal);
+    HookRandomBeepersModal();
     //Hook ConfirmCallers
     uiData.confirmCallers.forEach((confirmCaller)=> {
         let confirmArgs: ConfirmPromptArgs = {            

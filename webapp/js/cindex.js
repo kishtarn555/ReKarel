@@ -27440,6 +27440,24 @@ var karel = (function (exports, bootstrap) {
             }
             this.Update();
         }
+        SetRandomBeepers(minimum, maximum) {
+            if (this.lock)
+                return;
+            let rmin = Math.min(this.selection.r, this.selection.r + (this.selection.rows - 1) * this.selection.dr);
+            let rmax = Math.max(this.selection.r, this.selection.r + (this.selection.rows - 1) * this.selection.dr);
+            let cmin = Math.min(this.selection.c, this.selection.c + (this.selection.cols - 1) * this.selection.dc);
+            let cmax = Math.max(this.selection.c, this.selection.c + (this.selection.cols - 1) * this.selection.dc);
+            for (let i = rmin; i <= rmax; i++) {
+                for (let j = cmin; j <= cmax; j++) {
+                    let ammount = Math.round(Math.random() * (maximum - minimum) + minimum);
+                    if (this.karelController.world.buzzers(i, j) === ammount) {
+                        continue;
+                    }
+                    this.karelController.world.setBuzzers(i, j, ammount);
+                }
+            }
+            this.Update();
+        }
         SetBeepers(ammount) {
             if (this.lock)
                 return;
@@ -27664,6 +27682,12 @@ var karel = (function (exports, bootstrap) {
         }
     }
 
+    var AppVars;
+    (function (AppVars) {
+        AppVars.randomBeeperMinimum = 1;
+        AppVars.randomBeeperMaximum = 99;
+    })(AppVars || (AppVars = {}));
+
     class DesktopContextMenu {
         constructor(data, worldCanvas, worldController) {
             this.toggler = data.toggler;
@@ -27693,6 +27717,7 @@ var karel = (function (exports, bootstrap) {
             ContextAction(this.beepers.removeOne, () => worldController.ChangeBeepers(-1));
             ContextAction(this.beepers.infinite, () => worldController.SetBeepers(-1));
             ContextAction(this.beepers.clear, () => worldController.SetBeepers(0));
+            ContextAction(this.beepers.random, () => worldController.SetRandomBeepers(AppVars.randomBeeperMinimum, AppVars.randomBeeperMaximum));
             ContextAction(this.karel.north, () => worldController.SetKarelOnSelection("north"));
             ContextAction(this.karel.east, () => worldController.SetKarelOnSelection("east"));
             ContextAction(this.karel.south, () => worldController.SetKarelOnSelection("south"));
@@ -28114,6 +28139,7 @@ var karel = (function (exports, bootstrap) {
             this.beeperToolbar.removeOne.on("click", () => this.worldController.ChangeBeepers(-1));
             this.beeperToolbar.infinite.on("click", () => this.worldController.SetBeepers(-1));
             this.beeperToolbar.clear.on("click", () => this.worldController.SetBeepers(0));
+            this.beeperToolbar.random.on("click", () => this.worldController.SetRandomBeepers(AppVars.randomBeeperMinimum, AppVars.randomBeeperMaximum));
             this.karelToolbar.north.on("click", () => this.worldController.SetKarelOnSelection("north"));
             this.karelToolbar.east.on("click", () => this.worldController.SetKarelOnSelection("east"));
             this.karelToolbar.south.on("click", () => this.worldController.SetKarelOnSelection("south"));
@@ -28162,7 +28188,12 @@ var karel = (function (exports, bootstrap) {
             let hotkeys = new Map([
                 [71, () => { this.worldController.ToggleKarelPosition(true); }],
                 [80, () => { this.worldController.ToggleKarelPosition(false); }],
-                [82, () => { this.worldController.SetBeepers(0); }],
+                [82, () => {
+                        if (e.altKey)
+                            (new bootstrap.Modal("#randomBeepersModal")).show();
+                        else
+                            this.worldController.SetRandomBeepers(AppVars.randomBeeperMinimum, AppVars.randomBeeperMaximum);
+                    }],
                 [81, () => { this.worldController.ChangeBeepers(-1); }],
                 [69, () => { this.worldController.ChangeBeepers(1); }],
                 [48, () => { this.worldController.SetBeepers(0); }],
@@ -28671,6 +28702,26 @@ var karel = (function (exports, bootstrap) {
         });
     }
 
+    // Fixme
+    function HookRandomBeepersModal() {
+        $("#randomBeepersModal").on("show.bs.modal", () => {
+            $("#minimumRandomBeepers").val(AppVars.randomBeeperMinimum);
+            $("#maximumRandomBeepers").val(AppVars.randomBeeperMaximum);
+        });
+        $("#randomBeepersForm").on("submit", (e) => {
+            e.preventDefault();
+            const minValue = parseInt(`${$("#minimumRandomBeepers").val()}`);
+            const maxValue = parseInt(`${$("#maximumRandomBeepers").val()}`);
+            console.log(minValue, maxValue);
+            if (!isNaN(minValue)) {
+                AppVars.randomBeeperMinimum = Number(minValue);
+            }
+            if (!isNaN(maxValue)) {
+                AppVars.randomBeeperMaximum = Number(maxValue);
+            }
+        });
+    }
+
     function HookUpCommonUI(uiData) {
         hookDownloadModel(uiData.downloadCodeModal, uiData.editor);
         HookAmountModal(uiData.amountModal, uiData.worldController);
@@ -28678,6 +28729,7 @@ var karel = (function (exports, bootstrap) {
         HookNavbar(uiData.navbar, uiData.editor, uiData.karelController);
         HookStyleModal(uiData.worldController);
         HookEvaluatorModal(uiData.evaluatorModal);
+        HookRandomBeepersModal();
         //Hook ConfirmCallers
         uiData.confirmCallers.forEach((confirmCaller) => {
             let confirmArgs = {
@@ -30697,6 +30749,7 @@ var karel = (function (exports, bootstrap) {
                 infinite: $("#desktopSetInfinite"),
                 ammount: $("#desktopSetAmmount"),
                 clear: $("#desktopRemoveAll"),
+                random: $("#desktopRandomBeeper"),
             },
             wall: {
                 north: $("#desktopNorthWall"),
@@ -30724,6 +30777,7 @@ var karel = (function (exports, bootstrap) {
                 infinite: $("#contextSetInfinite"),
                 ammount: $("#contextSetAmmount"),
                 clear: $("#contextRemoveAll"),
+                random: $("#contextRandomBeeper"),
             },
             karel: {
                 north: $("#contextKarelNorth"),

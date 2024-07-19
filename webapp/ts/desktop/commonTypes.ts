@@ -5,6 +5,7 @@ export type BeeperToolbar= {
     ammount: JQuery,
     infinite: JQuery,
     clear: JQuery,    
+    random: JQuery,    
 }
 export type KarelToolbar= {
     north: JQuery,
