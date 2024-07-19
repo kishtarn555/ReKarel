@@ -132,6 +132,7 @@ let DesktopUI = new DesktopController(
                 infinite: $("#desktopSetInfinite"),
                 ammount: $("#desktopSetAmmount"),
                 clear: $("#desktopRemoveAll"),
+                random: $("#desktopRandomBeeper"),
             },
             wall: {
                 north: $("#desktopNorthWall"),
@@ -159,6 +160,7 @@ let DesktopUI = new DesktopController(
                 infinite: $("#contextSetInfinite"),
                 ammount: $("#contextSetAmmount"),
                 clear: $("#contextRemoveAll"),
+                random: $("#contextRandomBeeper"),
             },
             karel: {
                 north: $("#contextKarelNorth"),

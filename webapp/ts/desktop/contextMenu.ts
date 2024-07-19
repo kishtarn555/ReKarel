@@ -1,6 +1,7 @@
 import bootstrap from "bootstrap"
 import { BeeperToolbar, EvaluateToolbar, KarelToolbar, WallToolbar } from "./commonTypes"
 import { WorldViewController } from "../worldViewController/worldViewController"
+import { AppVars } from "../volatileMemo"
 
 export type ContextMenuData = {
     toggler: JQuery,
@@ -54,6 +55,7 @@ export class DesktopContextMenu {
         ContextAction(this.beepers.removeOne, ()=>worldController.ChangeBeepers(-1));        
         ContextAction(this.beepers.infinite, ()=>worldController.SetBeepers(-1));
         ContextAction(this.beepers.clear, ()=>worldController.SetBeepers(0));
+        ContextAction(this.beepers.random, ()=>worldController.SetRandomBeepers(AppVars.randomBeeperMinimum, AppVars.randomBeeperMaximum));
 
         
         ContextAction(this.karel.north, ()=>worldController.SetKarelOnSelection("north"));

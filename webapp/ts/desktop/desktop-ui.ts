@@ -200,6 +200,7 @@ class DesktopController {
         this.beeperToolbar.removeOne.on("click", ()=>this.worldController.ChangeBeepers(-1));        
         this.beeperToolbar.infinite.on("click", ()=>this.worldController.SetBeepers(-1));
         this.beeperToolbar.clear.on("click", ()=>this.worldController.SetBeepers(0));
+        this.beeperToolbar.random.on("click", ()=>this.worldController.SetRandomBeepers(AppVars.randomBeeperMinimum, AppVars.randomBeeperMaximum));
 
         this.karelToolbar.north.on("click", ()=>this.worldController.SetKarelOnSelection("north"));
         this.karelToolbar.east.on("click", ()=>this.worldController.SetKarelOnSelection("east"));

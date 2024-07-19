@@ -27682,6 +27682,12 @@ var karel = (function (exports, bootstrap) {
         }
     }
 
+    var AppVars;
+    (function (AppVars) {
+        AppVars.randomBeeperMinimum = 1;
+        AppVars.randomBeeperMaximum = 99;
+    })(AppVars || (AppVars = {}));
+
     class DesktopContextMenu {
         constructor(data, worldCanvas, worldController) {
             this.toggler = data.toggler;
@@ -27711,6 +27717,7 @@ var karel = (function (exports, bootstrap) {
             ContextAction(this.beepers.removeOne, () => worldController.ChangeBeepers(-1));
             ContextAction(this.beepers.infinite, () => worldController.SetBeepers(-1));
             ContextAction(this.beepers.clear, () => worldController.SetBeepers(0));
+            ContextAction(this.beepers.random, () => worldController.SetRandomBeepers(AppVars.randomBeeperMinimum, AppVars.randomBeeperMaximum));
             ContextAction(this.karel.north, () => worldController.SetKarelOnSelection("north"));
             ContextAction(this.karel.east, () => worldController.SetKarelOnSelection("east"));
             ContextAction(this.karel.south, () => worldController.SetKarelOnSelection("south"));
@@ -28049,12 +28056,6 @@ var karel = (function (exports, bootstrap) {
         }
     }
 
-    var AppVars;
-    (function (AppVars) {
-        AppVars.randomBeeperMinimum = 1;
-        AppVars.randomBeeperMaximum = 99;
-    })(AppVars || (AppVars = {}));
-
     class DesktopController {
         constructor(elements, karelController) {
             this.editor = elements.desktopEditor;
@@ -28138,6 +28139,7 @@ var karel = (function (exports, bootstrap) {
             this.beeperToolbar.removeOne.on("click", () => this.worldController.ChangeBeepers(-1));
             this.beeperToolbar.infinite.on("click", () => this.worldController.SetBeepers(-1));
             this.beeperToolbar.clear.on("click", () => this.worldController.SetBeepers(0));
+            this.beeperToolbar.random.on("click", () => this.worldController.SetRandomBeepers(AppVars.randomBeeperMinimum, AppVars.randomBeeperMaximum));
             this.karelToolbar.north.on("click", () => this.worldController.SetKarelOnSelection("north"));
             this.karelToolbar.east.on("click", () => this.worldController.SetKarelOnSelection("east"));
             this.karelToolbar.south.on("click", () => this.worldController.SetKarelOnSelection("south"));
@@ -30747,6 +30749,7 @@ var karel = (function (exports, bootstrap) {
                 infinite: $("#desktopSetInfinite"),
                 ammount: $("#desktopSetAmmount"),
                 clear: $("#desktopRemoveAll"),
+                random: $("#desktopRandomBeeper"),
             },
             wall: {
                 north: $("#desktopNorthWall"),
@@ -30774,6 +30777,7 @@ var karel = (function (exports, bootstrap) {
                 infinite: $("#contextSetInfinite"),
                 ammount: $("#contextSetAmmount"),
                 clear: $("#contextRemoveAll"),
+                random: $("#contextRandomBeeper"),
             },
             karel: {
                 north: $("#contextKarelNorth"),
