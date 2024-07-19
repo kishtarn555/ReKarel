@@ -13,6 +13,7 @@ import { CallStack, CallStackUI } from './callStack';
 import { ConsoleTab, KarelConsole } from './console';
 import { DefaultWRStyle } from '../KarelStyles';
 import { ControlBar, ControlBarData } from './controlBar';
+import { AppVars } from '../volatileMemo';
 
 
 type FocusToolbar = {
@@ -199,6 +200,7 @@ class DesktopController {
         this.beeperToolbar.removeOne.on("click", ()=>this.worldController.ChangeBeepers(-1));        
         this.beeperToolbar.infinite.on("click", ()=>this.worldController.SetBeepers(-1));
         this.beeperToolbar.clear.on("click", ()=>this.worldController.SetBeepers(0));
+        this.beeperToolbar.random.on("click", ()=>this.worldController.SetRandomBeepers(AppVars.randomBeeperMinimum, AppVars.randomBeeperMaximum));
 
         this.karelToolbar.north.on("click", ()=>this.worldController.SetKarelOnSelection("north"));
         this.karelToolbar.east.on("click", ()=>this.worldController.SetKarelOnSelection("east"));
@@ -256,13 +258,17 @@ class DesktopController {
         if (document.activeElement.getAttribute("role")=="textbox" || tag=="input") {
             return;
         }
-
         const overrideShift = new Set<number>([37, 38, 39, 40]);
-
+        
         let hotkeys = new Map<number, ()=>void>([
             [71,()=>{this.worldController.ToggleKarelPosition(true);}],
             [80,()=>{this.worldController.ToggleKarelPosition(false);}],
-            [82,()=>{this.worldController.SetBeepers(0);}],
+            [82,()=>{
+                if (e.altKey)
+                    (new bootstrap.Modal("#randomBeepersModal")).show()
+                else
+                    this.worldController.SetRandomBeepers(AppVars.randomBeeperMinimum,AppVars.randomBeeperMaximum);
+            }],
             [81,()=>{this.worldController.ChangeBeepers(-1);}],
             [69,()=>{this.worldController.ChangeBeepers(1);}],
             [48,()=>{this.worldController.SetBeepers(0);}],

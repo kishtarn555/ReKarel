@@ -287,6 +287,24 @@ class WorldViewController {
         this.Update();
     }
 
+    SetRandomBeepers(minimum: number, maximum: number) {
+        if (this.lock) return;
+        let rmin = Math.min(this.selection.r, this.selection.r + (this.selection.rows - 1)*this.selection.dr);
+        let rmax = Math.max(this.selection.r, this.selection.r + (this.selection.rows - 1)*this.selection.dr);
+        let cmin = Math.min(this.selection.c, this.selection.c + (this.selection.cols - 1)*this.selection.dc);
+        let cmax = Math.max(this.selection.c, this.selection.c + (this.selection.cols - 1)*this.selection.dc);
+        for (let i =rmin; i<=rmax; i++) {
+            for (let j=cmin; j <=cmax; j++) {
+                let ammount = Math.round( Math.random()*(maximum-minimum)+minimum);
+                if (this.karelController.world.buzzers(i, j) === ammount) {
+                    continue;
+                }
+                this.karelController.world.setBuzzers(i, j, ammount);
+            }
+        }
+        this.Update();
+    }
+
     SetBeepers(ammount: number) {
         if (this.lock) return;
         let rmin = Math.min(this.selection.r, this.selection.r + (this.selection.rows - 1)*this.selection.dr);
