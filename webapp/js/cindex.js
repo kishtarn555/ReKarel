@@ -28049,6 +28049,12 @@ var karel = (function (exports, bootstrap) {
         }
     }
 
+    var AppVars;
+    (function (AppVars) {
+        AppVars.randomBeeperMinimum = 1;
+        AppVars.randomBeeperMaximum = 99;
+    })(AppVars || (AppVars = {}));
+
     class DesktopController {
         constructor(elements, karelController) {
             this.editor = elements.desktopEditor;
@@ -28180,7 +28186,12 @@ var karel = (function (exports, bootstrap) {
             let hotkeys = new Map([
                 [71, () => { this.worldController.ToggleKarelPosition(true); }],
                 [80, () => { this.worldController.ToggleKarelPosition(false); }],
-                [82, () => { this.worldController.SetRandomBeepers(1, 99); }],
+                [82, () => {
+                        if (e.altKey)
+                            (new bootstrap.Modal("#randomBeepersModal")).show();
+                        else
+                            this.worldController.SetRandomBeepers(AppVars.randomBeeperMinimum, AppVars.randomBeeperMaximum);
+                    }],
                 [81, () => { this.worldController.ChangeBeepers(-1); }],
                 [69, () => { this.worldController.ChangeBeepers(1); }],
                 [48, () => { this.worldController.SetBeepers(0); }],
@@ -28689,6 +28700,26 @@ var karel = (function (exports, bootstrap) {
         });
     }
 
+    // Fixme
+    function HookRandomBeepersModal() {
+        $("#randomBeepersModal").on("show.bs.modal", () => {
+            $("#minimumRandomBeepers").val(AppVars.randomBeeperMinimum);
+            $("#maximumRandomBeepers").val(AppVars.randomBeeperMaximum);
+        });
+        $("#randomBeepersForm").on("submit", (e) => {
+            e.preventDefault();
+            const minValue = parseInt(`${$("#minimumRandomBeepers").val()}`);
+            const maxValue = parseInt(`${$("#maximumRandomBeepers").val()}`);
+            console.log(minValue, maxValue);
+            if (!isNaN(minValue)) {
+                AppVars.randomBeeperMinimum = Number(minValue);
+            }
+            if (!isNaN(maxValue)) {
+                AppVars.randomBeeperMaximum = Number(maxValue);
+            }
+        });
+    }
+
     function HookUpCommonUI(uiData) {
         hookDownloadModel(uiData.downloadCodeModal, uiData.editor);
         HookAmountModal(uiData.amountModal, uiData.worldController);
@@ -28696,6 +28727,7 @@ var karel = (function (exports, bootstrap) {
         HookNavbar(uiData.navbar, uiData.editor, uiData.karelController);
         HookStyleModal(uiData.worldController);
         HookEvaluatorModal(uiData.evaluatorModal);
+        HookRandomBeepersModal();
         //Hook ConfirmCallers
         uiData.confirmCallers.forEach((confirmCaller) => {
             let confirmArgs = {
