@@ -51,11 +51,10 @@ The new version includes:
 * [x] You can change Karel Codes.
 * [x] Dark and Light mode are now enabled. 
 # World Editor
-[x] Reworked world editor.
+* [x] Reworked world editor.
 
-Now, it works similar to spreadsheet software.
+Now, it works similar to spreadsheet software. World edition is based on cell selection and a toolbar.
 
-* World edition is based on cell selection and a toolbar.
 You can select a rectangular region of cells and:
 * [x] Place walls on the selection border (You may use the toolbar or WASD hot-keys).
 * [x] Add, remove, clear, set the ammount of beepers in the selection (Use 1 ... 9 or Q E R C hot-keys).
