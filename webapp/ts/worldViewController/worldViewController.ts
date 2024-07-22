@@ -4,6 +4,7 @@ import { World } from "../../../js/karel";
 import { SelectionBox, SelectionWaffle } from "./waffle";
 import { CellSelection, SelectionState } from "./selection";
 import { CellPair } from "../cellPair";
+import { karel } from "../../../js";
 
 
 type Gizmos = {
@@ -262,6 +263,9 @@ class WorldViewController {
         if (delta === 0) {
             return;
         }
+
+        const history = KarelController.GetInstance().GetHistory();
+        const op = history.StartOperation();
         
         let rmin = Math.min(this.selection.r, this.selection.r + (this.selection.rows - 1)*this.selection.dr);
         let rmax = Math.max(this.selection.r, this.selection.r + (this.selection.rows - 1)*this.selection.dr);
@@ -269,6 +273,7 @@ class WorldViewController {
         let cmax = Math.max(this.selection.c, this.selection.c + (this.selection.cols - 1)*this.selection.dc);
         for (let i =rmin; i<=rmax; i++) {
             for (let j=cmin; j <=cmax; j++) {
+                const oriBuzzers = this.karelController.world.buzzers(i,j);
                 let buzzers = this.karelController.world.buzzers(i,j);
                 if (buzzers < 0 && delta < 0) {
                     //Do nothing
@@ -283,8 +288,26 @@ class WorldViewController {
                     j,
                     buzzers
                 );
+                op.addCommit({
+                    forward:()=> {
+                        this.karelController.world.setBuzzers(
+                            i,
+                            j,
+                            buzzers
+                        );
+                    },
+                    backward: ()=> {
+                        
+                        this.karelController.world.setBuzzers(
+                            i,
+                            j,
+                            oriBuzzers
+                        );
+                    }
+                })
             }
         }
+        history.EndOperation();
         this.Update();
     }
 
