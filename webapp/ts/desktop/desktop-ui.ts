@@ -294,6 +294,8 @@ class DesktopController {
             [84,()=>{this.worldController.SetBeepers(-1);}],
             [90,()=>{this.worldController.SetCellEvaluation(true);}],
             [86,()=>{this.worldController.SetCellEvaluation(false);}],
+            [8,()=>{this.worldController.RemoveEverything();}],
+            [46,()=>{this.worldController.RemoveEverything();}],
             
         ]);
         if (hotkeys.has(e.which) === false) {

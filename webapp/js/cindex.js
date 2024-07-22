@@ -27639,6 +27639,28 @@ var karel = (function (exports, bootstrap) {
             }
             this.Update();
         }
+        RemoveEverything() {
+            if (this.lock)
+                return;
+            let rmin = Math.min(this.selection.r, this.selection.r + (this.selection.rows - 1) * this.selection.dr);
+            let rmax = Math.max(this.selection.r, this.selection.r + (this.selection.rows - 1) * this.selection.dr);
+            let cmin = Math.min(this.selection.c, this.selection.c + (this.selection.cols - 1) * this.selection.dc);
+            let cmax = Math.max(this.selection.c, this.selection.c + (this.selection.cols - 1) * this.selection.dc);
+            const world = this.karelController.world;
+            for (let i = rmin; i <= rmax; i++) {
+                for (let j = cmin; j <= cmax; j++) {
+                    world.setBuzzers(i, j, 0);
+                    world.setDumpCell(i, j, 0);
+                    for (let w = 0; w < 4; w++) {
+                        let prev = world.walls(i, j);
+                        world.toggleWall(i, j, w);
+                        if (prev < world.walls(i, j))
+                            world.toggleWall(i, j, w);
+                    }
+                }
+            }
+            this.Update();
+        }
         ChangeOriginFromScroll(left, top) {
             let worldWidth = this.karelController.world.w;
             let worldHeight = this.karelController.world.h;
@@ -28219,6 +28241,8 @@ var karel = (function (exports, bootstrap) {
                 [84, () => { this.worldController.SetBeepers(-1); }],
                 [90, () => { this.worldController.SetCellEvaluation(true); }],
                 [86, () => { this.worldController.SetCellEvaluation(false); }],
+                [8, () => { this.worldController.RemoveEverything(); }],
+                [46, () => { this.worldController.RemoveEverything(); }],
             ]);
             if (hotkeys.has(e.which) === false) {
                 return;
