@@ -52,6 +52,10 @@ export class KarelHistory {
         if (this.currentOperation == null) {
             return;
         }
+        if (this.currentOperation.commits.length===0) {
+            
+            return;
+        }
         //Remove all undone operations up to this point.
         while (this.head < this.operations.length) {
             this.size -= this.operations[this.operations.length-1].commits.length;
