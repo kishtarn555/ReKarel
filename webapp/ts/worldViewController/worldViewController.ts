@@ -4,6 +4,7 @@ import { World } from "../../../js/karel";
 import { SelectionBox, SelectionWaffle } from "./waffle";
 import { CellSelection, SelectionState } from "./selection";
 import { CellPair } from "../cellPair";
+import { karel } from "../../../js";
 
 
 type Gizmos = {
@@ -36,7 +37,8 @@ class WorldViewController {
         this.container = container;
         this.lock = false;
         this.karelController = karelController;
-        this.selection = {
+        this.selection = new CellSelection()
+        this.selection.SetData({
             r: 1,
             c: 1,
             rows: 1,
@@ -44,7 +46,7 @@ class WorldViewController {
             dr: 1,
             dc: 1,
             state:"normal"
-        };
+        });
         this.state = {
             cursorX: 0,
             cursorY: 0,
@@ -108,7 +110,7 @@ class WorldViewController {
             return;
         }
 
-        this.selection = {
+        this.selection.SetData({
             r: r,
             c: c,
             rows: Math.abs(r - r2) + 1,
@@ -116,7 +118,7 @@ class WorldViewController {
             dr: r <= r2 ? 1 : -1,
             dc: c <= c2 ? 1 : -1,
             state:state
-        };
+        });
         this.UpdateGutter();
         this.UpdateWaffle();
     }
@@ -261,6 +263,9 @@ class WorldViewController {
         if (delta === 0) {
             return;
         }
+
+        const history = KarelController.GetInstance().GetHistory();
+        const op = history.StartOperation();
         
         let rmin = Math.min(this.selection.r, this.selection.r + (this.selection.rows - 1)*this.selection.dr);
         let rmax = Math.max(this.selection.r, this.selection.r + (this.selection.rows - 1)*this.selection.dr);
@@ -268,6 +273,7 @@ class WorldViewController {
         let cmax = Math.max(this.selection.c, this.selection.c + (this.selection.cols - 1)*this.selection.dc);
         for (let i =rmin; i<=rmax; i++) {
             for (let j=cmin; j <=cmax; j++) {
+                const oriBuzzers = this.karelController.world.buzzers(i,j);
                 let buzzers = this.karelController.world.buzzers(i,j);
                 if (buzzers < 0 && delta < 0) {
                     //Do nothing
@@ -282,43 +288,82 @@ class WorldViewController {
                     j,
                     buzzers
                 );
+                op.addCommit({
+                    forward:()=> {
+                        this.karelController.world.setBuzzers(
+                            i,
+                            j,
+                            buzzers
+                        );
+                    },
+                    backward: ()=> {
+                        
+                        this.karelController.world.setBuzzers(
+                            i,
+                            j,
+                            oriBuzzers
+                        );
+                    }
+                })
             }
         }
+        history.EndOperation();
         this.Update();
     }
 
     SetRandomBeepers(minimum: number, maximum: number) {
         if (this.lock) return;
+        const history = KarelController.GetInstance().GetHistory();
+        const op = history.StartOperation();
+
         let rmin = Math.min(this.selection.r, this.selection.r + (this.selection.rows - 1)*this.selection.dr);
         let rmax = Math.max(this.selection.r, this.selection.r + (this.selection.rows - 1)*this.selection.dr);
         let cmin = Math.min(this.selection.c, this.selection.c + (this.selection.cols - 1)*this.selection.dc);
         let cmax = Math.max(this.selection.c, this.selection.c + (this.selection.cols - 1)*this.selection.dc);
         for (let i =rmin; i<=rmax; i++) {
             for (let j=cmin; j <=cmax; j++) {
-                let ammount = Math.round( Math.random()*(maximum-minimum)+minimum);
-                if (this.karelController.world.buzzers(i, j) === ammount) {
+                let amount = Math.round( Math.random()*(maximum-minimum)+minimum);
+                const oriBuzzers = this.karelController.world.buzzers(i, j);
+                if (oriBuzzers === amount) {
                     continue;
                 }
-                this.karelController.world.setBuzzers(i, j, ammount);
+                op.addCommit({
+                    forward:()=>
+                        this.karelController.world.setBuzzers(i, j, amount),
+                    backward:()=>
+                        this.karelController.world.setBuzzers(i, j, oriBuzzers),
+                })
+                this.karelController.world.setBuzzers(i, j, amount);
             }
         }
+        history.EndOperation();
         this.Update();
     }
 
-    SetBeepers(ammount: number) {
+    SetBeepers(amount: number) {
         if (this.lock) return;
+        const history = KarelController.GetInstance().GetHistory();
+        const op = history.StartOperation();
         let rmin = Math.min(this.selection.r, this.selection.r + (this.selection.rows - 1)*this.selection.dr);
         let rmax = Math.max(this.selection.r, this.selection.r + (this.selection.rows - 1)*this.selection.dr);
         let cmin = Math.min(this.selection.c, this.selection.c + (this.selection.cols - 1)*this.selection.dc);
         let cmax = Math.max(this.selection.c, this.selection.c + (this.selection.cols - 1)*this.selection.dc);
         for (let i =rmin; i<=rmax; i++) {
             for (let j=cmin; j <=cmax; j++) {
-                if (this.karelController.world.buzzers(i, j) === ammount) {
+                const oriBuzzers = this.karelController.world.buzzers(i, j);
+                if (oriBuzzers === amount) {
                     continue;
                 }
-                this.karelController.world.setBuzzers(i, j, ammount);
+                op.addCommit({
+                    forward: ()=>
+                        this.karelController.world.setBuzzers(i, j, amount),
+                    backward: ()=>
+                        this.karelController.world.setBuzzers(i, j, oriBuzzers)
+                })
+                this.karelController.world.setBuzzers(i, j, amount);
             }
         }
+        history.EndOperation();
         this.Update();
     }
 
@@ -338,14 +383,35 @@ class WorldViewController {
 
     ToggleKarelPosition(rotate:boolean = false) {
         if (this.lock) return;
-        this.karelController.world.move(this.selection.r, this.selection.c);
-        if (rotate) {
-            this.karelController.world.rotate(
-                ['OESTE', 'NORTE', 'ESTE', 'SUR'][
-                 (this.karelController.world.orientation + 3)%4
-                ]
-            );
+        const history = KarelController.GetInstance().GetHistory();
+        const op = history.StartOperation();        
+        const world = this.karelController.world;
+        if (world.start_i !==this.selection.r || world.start_j !==this.selection.c ) {
+            const orI = world.start_i;
+            const orJ = world.start_j;
+            op.addCommit({
+                forward:() => world.move(this.selection.r, this.selection.c),
+                backward:() => world.move(orI, orJ),
+            });
+            world.move(this.selection.r, this.selection.c)
         }
+
+        if (rotate) {
+            function doRotation() {
+                world.rotate(
+                    ['OESTE', 'NORTE', 'ESTE', 'SUR'][
+                    (world.orientation + 3)%4
+                    ]
+                );
+            }
+            op.addCommit({
+                forward:()=>doRotation(),
+                backward:()=>world.rotate()
+            })
+
+            doRotation();
+        }
+        history.EndOperation();
             this.Update();
     }
 
@@ -462,8 +528,29 @@ class WorldViewController {
         // this.UpdateWaffle(); 
     }
 
-    ToggleWall(which: "north" | "east" | "west" | "south" | "outer") {
+    ToggleWall(which: "north" | "east" | "west" | "south" | "outer", reversible:boolean = true) {
         if (this.lock) return;
+        if (reversible) {
+            const history = KarelController.GetInstance().GetHistory();
+            const op = history.StartOperation();        
+            const opSelection = this.selection.GetData();
+            op.addCommit({
+                forward: ()=>{ 
+                    const prevSelection = this.selection.GetData();
+                    this.selection.SetData(opSelection);
+                    this.ToggleWall(which, false);
+                    this.selection.SetData(prevSelection);
+                },
+                backward: ()=>{
+                    
+                    const prevSelection = this.selection.GetData();
+                    this.selection.SetData(opSelection);
+                    this.ToggleWall(which, false);
+                    this.selection.SetData(prevSelection);
+                },
+            })
+            history.EndOperation();
+        }
         let r=this.selection.r,c=this.selection.c;
         switch (which) {
             case "north":
@@ -543,9 +630,27 @@ class WorldViewController {
         }
         this.Update();
     }
-    
+
+    Undo() {
+        if (this.lock) return;
+        const KC = KarelController.GetInstance();
+        KC.GetHistory().Undo();
+        this.Update();
+    }
+
+    Redo() {
+        if (this.lock) return;
+        const KC = KarelController.GetInstance();
+        KC.GetHistory().Redo();
+        this.Update();
+    }
+
     RemoveEverything() {
         if (this.lock) return;
+        
+        const history = KarelController.GetInstance().GetHistory();
+        const op = history.StartOperation();
+
         let rmin = Math.min(this.selection.r, this.selection.r + (this.selection.rows - 1)*this.selection.dr);
         let rmax = Math.max(this.selection.r, this.selection.r + (this.selection.rows - 1)*this.selection.dr);
         let cmin = Math.min(this.selection.c, this.selection.c + (this.selection.cols - 1)*this.selection.dc);
@@ -553,18 +658,33 @@ class WorldViewController {
         const world = this.karelController.world;
         for (let i =rmin; i<=rmax; i++) {
             for (let j=cmin; j <=cmax; j++) {
-                world.setBuzzers(i, j, 0)
-                world.setDumpCell(i, j, 0)
-                for (let w =0; w < 4; w++) {
-                    let prev = world.walls(i, j);
-                    world.toggleWall(i, j, w)
-                    if (prev < world.walls(i,j))
-                        world.toggleWall(i, j, w);
-                
+                const oriBuzzers =  world.buzzers(i,j);
+                const oriWalls =  world.walls(i,j);
+                if (oriBuzzers!=0) {
+                    world.setBuzzers(i, j, 0);
+                    op.addCommit({
+                        forward:()=>
+                            world.setBuzzers(i, j, 0),
+                        backward:()=> 
+                            world.setBuzzers(i, j, oriBuzzers)                            
+                    })
                 }
+                    
+                world.setDumpCell(i, j, 0);
+                world.setWallMask(i,j,0);
+                const nextWalls = world.walls(i,j);
+                if (nextWalls!== oriWalls) {
+                    op.addCommit({
+                        forward:()=>
+                            world.setWallMask(i, j, 0),
+                        backward:()=> 
+                            world.setWallMask(i, j, oriWalls)                            
+                    })
+                }
+
             }
         }
-        
+        history.EndOperation();
         this.Update();
     }
 

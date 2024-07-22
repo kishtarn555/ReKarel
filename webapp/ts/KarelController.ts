@@ -10,6 +10,7 @@ import { Callbacks } from "jquery";
 import { CheckForBreakPointOnLine } from "./editor/editor.breakpoint";
 import { clearUnderlineError, underlineError } from "./editor/editor.parseErrorUnderline";
 import { testSkipFlag } from "./editor/editor.skippable";
+import { KarelHistory } from "./worldViewController/commit";
 
 type messageType = "info"|"success"|"error"|"raw"|"warning";
 type MessageCallback = (message:string, type:messageType)=>void;
@@ -40,7 +41,8 @@ class KarelController {
     private autoStepInterval:number;
     private drawFrameRequest : number;
     private autoStepping: boolean;
-    private futureStepping:boolean
+    private futureStepping:boolean; 
+    private history: KarelHistory;
 
     constructor(world: World) {
         this.world = world;
@@ -59,10 +61,15 @@ class KarelController {
         this.futureStepping = false;
 
         KarelController.instance = this;
+        this.history = new KarelHistory();
     }
 
     static GetInstance() {
         return KarelController.instance;
+    }
+
+    GetHistory() {
+        return this.history;
     }
     
     // SetDesktopController(desktopController: WorldViewController) {
