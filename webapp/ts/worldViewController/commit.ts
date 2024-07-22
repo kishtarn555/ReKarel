@@ -97,3 +97,9 @@ export class KarelHistory {
         }
     }
 }
+
+
+export type HistoryToolbar = {
+    undo:JQuery,
+    redo:JQuery
+}

@@ -28317,6 +28317,7 @@ var karel = (function (exports, bootstrap) {
             this.wallToolbar = elements.toolbar.wall;
             this.evaluateToolbar = elements.toolbar.evaluate;
             this.focusToolbar = elements.toolbar.focus;
+            this.historyToolbar = elements.toolbar.history;
             this.console = new KarelConsole(elements.console);
             this.karelController = karelController;
             this.worldController = new WorldViewController(new WorldRenderer(this.worldCanvas[0].getContext("2d"), DefaultWRStyle, 1), karelController, elements.worldContainer[0], elements.gizmos);
@@ -28397,6 +28398,8 @@ var karel = (function (exports, bootstrap) {
             this.focusToolbar.selector.on("click", () => this.worldController.FocusSelection());
             this.evaluateToolbar.evaluate.on("click", () => this.worldController.SetCellEvaluation(true));
             this.evaluateToolbar.ignore.on("click", () => this.worldController.SetCellEvaluation(false));
+            this.historyToolbar.undo.on("click", () => this.worldController.Undo());
+            this.historyToolbar.redo.on("click", () => this.worldController.Redo());
         }
         ConnectConsole() {
             this.karelController.RegisterMessageCallback(this.ConsoleMessage.bind(this));
@@ -31026,6 +31029,10 @@ var karel = (function (exports, bootstrap) {
                 karel: $("#desktopGoKarel"),
                 origin: $("#desktopGoHome"),
                 selector: $("#desktopGoSelection"),
+            },
+            history: {
+                undo: $("#desktopUndo"),
+                redo: $("#desktopRedo"),
             },
             evaluate: {
                 evaluate: $("#desktopEvaluateCell"),

@@ -146,6 +146,10 @@ let DesktopUI = new DesktopController(
                 origin: $("#desktopGoHome"),
                 selector: $("#desktopGoSelection"),
             },
+            history: {
+                undo:$("#desktopUndo"),
+                redo:$("#desktopRedo"),
+            },
             evaluate: {
                 evaluate: $("#desktopEvaluateCell"),
                 ignore: $("#desktopIgnoreCell"),
