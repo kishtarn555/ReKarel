@@ -847,6 +847,31 @@ World.prototype.walls = function (i, j) {
   return self.wallMap[self.w * i + j];
 };
 
+World.prototype.setWallMask = function (i, j, wallMask) {
+  var self = this;
+  var newMask = wallMask;
+  if (
+    wallMask < 0 ||
+    wallMask >= 16 ||
+    0 > i ||
+    i > self.h ||
+    0 > j ||
+    j > self.w
+  ) {
+    return;
+  }
+  
+  //This ifs avoid removing outer world walls
+  if (j == 1) newMask |= 1<<0;
+  if (i == 1) newMask |= 1<<3;
+  if (i == self.h) newMask |= 1<<1;
+  if (j == self.w) newMask |= 1<<2;
+
+  self.wallMap[self.w * i + j] = newMask;
+
+
+}
+
 World.prototype.toggleWall = function (i, j, orientation) {
   var self = this;
 

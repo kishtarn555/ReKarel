@@ -25277,6 +25277,28 @@ var karel = (function (exports, bootstrap) {
             return 0;
         return self.wallMap[self.w * i + j];
     };
+    World.prototype.setWallMask = function (i, j, wallMask) {
+        var self = this;
+        var newMask = wallMask;
+        if (wallMask < 0 ||
+            wallMask >= 16 ||
+            0 > i ||
+            i > self.h ||
+            0 > j ||
+            j > self.w) {
+            return;
+        }
+        //This ifs avoid removing outer world walls
+        if (j == 1)
+            newMask |= 1 << 0;
+        if (i == 1)
+            newMask |= 1 << 3;
+        if (i == self.h)
+            newMask |= 1 << 1;
+        if (j == self.w)
+            newMask |= 1 << 2;
+        self.wallMap[self.w * i + j] = newMask;
+    };
     World.prototype.toggleWall = function (i, j, orientation) {
         var self = this;
         if ((j == 1 && orientation === 0) ||
@@ -27806,6 +27828,8 @@ var karel = (function (exports, bootstrap) {
         RemoveEverything() {
             if (this.lock)
                 return;
+            const history = KarelController.GetInstance().GetHistory();
+            const op = history.StartOperation();
             let rmin = Math.min(this.selection.r, this.selection.r + (this.selection.rows - 1) * this.selection.dr);
             let rmax = Math.max(this.selection.r, this.selection.r + (this.selection.rows - 1) * this.selection.dr);
             let cmin = Math.min(this.selection.c, this.selection.c + (this.selection.cols - 1) * this.selection.dc);
@@ -27813,16 +27837,27 @@ var karel = (function (exports, bootstrap) {
             const world = this.karelController.world;
             for (let i = rmin; i <= rmax; i++) {
                 for (let j = cmin; j <= cmax; j++) {
-                    world.setBuzzers(i, j, 0);
+                    const oriBuzzers = world.buzzers(i, j);
+                    const oriWalls = world.walls(i, j);
+                    if (oriBuzzers != 0) {
+                        world.setBuzzers(i, j, 0);
+                        op.addCommit({
+                            forward: () => world.setBuzzers(i, j, 0),
+                            backward: () => world.setBuzzers(i, j, oriBuzzers)
+                        });
+                    }
                     world.setDumpCell(i, j, 0);
-                    for (let w = 0; w < 4; w++) {
-                        let prev = world.walls(i, j);
-                        world.toggleWall(i, j, w);
-                        if (prev < world.walls(i, j))
-                            world.toggleWall(i, j, w);
+                    world.setWallMask(i, j, 0);
+                    const nextWalls = world.walls(i, j);
+                    if (nextWalls !== oriWalls) {
+                        op.addCommit({
+                            forward: () => world.setWallMask(i, j, 0),
+                            backward: () => world.setWallMask(i, j, oriWalls)
+                        });
                     }
                 }
             }
+            history.EndOperation();
             this.Update();
         }
         ChangeOriginFromScroll(left, top) {
