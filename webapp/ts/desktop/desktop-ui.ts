@@ -14,6 +14,7 @@ import { ConsoleTab, KarelConsole } from './console';
 import { DefaultWRStyle } from '../KarelStyles';
 import { ControlBar, ControlBarData } from './controlBar';
 import { AppVars } from '../volatileMemo';
+import { HistoryToolbar } from '../worldViewController/commit';
 
 
 type FocusToolbar = {
@@ -39,6 +40,7 @@ interface DesktopElements {
         karel: KarelToolbar
         wall: WallToolbar
         focus: FocusToolbar
+        history: HistoryToolbar
         evaluate: EvaluateToolbar
     },
     context: ContextMenuData,
@@ -70,7 +72,7 @@ class DesktopController {
     evaluateToolbar: EvaluateToolbar;
 
     focusToolbar: FocusToolbar;
-
+    historyToolbar: HistoryToolbar;
 
     contextMenu: DesktopContextMenu
 
@@ -103,6 +105,7 @@ class DesktopController {
         this.evaluateToolbar = elements.toolbar.evaluate;
 
         this.focusToolbar = elements.toolbar.focus;
+        this.historyToolbar = elements.toolbar.history;
 
         
         
@@ -219,6 +222,11 @@ class DesktopController {
 
         this.evaluateToolbar.evaluate.on("click", ()=> this.worldController.SetCellEvaluation(true));
         this.evaluateToolbar.ignore.on("click", ()=> this.worldController.SetCellEvaluation(false));
+
+
+        
+        this.historyToolbar.undo.on("click", ()=>this.worldController.Undo());
+        this.historyToolbar.redo.on("click", ()=>this.worldController.Redo());
     }
 
 
