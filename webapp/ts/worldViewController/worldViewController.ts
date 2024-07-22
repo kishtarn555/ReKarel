@@ -543,6 +543,30 @@ class WorldViewController {
         }
         this.Update();
     }
+    
+    RemoveEverything() {
+        if (this.lock) return;
+        let rmin = Math.min(this.selection.r, this.selection.r + (this.selection.rows - 1)*this.selection.dr);
+        let rmax = Math.max(this.selection.r, this.selection.r + (this.selection.rows - 1)*this.selection.dr);
+        let cmin = Math.min(this.selection.c, this.selection.c + (this.selection.cols - 1)*this.selection.dc);
+        let cmax = Math.max(this.selection.c, this.selection.c + (this.selection.cols - 1)*this.selection.dc);
+        const world = this.karelController.world;
+        for (let i =rmin; i<=rmax; i++) {
+            for (let j=cmin; j <=cmax; j++) {
+                world.setBuzzers(i, j, 0)
+                world.setDumpCell(i, j, 0)
+                for (let w =0; w < 4; w++) {
+                    let prev = world.walls(i, j);
+                    world.toggleWall(i, j, w)
+                    if (prev < world.walls(i,j))
+                        world.toggleWall(i, j, w);
+                
+                }
+            }
+        }
+        
+        this.Update();
+    }
 
     ChangeOriginFromScroll(left:number, top:number) {
         let worldWidth = this.karelController.world.w;
