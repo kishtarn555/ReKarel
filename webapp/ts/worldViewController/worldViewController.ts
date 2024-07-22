@@ -313,36 +313,57 @@ class WorldViewController {
 
     SetRandomBeepers(minimum: number, maximum: number) {
         if (this.lock) return;
+        const history = KarelController.GetInstance().GetHistory();
+        const op = history.StartOperation();
+
         let rmin = Math.min(this.selection.r, this.selection.r + (this.selection.rows - 1)*this.selection.dr);
         let rmax = Math.max(this.selection.r, this.selection.r + (this.selection.rows - 1)*this.selection.dr);
         let cmin = Math.min(this.selection.c, this.selection.c + (this.selection.cols - 1)*this.selection.dc);
         let cmax = Math.max(this.selection.c, this.selection.c + (this.selection.cols - 1)*this.selection.dc);
         for (let i =rmin; i<=rmax; i++) {
             for (let j=cmin; j <=cmax; j++) {
-                let ammount = Math.round( Math.random()*(maximum-minimum)+minimum);
-                if (this.karelController.world.buzzers(i, j) === ammount) {
+                let amount = Math.round( Math.random()*(maximum-minimum)+minimum);
+                const oriBuzzers = this.karelController.world.buzzers(i, j);
+                if (oriBuzzers === amount) {
                     continue;
                 }
-                this.karelController.world.setBuzzers(i, j, ammount);
+                op.addCommit({
+                    forward:()=>
+                        this.karelController.world.setBuzzers(i, j, amount),
+                    backward:()=>
+                        this.karelController.world.setBuzzers(i, j, oriBuzzers),
+                })
+                this.karelController.world.setBuzzers(i, j, amount);
             }
         }
+        history.EndOperation();
         this.Update();
     }
 
-    SetBeepers(ammount: number) {
+    SetBeepers(amount: number) {
         if (this.lock) return;
+        const history = KarelController.GetInstance().GetHistory();
+        const op = history.StartOperation();
         let rmin = Math.min(this.selection.r, this.selection.r + (this.selection.rows - 1)*this.selection.dr);
         let rmax = Math.max(this.selection.r, this.selection.r + (this.selection.rows - 1)*this.selection.dr);
         let cmin = Math.min(this.selection.c, this.selection.c + (this.selection.cols - 1)*this.selection.dc);
         let cmax = Math.max(this.selection.c, this.selection.c + (this.selection.cols - 1)*this.selection.dc);
         for (let i =rmin; i<=rmax; i++) {
             for (let j=cmin; j <=cmax; j++) {
-                if (this.karelController.world.buzzers(i, j) === ammount) {
+                const oriBuzzers = this.karelController.world.buzzers(i, j);
+                if (oriBuzzers === amount) {
                     continue;
                 }
-                this.karelController.world.setBuzzers(i, j, ammount);
+                op.addCommit({
+                    forward: ()=>
+                        this.karelController.world.setBuzzers(i, j, amount),
+                    backward: ()=>
+                        this.karelController.world.setBuzzers(i, j, oriBuzzers)
+                })
+                this.karelController.world.setBuzzers(i, j, amount);
             }
         }
+        history.EndOperation();
         this.Update();
     }
 
