@@ -383,14 +383,35 @@ class WorldViewController {
 
     ToggleKarelPosition(rotate:boolean = false) {
         if (this.lock) return;
-        this.karelController.world.move(this.selection.r, this.selection.c);
-        if (rotate) {
-            this.karelController.world.rotate(
-                ['OESTE', 'NORTE', 'ESTE', 'SUR'][
-                 (this.karelController.world.orientation + 3)%4
-                ]
-            );
+        const history = KarelController.GetInstance().GetHistory();
+        const op = history.StartOperation();        
+        const world = this.karelController.world;
+        if (world.start_i !==this.selection.r || world.start_j !==this.selection.c ) {
+            const orI = world.start_i;
+            const orJ = world.start_j;
+            op.addCommit({
+                forward:() => world.move(this.selection.r, this.selection.c),
+                backward:() => world.move(orI, orJ),
+            });
+            world.move(this.selection.r, this.selection.c)
         }
+
+        if (rotate) {
+            function doRotation() {
+                world.rotate(
+                    ['OESTE', 'NORTE', 'ESTE', 'SUR'][
+                    (world.orientation + 3)%4
+                    ]
+                );
+            }
+            op.addCommit({
+                forward:()=>doRotation(),
+                backward:()=>world.rotate()
+            })
+
+            doRotation();
+        }
+        history.EndOperation();
             this.Update();
     }
 
