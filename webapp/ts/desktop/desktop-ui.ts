@@ -259,43 +259,53 @@ class DesktopController {
             return;
         }
         const overrideShift = new Set<number>([37, 38, 39, 40]);
-        
-        let hotkeys = new Map<number, ()=>void>([
-            [71,()=>{this.worldController.ToggleKarelPosition(true);}],
-            [80,()=>{this.worldController.ToggleKarelPosition(false);}],
-            [82,()=>{
+        type keyMod = "yes" | "no" | "optional";
+        type hotkeyMod = {shift:keyMod, ctrl: keyMod};
+        const basic:hotkeyMod = {shift:"optional", ctrl:"no"};
+        const ctrl:hotkeyMod = {shift:"no", ctrl:"yes"};
+        const shift:hotkeyMod = {shift:"yes", ctrl:"no"};
+
+        let hotkeys = new Map<number, [hotkeyMod,()=>void][]>([
+            [71,[[basic, ()=>{this.worldController.ToggleKarelPosition(true);}]]],
+            [80,[[basic,()=>{this.worldController.ToggleKarelPosition(false);}]]],
+            [82,[[basic,()=>{
                 if (e.altKey)
                     (new bootstrap.Modal("#randomBeepersModal")).show()
                 else
-                    this.worldController.SetRandomBeepers(AppVars.randomBeeperMinimum,AppVars.randomBeeperMaximum);
-            }],
-            [81,()=>{this.worldController.ChangeBeepers(-1);}],
-            [69,()=>{this.worldController.ChangeBeepers(1);}],
-            [48,()=>{this.worldController.SetBeepers(0);}],
-            [49,()=>{this.worldController.SetBeepers(1);}],
-            [50,()=>{this.worldController.SetBeepers(2);}],
-            [51,()=>{this.worldController.SetBeepers(3);}],
-            [52,()=>{this.worldController.SetBeepers(4);}],
-            [53,()=>{this.worldController.SetBeepers(5);}],
-            [54,()=>{this.worldController.SetBeepers(6);}],
-            [55,()=>{this.worldController.SetBeepers(7);}],
-            [56,()=>{this.worldController.SetBeepers(8);}],
-            [57,()=>{this.worldController.SetBeepers(9);}],
-            [67,()=>{$("#desktopSetAmmount").trigger("click")}], // FIXME
-            [87,()=>{this.worldController.ToggleWall("north");}],
-            [68,()=>{this.worldController.ToggleWall("east");}],
-            [83,()=>{this.worldController.ToggleWall("south");}],
-            [65,()=>{this.worldController.ToggleWall("west");}],
-            [88,()=>{this.worldController.ToggleWall("outer");}],
-            [37,()=>{this.worldController.MoveSelection(0,-1, e.shiftKey);} ],
-            [38,()=>{this.worldController.MoveSelection(1, 0, e.shiftKey);}],
-            [39,()=>{this.worldController.MoveSelection(0, 1, e.shiftKey);}],
-            [40,()=>{this.worldController.MoveSelection(-1, 0, e.shiftKey);}],
-            [84,()=>{this.worldController.SetBeepers(-1);}],
-            [90,()=>{this.worldController.SetCellEvaluation(true);}],
-            [86,()=>{this.worldController.SetCellEvaluation(false);}],
-            [8,()=>{this.worldController.RemoveEverything();}],
-            [46,()=>{this.worldController.RemoveEverything();}],
+                    this.worldController.SetRandomBeepers(AppVars.randomBeeperMinimum,AppVars.randomBeeperMaximum);                
+                }]]
+            ],
+            [81,[[basic,()=>{this.worldController.ChangeBeepers(-1);}]]],
+            [69,[[basic, ()=>{this.worldController.ChangeBeepers(1);}]]],
+            [48,[[basic, ()=>{this.worldController.SetBeepers(0);}]]],
+            [49,[[basic, ()=>{this.worldController.SetBeepers(1);}]]],
+            [50,[[basic, ()=>{this.worldController.SetBeepers(2);}]]],
+            [51,[[basic, ()=>{this.worldController.SetBeepers(3);}]]],
+            [52,[[basic, ()=>{this.worldController.SetBeepers(4);}]]],
+            [53,[[basic, ()=>{this.worldController.SetBeepers(5);}]]],
+            [54,[[basic, ()=>{this.worldController.SetBeepers(6);}]]],
+            [55,[[basic, ()=>{this.worldController.SetBeepers(7);}]]],
+            [56,[[basic, ()=>{this.worldController.SetBeepers(8);}]]],
+            [57,[[basic, ()=>{this.worldController.SetBeepers(9);}]]],
+            [67,[[basic, ()=>{$("#desktopSetAmmount").trigger("click")}]]], // FIXME
+            [87,[[basic, ()=>{this.worldController.ToggleWall("north");}]]],
+            [68,[[basic, ()=>{this.worldController.ToggleWall("east");}]]],
+            [83,[[basic, ()=>{this.worldController.ToggleWall("south");}]]],
+            [65,[[basic, ()=>{this.worldController.ToggleWall("west");}]]],
+            [88,[[basic, ()=>{this.worldController.ToggleWall("outer");}]]],
+            [37,[[basic, ()=>{this.worldController.MoveSelection(0,-1, e.shiftKey);}]] ],
+            [38,[[basic, ()=>{this.worldController.MoveSelection(1, 0, e.shiftKey);}]]],
+            [39,[[basic, ()=>{this.worldController.MoveSelection(0, 1, e.shiftKey);}]]],
+            [40,[[basic, ()=>{this.worldController.MoveSelection(-1, 0, e.shiftKey);}]]],
+            [84,[[basic, ()=>{this.worldController.SetBeepers(-1);}]]],
+            [86,[[basic, ()=>{this.worldController.SetCellEvaluation(false);}]]],
+            [8, [[basic, ()=>{this.worldController.RemoveEverything();}]]],
+            [46,[[basic, ()=>{this.worldController.RemoveEverything();}]]],
+            [89,[[ctrl, ()=>{this.worldController.Redo();}]]],
+            [90,[
+                [ctrl, ()=>{this.worldController.Undo();}],
+                [basic, ()=>{this.worldController.SetCellEvaluation(true);}]
+            ]],
             
         ]);
         if (hotkeys.has(e.which) === false) {
@@ -303,6 +313,7 @@ class DesktopController {
         }     
         
         if (e.shiftKey && !overrideShift.has(e.which)) {
+
             let dummy: MouseEvent = new MouseEvent("", {
                 clientX: e.clientX,
                 clientY: e.clientY
@@ -310,8 +321,18 @@ class DesktopController {
             this.worldController.ClickDown(dummy);
             this.worldController.ClickUp(dummy);
         }
-        hotkeys.get(e.which)();
-        e.preventDefault();
+        const options = hotkeys.get(e.which)
+        for (let option of options) {
+            if (option[0].ctrl === "yes" && !e.ctrlKey) continue;
+            if (option[0].ctrl === "no" && e.ctrlKey) continue;
+
+            
+            if (option[0].shift === "yes" && !e.shiftKey) continue;
+            if (option[0].shift === "no" && e.shiftKey) continue;
+            option[1]();
+            e.preventDefault();
+            break;
+        }
     }
 
     private calculateScroll() {

@@ -36,7 +36,8 @@ class WorldViewController {
         this.container = container;
         this.lock = false;
         this.karelController = karelController;
-        this.selection = {
+        this.selection = new CellSelection()
+        this.selection.SetData({
             r: 1,
             c: 1,
             rows: 1,
@@ -44,7 +45,7 @@ class WorldViewController {
             dr: 1,
             dc: 1,
             state:"normal"
-        };
+        });
         this.state = {
             cursorX: 0,
             cursorY: 0,
@@ -108,7 +109,7 @@ class WorldViewController {
             return;
         }
 
-        this.selection = {
+        this.selection.SetData({
             r: r,
             c: c,
             rows: Math.abs(r - r2) + 1,
@@ -116,7 +117,7 @@ class WorldViewController {
             dr: r <= r2 ? 1 : -1,
             dc: c <= c2 ? 1 : -1,
             state:state
-        };
+        });
         this.UpdateGutter();
         this.UpdateWaffle();
     }
@@ -462,8 +463,29 @@ class WorldViewController {
         // this.UpdateWaffle(); 
     }
 
-    ToggleWall(which: "north" | "east" | "west" | "south" | "outer") {
+    ToggleWall(which: "north" | "east" | "west" | "south" | "outer", reversible:boolean = true) {
         if (this.lock) return;
+        if (reversible) {
+            const history = KarelController.GetInstance().GetHistory();
+            const op = history.StartOperation();        
+            const opSelection = this.selection.GetData();
+            op.addCommit({
+                forward: ()=>{ 
+                    const prevSelection = this.selection.GetData();
+                    this.selection.SetData(opSelection);
+                    this.ToggleWall(which, false);
+                    this.selection.SetData(prevSelection);
+                },
+                backward: ()=>{
+                    
+                    const prevSelection = this.selection.GetData();
+                    this.selection.SetData(opSelection);
+                    this.ToggleWall(which, false);
+                    this.selection.SetData(prevSelection);
+                },
+            })
+            history.EndOperation();
+        }
         let r=this.selection.r,c=this.selection.c;
         switch (which) {
             case "north":
@@ -543,7 +565,21 @@ class WorldViewController {
         }
         this.Update();
     }
-    
+
+    Undo() {
+        if (this.lock) return;
+        const KC = KarelController.GetInstance();
+        KC.GetHistory().Undo();
+        this.Update();
+    }
+
+    Redo() {
+        if (this.lock) return;
+        const KC = KarelController.GetInstance();
+        KC.GetHistory().Redo();
+        this.Update();
+    }
+
     RemoveEverything() {
         if (this.lock) return;
         let rmin = Math.min(this.selection.r, this.selection.r + (this.selection.rows - 1)*this.selection.dr);

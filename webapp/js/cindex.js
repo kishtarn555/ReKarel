@@ -26636,6 +26636,77 @@ var karel = (function (exports, bootstrap) {
         return pascal.test(text) || java.test(text);
     }
 
+    class Operation {
+        constructor() {
+            this.commits = [];
+        }
+        forward() {
+            for (let c of this.commits) {
+                c.forward();
+            }
+        }
+        backward() {
+            for (let c of this.commits) {
+                c.backward();
+            }
+        }
+        addCommit(commit) {
+            this.commits.push(commit);
+        }
+    }
+    const HISTORY_MAX_SIZE = 1000;
+    class KarelHistory {
+        constructor() {
+            this.operations = [];
+            this.currentOperation = null;
+            this.size = 0;
+            this.head = 0;
+        }
+        StartOperation() {
+            this.EndOperation();
+            this.currentOperation = new Operation();
+            return this.currentOperation;
+        }
+        EndOperation() {
+            if (this.currentOperation == null) {
+                return;
+            }
+            //Remove all undone operations up to this point.
+            while (this.head < this.operations.length) {
+                this.operations.pop();
+            }
+            this.operations.push(this.currentOperation);
+            this.size += this.currentOperation.commits.length;
+            this.head++;
+            this.currentOperation = null;
+            this.TrimHistory();
+        }
+        Clear() {
+            this.size = 0;
+            this.operations = [];
+        }
+        Undo() {
+            if (this.head <= 0) {
+                return false;
+            }
+            this.head--;
+            this.operations[this.head].backward();
+            return true;
+        }
+        Redo() {
+            if (this.head >= this.operations.length) {
+                return false;
+            }
+            this.operations[this.head].forward();
+            this.head++;
+        }
+        TrimHistory() {
+            while (this.operations.length > 1 && this.size > HISTORY_MAX_SIZE) {
+                this.operations.shift();
+            }
+        }
+    }
+
     var __awaiter = (undefined && undefined.__awaiter) || function (thisArg, _arguments, P, generator) {
         function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
         return new (P || (P = Promise))(function (resolve, reject) {
@@ -26662,9 +26733,13 @@ var karel = (function (exports, bootstrap) {
             this.autoStepping = false;
             this.futureStepping = false;
             KarelController.instance = this;
+            this.history = new KarelHistory();
         }
         static GetInstance() {
             return KarelController.instance;
+        }
+        GetHistory() {
+            return this.history;
         }
         // SetDesktopController(desktopController: WorldViewController) {
         //     this.desktopController = desktopController;
@@ -27226,13 +27301,37 @@ var karel = (function (exports, bootstrap) {
         }
     }
 
+    class CellSelection {
+        GetData() {
+            return {
+                r: this.r,
+                c: this.c,
+                rows: this.rows,
+                cols: this.cols,
+                dr: this.dr,
+                dc: this.dc,
+                state: this.state,
+            };
+        }
+        SetData(data) {
+            this.r = data.r;
+            this.c = data.c;
+            this.rows = data.rows;
+            this.cols = data.cols;
+            this.dr = data.dr;
+            this.dc = data.dc;
+            this.state = data.state;
+        }
+    }
+
     class WorldViewController {
         constructor(renderer, karelController, container, gizmos) {
             this.renderer = renderer;
             this.container = container;
             this.lock = false;
             this.karelController = karelController;
-            this.selection = {
+            this.selection = new CellSelection();
+            this.selection.SetData({
                 r: 1,
                 c: 1,
                 rows: 1,
@@ -27240,7 +27339,7 @@ var karel = (function (exports, bootstrap) {
                 dr: 1,
                 dc: 1,
                 state: "normal"
-            };
+            });
             this.state = {
                 cursorX: 0,
                 cursorY: 0,
@@ -27285,7 +27384,7 @@ var karel = (function (exports, bootstrap) {
                 c < 1) {
                 return;
             }
-            this.selection = {
+            this.selection.SetData({
                 r: r,
                 c: c,
                 rows: Math.abs(r - r2) + 1,
@@ -27293,7 +27392,7 @@ var karel = (function (exports, bootstrap) {
                 dr: r <= r2 ? 1 : -1,
                 dc: c <= c2 ? 1 : -1,
                 state: state
-            };
+            });
             this.UpdateGutter();
             this.UpdateWaffle();
         }
@@ -27587,9 +27686,29 @@ var karel = (function (exports, bootstrap) {
             // this.Update();        
             // this.UpdateWaffle(); 
         }
-        ToggleWall(which) {
+        ToggleWall(which, reversible = true) {
             if (this.lock)
                 return;
+            if (reversible) {
+                const history = KarelController.GetInstance().GetHistory();
+                const op = history.StartOperation();
+                const opSelection = this.selection.GetData();
+                op.addCommit({
+                    forward: () => {
+                        const prevSelection = this.selection.GetData();
+                        this.selection.SetData(opSelection);
+                        this.ToggleWall(which, false);
+                        this.selection.SetData(prevSelection);
+                    },
+                    backward: () => {
+                        const prevSelection = this.selection.GetData();
+                        this.selection.SetData(opSelection);
+                        this.ToggleWall(which, false);
+                        this.selection.SetData(prevSelection);
+                    },
+                });
+                history.EndOperation();
+            }
             let r = this.selection.r, c = this.selection.c;
             switch (which) {
                 case "north":
@@ -27637,6 +27756,20 @@ var karel = (function (exports, bootstrap) {
                     }
                     break;
             }
+            this.Update();
+        }
+        Undo() {
+            if (this.lock)
+                return;
+            const KC = KarelController.GetInstance();
+            KC.GetHistory().Undo();
+            this.Update();
+        }
+        Redo() {
+            if (this.lock)
+                return;
+            const KC = KarelController.GetInstance();
+            KC.GetHistory().Redo();
             this.Update();
         }
         RemoveEverything() {
@@ -28207,42 +28340,49 @@ var karel = (function (exports, bootstrap) {
                 return;
             }
             const overrideShift = new Set([37, 38, 39, 40]);
+            const basic = { shift: "optional", ctrl: "no" };
+            const ctrl = { shift: "no", ctrl: "yes" };
             let hotkeys = new Map([
-                [71, () => { this.worldController.ToggleKarelPosition(true); }],
-                [80, () => { this.worldController.ToggleKarelPosition(false); }],
-                [82, () => {
-                        if (e.altKey)
-                            (new bootstrap.Modal("#randomBeepersModal")).show();
-                        else
-                            this.worldController.SetRandomBeepers(AppVars.randomBeeperMinimum, AppVars.randomBeeperMaximum);
-                    }],
-                [81, () => { this.worldController.ChangeBeepers(-1); }],
-                [69, () => { this.worldController.ChangeBeepers(1); }],
-                [48, () => { this.worldController.SetBeepers(0); }],
-                [49, () => { this.worldController.SetBeepers(1); }],
-                [50, () => { this.worldController.SetBeepers(2); }],
-                [51, () => { this.worldController.SetBeepers(3); }],
-                [52, () => { this.worldController.SetBeepers(4); }],
-                [53, () => { this.worldController.SetBeepers(5); }],
-                [54, () => { this.worldController.SetBeepers(6); }],
-                [55, () => { this.worldController.SetBeepers(7); }],
-                [56, () => { this.worldController.SetBeepers(8); }],
-                [57, () => { this.worldController.SetBeepers(9); }],
-                [67, () => { $("#desktopSetAmmount").trigger("click"); }],
-                [87, () => { this.worldController.ToggleWall("north"); }],
-                [68, () => { this.worldController.ToggleWall("east"); }],
-                [83, () => { this.worldController.ToggleWall("south"); }],
-                [65, () => { this.worldController.ToggleWall("west"); }],
-                [88, () => { this.worldController.ToggleWall("outer"); }],
-                [37, () => { this.worldController.MoveSelection(0, -1, e.shiftKey); }],
-                [38, () => { this.worldController.MoveSelection(1, 0, e.shiftKey); }],
-                [39, () => { this.worldController.MoveSelection(0, 1, e.shiftKey); }],
-                [40, () => { this.worldController.MoveSelection(-1, 0, e.shiftKey); }],
-                [84, () => { this.worldController.SetBeepers(-1); }],
-                [90, () => { this.worldController.SetCellEvaluation(true); }],
-                [86, () => { this.worldController.SetCellEvaluation(false); }],
-                [8, () => { this.worldController.RemoveEverything(); }],
-                [46, () => { this.worldController.RemoveEverything(); }],
+                [71, [[basic, () => { this.worldController.ToggleKarelPosition(true); }]]],
+                [80, [[basic, () => { this.worldController.ToggleKarelPosition(false); }]]],
+                [82, [[basic, () => {
+                                if (e.altKey)
+                                    (new bootstrap.Modal("#randomBeepersModal")).show();
+                                else
+                                    this.worldController.SetRandomBeepers(AppVars.randomBeeperMinimum, AppVars.randomBeeperMaximum);
+                            }]]
+                ],
+                [81, [[basic, () => { this.worldController.ChangeBeepers(-1); }]]],
+                [69, [[basic, () => { this.worldController.ChangeBeepers(1); }]]],
+                [48, [[basic, () => { this.worldController.SetBeepers(0); }]]],
+                [49, [[basic, () => { this.worldController.SetBeepers(1); }]]],
+                [50, [[basic, () => { this.worldController.SetBeepers(2); }]]],
+                [51, [[basic, () => { this.worldController.SetBeepers(3); }]]],
+                [52, [[basic, () => { this.worldController.SetBeepers(4); }]]],
+                [53, [[basic, () => { this.worldController.SetBeepers(5); }]]],
+                [54, [[basic, () => { this.worldController.SetBeepers(6); }]]],
+                [55, [[basic, () => { this.worldController.SetBeepers(7); }]]],
+                [56, [[basic, () => { this.worldController.SetBeepers(8); }]]],
+                [57, [[basic, () => { this.worldController.SetBeepers(9); }]]],
+                [67, [[basic, () => { $("#desktopSetAmmount").trigger("click"); }]]],
+                [87, [[basic, () => { this.worldController.ToggleWall("north"); }]]],
+                [68, [[basic, () => { this.worldController.ToggleWall("east"); }]]],
+                [83, [[basic, () => { this.worldController.ToggleWall("south"); }]]],
+                [65, [[basic, () => { this.worldController.ToggleWall("west"); }]]],
+                [88, [[basic, () => { this.worldController.ToggleWall("outer"); }]]],
+                [37, [[basic, () => { this.worldController.MoveSelection(0, -1, e.shiftKey); }]]],
+                [38, [[basic, () => { this.worldController.MoveSelection(1, 0, e.shiftKey); }]]],
+                [39, [[basic, () => { this.worldController.MoveSelection(0, 1, e.shiftKey); }]]],
+                [40, [[basic, () => { this.worldController.MoveSelection(-1, 0, e.shiftKey); }]]],
+                [84, [[basic, () => { this.worldController.SetBeepers(-1); }]]],
+                [86, [[basic, () => { this.worldController.SetCellEvaluation(false); }]]],
+                [8, [[basic, () => { this.worldController.RemoveEverything(); }]]],
+                [46, [[basic, () => { this.worldController.RemoveEverything(); }]]],
+                [89, [[ctrl, () => { this.worldController.Redo(); }]]],
+                [90, [
+                        [ctrl, () => { this.worldController.Undo(); }],
+                        [basic, () => { this.worldController.SetCellEvaluation(true); }]
+                    ]],
             ]);
             if (hotkeys.has(e.which) === false) {
                 return;
@@ -28255,8 +28395,20 @@ var karel = (function (exports, bootstrap) {
                 this.worldController.ClickDown(dummy);
                 this.worldController.ClickUp(dummy);
             }
-            hotkeys.get(e.which)();
-            e.preventDefault();
+            const options = hotkeys.get(e.which);
+            for (let option of options) {
+                if (option[0].ctrl === "yes" && !e.ctrlKey)
+                    continue;
+                if (option[0].ctrl === "no" && e.ctrlKey)
+                    continue;
+                if (option[0].shift === "yes" && !e.shiftKey)
+                    continue;
+                if (option[0].shift === "no" && e.shiftKey)
+                    continue;
+                option[1]();
+                e.preventDefault();
+                break;
+            }
         }
         calculateScroll() {
             let left = 0, top = 1;
