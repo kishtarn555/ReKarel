@@ -54,6 +54,7 @@ export class KarelHistory {
         }
         //Remove all undone operations up to this point.
         while (this.head < this.operations.length) {
+            this.size -= this.operations[this.operations.length-1].commits.length;
             this.operations.pop();
         }
         this.operations.push(this.currentOperation);
@@ -86,7 +87,9 @@ export class KarelHistory {
 
     private TrimHistory() {
         while (this.operations.length > 1 && this.size > HISTORY_MAX_SIZE) {
+            this.size-=this.operations[0].commits.length;
             this.operations.shift();
+            this.head--;
         }
     }
 }
