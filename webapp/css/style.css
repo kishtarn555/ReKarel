@@ -192,7 +192,7 @@ pre.error-popup {
 }
 
 .gutter {
-    background-color: var(--bs-secondary-bg);
+    background-color: var(--bs-secondary);
     background-repeat: no-repeat;
     background-position: 50%;
     border: var(--bs-border-width) var(--bs-border-style) var(--bs-border-color);

@@ -1,5 +1,5 @@
 <div class="border-bottom bg-body p-1">
-    <div class="container">
+    <div class="container-md">
         <div class="btn-toolbar m-1 gap-2">
             <div class="btn-group" role="group" aria-label="Basic example">
                 <button type="button" class="btn btn-body p-1 ps-2 pe-2 border-secondary"
@@ -37,15 +37,18 @@
             <div class="input-group" role="group" aria-label="Basic example">
                 <div class="input-group-text bg-body border-secondary ps-2 pe-2"
                     title="Tiempo de espera entre instrucción e instruccion en milisegundos">
-                    <small><label for="delayPanel">Retraso (ms)</label></small>
+                    <small class="d-none d-md-inline">
+                        <label for="delayPanel" >Retraso (ms)</label>
+                    </small>
+                    <i class="bi bi-watch d-block d-md-none"></i>
                 </div>
                 <input type="number" id="delayPanel" class="form-control border-secondary" min="0"
                     value="300">
-                <button type="button" class="btn btn-body p-1 ps-1 pe-1 border-secondary"
+                <button type="button" class="btn btn-body p-1 ps-1 pe-1 border-secondary d-none d-sm-inline"
                     id="removeDelayBtn" title="Reducir el retraso en 50ms">
                     <i class="bi bi-dash"></i>
                 </button>
-                <button type="button" class="btn btn-body p-1 ps-1 pe-1 border-secondary"
+                <button type="button" class="btn btn-body p-1 ps-1 pe-1 border-secondary d-none d-sm-inline"
                     id="addDelayBtn" title="Aumentar el retraso en 50ms">
                     <i class="bi bi-plus"></i>
                 </button>
@@ -54,7 +57,8 @@
             <div class="input-group" role="group" aria-label="Basic example">
                 <div class="input-group-text bg-body border-secondary ps-2 pe-2"
                     title="Zumbadores en Karel">
-                    <small><label for="beeperBag"> Mochila</label></small>
+                    <small class="d-none d-md-inline"><label for="beeperBag"> Mochila</label></small>                    
+                    <i class="bi bi-backpack-fill d-block d-md-none"></i>
                 </div>
                 <input type="number" id="beeperBag" class="form-control border-secondary"
                     aria-label="" min="0" value="0">
