@@ -929,7 +929,9 @@
 
         
         <div class="d-flex flex-column flex-grow-1 m-0 p-0" id="phoneView">
-            <h5>TODO</h5>
+            <div id="mobileCodePanel" class="split content"></div>
+            <div id="mobileWorldPanel" class="split content"></div>
+            <div id="mobileStatePanel" class="split content"></div>
         </div>
     </div>
     <div id="contextMenuDiv" class="dropend position-absolute d-none d-md-block" style="top: 0px; left: 0px; width: 0px; height: 0px;">
@@ -1242,9 +1244,9 @@
                             </div>
                             <div class="col-sm-12 col-md-8 col-lg-6">
                                 <select class="form-select" aria-label="Tipo de interfaz" name="interface" id="settingsInterface">
-                                    <option value="auto" disabled>Automático (Responsivo)</option>
+                                    <option value="auto">Automático (Responsivo)</option>
                                     <option value="desktop">Vista de escritorio</option>
-                                    <option value="mobile" disabled>Vista de celular</option>
+                                    <option value="mobile">Vista de celular</option>
                                 </select>
                             </div>
                         </div>
