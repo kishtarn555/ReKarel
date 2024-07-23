@@ -1,7 +1,7 @@
-<div id="desktopView" class="flex-grow-1 m-0 p-0">
+<div id="Container" class="flex-grow-1 m-0 p-0">
     <div class="h-100 w-100 d-flex flex-column">
         @@include('./navbar.html')
-        <div class="d-flex flex-column flex-grow-1 m-0 p-0">
+        <div class="d-flex flex-column flex-grow-1 m-0 p-0" id="desktopView">
             @@include("./topToolbar.html")
             <div class="position-relative flex-grow-1">
                 <div id="splitter-container">
@@ -12,6 +12,13 @@
                     
                 </div>
             </div>
+        </div>
+
+        
+        <div class="d-flex flex-column flex-grow-1 m-0 p-0" id="phoneView">
+            <div id="mobileCodePanel" class="split content"></div>
+            <div id="mobileWorldPanel" class="split content"></div>
+            <div id="mobileStatePanel" class="split content"></div>
         </div>
     </div>
     @@include('./contextMenu.html')
