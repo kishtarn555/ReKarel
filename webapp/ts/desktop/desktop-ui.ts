@@ -15,6 +15,7 @@ import { DefaultWRStyle } from '../KarelStyles';
 import { ControlBar, ControlBarData } from './controlBar';
 import { AppVars } from '../volatileMemo';
 import { HistoryToolbar } from '../worldViewController/commit';
+import { GetCurrentSetting } from '../settings';
 
 
 type FocusToolbar = {
@@ -161,7 +162,10 @@ class DesktopController {
         );
         this.worldCanvas.on(
             "touchstart",
-            this.SetAlternativeInput.bind(this)
+            ()=>{
+                if (GetCurrentSetting().autoInputMode === true) 
+                    this.SetAlternativeInput();
+            }
         );
         
 

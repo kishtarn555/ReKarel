@@ -6,7 +6,7 @@ import {  WRStyle } from "./worldRenderer";
 import { DarkEditorThemes } from "./editor/themes/themeManager";
 
 const APP_SETTING = 'appSettings';
-const SETTINGS_VERSION = "0.6.0";
+const SETTINGS_VERSION = "0.7.0";
 
 type fontSizes = number;
 type responsiveInterfaces = "auto" | "desktop" | "mobile";
@@ -15,6 +15,7 @@ type themeSettings = "system" | "light" | "dark";
 type AppSettings = {
     version:string,
     interface: responsiveInterfaces,
+    autoInputMode: boolean
     theme: themeSettings
     editorTheme:string
     editorFontSize: fontSizes,
@@ -26,6 +27,7 @@ type AppSettings = {
 let appSettings: AppSettings = {
     version:SETTINGS_VERSION,
     interface: "desktop",
+    autoInputMode: true,
     editorTheme: "classic",
     editorFontSize: 12,
     theme: "system",
@@ -93,6 +95,7 @@ function setSettings(event:  JQuery.SubmitEvent<HTMLElement, undefined, HTMLElem
     let slowModeLimit = <number>$("#settingsSlowModeLimit").val();
     let theme = <string>$("#settingsForm select[name=theme]").val();
     let style = <string>$("#settingsForm select[name=editorStyle]").val();
+    let autoInput =<boolean>($("#settingsAutoInputMode").prop("checked") ?? true);
     console.log(fontSize);
     if (isResponsiveInterfaces(interfaceType)) {
         appSettings.interface = interfaceType;
@@ -105,6 +108,7 @@ function setSettings(event:  JQuery.SubmitEvent<HTMLElement, undefined, HTMLElem
     }
     appSettings.slowExecutionLimit = slowModeLimit;
     appSettings.editorTheme = style;
+    appSettings.autoInputMode = autoInput;
 
     console.log(appSettings);
     applySettings(appSettings, desktopUI);
@@ -134,6 +138,7 @@ function loadSettingsToModal() {
     $("#settingsTheme").val(appSettings.theme);
     $("#settingsStyle").val(appSettings.editorTheme);
     $("#settingsSlowModeLimit").val(appSettings.slowExecutionLimit);
+    $("#settingsAutoInputMode").prop("checked",appSettings.autoInputMode);
     showOrHideSlowExecutionLimit();
 }
 

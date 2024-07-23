@@ -26383,10 +26383,11 @@ var karel = (function (exports, bootstrap) {
     }
 
     const APP_SETTING = 'appSettings';
-    const SETTINGS_VERSION = "0.6.0";
+    const SETTINGS_VERSION = "0.7.0";
     let appSettings = {
         version: SETTINGS_VERSION,
         interface: "desktop",
+        autoInputMode: true,
         editorTheme: "classic",
         editorFontSize: 12,
         theme: "system",
@@ -26444,11 +26445,13 @@ var karel = (function (exports, bootstrap) {
             localStorage.setItem(APP_SETTING, JSON.stringify(appSettings));
     }
     function setSettings(event, desktopUI) {
+        var _a;
         let interfaceType = $("#settingsForm select[name=interface]").val();
         let fontSize = $("#settingsForm input[name=fontSize]").val();
         let slowModeLimit = $("#settingsSlowModeLimit").val();
         let theme = $("#settingsForm select[name=theme]").val();
         let style = $("#settingsForm select[name=editorStyle]").val();
+        let autoInput = ((_a = $("#settingsAutoInputMode").prop("checked")) !== null && _a !== void 0 ? _a : true);
         console.log(fontSize);
         if (isResponsiveInterfaces(interfaceType)) {
             appSettings.interface = interfaceType;
@@ -26461,6 +26464,7 @@ var karel = (function (exports, bootstrap) {
         }
         appSettings.slowExecutionLimit = slowModeLimit;
         appSettings.editorTheme = style;
+        appSettings.autoInputMode = autoInput;
         console.log(appSettings);
         applySettings(appSettings, desktopUI);
         event.preventDefault();
@@ -26486,6 +26490,7 @@ var karel = (function (exports, bootstrap) {
         $("#settingsTheme").val(appSettings.theme);
         $("#settingsStyle").val(appSettings.editorTheme);
         $("#settingsSlowModeLimit").val(appSettings.slowExecutionLimit);
+        $("#settingsAutoInputMode").prop("checked", appSettings.autoInputMode);
         showOrHideSlowExecutionLimit();
     }
     function InitSettings(desktopUI) {
@@ -27507,11 +27512,10 @@ var karel = (function (exports, bootstrap) {
         }
         ClickUp(e) {
             let cell = this.renderer.PointToCell(this.state.cursorX, this.state.cursorY);
+            if (this.selection.state !== "selecting")
+                return;
             this.selection.state = "normal";
             if (this.clickMode === "normal") {
-                // @ts-ignore TS BUG?
-                if (this.selection.state !== "selecting")
-                    return;
                 this.ExtendSelection(cell.r, cell.c);
             }
             else {
@@ -27531,6 +27535,9 @@ var karel = (function (exports, bootstrap) {
                 else {
                     this.Select(cell.r, cell.c, cell.r, cell.c, "selecting");
                 }
+            }
+            else {
+                this.selection.state = "selecting";
             }
             $(":focus").blur();
         }
@@ -28349,7 +28356,10 @@ var karel = (function (exports, bootstrap) {
             $("body").on("mouseup", this.worldController.ClickUp.bind(this.worldController));
             this.worldCanvas.on("mousemove", this.worldController.TrackMouse.bind(this.worldController));
             this.worldCanvas.on("mousedown", this.worldController.ClickDown.bind(this.worldController));
-            this.worldCanvas.on("touchstart", this.SetAlternativeInput.bind(this));
+            this.worldCanvas.on("touchstart", () => {
+                if (GetCurrentSetting().autoInputMode === true)
+                    this.SetAlternativeInput();
+            });
             const zooms = ["0.5", "0.75", "1", "1.5", "2.0", "2.5", "4"];
             this.worldZoom.on("change", () => {
                 let scale = parseFloat(String(this.worldZoom.val()));
