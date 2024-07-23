@@ -26136,15 +26136,24 @@ var karel = (function (exports, bootstrap) {
         hideElement$1("#desktopView");
         MoveEditor("mobile");
     }
+    const statePanel = $("#stateConsole");
+    const worldPane = $("#worldPane");
+    $("#worldContainer");
     function MoveEditor(target) {
         const editor = getEditors()[0];
         const dom = $(editor.dom);
         dom.detach();
+        statePanel.detach();
+        worldPane.detach();
         if (target === "mobile") {
             $("#mobileCodePanel").append(dom);
+            $("#mobileWorldPane").prepend(worldPane);
+            $("#mobileStatePanel").append(statePanel);
         }
         else {
             $("#splitter-left-top-pane").append(dom);
+            $("#splitter-left-bottom-pane").append(statePanel);
+            $("#desktopWorldSlot").prepend(worldPane);
         }
     }
     let previousResponsiveMode = "desktop";

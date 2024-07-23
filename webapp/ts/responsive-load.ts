@@ -39,15 +39,26 @@ function SetPhoneView() {
 
 }
 
+const statePanel = $("#stateConsole");
+const worldPane = $("#worldPane");
+const worldContainer = $("#worldContainer");
+
 function MoveEditor(target:"mobile"|"desktop") {
 
     const editor = getEditors()[0];
     const dom = $(editor.dom);
     dom.detach();
+    statePanel.detach();
+    worldPane.detach();
+
     if (target === "mobile") {
         $("#mobileCodePanel").append(dom);
+        $("#mobileWorldPane").prepend(worldPane);
+        $("#mobileStatePanel").append(statePanel);
     } else {
         $("#splitter-left-top-pane").append(dom);
+        $("#splitter-left-bottom-pane").append(statePanel);
+        $("#desktopWorldSlot").prepend(worldPane);
     }
 }
 

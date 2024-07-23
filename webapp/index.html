@@ -487,7 +487,7 @@
     </div>
 </div>
             <div class="position-relative flex-grow-1">
-                <div id="splitter-container">
+                <div class="splitter-container">
                     
                     <div class="split split-horizontal" id="splitter-left-pane">
     <div class="split content" id="splitter-left-top-pane">
@@ -498,7 +498,7 @@
 
 
         <!-- Only required for left/right tabs -->
-        <div class="d-flex flex-column h-100 w-100">
+        <div class="d-flex flex-column h-100 w-100" id="stateConsole">
             <ul class="nav nav-tabs bg-body" id="ExecData" role="tablist">
                 <li class="nav-item" role="presentation">
                     <button class="nav-link active" id="consoleTab-tab"
@@ -546,8 +546,8 @@
     </div>
 </div>
                     <div class="split split-horizontal" id="splitter-right-pane">
-    <div class="w-100 h-100 d-flex flex-column position-relative">
-        <div class="overflow-hidden flex-grow-1 flex-shrink-1 position-relative">
+    <div class="w-100 h-100 d-flex flex-column position-relative" id="desktopWorldSlot">
+        <div class="overflow-hidden flex-grow-1 flex-shrink-1 position-relative" id="worldPane">
             <div id="worldContainer" class="w-100 h-100 overflow-scroll"
                 style="height: 0px;">
                 <div id="waffleContainer" class="h-0 w-0">
@@ -929,9 +929,19 @@
 
         
         <div class="d-none d-flex flex-column flex-grow-1 m-0 p-0" id="phoneView">
-            <div id="mobileCodePanel" class="split content"></div>
-            <div id="mobileWorldPanel" class="split content"></div>
-            <div id="mobileStatePanel" class="split content"></div>
+            <div class="position-relative flex-grow-1">
+                <div class="splitter-container">
+                    <div id="mobileCodePanel" class="split split-vertical"></div>
+                    <div id="mobileWorldPanel" class="split split-vertical">
+                            <div id="mobileWorldPane" class="w-100 h-100 d-flex flex-column position-relative">
+                                
+                            </div>
+                    </div>
+                    <div id="mobileStatePanel" class="split split-vertical"></div>
+                </div>
+                
+            </div>
+            <div class="bg-body btn-toolbar d-flex p-2 gap-2 border-bottom flex-shrink-0">aba</div>
         </div>
     </div>
     <div id="contextMenuDiv" class="dropend position-absolute d-none d-md-block" style="top: 0px; left: 0px; width: 0px; height: 0px;">
