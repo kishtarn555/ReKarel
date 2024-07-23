@@ -26122,9 +26122,11 @@ var karel = (function (exports, bootstrap) {
         $("#phoneView").addClass("d-lg-none");
         $("#desktopView").addClass("d-none");
         $("#desktopView").addClass("d-lg-flex");
+        setTimeout(() => checkVisibility());
     }
     function SetDesktopView() {
         mode = "desktop";
+        previousResponsiveMode = "desktop";
         clearAllDisplayClasses("#phoneView");
         clearAllDisplayClasses("#desktopView");
         hideElement$1("#phoneView");
@@ -26132,6 +26134,7 @@ var karel = (function (exports, bootstrap) {
     }
     function SetPhoneView() {
         mode = "mobile";
+        previousResponsiveMode = "mobile";
         clearAllDisplayClasses("#phoneView");
         clearAllDisplayClasses("#desktopView");
         hideElement$1("#desktopView");
