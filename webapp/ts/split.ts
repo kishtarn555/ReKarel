@@ -12,6 +12,14 @@ function splitPanels (ResizeCanvas: ()=>void) {
         direction: 'vertical',
         minSize: 0,
     });
+
+
+    
+    Split(['#mobileCodePanel', '#mobileWorldPanel', '#mobileStatePanel'], {
+        sizes: [30, 40, 30],
+        direction: 'vertical',
+        minSize: 0,
+    });
 }
 
 export {splitPanels};
