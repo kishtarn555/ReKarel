@@ -22156,42 +22156,11 @@ var karel = (function (exports, bootstrap) {
                 ])
             ]
         });
-        let otherState = EditorState.create({
-            doc: startState.doc,
-            extensions: [
-                drawSelection(),
-                lineNumbers(),
-                highlightActiveLine(),
-                keymap.of([
-                    indentWithTab,
-                    ...defaultKeymap,
-                    { key: "Mod-z", run: () => undo(mainView) },
-                    { key: "Mod-y", mac: "Mod-Shift-z", run: () => redo(mainView) }
-                ])
-            ]
-        });
-        let syncAnnotation = Annotation.define();
-        function syncDispatch(tr, view, other) {
-            view.update([tr]);
-            if (!tr.changes.empty && !tr.annotation(syncAnnotation)) {
-                let annotations = [syncAnnotation.of(true)];
-                let userEvent = tr.annotation(Transaction.userEvent);
-                if (userEvent)
-                    annotations.push(Transaction.userEvent.of(userEvent));
-                other.dispatch({ changes: tr.changes, annotations });
-            }
-        }
         let mainView = new EditorView({
             state: startState,
             parent: document.querySelector("#splitter-left-top-pane"),
-            dispatch: tr => syncDispatch(tr, mainView, otherView)
         });
-        let otherView = new EditorView({
-            state: otherState,
-            parent: document.querySelector("#phoneEditor"),
-            dispatch: tr => syncDispatch(tr, otherView, mainView)
-        });
-        return [mainView, otherView];
+        return [mainView];
     }
     function freezeEditors(editor) {
         editor.dispatch({
@@ -26126,6 +26095,11 @@ var karel = (function (exports, bootstrap) {
         gutterSelectionColor: "#ffffff",
     };
 
+    let editors = createEditors();
+    function getEditors() {
+        return editors;
+    }
+
     function clearAllDisplayClasses(element) {
         $(element).removeClass("d-none");
         $(element).removeClass("d-lg-block");
@@ -26145,11 +26119,19 @@ var karel = (function (exports, bootstrap) {
         clearAllDisplayClasses("#phoneView");
         clearAllDisplayClasses("#desktopView");
         hideElement$1("#phoneView");
+        const editor = getEditors()[0];
+        const dom = $(editor.dom);
+        dom.detach();
+        $("#splitter-left-top-pane").append(dom);
     }
     function SetPhoneView() {
         clearAllDisplayClasses("#phoneView");
         clearAllDisplayClasses("#desktopView");
         hideElement$1("#desktopView");
+        const editor = getEditors()[0];
+        const dom = $(editor.dom);
+        dom.detach();
+        $("#mobileCodePanel").append(dom);
     }
     function responsiveHack() {
         $("#phoneView").removeClass("position-absolute");
@@ -26157,11 +26139,6 @@ var karel = (function (exports, bootstrap) {
             $("#phoneView").addClass("d-none");
         }
         $("#loadingModal").remove();
-    }
-
-    let editors = createEditors();
-    function getEditors() {
-        return editors;
     }
 
     function applyTheme(theme) {

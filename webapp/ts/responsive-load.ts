@@ -1,3 +1,5 @@
+import { getEditors } from "./editor/editorsInstances";
+
 function clearAllDisplayClasses(element: string) {    
     $(element).removeClass( "d-none" );
     $(element).removeClass( "d-lg-block");    
@@ -20,12 +22,23 @@ function SetDesktopView() {
     clearAllDisplayClasses("#phoneView");
     clearAllDisplayClasses("#desktopView");
     hideElement("#phoneView");
+    
+    const editor = getEditors()[0];
+    const dom = $(editor.dom);
+    dom.detach();
+    $("#splitter-left-top-pane").append(dom);
 }
 function SetPhoneView() {
     
     clearAllDisplayClasses("#phoneView");
     clearAllDisplayClasses("#desktopView");
     hideElement("#desktopView");
+    
+    const editor = getEditors()[0];
+    const dom = $(editor.dom);
+    dom.detach();
+    $("#mobileCodePanel").append(dom);
+
 }
 
 function responsiveHack() {
