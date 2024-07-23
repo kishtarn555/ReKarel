@@ -27,7 +27,7 @@ function SetDesktopView() {
     clearAllDisplayClasses("#phoneView");
     clearAllDisplayClasses("#desktopView");
     hideElement("#phoneView");
-    MoveEditor("desktop")
+    MovePanels("desktop")
     
 }
 function SetPhoneView() {
@@ -35,7 +35,7 @@ function SetPhoneView() {
     clearAllDisplayClasses("#phoneView");
     clearAllDisplayClasses("#desktopView");
     hideElement("#desktopView");
-    MoveEditor("mobile")
+    MovePanels("mobile")
 
 }
 
@@ -43,7 +43,7 @@ const statePanel = $("#stateConsole");
 const worldPane = $("#worldPane");
 const worldContainer = $("#worldContainer");
 
-function MoveEditor(target:"mobile"|"desktop") {
+function MovePanels(target:"mobile"|"desktop") {
 
     const editor = getEditors()[0];
     const dom = $(editor.dom);
@@ -71,7 +71,7 @@ function checkVisibility() {
     if (previousResponsiveMode === "desktop") {
         if (phoneView.css("display")!=="none") {
             previousResponsiveMode = "mobile";
-            MoveEditor("mobile");
+            MovePanels("mobile");
         }
         return;
     }
@@ -79,7 +79,7 @@ function checkVisibility() {
     if (previousResponsiveMode === "mobile") {
         if (desktopView.css("display")!=="none") {
             previousResponsiveMode = "desktop";
-            MoveEditor("desktop");
+            MovePanels("desktop");
         }
         return;
     }

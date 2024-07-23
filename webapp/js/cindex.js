@@ -787,6 +787,7 @@ var karel = (function (exports, bootstrap) {
         Split(['#mobileCodePanel', '#mobileWorldPanel', '#mobileStatePanel'], {
             sizes: [30, 40, 30],
             direction: 'vertical',
+            onDragEnd: ResizeCanvas,
             minSize: 0,
         });
     }
@@ -26127,19 +26128,19 @@ var karel = (function (exports, bootstrap) {
         clearAllDisplayClasses("#phoneView");
         clearAllDisplayClasses("#desktopView");
         hideElement$1("#phoneView");
-        MoveEditor("desktop");
+        MovePanels("desktop");
     }
     function SetPhoneView() {
         mode = "mobile";
         clearAllDisplayClasses("#phoneView");
         clearAllDisplayClasses("#desktopView");
         hideElement$1("#desktopView");
-        MoveEditor("mobile");
+        MovePanels("mobile");
     }
     const statePanel = $("#stateConsole");
     const worldPane = $("#worldPane");
     $("#worldContainer");
-    function MoveEditor(target) {
+    function MovePanels(target) {
         const editor = getEditors()[0];
         const dom = $(editor.dom);
         dom.detach();
@@ -26165,14 +26166,14 @@ var karel = (function (exports, bootstrap) {
         if (previousResponsiveMode === "desktop") {
             if (phoneView.css("display") !== "none") {
                 previousResponsiveMode = "mobile";
-                MoveEditor("mobile");
+                MovePanels("mobile");
             }
             return;
         }
         if (previousResponsiveMode === "mobile") {
             if (desktopView.css("display") !== "none") {
                 previousResponsiveMode = "desktop";
-                MoveEditor("desktop");
+                MovePanels("desktop");
             }
             return;
         }

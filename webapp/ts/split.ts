@@ -18,6 +18,7 @@ function splitPanels (ResizeCanvas: ()=>void) {
     Split(['#mobileCodePanel', '#mobileWorldPanel', '#mobileStatePanel'], {
         sizes: [30, 40, 30],
         direction: 'vertical',
+        onDragEnd: ResizeCanvas,
         minSize: 0,
     });
 }
