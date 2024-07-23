@@ -120,6 +120,11 @@ let DesktopUI = new DesktopController(
             delayRemove: $("#removeDelayBtn"),
         },
         toolbar: {
+            inputMode: {
+                indicator: $("#inputModeIndicator"),
+                drag:$("#dragSelectionMode"),
+                alternate:$("#alternateSelectionMode")
+            },
             karel: {
                 north: $("#desktopKarelNorth"),
                 east: $("#desktopKarelEast"),

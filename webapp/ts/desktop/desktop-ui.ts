@@ -25,6 +25,11 @@ type FocusToolbar = {
 }
 
 
+type InputModeToolbar = {
+    indicator: JQuery,
+    alternate:JQuery,
+    drag:JQuery
+}
 
 interface DesktopElements {
     desktopEditor: EditorView
@@ -36,6 +41,7 @@ interface DesktopElements {
     moreZoom: JQuery,
     controlBar: ControlBarData,
     toolbar: {
+        inputMode: InputModeToolbar
         beepers: BeeperToolbar
         karel: KarelToolbar
         wall: WallToolbar
@@ -65,6 +71,8 @@ class DesktopController {
     delayInput: JQuery
     delayAdd: JQuery
     delayRemove: JQuery
+
+    inputModeToolbar: InputModeToolbar;
 
     beeperToolbar: BeeperToolbar;
     karelToolbar: KarelToolbar;
@@ -99,6 +107,7 @@ class DesktopController {
         this.delayAdd = elements.controlBar.delayAdd;
         this.delayRemove = elements.controlBar.delayRemove;
 
+        this.inputModeToolbar = elements.toolbar.inputMode;
         this.beeperToolbar = elements.toolbar.beepers;
         this.karelToolbar = elements.toolbar.karel;
         this.wallToolbar = elements.toolbar.wall;
@@ -150,6 +159,10 @@ class DesktopController {
             "mousedown",
             this.worldController.ClickDown.bind(this.worldController)
         );
+        this.worldCanvas.on(
+            "touchstart",
+            this.SetAlternativeInput.bind(this)
+        );
         
 
         const zooms = ["0.5", "0.75", "1", "1.5", "2.0", "2.5", "4"]
@@ -198,7 +211,10 @@ class DesktopController {
         } 
     }
 
-    private ConnectToolbar() {        
+    private ConnectToolbar() {      
+        this.inputModeToolbar.alternate.on("click", ()=>this.SetAlternativeInput());
+        this.inputModeToolbar.drag.on("click", ()=>this.SetDragInput());
+        
         this.beeperToolbar.addOne.on("click", ()=>this.worldController.ChangeBeepers(1));
         this.beeperToolbar.removeOne.on("click", ()=>this.worldController.ChangeBeepers(-1));        
         this.beeperToolbar.infinite.on("click", ()=>this.worldController.SetBeepers(-1));
@@ -229,8 +245,17 @@ class DesktopController {
         this.historyToolbar.redo.on("click", ()=>this.worldController.Redo());
     }
 
+    private SetAlternativeInput() {
+        this.inputModeToolbar.indicator.removeClass("bi-mouse2")
+        this.inputModeToolbar.indicator.addClass("bi-hand-index-thumb")
+        this.worldController.SetClickMode("alternate");
+    }  
 
-    
+    private SetDragInput() {
+        this.inputModeToolbar.indicator.removeClass("bi-hand-index-thumb")
+        this.inputModeToolbar.indicator.addClass("bi-mouse2")
+        this.worldController.SetClickMode("normal");
+    }    
 
     private ConnectConsole() {        
         this.karelController.RegisterMessageCallback(this.ConsoleMessage.bind(this));
