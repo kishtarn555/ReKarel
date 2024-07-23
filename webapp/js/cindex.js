@@ -27380,6 +27380,10 @@ var karel = (function (exports, bootstrap) {
             this.karelController.RegisterNewWorldObserver(this.OnNewWorld.bind(this));
             this.karelController.RegisterStepController(this.onStep.bind(this));
             this.waffle = new SelectionWaffle(gizmos.selectionBox);
+            this.clickMode = "normal";
+        }
+        SetClickMode(mode) {
+            this.clickMode = mode;
         }
         Lock() {
             this.lock = true;
@@ -27502,23 +27506,31 @@ var karel = (function (exports, bootstrap) {
             this.Select(this.selection.r, this.selection.c, r, c, state);
         }
         ClickUp(e) {
-            if (this.selection.state !== "selecting")
-                return;
-            this.selection.state = "normal";
             let cell = this.renderer.PointToCell(this.state.cursorX, this.state.cursorY);
-            this.ExtendSelection(cell.r, cell.c);
+            this.selection.state = "normal";
+            if (this.clickMode === "normal") {
+                // @ts-ignore TS BUG?
+                if (this.selection.state !== "selecting")
+                    return;
+                this.ExtendSelection(cell.r, cell.c);
+            }
+            else {
+                this.Select(cell.r, cell.c, this.selection.r, this.selection.c);
+            }
         }
         ClickDown(e) {
             e.preventDefault();
-            let cell = this.renderer.PointToCell(this.state.cursorX, this.state.cursorY);
-            if (cell.r < 0) {
-                return;
-            }
-            if (e.shiftKey) {
-                this.Select(this.selection.r, this.selection.c, cell.r, cell.c, "selecting");
-            }
-            else {
-                this.Select(cell.r, cell.c, cell.r, cell.c, "selecting");
+            if (this.clickMode === "normal") {
+                let cell = this.renderer.PointToCell(this.state.cursorX, this.state.cursorY);
+                if (cell.r < 0) {
+                    return;
+                }
+                if (e.shiftKey) {
+                    this.Select(this.selection.r, this.selection.c, cell.r, cell.c, "selecting");
+                }
+                else {
+                    this.Select(cell.r, cell.c, cell.r, cell.c, "selecting");
+                }
             }
             $(":focus").blur();
         }
@@ -28313,6 +28325,7 @@ var karel = (function (exports, bootstrap) {
             this.delayInput = elements.controlBar.delayInput;
             this.delayAdd = elements.controlBar.delayAdd;
             this.delayRemove = elements.controlBar.delayRemove;
+            this.inputModeToolbar = elements.toolbar.inputMode;
             this.beeperToolbar = elements.toolbar.beepers;
             this.karelToolbar = elements.toolbar.karel;
             this.wallToolbar = elements.toolbar.wall;
@@ -28336,6 +28349,7 @@ var karel = (function (exports, bootstrap) {
             $("body").on("mouseup", this.worldController.ClickUp.bind(this.worldController));
             this.worldCanvas.on("mousemove", this.worldController.TrackMouse.bind(this.worldController));
             this.worldCanvas.on("mousedown", this.worldController.ClickDown.bind(this.worldController));
+            this.worldCanvas.on("touchstart", this.SetAlternativeInput.bind(this));
             const zooms = ["0.5", "0.75", "1", "1.5", "2.0", "2.5", "4"];
             this.worldZoom.on("change", () => {
                 let scale = parseFloat(String(this.worldZoom.val()));
@@ -28380,6 +28394,8 @@ var karel = (function (exports, bootstrap) {
             }
         }
         ConnectToolbar() {
+            this.inputModeToolbar.alternate.on("click", () => this.SetAlternativeInput());
+            this.inputModeToolbar.drag.on("click", () => this.SetDragInput());
             this.beeperToolbar.addOne.on("click", () => this.worldController.ChangeBeepers(1));
             this.beeperToolbar.removeOne.on("click", () => this.worldController.ChangeBeepers(-1));
             this.beeperToolbar.infinite.on("click", () => this.worldController.SetBeepers(-1));
@@ -28401,6 +28417,16 @@ var karel = (function (exports, bootstrap) {
             this.evaluateToolbar.ignore.on("click", () => this.worldController.SetCellEvaluation(false));
             this.historyToolbar.undo.on("click", () => this.worldController.Undo());
             this.historyToolbar.redo.on("click", () => this.worldController.Redo());
+        }
+        SetAlternativeInput() {
+            this.inputModeToolbar.indicator.removeClass("bi-mouse2");
+            this.inputModeToolbar.indicator.addClass("bi-hand-index-thumb");
+            this.worldController.SetClickMode("alternate");
+        }
+        SetDragInput() {
+            this.inputModeToolbar.indicator.removeClass("bi-hand-index-thumb");
+            this.inputModeToolbar.indicator.addClass("bi-mouse2");
+            this.worldController.SetClickMode("normal");
         }
         ConnectConsole() {
             this.karelController.RegisterMessageCallback(this.ConsoleMessage.bind(this));
@@ -31005,6 +31031,11 @@ var karel = (function (exports, bootstrap) {
             delayRemove: $("#removeDelayBtn"),
         },
         toolbar: {
+            inputMode: {
+                indicator: $("#inputModeIndicator"),
+                drag: $("#dragSelectionMode"),
+                alternate: $("#alternateSelectionMode")
+            },
             karel: {
                 north: $("#desktopKarelNorth"),
                 east: $("#desktopKarelEast"),

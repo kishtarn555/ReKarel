@@ -610,6 +610,32 @@
         </div>
         <div class="bg-body btn-toolbar d-flex p-2 gap-2 border-bottom flex-shrink-0">
 
+    <div class="btn-group" role="group">
+        <div class="btn-group" aria-labelledby="selectionMode" title="Cambiar el modo de selección">
+            <a class="dropdown-toggle btn border-secondary" href="#"
+                id="selectionMode" role="button"
+                data-bs-toggle="dropdown" aria-expanded="false">
+                <i class="bi bi-mouse2" id="inputModeIndicator"></i>
+            </a>
+            <ul class="dropdown-menu"
+                aria-labelledby="selectionMode">
+                <li >
+                    <p class="h6 ms-2 me-2">Modo de selección</p>
+                </li>
+                <li>
+                    <button class="dropdown-item" id="dragSelectionMode" title="Recomendado para ratón">
+                        <i class="bi bi-mouse2"></i> Arrastrar
+                    </button>
+                </li>
+                <li>
+                    <button class="dropdown-item" id="alternateSelectionMode"  title="Recomendado para touch">
+                        <i class="bi bi-hand-index-thumb"></i> Alternar
+                    </button>
+                </li>
+            </ul>
+        </div>
+    </div>
+
     <div class="btn-group dropup" title="Cambiar zumbadores">
         <div class="btn-group" aria-labelledby="beeperManipulationDesktop">
             <a class="dropdown-toggle btn border-secondary" href="#"
@@ -879,6 +905,7 @@
         <a class="btn border-secondary" href="#" id="evaluatorBtnDesktop"
                 role="button" data-bs-toggle="modal" aria-expanded="false" data-bs-target="#evaluatorModal"
             title="Cambia las condiciones que Karel exporta al evaluador">
+
                 <i class="bi bi-list-check"></i> <span class="d-none d-lg-inline">Evaluador</span>
         </a>
     </div>

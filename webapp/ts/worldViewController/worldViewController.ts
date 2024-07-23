@@ -19,6 +19,7 @@ type MouseState = {
     cellPair: CellPair,
 }
 
+type ClickMode = "normal" | "alternate"
 
 class WorldViewController {
     renderer: WorldRenderer
@@ -30,6 +31,7 @@ class WorldViewController {
     private lock: boolean;
     private karelController : KarelController;
     private waffle: SelectionWaffle
+    private clickMode: ClickMode
 
 
     constructor(renderer: WorldRenderer, karelController: KarelController, container: HTMLElement,  gizmos: Gizmos) {
@@ -61,6 +63,11 @@ class WorldViewController {
         this.karelController.RegisterStepController(this.onStep.bind(this));
 
         this.waffle = new SelectionWaffle(gizmos.selectionBox);
+        this.clickMode = "normal";
+    }
+
+    SetClickMode(mode:ClickMode) {
+        this.clickMode = mode;
     }
 
     Lock() {
@@ -216,23 +223,30 @@ class WorldViewController {
     }
 
     ClickUp(e: MouseEvent) {
-        if (this.selection.state!=="selecting") return;
-        this.selection.state = "normal";let cell = this.renderer.PointToCell(this.state.cursorX, this.state.cursorY);
-        this.ExtendSelection(cell.r, cell.c);
+        let cell = this.renderer.PointToCell(this.state.cursorX, this.state.cursorY);
+        this.selection.state = "normal";
+        if (this.clickMode === "normal") {
+            // @ts-ignore TS BUG?
+            if (this.selection.state!=="selecting") return; 
+            this.ExtendSelection(cell.r, cell.c);
+        } else {            
+            this.Select(cell.r, cell.c, this.selection.r, this.selection.c);            
+        }
     }
 
     ClickDown(e:MouseEvent) {
         e.preventDefault();
-
-        let cell = this.renderer.PointToCell(this.state.cursorX, this.state.cursorY);
-        if (cell.r < 0) {
-            return;
-        }
-        if (e.shiftKey) {
-            this.Select(this.selection.r, this.selection.c, cell.r, cell.c, "selecting");
-        } else {
-            this.Select(cell.r, cell.c, cell.r, cell.c, "selecting");
-        }
+        if (this.clickMode === "normal") {
+            let cell = this.renderer.PointToCell(this.state.cursorX, this.state.cursorY);
+            if (cell.r < 0) {
+                return;
+            }
+            if (e.shiftKey) {
+                this.Select(this.selection.r, this.selection.c, cell.r, cell.c, "selecting");
+            } else {
+                this.Select(cell.r, cell.c, cell.r, cell.c, "selecting");
+            }            
+        } 
         $(":focus").blur();
         
     }
