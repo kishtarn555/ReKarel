@@ -1,3 +1,4 @@
+import { DesktopController } from "./desktop/desktop-ui";
 import { getEditors } from "./editor/editorsInstances";
 
 
@@ -60,6 +61,7 @@ function MovePanels(target:"mobile"|"desktop") {
         $("#splitter-left-bottom-pane").append(statePanel);
         $("#desktopWorldSlot").prepend(worldPane);
     }
+    DesktopController.GetInstance().ResizeCanvas();
 }
 
 let previousResponsiveMode:"desktop"|"mobile" = "desktop";

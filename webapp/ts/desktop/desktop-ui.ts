@@ -92,6 +92,7 @@ class DesktopController {
     callStack: CallStack
 
     private isControlInPlayMode: boolean
+    private static _instance: DesktopController
     
     constructor (elements: DesktopElements, karelController: KarelController) {
         this.editor = elements.desktopEditor;
@@ -140,6 +141,12 @@ class DesktopController {
         this.callStack = new CallStack(elements.callStack);
         this.controlbar = new ControlBar(elements.controlBar, this.worldController);
 
+        DesktopController._instance = this;
+
+    }
+
+    static GetInstance() {
+        return DesktopController._instance;
     }
 
     Init() {

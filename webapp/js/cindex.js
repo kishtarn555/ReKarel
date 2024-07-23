@@ -26156,6 +26156,7 @@ var karel = (function (exports, bootstrap) {
             $("#splitter-left-bottom-pane").append(statePanel);
             $("#desktopWorldSlot").prepend(worldPane);
         }
+        DesktopController.GetInstance().ResizeCanvas();
     }
     let previousResponsiveMode = "desktop";
     let phoneView = $("#phoneView");
@@ -28371,6 +28372,10 @@ var karel = (function (exports, bootstrap) {
             this.isControlInPlayMode = false;
             this.callStack = new CallStack(elements.callStack);
             this.controlbar = new ControlBar(elements.controlBar, this.worldController);
+            DesktopController._instance = this;
+        }
+        static GetInstance() {
+            return DesktopController._instance;
         }
         Init() {
             $(window).on("resize", this.ResizeCanvas.bind(this));
