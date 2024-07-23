@@ -224,10 +224,9 @@ class WorldViewController {
 
     ClickUp(e: MouseEvent) {
         let cell = this.renderer.PointToCell(this.state.cursorX, this.state.cursorY);
+        if (this.selection.state!=="selecting") return; 
         this.selection.state = "normal";
         if (this.clickMode === "normal") {
-            // @ts-ignore TS BUG?
-            if (this.selection.state!=="selecting") return; 
             this.ExtendSelection(cell.r, cell.c);
         } else {            
             this.Select(cell.r, cell.c, this.selection.r, this.selection.c);            
@@ -246,7 +245,9 @@ class WorldViewController {
             } else {
                 this.Select(cell.r, cell.c, cell.r, cell.c, "selecting");
             }            
-        } 
+        } else {
+            this.selection.state = "selecting";
+        }
         $(":focus").blur();
         
     }
