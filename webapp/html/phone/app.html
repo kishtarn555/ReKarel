@@ -1,13 +1,16 @@
 <div class="d-none d-flex flex-column flex-grow-1 m-0 p-0" id="phoneView">
-    <div class="position-relative flex-grow-1">
-        <div class="splitter-container">
-            <div id="mobileCodePanel" class="split split-vertical"></div>
-            <div id="mobileWorldPanel" class="split split-vertical">
-                <div id="mobileWorldPane" class="w-100 h-100 d-flex flex-column position-relative">
+    <div class="d-flex h-100 w-100"> 
+        <div class="position-relative flex-grow-1 flex-shrink-1">
+            <div class="splitter-container">
+                <div id="mobileCodePanel" class="split split-vertical"></div>
+                <div id="mobileWorldPanel" class="split split-vertical">
+                    <div id="mobileWorldPane" class="w-100 h-100 d-flex flex-column position-relative">
 
+                    </div>
                 </div>
+                <div id="mobileStatePanel" class="split split-vertical"></div>
             </div>
-            <div id="mobileStatePanel" class="split split-vertical"></div>
-        </div>
+        </div>  
+        @@include('./sideToolbar.html')
     </div>
 </div>
