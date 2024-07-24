@@ -784,6 +784,12 @@ var karel = (function (exports, bootstrap) {
             direction: 'vertical',
             minSize: 0,
         });
+        Split(['#mobileCodePanel', '#mobileWorldPanel', '#mobileStatePanel'], {
+            sizes: [30, 40, 30],
+            direction: 'vertical',
+            onDragEnd: ResizeCanvas,
+            minSize: 0,
+        });
     }
 
     /**
@@ -22156,42 +22162,11 @@ var karel = (function (exports, bootstrap) {
                 ])
             ]
         });
-        let otherState = EditorState.create({
-            doc: startState.doc,
-            extensions: [
-                drawSelection(),
-                lineNumbers(),
-                highlightActiveLine(),
-                keymap.of([
-                    indentWithTab,
-                    ...defaultKeymap,
-                    { key: "Mod-z", run: () => undo(mainView) },
-                    { key: "Mod-y", mac: "Mod-Shift-z", run: () => redo(mainView) }
-                ])
-            ]
-        });
-        let syncAnnotation = Annotation.define();
-        function syncDispatch(tr, view, other) {
-            view.update([tr]);
-            if (!tr.changes.empty && !tr.annotation(syncAnnotation)) {
-                let annotations = [syncAnnotation.of(true)];
-                let userEvent = tr.annotation(Transaction.userEvent);
-                if (userEvent)
-                    annotations.push(Transaction.userEvent.of(userEvent));
-                other.dispatch({ changes: tr.changes, annotations });
-            }
-        }
         let mainView = new EditorView({
             state: startState,
             parent: document.querySelector("#splitter-left-top-pane"),
-            dispatch: tr => syncDispatch(tr, mainView, otherView)
         });
-        let otherView = new EditorView({
-            state: otherState,
-            parent: document.querySelector("#phoneEditor"),
-            dispatch: tr => syncDispatch(tr, otherView, mainView)
-        });
-        return [mainView, otherView];
+        return [mainView];
     }
     function freezeEditors(editor) {
         editor.dispatch({
@@ -26126,6 +26101,12 @@ var karel = (function (exports, bootstrap) {
         gutterSelectionColor: "#ffffff",
     };
 
+    let editors = createEditors();
+    function getEditors() {
+        return editors;
+    }
+
+    let mode = "responsive";
     function clearAllDisplayClasses(element) {
         $(element).removeClass("d-none");
         $(element).removeClass("d-lg-block");
@@ -26135,33 +26116,80 @@ var karel = (function (exports, bootstrap) {
         $(element).addClass("d-none");
     }
     function SetResponsiveness() {
+        mode = "responsive";
         clearAllDisplayClasses("#desktopView");
         clearAllDisplayClasses("#phoneView");
         $("#phoneView").addClass("d-lg-none");
         $("#desktopView").addClass("d-none");
-        $("#desktopView").addClass("d-lg-block");
+        $("#desktopView").addClass("d-lg-flex");
+        setTimeout(() => checkVisibility());
     }
     function SetDesktopView() {
+        mode = "desktop";
+        previousResponsiveMode = "desktop";
         clearAllDisplayClasses("#phoneView");
         clearAllDisplayClasses("#desktopView");
         hideElement$1("#phoneView");
+        MovePanels("desktop");
     }
     function SetPhoneView() {
+        mode = "mobile";
+        previousResponsiveMode = "mobile";
         clearAllDisplayClasses("#phoneView");
         clearAllDisplayClasses("#desktopView");
         hideElement$1("#desktopView");
+        MovePanels("mobile");
+    }
+    const statePanel = $("#stateConsole");
+    const worldPane = $("#worldPane");
+    $("#worldContainer");
+    function MovePanels(target) {
+        const editor = getEditors()[0];
+        const dom = $(editor.dom);
+        dom.detach();
+        statePanel.detach();
+        worldPane.detach();
+        if (target === "mobile") {
+            $("#mobileCodePanel").append(dom);
+            $("#mobileWorldPane").prepend(worldPane);
+            $("#mobileStatePanel").append(statePanel);
+        }
+        else {
+            $("#splitter-left-top-pane").append(dom);
+            $("#splitter-left-bottom-pane").append(statePanel);
+            $("#desktopWorldSlot").prepend(worldPane);
+        }
+        DesktopController.GetInstance().ResizeCanvas();
+    }
+    let previousResponsiveMode = "desktop";
+    let phoneView = $("#phoneView");
+    let desktopView = $("#desktopView");
+    function checkVisibility() {
+        if (mode !== "responsive")
+            return;
+        if (previousResponsiveMode === "desktop") {
+            if (phoneView.css("display") !== "none") {
+                previousResponsiveMode = "mobile";
+                MovePanels("mobile");
+            }
+            return;
+        }
+        if (previousResponsiveMode === "mobile") {
+            if (desktopView.css("display") !== "none") {
+                previousResponsiveMode = "desktop";
+                MovePanels("desktop");
+            }
+            return;
+        }
     }
     function responsiveHack() {
+        $(window).on('resize', checkVisibility);
         $("#phoneView").removeClass("position-absolute");
         {
             $("#phoneView").addClass("d-none");
         }
         $("#loadingModal").remove();
-    }
-
-    let editors = createEditors();
-    function getEditors() {
-        return editors;
+        setTimeout(() => checkVisibility());
     }
 
     function applyTheme(theme) {
@@ -28347,6 +28375,10 @@ var karel = (function (exports, bootstrap) {
             this.isControlInPlayMode = false;
             this.callStack = new CallStack(elements.callStack);
             this.controlbar = new ControlBar(elements.controlBar, this.worldController);
+            DesktopController._instance = this;
+        }
+        static GetInstance() {
+            return DesktopController._instance;
         }
         Init() {
             $(window).on("resize", this.ResizeCanvas.bind(this));

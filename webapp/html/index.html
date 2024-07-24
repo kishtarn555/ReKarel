@@ -38,11 +38,15 @@
     </div>
     <div class="container-fluid h-100 p-0">
         <div class="d-flex flex-column w-100 h-100 m-0 p-0">
-
-            @@include('./desktop/app.html')
+            <div id="Container" class="flex-grow-1 m-0 p-0">
+                <div class="h-100 w-100 d-flex flex-column">
+                    @@include('./navbar.html')
+                    @@include('./desktop/app.html')
+                    @@include('./phone/app.html')
+                </div>
+                @@include('./contextMenu.html')
+            </div>
             
-            <!-- PHONE VIEW -->
-            @@include('./phone/app.html')
             
         </div>
     </div>
