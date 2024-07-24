@@ -1,3 +1,4 @@
+import bootstrap from "bootstrap";
 import { ControllerState, KarelController } from "../KarelController";
 import { WorldViewController } from "../worldViewController/worldViewController";
 
@@ -144,14 +145,14 @@ export class ControlBar  {
     }
 
     private ActivateInfiniteBeepers() {
-        this.ui.beeperInput.hide();
+        bootstrap.Collapse.getOrCreateInstance($("#beeperInputCollapse")[0]).hide();
         this.ui.infiniteBeeperInput.removeClass("btn-body");
         this.ui.infiniteBeeperInput.addClass("btn-info");
     }
 
     
     private DeactivateInfiniteBeepers() {
-        this.ui.beeperInput.show();
+        bootstrap.Collapse.getOrCreateInstance($("#beeperInputCollapse")[0]).show();
         this.ui.infiniteBeeperInput.removeClass("btn-info");
         this.ui.infiniteBeeperInput.addClass("btn-body");
     }
