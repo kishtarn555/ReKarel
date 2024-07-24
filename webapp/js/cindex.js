@@ -27601,8 +27601,8 @@ var karel = (function (exports, bootstrap) {
                     let newZoom = this.pinch.startZoom * delta;
                     if (newZoom < 0.5)
                         newZoom = 0.5;
-                    if (newZoom > 4)
-                        newZoom = 4;
+                    if (newZoom > 8)
+                        newZoom = 8;
                     this.SetScale(newZoom);
                 }
                 else {

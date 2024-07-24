@@ -296,7 +296,7 @@ class WorldViewController {
                 if (0.9 < delta && delta < 1.1 ) delta=1;
                 let newZoom = this.pinch.startZoom* delta;
                 if (newZoom < 0.5) newZoom=0.5;
-                if (newZoom > 4) newZoom=4;
+                if (newZoom > 8) newZoom=8;
                 this.SetScale(newZoom);
             } else {
                 this.pinch.prevDiff = curDiff;
