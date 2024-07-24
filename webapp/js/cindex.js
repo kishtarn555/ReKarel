@@ -28246,12 +28246,12 @@ var karel = (function (exports, bootstrap) {
             }
         }
         ActivateInfiniteBeepers() {
-            this.ui.beeperInput.hide();
+            bootstrap.Collapse.getOrCreateInstance($("#beeperInputCollapse")[0]).hide();
             this.ui.infiniteBeeperInput.removeClass("btn-body");
             this.ui.infiniteBeeperInput.addClass("btn-info");
         }
         DeactivateInfiniteBeepers() {
-            this.ui.beeperInput.show();
+            bootstrap.Collapse.getOrCreateInstance($("#beeperInputCollapse")[0]).show();
             this.ui.infiniteBeeperInput.removeClass("btn-info");
             this.ui.infiniteBeeperInput.addClass("btn-body");
         }

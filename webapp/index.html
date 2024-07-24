@@ -460,8 +460,10 @@
                     <small class="d-none d-md-inline"><label for="beeperBag"> Mochila</label></small>                    
                     <i class="bi bi-backpack-fill d-block d-md-none"></i>
                 </div>
-                <input type="number" id="beeperBag" class="form-control border-secondary"
-                    aria-label="" min="0" value="0">
+                <div class="collapse collapse-horizontal show" id="beeperInputCollapse">
+                    <input type="number" id="beeperBag" class="form-control border-secondary rounded-0"
+                        aria-label="" min="0" value="0">
+                </div>
                 <button type="button" class="btn btn-body p-1 ps-3 pe-3 border-secondary"
                     id="infiniteBeepersBtn" title="Activar/desactivar zumbadores infinitos">
                     <i class="bi bi-infinity"></i>
@@ -905,7 +907,6 @@
         <a class="btn border-secondary" href="#" id="evaluatorBtnDesktop"
                 role="button" data-bs-toggle="modal" aria-expanded="false" data-bs-target="#evaluatorModal"
             title="Cambia las condiciones que Karel exporta al evaluador">
-
                 <i class="bi bi-list-check"></i> <span class="d-none d-lg-inline">Evaluador</span>
         </a>
     </div>
