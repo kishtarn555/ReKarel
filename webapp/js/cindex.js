@@ -27414,6 +27414,11 @@ var karel = (function (exports, bootstrap) {
             this.karelController.RegisterStepController(this.onStep.bind(this));
             this.waffle = new SelectionWaffle(gizmos.selectionBox);
             this.clickMode = "normal";
+            this.pinch = {
+                pointers: [],
+                prevDiff: -1,
+                startZoom: 1
+            };
         }
         SetClickMode(mode) {
             this.clickMode = mode;
@@ -27511,6 +27516,7 @@ var karel = (function (exports, bootstrap) {
             this.UpdateWaffle();
             this.Update();
             this.UpdateScrollElements();
+            this.ReFocusCurrentElement();
         }
         RecalculateScale() {
             this.renderer.scale = this.scale;
@@ -27568,6 +27574,42 @@ var karel = (function (exports, bootstrap) {
                 this.selection.state = "selecting";
             }
             $(":focus").blur();
+        }
+        PointerDown(e) {
+            this.pinch.pointers.push(e);
+        }
+        PointerUp(e) {
+            const index = this.pinch.pointers.findIndex((cachedEv) => cachedEv.pointerId === e.pointerId);
+            if (index !== -1)
+                this.pinch.pointers.splice(index, 1);
+            if (this.pinch.pointers.length < 2) {
+                this.pinch.prevDiff = -1;
+            }
+        }
+        PointerMove(e) {
+            const index = this.pinch.pointers.findIndex((cachedEv) => cachedEv.pointerId === e.pointerId);
+            if (index !== -1)
+                this.pinch.pointers[index] = e;
+            // If two pointers are down, check for pinch gestures
+            if (this.pinch.pointers.length === 2) {
+                // Calculate the distance between the two pointers
+                const curDiff = Math.abs(this.pinch.pointers[0].clientX - this.pinch.pointers[1].clientX);
+                if (this.pinch.prevDiff > 0) {
+                    let delta = curDiff / this.pinch.prevDiff;
+                    if (0.9 < delta && delta < 1.1)
+                        delta = 1;
+                    let newZoom = this.pinch.startZoom * delta;
+                    if (newZoom < 0.5)
+                        newZoom = 0.5;
+                    if (newZoom > 4)
+                        newZoom = 4;
+                    this.SetScale(newZoom);
+                }
+                else {
+                    this.pinch.prevDiff = curDiff;
+                    this.pinch.startZoom = this.scale;
+                }
+            }
         }
         SetKarelOnSelection(direction = "north") {
             if (this.lock)
@@ -27732,6 +27774,9 @@ var karel = (function (exports, bootstrap) {
             let r = this.selection.r - 1;
             let c = this.selection.c - 1;
             this.FocusTo(r, c);
+        }
+        ReFocusCurrentElement() {
+            this.FocusTo(this.renderer.origin.f, this.renderer.origin.c);
         }
         TrackFocus(r, c) {
             let origin = this.renderer.origin;
@@ -28392,6 +28437,9 @@ var karel = (function (exports, bootstrap) {
                 if (GetCurrentSetting().autoInputMode === true)
                     this.SetAlternativeInput();
             });
+            this.worldCanvas.on("pointerdown", this.worldController.PointerDown.bind(this.worldController));
+            this.worldCanvas.on("pointerup pointercancel pointerout pointerleave", this.worldController.PointerUp.bind(this.worldController));
+            this.worldCanvas.on("pointermove", this.worldController.PointerMove.bind(this.worldController));
             const zooms = ["0.5", "0.75", "1", "1.5", "2.0", "2.5", "4"];
             this.worldZoom.on("change", () => {
                 let scale = parseFloat(String(this.worldZoom.val()));

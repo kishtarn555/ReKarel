@@ -601,7 +601,7 @@
 
                 <canvas id="worldCanvas"
                     class="position-sticky top-0 start-0 world-canvas"
-                    style="background: magenta"></canvas>
+                    style="background: magenta;  touch-action: pan-x pan-y;"></canvas>
                 <div id="worldScrolledContainerVertical"
                     style="height:3000px;width:1px;"></div>
                 <div id="worldScrolledContainerHorizontal"
@@ -959,7 +959,7 @@
                                 </button>
                                 <ul class="dropdown-menu">
                                   <li>
-                                    <input type="range" class="form-range" id="phoneZoom">
+                                    <input type="range" class="form-range" id="phoneZoom" min="0" max="11">
                                   </li>
                                 </ul>
                               </div>

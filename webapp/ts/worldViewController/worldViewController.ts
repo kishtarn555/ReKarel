@@ -5,6 +5,7 @@ import { SelectionBox, SelectionWaffle } from "./waffle";
 import { CellSelection, SelectionState } from "./selection";
 import { CellPair } from "../cellPair";
 import { karel } from "../../../js";
+import { GetCurrentSetting } from "../settings";
 
 
 type Gizmos = {
@@ -21,6 +22,12 @@ type MouseState = {
 
 type ClickMode = "normal" | "alternate"
 
+type PinchData = {
+    pointers: PointerEvent[]
+    prevDiff:number
+    startZoom:number
+}
+
 class WorldViewController {
     renderer: WorldRenderer
     container: HTMLElement
@@ -32,7 +39,7 @@ class WorldViewController {
     private karelController : KarelController;
     private waffle: SelectionWaffle
     private clickMode: ClickMode
-
+    private pinch: PinchData
 
     constructor(renderer: WorldRenderer, karelController: KarelController, container: HTMLElement,  gizmos: Gizmos) {
         this.renderer = renderer;
@@ -64,6 +71,11 @@ class WorldViewController {
 
         this.waffle = new SelectionWaffle(gizmos.selectionBox);
         this.clickMode = "normal";
+        this.pinch = {
+            pointers: [],
+            prevDiff: -1,
+            startZoom : 1
+        }
     }
 
     SetClickMode(mode:ClickMode) {
@@ -190,6 +202,7 @@ class WorldViewController {
         this.UpdateWaffle();
         this.Update();             
         this.UpdateScrollElements();   
+        this.ReFocusCurrentElement();
     }
 
     RecalculateScale() {
@@ -250,6 +263,46 @@ class WorldViewController {
         }
         $(":focus").blur();
         
+    }
+
+    PointerDown(e:PointerEvent) {
+        this.pinch.pointers.push(e);        
+    }
+    PointerUp(e:PointerEvent) {
+        const index = this.pinch.pointers.findIndex(
+            (cachedEv) => cachedEv.pointerId === e.pointerId,
+        );
+        if (index !== -1)
+            this.pinch.pointers.splice(index, 1);
+
+        if (this.pinch.pointers.length < 2) {
+            this.pinch.prevDiff = -1;
+        }
+
+    }
+    PointerMove(e:PointerEvent) {
+
+        const index = this.pinch.pointers.findIndex(
+            (cachedEv) => cachedEv.pointerId === e.pointerId,
+        );
+        if (index !== -1)
+            this.pinch.pointers[index] = e;
+        // If two pointers are down, check for pinch gestures
+        if (this.pinch.pointers.length === 2) {
+            // Calculate the distance between the two pointers
+            const curDiff = Math.abs(this.pinch.pointers[0].clientX - this.pinch.pointers[1].clientX);
+            if (this.pinch.prevDiff > 0) {
+                let delta = curDiff/this.pinch.prevDiff;
+                if (0.9 < delta && delta < 1.1 ) delta=1;
+                let newZoom = this.pinch.startZoom* delta;
+                if (newZoom < 0.5) newZoom=0.5;
+                if (newZoom > 4) newZoom=4;
+                this.SetScale(newZoom);
+            } else {
+                this.pinch.prevDiff = curDiff;
+                this.pinch.startZoom = this.scale;
+            }
+        }
     }
 
     SetKarelOnSelection(direction: "north" | "east" | "west" | "south" = "north") {
@@ -447,6 +500,10 @@ class WorldViewController {
         let c = this.selection.c - 1;
 
         this.FocusTo(r, c);
+    }
+
+    ReFocusCurrentElement() {
+        this.FocusTo(this.renderer.origin.f, this.renderer.origin.c)
     }
 
     TrackFocus(r:number, c:number) {
