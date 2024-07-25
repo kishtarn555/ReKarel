@@ -505,12 +505,17 @@ class WorldRenderer {
         return "north";
     }
 
-    PointToCell(x:number, y:number) : CellPair {
+    PointToCell(x:number, y:number, precise:boolean=false) : CellPair {
         x+=this.GetColumnOffset();
         y-=this.GetRowOffset();
         let c = (x-this.GutterSize)/this.CellSize;
         let r = ((this.GetHeight()-y)-this.GutterSize)/this.CellSize;
-
+        if (precise) {
+            return {
+                r: r+ Math.floor(this.origin.r),
+                c:c+ Math.floor(this.origin.c) 
+            }
+        }
         if (c < 0 || r < 0) {
             return {r: -1, c: -1};
         }

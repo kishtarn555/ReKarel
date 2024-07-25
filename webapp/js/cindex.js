@@ -22622,11 +22622,17 @@ var karel = (function (exports, bootstrap) {
             }
             return "north";
         }
-        PointToCell(x, y) {
+        PointToCell(x, y, precise = false) {
             x += this.GetColumnOffset();
             y -= this.GetRowOffset();
             let c = (x - this.GutterSize) / this.CellSize;
             let r = ((this.GetHeight() - y) - this.GutterSize) / this.CellSize;
+            if (precise) {
+                return {
+                    r: r + Math.floor(this.origin.r),
+                    c: c + Math.floor(this.origin.c)
+                };
+            }
             if (c < 0 || r < 0) {
                 return { r: -1, c: -1 };
             }
@@ -27465,8 +27471,8 @@ var karel = (function (exports, bootstrap) {
                 prevDiff: -1,
                 startZoom: 1,
                 freed: false,
-                pinchCell: { r: 1, c: 1 },
-                pinchProportions: { left: 0, bottom: 0 },
+                cell: { r: 1, c: 1 },
+                proportions: { left: 0, bottom: 0 },
             };
         }
         SetClickMode(mode) {
@@ -27658,12 +27664,15 @@ var karel = (function (exports, bootstrap) {
                 this.pinch.pointers[index] = e;
             // If two pointers are down, check for pinch gestures
             if (this.pinch.pointers.length === 2) {
+                let cX = (this.pinch.pointers[0].clientX + this.pinch.pointers[1].clientX) / 2;
+                let cY = (this.pinch.pointers[0].clientY + this.pinch.pointers[1].clientY) / 2;
+                this.pinch.proportions = this.ClientXYToProportions(cX, cY);
                 // Calculate the distance between the two pointers
                 const diffX = Math.abs(this.pinch.pointers[0].clientX - this.pinch.pointers[1].clientX);
                 const diffY = Math.abs(this.pinch.pointers[0].clientY - this.pinch.pointers[1].clientY);
-                const curDiff = (diffX * diffX + diffY * diffY) / 3;
+                let curDiff = Math.sqrt(diffX * diffX + diffY * diffY);
                 if (this.pinch.prevDiff > 0) {
-                    let delta = (curDiff / this.pinch.prevDiff);
+                    let delta = curDiff / this.pinch.prevDiff;
                     if (!this.pinch.freed) {
                         if (0.9 < delta && delta < 1.1) {
                             return;
@@ -27684,21 +27693,16 @@ var karel = (function (exports, bootstrap) {
                     if (newZoom > 8)
                         newZoom = 8;
                     this.SetScale(newZoom, false);
-                    this.TrackFocus(this.pinch.pinchCell.r, this.pinch.pinchCell.c);
+                    this.FocusCellToScreenPortion(this.pinch.cell.r, this.pinch.cell.c, this.pinch.proportions.left, this.pinch.proportions.bottom, false // Do not snap
+                    );
                 }
                 else {
                     this.pinch.prevDiff = curDiff;
                     this.pinch.startZoom = this.scale;
                     this.pinch.freed = false;
-                    let cX = (this.pinch.pointers[0].clientX + this.pinch.pointers[1].clientX) / 2;
-                    let cY = (this.pinch.pointers[0].clientY + this.pinch.pointers[1].clientY) / 2;
                     let { x, y } = this.ClientXYToStateXY(cX, cY);
-                    this.pinch.pinchCell = this.renderer.PointToCell(x, y);
-                    // this.pinch.pinchProportions = this.ClientXYToProportions(cX, cY);
-                    this.pinch.pinchProportions = {
-                        left: 0.5,
-                        bottom: 0.5
-                    };
+                    this.pinch.cell = this.renderer.PointToCell(x, y, true);
+                    this.Select(this.pinch.cell.r, this.pinch.cell.c, this.pinch.cell.r, this.pinch.cell.c);
                 }
             }
         }
@@ -27870,13 +27874,13 @@ var karel = (function (exports, bootstrap) {
             const origin = this.renderer.GetOrigin();
             this.FocusTo(origin.r, origin.c);
         }
-        FocusCellToScreenPortion(r, c, leftRatio, bottomRatio) {
+        FocusCellToScreenPortion(r, c, leftRatio, bottomRatio, snap = true) {
             const cols = this.renderer.GetColCount("noRounding");
             const rows = this.renderer.GetRowCount("noRounding");
             const w = this.karelController.world.w;
             const h = this.karelController.world.h;
-            let target_c = Math.round(c - leftRatio * cols);
-            let target_r = Math.ceil(r - bottomRatio * rows);
+            let target_c = c - leftRatio * cols;
+            let target_r = r - bottomRatio * rows;
             if (target_c < 1)
                 target_c = 1;
             if (target_r < 1)
@@ -27885,7 +27889,7 @@ var karel = (function (exports, bootstrap) {
                 target_c = w;
             if (target_r > h)
                 target_r = h;
-            this.FocusTo(target_r, target_c);
+            this.FocusTo(target_r, target_c, snap);
         }
         TrackFocus(r, c) {
             let origin = this.renderer.GetOrigin();
@@ -27921,13 +27925,27 @@ var karel = (function (exports, bootstrap) {
         TrackFocusToKarel() {
             this.TrackFocus(this.karelController.world.i, this.karelController.world.j);
         }
-        FocusTo(r, c) {
+        FocusTo(r, c, snap = true) {
+            this.karelController.world.w;
+            let worldHeight = this.karelController.world.h;
             let left = (c - 1 + 0.1) / (this.karelController.world.w - this.renderer.GetColCount("floor") + 1);
-            left = left < 0 ? 0 : left;
-            left = left > 1 ? 1 : left;
+            if (left < 0) {
+                c = 1;
+                left = 0;
+            }
+            else if (left > 1) {
+                c = 1 + (worldHeight - this.renderer.GetRowCount("floor") + 1);
+                left = 1;
+            }
             let top = (r - 1 + 0.01) / (this.karelController.world.h - this.renderer.GetRowCount("floor") + 1);
-            top = top < 0 ? 0 : top;
-            top = top > 1 ? 1 : top;
+            if (top < 0) {
+                r = 1;
+                top = 0;
+            }
+            else if (top > 1) {
+                r = 1 + (worldHeight - this.renderer.GetRowCount("floor") + 1);
+                top = 1;
+            }
             // let la =0, lb = 1;
             // let ta =0, tb = 1;
             // let left = (la+lb)/2.0;
@@ -27953,10 +27971,18 @@ var karel = (function (exports, bootstrap) {
             //         ta=tb=tm;
             //     }
             // }
-            this.renderer.SnappySetOrigin({
-                c: c,
-                r: r,
-            });
+            if (snap) {
+                this.renderer.SnappySetOrigin({
+                    c: c,
+                    r: r,
+                });
+            }
+            else {
+                this.renderer.SmoothlySetOrigin({
+                    c: c,
+                    r: r,
+                });
+            }
             // this.lockScroll=true;
             this.container.scrollLeft = left * (this.container.scrollWidth - this.container.clientWidth);
             this.container.scrollTop = (1 - top) * (this.container.scrollHeight - this.container.clientHeight);
