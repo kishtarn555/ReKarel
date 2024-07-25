@@ -44,6 +44,7 @@ class WorldViewController {
     private waffle: SelectionWaffle
     private clickMode: ClickMode
     private pinch: PinchData
+    private followScroll:boolean
 
     constructor(renderer: WorldRenderer, karelController: KarelController, container: HTMLElement,  gizmos: Gizmos) {
         this.renderer = renderer;
@@ -83,6 +84,7 @@ class WorldViewController {
             cell: {r:1,c:1},
             proportions: {left:0,bottom:0},
         }
+        this.followScroll = true;
     }
 
     SetClickMode(mode:ClickMode) {
@@ -304,6 +306,11 @@ class WorldViewController {
 
         if (this.pinch.pointers.length < 2) {
             this.pinch.prevDiff = -1;
+            if (this.renderer.Snap()) {
+                this.Update();
+                this.UpdateWaffle();
+            }
+            this.followScroll = true;
         }
 
     }
@@ -357,6 +364,7 @@ class WorldViewController {
                 let {x, y} = this.ClientXYToStateXY(cX,cY);
                 this.pinch.cell = this.renderer.PointToCell(x,y, true);
                 this.Select(this.pinch.cell.r, this.pinch.cell.c,this.pinch.cell.r, this.pinch.cell.c);
+                this.followScroll = false;
                 
             }
         }
@@ -854,6 +862,9 @@ class WorldViewController {
     }
 
     ChangeOriginFromScroll(left:number, top:number) {
+        if (!this.followScroll) {
+            return;
+        }
         let worldWidth = this.karelController.world.w;
         let worldHeight = this.karelController.world.h;
 
@@ -873,7 +884,7 @@ class WorldViewController {
         // });
 
         
-        this.renderer.SmoothlySetOrigin({
+        this.renderer.SnappySetOrigin({
             r: 
                 1 + Math.max(
                     0,

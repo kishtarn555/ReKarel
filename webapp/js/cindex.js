@@ -22650,7 +22650,9 @@ var karel = (function (exports, bootstrap) {
         Snap() {
             this.origin.r = Math.round(this.origin.r);
             this.origin.c = Math.round(this.origin.c);
+            const performedSnapped = !this.snapped;
             this.snapped = true;
+            return performedSnapped;
         }
         SmoothlySetOrigin(coord) {
             this.origin = coord;
@@ -27474,6 +27476,7 @@ var karel = (function (exports, bootstrap) {
                 cell: { r: 1, c: 1 },
                 proportions: { left: 0, bottom: 0 },
             };
+            this.followScroll = true;
         }
         SetClickMode(mode) {
             this.clickMode = mode;
@@ -27656,6 +27659,11 @@ var karel = (function (exports, bootstrap) {
                 this.pinch.pointers.splice(index, 1);
             if (this.pinch.pointers.length < 2) {
                 this.pinch.prevDiff = -1;
+                if (this.renderer.Snap()) {
+                    this.Update();
+                    this.UpdateWaffle();
+                }
+                this.followScroll = true;
             }
         }
         PointerMove(e) {
@@ -27703,6 +27711,7 @@ var karel = (function (exports, bootstrap) {
                     let { x, y } = this.ClientXYToStateXY(cX, cY);
                     this.pinch.cell = this.renderer.PointToCell(x, y, true);
                     this.Select(this.pinch.cell.r, this.pinch.cell.c, this.pinch.cell.r, this.pinch.cell.c);
+                    this.followScroll = false;
                 }
             }
         }
@@ -28111,6 +28120,9 @@ var karel = (function (exports, bootstrap) {
             this.Update();
         }
         ChangeOriginFromScroll(left, top) {
+            if (!this.followScroll) {
+                return;
+            }
             let worldWidth = this.karelController.world.w;
             let worldHeight = this.karelController.world.h;
             // this.renderer.SnappySetOrigin({
@@ -28127,7 +28139,7 @@ var karel = (function (exports, bootstrap) {
             //         )
             //     ),
             // });
-            this.renderer.SmoothlySetOrigin({
+            this.renderer.SnappySetOrigin({
                 r: 1 + Math.max(0, (worldHeight - this.renderer.GetRowCount("floor") + 1) * top),
                 c: 1 + Math.max(0, (worldWidth - this.renderer.GetColCount("floor") + 1) * left),
             });

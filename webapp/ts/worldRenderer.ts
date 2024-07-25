@@ -536,7 +536,9 @@ class WorldRenderer {
     Snap() {
         this.origin.r = Math.round(this.origin.r);
         this.origin.c = Math.round(this.origin.c);
+        const performedSnapped = !this.snapped;
         this.snapped = true;
+        return performedSnapped;
     }
 
     SmoothlySetOrigin(coord:CellPair) {
