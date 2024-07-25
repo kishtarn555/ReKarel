@@ -242,6 +242,7 @@ class WorldRenderer {
         let w = this.GetWidth();
         let cols = this.GetColCount();
         let rows = this.GetRowCount();
+        this.TranslateOffset(true, true);
         this.canvasContext.strokeStyle = this.style.gridBorderColor;
         if (this.mode === "error") {
             this.canvasContext.strokeStyle = this.style.errorGridBorderColor;
@@ -271,12 +272,13 @@ class WorldRenderer {
     }
 
     private DrawKarel(r: number, c:number, orientation: "north" | "east" | "south" | "west" = "north") : void {
-        if (r- this.origin.r < 0 || r- this.origin.r >= this.GetRowCount()) {
+        this.ResetTransform();
+        if (r- this.origin.r < -1 || r- this.origin.r >= this.GetRowCount()) {
             // Cull Karel it's outside view by y coord
             return;
         }
         
-        if (c- this.origin.c < 0 || c- this.origin.c >= this.GetColCount()) {
+        if (c- this.origin.c < -1 || c- this.origin.c >= this.GetColCount()) {
             // Cull Karel it's outside view by x coord
             return;
         }
@@ -315,6 +317,17 @@ class WorldRenderer {
     private ResetTransform() {
         this.canvasContext.setTransform(1, 0, 0, 1, 0, 0);
         this.canvasContext.scale(this.scale,this.scale)
+    }
+
+    private TranslateOffset(rows:boolean, cols:boolean) {
+        let offsetC = this.GetColumnOffset();
+        let offsetR = this.GetRowOffset();
+        if (cols) {
+            this.canvasContext.translate(-offsetC, 0);
+        }
+        if (cols) {
+            this.canvasContext.translate(0, offsetR);
+        }
     }
 
     private ColorCell(r: number, c: number, color:string) : void {
@@ -376,6 +389,7 @@ class WorldRenderer {
         let x = this.GutterSize+ (c+0.5) * this.CellSize;
         let y = h-(this.GutterSize+ (r+0.5) * this.CellSize);
         this.canvasContext.translate(x,y);
+        this.TranslateOffset(true, true);
         switch (type) {
             case "north":
                 break;
@@ -471,7 +485,7 @@ class WorldRenderer {
             this.GetOrientation(world.orientation)
             )
         this.DrawWalls();
-        this.DrawBeepers();       
+        // this.DrawBeepers();       
     }
 
     GetOrientation(n: number): "north"|"east"|"west"|"south" {
@@ -525,9 +539,12 @@ class WorldRenderer {
         this.Snap();
     }
 
-
     GetColumnOffset() {
-        return this.origin.c - Math.floor(this.origin.c);
+        return (this.origin.c - Math.floor(this.origin.c))*this.CellSize;
+    }
+
+    GetRowOffset() {
+        return (this.origin.r - Math.floor(this.origin.r)) * this.CellSize;
     }
     
 

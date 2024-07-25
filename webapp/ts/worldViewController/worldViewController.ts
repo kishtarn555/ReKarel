@@ -6,6 +6,7 @@ import { CellSelection, SelectionState } from "./selection";
 import { CellPair } from "../cellPair";
 import { karel } from "../../../js";
 import { GetCurrentSetting } from "../settings";
+import { freezeEditors } from "../editor/editor";
 
 
 type Gizmos = {
@@ -26,6 +27,9 @@ type PinchData = {
     pointers: PointerEvent[]
     prevDiff:number
     startZoom:number
+    freed:boolean
+    pinchCell:CellPair
+    pinchProportions:{left: number, bottom:number}
 }
 
 class WorldViewController {
@@ -74,7 +78,10 @@ class WorldViewController {
         this.pinch = {
             pointers: [],
             prevDiff: -1,
-            startZoom : 1
+            startZoom : 1,
+            freed:false,
+            pinchCell: {r:1,c:1},
+            pinchProportions: {left:0,bottom:0},
         }
     }
 
@@ -179,7 +186,7 @@ class WorldViewController {
         this.waffle.UpdateWaffle(this.selection, this.renderer);
     }
 
-    SetScale(scale: number) {
+    SetScale(scale: number, updateScroll:boolean=true) {
         this.renderer.scale = scale ;
         this.scale = scale;
         //FIXME, this should be in update waffle
@@ -202,7 +209,9 @@ class WorldViewController {
         this.UpdateWaffle();
         this.Update();             
         this.UpdateScrollElements();   
-        this.ReFocusCurrentElement();
+        if (updateScroll) {
+            this.ReFocusCurrentElement();
+        }
     }
 
     RecalculateScale() {
@@ -212,13 +221,31 @@ class WorldViewController {
         this.UpdateScrollElements();   
     }
 
-    TrackMouse(e: MouseEvent) {
+    ClientXYToStateXY(clientX:number, clientY:number) {
         let canvas = this.renderer.canvasContext.canvas;
         let boundingBox = canvas.getBoundingClientRect();
-        let x = (e.clientX - boundingBox.left) * canvas.width / boundingBox.width;
-        let y = (e.clientY - boundingBox.top) * canvas.height / boundingBox.height;
-        this.state.cursorX = x / this.renderer.scale;
-        this.state.cursorY = y / this.renderer.scale;
+        let x = (clientX - boundingBox.left) * canvas.width / boundingBox.width;
+        let y = (clientY - boundingBox.top) * canvas.height / boundingBox.height;
+         x /= this.renderer.scale;
+        y /= this.renderer.scale;
+        return {x,y};
+    }
+
+    ClientXYToProportions(clientX:number, clientY:number) {
+        let canvas = this.renderer.canvasContext.canvas;
+        let boundingBox = canvas.getBoundingClientRect();
+        let x = (clientX - boundingBox.left)/ boundingBox.width;
+        let y = (clientY - boundingBox.top) / boundingBox.height;
+
+        let left = x;
+        let bottom = 1-y;
+        return {left,bottom};
+    }
+
+    TrackMouse(e: MouseEvent) {
+        let {x,y} = this.ClientXYToStateXY(e.clientX, e.clientY);
+        this.state.cursorX = x;
+        this.state.cursorY = y;
         this.state.cellPair = this.renderer.PointToCell(this.state.cursorX, this.state.cursorY);
 
         if (this.selection.state === "selecting") {
@@ -290,17 +317,43 @@ class WorldViewController {
         // If two pointers are down, check for pinch gestures
         if (this.pinch.pointers.length === 2) {
             // Calculate the distance between the two pointers
-            const curDiff = Math.abs(this.pinch.pointers[0].clientX - this.pinch.pointers[1].clientX);
+            const diffX = Math.abs(this.pinch.pointers[0].clientX - this.pinch.pointers[1].clientX);
+            const diffY = Math.abs(this.pinch.pointers[0].clientY - this.pinch.pointers[1].clientY);
+            const curDiff =  (diffX*diffX + diffY*diffY)/3;
             if (this.pinch.prevDiff > 0) {
-                let delta = curDiff/this.pinch.prevDiff;
-                if (0.9 < delta && delta < 1.1 ) delta=1;
+                let delta = (curDiff/this.pinch.prevDiff);
+                if (!this.pinch.freed) {
+                    if (0.9 < delta && delta < 1.1 ) {
+                        return;
+                    } else if (0.8 < delta && delta < 1) {
+                        delta = (delta-0.8)*2+0.8;
+                    } else if (1 < delta && delta < 1.2) {
+                        delta = (delta-1.1)*2+1.1;
+                    } else {
+                        this.pinch.freed = true;
+                    }
+                }
                 let newZoom = this.pinch.startZoom* delta;
                 if (newZoom < 0.5) newZoom=0.5;
                 if (newZoom > 8) newZoom=8;
-                this.SetScale(newZoom);
+                this.SetScale(newZoom, false);
+                this.TrackFocus(
+                    this.pinch.pinchCell.r, 
+                    this.pinch.pinchCell.c,
+                );
             } else {
                 this.pinch.prevDiff = curDiff;
                 this.pinch.startZoom = this.scale;
+                this.pinch.freed = false;
+                let cX = (this.pinch.pointers[0].clientX + this.pinch.pointers[1].clientX)/2;
+                let cY = (this.pinch.pointers[0].clientY + this.pinch.pointers[1].clientY)/2;
+                let {x, y} = this.ClientXYToStateXY(cX,cY);
+                this.pinch.pinchCell = this.renderer.PointToCell(x,y);
+                // this.pinch.pinchProportions = this.ClientXYToProportions(cX, cY);
+                this.pinch.pinchProportions = {
+                    left:0.5,
+                    bottom:0.5
+                };
             }
         }
     }
@@ -503,11 +556,28 @@ class WorldViewController {
     }
 
     ReFocusCurrentElement() {
-        this.FocusTo(this.renderer.origin.f, this.renderer.origin.c)
+        const origin = this.renderer.GetOrigin();
+        this.FocusTo(origin.r, origin.c)
+    }
+
+    FocusCellToScreenPortion(r:number, c:number, leftRatio:number, bottomRatio:number) {
+        const cols = this.renderer.GetColCount("noRounding");
+        const rows = this.renderer.GetRowCount("noRounding");
+        const w = this.karelController.world.w;
+        const h = this.karelController.world.h;
+        let target_c = Math.round(c - leftRatio * cols);
+        let target_r = Math.ceil(r - bottomRatio * rows);
+        
+        if (target_c < 1) target_c =1;
+        if (target_r < 1) target_r =1;
+
+        if (target_c > w) target_c = w;
+        if (target_r > h) target_r = h;
+        this.FocusTo(target_r, target_c);
     }
 
     TrackFocus(r:number, c:number) {
-        let origin = this.renderer.origin;
+        let origin = this.renderer.GetOrigin();
         let rows = this.renderer.GetRowCount("floor");
         let cols = this.renderer.GetColCount("floor");
 
@@ -520,14 +590,14 @@ class WorldViewController {
         if (
             origin.c <= c 
             &&  c < origin.c + cols
-            && origin.f <= r
-            &&  r < origin.f + rows
+            && origin.r <= r
+            &&  r < origin.r + rows
         ) {
             //Karel is already on focus.
             return;
         }
 
-        let tr = origin.f;
+        let tr = origin.r;
         let tc = origin.c;
 
         if (r < tr) {
@@ -589,10 +659,10 @@ class WorldViewController {
         //     }
         // }
 
-        this.renderer.origin = {
+        this.renderer.SnappySetOrigin({
             c:c,
-            f:r,
-        }
+            r:r,
+        });
         // this.lockScroll=true;
         this.container.scrollLeft = left * (this.container.scrollWidth - this.container.clientWidth);        
         this.container.scrollTop = (1 - top) * (this.container.scrollHeight - this.container.clientHeight);       
@@ -764,20 +834,36 @@ class WorldViewController {
         let worldWidth = this.karelController.world.w;
         let worldHeight = this.karelController.world.h;
 
-        this.renderer.origin = {
-            f: Math.floor(
+        // this.renderer.SnappySetOrigin({
+        //     r: Math.floor(
+        //         1 + Math.max(
+        //             0,
+        //             (worldHeight - this.renderer.GetRowCount("floor") + 1) * top
+        //         )
+        //     ),
+        //     c: Math.floor(
+        //         1 + Math.max(
+        //             0,
+        //             (worldWidth - this.renderer.GetColCount("floor") + 1) * left
+        //         )
+        //     ),
+        // });
+
+        
+        this.renderer.SmoothlySetOrigin({
+            r: 
                 1 + Math.max(
                     0,
                     (worldHeight - this.renderer.GetRowCount("floor") + 1) * top
                 )
-            ),
-            c: Math.floor(
+            ,
+            c: 
                 1 + Math.max(
                     0,
                     (worldWidth - this.renderer.GetColCount("floor") + 1) * left
                 )
-            ),
-        }
+            ,
+        });
     }
 
     UpdateScroll(left: number, top: number): void {
