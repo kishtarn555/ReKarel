@@ -22275,7 +22275,7 @@ var karel = (function (exports, bootstrap) {
         GetRowCount(mode = "ceil") {
             switch (mode) {
                 case "ceil":
-                    return Math.ceil((this.GetHeight() - this.GutterSize) / this.CellSize);
+                    return Math.ceil((this.GetHeight() - this.GutterSize) / this.CellSize) + (this.snapped ? 0 : 1);
                 case "floor":
                     return Math.floor((this.GetHeight() - this.GutterSize) / this.CellSize);
                 case "noRounding":
@@ -22285,7 +22285,7 @@ var karel = (function (exports, bootstrap) {
         GetColCount(mode = "ceil") {
             switch (mode) {
                 case "ceil":
-                    return Math.ceil((this.GetWidth() - this.GutterSize) / this.CellSize);
+                    return Math.ceil((this.GetWidth() - this.GutterSize) / this.CellSize) + (this.snapped ? 0 : 1);
                 case "floor":
                     return Math.floor((this.GetWidth() - this.GutterSize) / this.CellSize);
                 case "noRounding":
@@ -22305,6 +22305,7 @@ var karel = (function (exports, bootstrap) {
             return this.world.w;
         }
         DrawVerticalGutter(selection = null) {
+            this.ResetTransform();
             let h = this.GetHeight();
             this.GetWidth();
             this.canvasContext.fillStyle = this.style.gutterBackgroundColor;
@@ -22313,13 +22314,14 @@ var karel = (function (exports, bootstrap) {
             this.canvasContext.strokeStyle = this.style.gridBorderColor;
             let r1 = -1, r2 = -1;
             if (selection != null) {
-                r1 = Math.min(selection.r, selection.r + (selection.rows - 1) * selection.dr) - this.origin.r;
-                r2 = Math.max(selection.r, selection.r + (selection.rows - 1) * selection.dr) - this.origin.r;
+                r1 = Math.min(selection.r, selection.r + (selection.rows - 1) * selection.dr) - Math.floor(this.origin.r);
+                r2 = Math.max(selection.r, selection.r + (selection.rows - 1) * selection.dr) - Math.floor(this.origin.r);
                 let sr1 = h - (this.GutterSize + (r1) * this.CellSize);
                 let sr2 = h - (this.GutterSize + (r2 + 1) * this.CellSize);
                 this.canvasContext.fillStyle = this.style.gutterSelectionBackgroundColor;
                 this.canvasContext.fillRect(0, sr2, this.GutterSize, sr1 - sr2);
             }
+            this.TranslateOffset(true, false);
             this.canvasContext.beginPath();
             for (let i = 0; i < rows; i++) {
                 this.canvasContext.moveTo(0, h - (this.GutterSize + (i + 1) * this.CellSize) + 0.5);
@@ -22331,6 +22333,7 @@ var karel = (function (exports, bootstrap) {
             this.canvasContext.textAlign = "center";
             this.canvasContext.textBaseline = "middle";
             for (let i = 0; i < rows; i++) {
+                let r = i + Math.floor(this.origin.r);
                 // this.canvasContext.measureText()
                 if (i < r1 || i > r2) {
                     this.canvasContext.fillStyle = this.style.gutterColor;
@@ -22338,11 +22341,12 @@ var karel = (function (exports, bootstrap) {
                 else {
                     this.canvasContext.fillStyle = this.style.gutterSelectionColor;
                 }
-                if (i + this.origin.r <= this.GetWorldRowCount())
-                    this.DrawTextVerticallyAlign(`${i + this.origin.r}`, this.GutterSize / 2, h - (this.GutterSize + (i + 0.5) * this.CellSize), this.GutterSize - this.margin);
+                if (r <= this.GetWorldRowCount())
+                    this.DrawTextVerticallyAlign(`${r}`, this.GutterSize / 2, h - (this.GutterSize + (i + 0.5) * this.CellSize), this.GutterSize - this.margin);
             }
         }
         DrawHorizontalGutter(selection = null) {
+            this.ResetTransform();
             let h = this.GetHeight();
             let w = this.GetWidth();
             this.canvasContext.fillStyle = this.style.gutterBackgroundColor;
@@ -22358,6 +22362,7 @@ var karel = (function (exports, bootstrap) {
                 this.canvasContext.fillStyle = this.style.gutterSelectionBackgroundColor;
                 this.canvasContext.fillRect(sc1, h - this.GutterSize, sc2 - sc1, this.GutterSize + 1);
             }
+            this.TranslateOffset(false, true);
             this.canvasContext.beginPath();
             for (let i = 0; i < cols; i++) {
                 this.canvasContext.moveTo(this.GutterSize + (i + 1) * this.CellSize - 0.5, h);
@@ -22375,18 +22380,20 @@ var karel = (function (exports, bootstrap) {
                 else {
                     this.canvasContext.fillStyle = this.style.gutterSelectionColor;
                 }
+                const c = i + Math.floor(this.origin.c);
                 // this.canvasContext.measureText()            
-                if (i + this.origin.c <= this.GetWorldColCount())
-                    this.DrawTextVerticallyAlign(`${i + this.origin.c}`, this.GutterSize + i * this.CellSize + 0.5 * this.CellSize, h - this.GutterSize / 2, this.CellSize - this.margin);
+                if (c <= this.GetWorldColCount())
+                    this.DrawTextVerticallyAlign(`${c}`, this.GutterSize + i * this.CellSize + 0.5 * this.CellSize, h - this.GutterSize / 2, this.CellSize - this.margin);
             }
         }
         DrawGutters(selection = null) {
             let h = this.GetHeight();
             this.GetWidth();
-            this.canvasContext.fillStyle = this.style.gridBorderColor;
-            this.canvasContext.fillRect(0, h - this.GutterSize, this.GutterSize, this.GutterSize);
             this.DrawVerticalGutter(selection);
             this.DrawHorizontalGutter(selection);
+            this.ResetTransform();
+            this.canvasContext.fillStyle = this.style.gridBorderColor;
+            this.canvasContext.fillRect(0, h - this.GutterSize, this.GutterSize, this.GutterSize);
             if (this.snapped)
                 this.DrawGutterWalls();
         }
@@ -22403,10 +22410,10 @@ var karel = (function (exports, bootstrap) {
             this.canvasContext.beginPath();
             for (let i = 0; i < rows; i++) {
                 this.canvasContext.moveTo(this.GutterSize, h - (this.GutterSize + (i + 1) * this.CellSize) + 0.5);
-                this.canvasContext.lineTo(w, h - (this.GutterSize + (i + 1) * this.CellSize) + 0.5);
+                this.canvasContext.lineTo(w + this.CellSize, h - (this.GutterSize + (i + 1) * this.CellSize) + 0.5);
             }
             for (let i = 0; i < cols; i++) {
-                this.canvasContext.moveTo(this.GutterSize + (i + 1) * this.CellSize - 0.5, 0);
+                this.canvasContext.moveTo(this.GutterSize + (i + 1) * this.CellSize - 0.5, -this.CellSize);
                 this.canvasContext.lineTo(this.GutterSize + (i + 1) * this.CellSize - 0.5, h - this.GutterSize);
             }
             this.canvasContext.stroke();
@@ -22470,7 +22477,7 @@ var karel = (function (exports, bootstrap) {
             if (cols) {
                 this.canvasContext.translate(-offsetC, 0);
             }
-            if (cols) {
+            if (rows) {
                 this.canvasContext.translate(0, offsetR);
             }
         }
@@ -22516,8 +22523,8 @@ var karel = (function (exports, bootstrap) {
             let h = this.GetHeight();
             let x = this.GutterSize + (c + 0.5) * this.CellSize;
             let y = h - (this.GutterSize + (r + 0.5) * this.CellSize);
-            this.canvasContext.translate(x, y);
             this.TranslateOffset(true, true);
+            this.canvasContext.translate(x, y);
             switch (type) {
                 case "north":
                     break;
@@ -22558,7 +22565,9 @@ var karel = (function (exports, bootstrap) {
         DrawWalls() {
             for (let i = 0; i < this.GetRowCount(); i++) {
                 for (let j = 0; j < this.GetColCount(); j++) {
-                    let walls = this.world.walls(i + this.origin.r, j + this.origin.c);
+                    let r = i + Math.floor(this.origin.r);
+                    let c = j + Math.floor(this.origin.c);
+                    let walls = this.world.walls(r, c);
                     for (let k = 0; k < 4; k++) {
                         if ((walls & (1 << k)) !== 0) {
                             this.DrawWall(i, j, this.GetOrientation(k));
@@ -22568,9 +22577,13 @@ var karel = (function (exports, bootstrap) {
             }
         }
         DrawBeepers() {
+            this.ResetTransform();
+            this.TranslateOffset(true, true);
             for (let i = 0; i < this.GetRowCount(); i++) {
                 for (let j = 0; j < this.GetColCount(); j++) {
-                    let buzzers = this.world.buzzers(i + this.origin.r, j + this.origin.c);
+                    let r = i + Math.floor(this.origin.r);
+                    let c = j + Math.floor(this.origin.c);
+                    let buzzers = this.world.buzzers(r, c);
                     if (buzzers !== 0) {
                         this.DrawBeeperSquare({
                             r: i,
@@ -22603,8 +22616,9 @@ var karel = (function (exports, bootstrap) {
             this.DrawGrid();
             this.DrawKarel(world.i, world.j, this.GetOrientation(world.orientation));
             this.DrawWalls();
+            this.DrawBeepers();
             this.DrawGutters(selection);
-            // this.DrawBeepers();       
+            this.ResetTransform();
         }
         GetOrientation(n) {
             switch (n) {
