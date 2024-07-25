@@ -22253,7 +22253,7 @@ var karel = (function (exports, bootstrap) {
     class WorldRenderer {
         constructor(canvasContext, style, scale) {
             this.canvasContext = canvasContext;
-            this.origin = { f: 1, c: 1 };
+            this.origin = { r: 1, c: 1 };
             this.CellSize = 28;
             this.margin = 8;
             this.GutterSize = 28;
@@ -22261,6 +22261,10 @@ var karel = (function (exports, bootstrap) {
             this.world = undefined;
             this.scale = scale;
             this.mode = "normal";
+            this.snapped = true;
+        }
+        GetOrigin() {
+            return this.origin;
         }
         GetWidth() {
             return this.canvasContext.canvas.width / this.scale;
@@ -22271,17 +22275,21 @@ var karel = (function (exports, bootstrap) {
         GetRowCount(mode = "ceil") {
             switch (mode) {
                 case "ceil":
-                    return Math.ceil((this.GetHeight() - this.GutterSize) / this.CellSize);
+                    return Math.ceil((this.GetHeight() - this.GutterSize) / this.CellSize) + (this.snapped ? 0 : 1);
                 case "floor":
                     return Math.floor((this.GetHeight() - this.GutterSize) / this.CellSize);
+                case "noRounding":
+                    return (this.GetHeight() - this.GutterSize) / this.CellSize;
             }
         }
         GetColCount(mode = "ceil") {
             switch (mode) {
                 case "ceil":
-                    return Math.ceil((this.GetWidth() - this.GutterSize) / this.CellSize);
+                    return Math.ceil((this.GetWidth() - this.GutterSize) / this.CellSize) + (this.snapped ? 0 : 1);
                 case "floor":
                     return Math.floor((this.GetWidth() - this.GutterSize) / this.CellSize);
+                case "noRounding":
+                    return (this.GetWidth() - this.GutterSize) / this.CellSize;
             }
         }
         ErrorMode() {
@@ -22297,25 +22305,27 @@ var karel = (function (exports, bootstrap) {
             return this.world.w;
         }
         DrawVerticalGutter(selection = null) {
+            this.ResetTransform();
             let h = this.GetHeight();
             this.GetWidth();
             this.canvasContext.fillStyle = this.style.gutterBackgroundColor;
-            this.canvasContext.fillRect(0, 0, this.GutterSize, h - this.GutterSize);
+            this.canvasContext.fillRect(0, 0, this.GutterSize - 1, h - this.GutterSize);
             let rows = this.GetRowCount();
             this.canvasContext.strokeStyle = this.style.gridBorderColor;
             let r1 = -1, r2 = -1;
             if (selection != null) {
-                r1 = Math.min(selection.r, selection.r + (selection.rows - 1) * selection.dr) - this.origin.f;
-                r2 = Math.max(selection.r, selection.r + (selection.rows - 1) * selection.dr) - this.origin.f;
+                r1 = Math.min(selection.r, selection.r + (selection.rows - 1) * selection.dr) - this.origin.r;
+                r2 = Math.max(selection.r, selection.r + (selection.rows - 1) * selection.dr) - this.origin.r;
                 let sr1 = h - (this.GutterSize + (r1) * this.CellSize);
                 let sr2 = h - (this.GutterSize + (r2 + 1) * this.CellSize);
                 this.canvasContext.fillStyle = this.style.gutterSelectionBackgroundColor;
-                this.canvasContext.fillRect(0, sr2, this.GutterSize, sr1 - sr2);
+                this.canvasContext.fillRect(0, sr2, this.GutterSize - 1, sr1 - sr2);
             }
+            this.TranslateOffset(true, false);
             this.canvasContext.beginPath();
             for (let i = 0; i < rows; i++) {
                 this.canvasContext.moveTo(0, h - (this.GutterSize + (i + 1) * this.CellSize) + 0.5);
-                this.canvasContext.lineTo(this.GutterSize, h - (this.GutterSize + (i + 1) * this.CellSize) + 0.5);
+                this.canvasContext.lineTo(this.GutterSize - 1, h - (this.GutterSize + (i + 1) * this.CellSize) + 0.5);
             }
             this.canvasContext.stroke();
             this.canvasContext.fillStyle = this.style.gutterColor;
@@ -22323,6 +22333,7 @@ var karel = (function (exports, bootstrap) {
             this.canvasContext.textAlign = "center";
             this.canvasContext.textBaseline = "middle";
             for (let i = 0; i < rows; i++) {
+                let r = i + Math.floor(this.origin.r);
                 // this.canvasContext.measureText()
                 if (i < r1 || i > r2) {
                     this.canvasContext.fillStyle = this.style.gutterColor;
@@ -22330,15 +22341,16 @@ var karel = (function (exports, bootstrap) {
                 else {
                     this.canvasContext.fillStyle = this.style.gutterSelectionColor;
                 }
-                if (i + this.origin.f <= this.GetWorldRowCount())
-                    this.DrawTextVerticallyAlign(`${i + this.origin.f}`, this.GutterSize / 2, h - (this.GutterSize + (i + 0.5) * this.CellSize), this.GutterSize - this.margin);
+                if (r <= this.GetWorldRowCount())
+                    this.DrawTextVerticallyAlign(`${r}`, this.GutterSize / 2, h - (this.GutterSize + (i + 0.5) * this.CellSize), this.GutterSize - this.margin);
             }
         }
         DrawHorizontalGutter(selection = null) {
+            this.ResetTransform();
             let h = this.GetHeight();
             let w = this.GetWidth();
             this.canvasContext.fillStyle = this.style.gutterBackgroundColor;
-            this.canvasContext.fillRect(this.GutterSize, h - this.GutterSize, w, h);
+            this.canvasContext.fillRect(this.GutterSize, h - this.GutterSize + 1, w, this.GutterSize);
             let cols = this.GetColCount();
             this.canvasContext.strokeStyle = this.style.gridBorderColor;
             let c1 = -1, c2 = -1;
@@ -22348,12 +22360,13 @@ var karel = (function (exports, bootstrap) {
                 let sc1 = (this.GutterSize + (c1) * this.CellSize);
                 let sc2 = (this.GutterSize + (c2 + 1) * this.CellSize);
                 this.canvasContext.fillStyle = this.style.gutterSelectionBackgroundColor;
-                this.canvasContext.fillRect(sc1, h - this.GutterSize, sc2 - sc1, this.GutterSize + 1);
+                this.canvasContext.fillRect(sc1, h - this.GutterSize + 1, sc2 - sc1, this.GutterSize);
             }
+            this.TranslateOffset(false, true);
             this.canvasContext.beginPath();
             for (let i = 0; i < cols; i++) {
                 this.canvasContext.moveTo(this.GutterSize + (i + 1) * this.CellSize - 0.5, h);
-                this.canvasContext.lineTo(this.GutterSize + (i + 1) * this.CellSize - 0.5, h - this.GutterSize);
+                this.canvasContext.lineTo(this.GutterSize + (i + 1) * this.CellSize - 0.5, h - this.GutterSize + 1);
             }
             this.canvasContext.stroke();
             this.canvasContext.fillStyle = this.style.gutterColor;
@@ -22367,25 +22380,28 @@ var karel = (function (exports, bootstrap) {
                 else {
                     this.canvasContext.fillStyle = this.style.gutterSelectionColor;
                 }
+                const c = i + Math.floor(this.origin.c);
                 // this.canvasContext.measureText()            
-                if (i + this.origin.c <= this.GetWorldColCount())
-                    this.DrawTextVerticallyAlign(`${i + this.origin.c}`, this.GutterSize + i * this.CellSize + 0.5 * this.CellSize, h - this.GutterSize / 2, this.CellSize - this.margin);
+                if (c <= this.GetWorldColCount())
+                    this.DrawTextVerticallyAlign(`${c}`, this.GutterSize + i * this.CellSize + 0.5 * this.CellSize, h - this.GutterSize / 2, this.CellSize - this.margin);
             }
         }
         DrawGutters(selection = null) {
             let h = this.GetHeight();
             this.GetWidth();
-            this.canvasContext.fillStyle = this.style.gridBorderColor;
-            this.canvasContext.fillRect(0, h - this.GutterSize, this.GutterSize, this.GutterSize);
             this.DrawVerticalGutter(selection);
             this.DrawHorizontalGutter(selection);
-            this.DrawGutterWalls();
+            this.ResetTransform();
+            this.canvasContext.fillStyle = this.style.gridBorderColor;
+            this.canvasContext.fillRect(0, h - this.GutterSize, this.GutterSize, this.GutterSize);
         }
         DrawGrid() {
             let h = this.GetHeight();
             let w = this.GetWidth();
             let cols = this.GetColCount();
             let rows = this.GetRowCount();
+            this.ResetTransform();
+            this.TranslateOffset(true, true);
             this.canvasContext.strokeStyle = this.style.gridBorderColor;
             if (this.mode === "error") {
                 this.canvasContext.strokeStyle = this.style.errorGridBorderColor;
@@ -22393,10 +22409,10 @@ var karel = (function (exports, bootstrap) {
             this.canvasContext.beginPath();
             for (let i = 0; i < rows; i++) {
                 this.canvasContext.moveTo(this.GutterSize, h - (this.GutterSize + (i + 1) * this.CellSize) + 0.5);
-                this.canvasContext.lineTo(w, h - (this.GutterSize + (i + 1) * this.CellSize) + 0.5);
+                this.canvasContext.lineTo(w + this.CellSize, h - (this.GutterSize + (i + 1) * this.CellSize) + 0.5);
             }
             for (let i = 0; i < cols; i++) {
-                this.canvasContext.moveTo(this.GutterSize + (i + 1) * this.CellSize - 0.5, 0);
+                this.canvasContext.moveTo(this.GutterSize + (i + 1) * this.CellSize - 0.5, -this.CellSize);
                 this.canvasContext.lineTo(this.GutterSize + (i + 1) * this.CellSize - 0.5, h - this.GutterSize);
             }
             this.canvasContext.stroke();
@@ -22408,20 +22424,21 @@ var karel = (function (exports, bootstrap) {
             if (this.mode === "error") {
                 this.canvasContext.fillStyle = this.style.errorGridBackgroundColor;
             }
-            this.canvasContext.fillRect(this.GutterSize, 0, w - this.GutterSize, h - this.GutterSize);
+            this.canvasContext.fillRect(0, 0, w, h);
         }
         DrawKarel(r, c, orientation = "north") {
-            if (r - this.origin.f < 0 || r - this.origin.f >= this.GetRowCount()) {
+            this.ResetTransform();
+            if (r - this.origin.r < -1 || r - this.origin.r >= this.GetRowCount()) {
                 // Cull Karel it's outside view by y coord
                 return;
             }
-            if (c - this.origin.c < 0 || c - this.origin.c >= this.GetColCount()) {
+            if (c - this.origin.c < -1 || c - this.origin.c >= this.GetColCount()) {
                 // Cull Karel it's outside view by x coord
                 return;
             }
             let h = this.GetHeight();
             let x = this.GutterSize + this.CellSize * (c - this.origin.c) + this.CellSize / 2;
-            let y = h - (this.GutterSize + this.CellSize * (r - this.origin.f) + this.CellSize / 2);
+            let y = h - (this.GutterSize + this.CellSize * (r - this.origin.r) + this.CellSize / 2);
             this.canvasContext.translate(x - 0.5, y + 0.5);
             this.canvasContext.fillStyle = this.style.karelColor;
             this.canvasContext.beginPath();
@@ -22453,7 +22470,19 @@ var karel = (function (exports, bootstrap) {
             this.canvasContext.setTransform(1, 0, 0, 1, 0, 0);
             this.canvasContext.scale(this.scale, this.scale);
         }
+        TranslateOffset(rows, cols) {
+            let offsetC = this.GetColumnOffset();
+            let offsetR = this.GetRowOffset();
+            if (cols) {
+                this.canvasContext.translate(-offsetC, 0);
+            }
+            if (rows) {
+                this.canvasContext.translate(0, offsetR);
+            }
+        }
         ColorCell(r, c, color) {
+            this.ResetTransform();
+            this.TranslateOffset(true, true);
             let h = this.GetHeight();
             let x = c * this.CellSize + this.GutterSize;
             let y = h - ((r + 1) * this.CellSize + this.GutterSize);
@@ -22495,6 +22524,7 @@ var karel = (function (exports, bootstrap) {
             let h = this.GetHeight();
             let x = this.GutterSize + (c + 0.5) * this.CellSize;
             let y = h - (this.GutterSize + (r + 0.5) * this.CellSize);
+            this.TranslateOffset(true, true);
             this.canvasContext.translate(x, y);
             switch (type) {
                 case "north":
@@ -22519,24 +22549,12 @@ var karel = (function (exports, bootstrap) {
             this.canvasContext.lineWidth = lineOr;
             this.ResetTransform();
         }
-        DrawGutterWalls() {
-            for (let i = 0; i < this.GetRowCount(); i++) {
-                let walls = this.world.walls(i + this.origin.f, this.origin.c);
-                if ((walls & (1 << 0)) !== 0) {
-                    this.DrawWall(i, 0, "west");
-                }
-            }
-            for (let j = 0; j < this.GetColCount(); j++) {
-                let walls = this.world.walls(this.origin.f, j + this.origin.c);
-                if ((walls & (1 << 3)) !== 0) {
-                    this.DrawWall(0, j, "south");
-                }
-            }
-        }
         DrawWalls() {
             for (let i = 0; i < this.GetRowCount(); i++) {
                 for (let j = 0; j < this.GetColCount(); j++) {
-                    let walls = this.world.walls(i + this.origin.f, j + this.origin.c);
+                    let r = i + Math.floor(this.origin.r);
+                    let c = j + Math.floor(this.origin.c);
+                    let walls = this.world.walls(r, c);
                     for (let k = 0; k < 4; k++) {
                         if ((walls & (1 << k)) !== 0) {
                             this.DrawWall(i, j, this.GetOrientation(k));
@@ -22546,9 +22564,13 @@ var karel = (function (exports, bootstrap) {
             }
         }
         DrawBeepers() {
+            this.ResetTransform();
+            this.TranslateOffset(true, true);
             for (let i = 0; i < this.GetRowCount(); i++) {
                 for (let j = 0; j < this.GetColCount(); j++) {
-                    let buzzers = this.world.buzzers(i + this.origin.f, j + this.origin.c);
+                    let r = i + Math.floor(this.origin.r);
+                    let c = j + Math.floor(this.origin.c);
+                    let buzzers = this.world.buzzers(r, c);
                     if (buzzers !== 0) {
                         this.DrawBeeperSquare({
                             r: i,
@@ -22564,7 +22586,9 @@ var karel = (function (exports, bootstrap) {
         DrawDumpCells() {
             for (let i = 0; i < this.GetRowCount(); i++) {
                 for (let j = 0; j < this.GetColCount(); j++) {
-                    if (this.world.getDumpCell(i + this.origin.f, j + this.origin.c)) {
+                    let r = i + Math.floor(this.origin.r);
+                    let c = j + Math.floor(this.origin.c);
+                    if (this.world.getDumpCell(r, c)) {
                         this.ColorCell(i, j, this.style.exportCellBackground);
                     }
                 }
@@ -22576,13 +22600,14 @@ var karel = (function (exports, bootstrap) {
             let h = this.GetHeight();
             let w = this.GetWidth();
             this.canvasContext.clearRect(0, 0, w, h);
-            this.DrawGutters(selection);
             this.DrawBackground();
             this.DrawDumpCells();
             this.DrawGrid();
             this.DrawKarel(world.i, world.j, this.GetOrientation(world.orientation));
             this.DrawWalls();
             this.DrawBeepers();
+            this.DrawGutters(selection);
+            this.ResetTransform();
         }
         GetOrientation(n) {
             switch (n) {
@@ -22597,22 +22622,51 @@ var karel = (function (exports, bootstrap) {
             }
             return "north";
         }
-        PointToCell(x, y) {
+        PointToCell(x, y, precise = false) {
+            x += this.GetColumnOffset();
+            y -= this.GetRowOffset();
             let c = (x - this.GutterSize) / this.CellSize;
             let r = ((this.GetHeight() - y) - this.GutterSize) / this.CellSize;
+            if (precise) {
+                return {
+                    r: r + Math.floor(this.origin.r),
+                    c: c + Math.floor(this.origin.c)
+                };
+            }
             if (c < 0 || r < 0) {
                 return { r: -1, c: -1 };
             }
             return {
-                r: Math.floor(r) + this.origin.f,
-                c: Math.floor(c) + this.origin.c,
+                r: Math.round(Math.floor(r) + Math.floor(this.origin.r)),
+                c: Math.round(Math.floor(c) + Math.floor(this.origin.c)),
             };
         }
         CellToPoint(r, c) {
             return {
                 x: (this.GutterSize + (c - this.origin.c) * this.CellSize) * this.scale / window.devicePixelRatio,
-                y: (this.GetHeight() - (this.GutterSize + (r - this.origin.f + 1) * this.CellSize)) * this.scale / window.devicePixelRatio,
+                y: (this.GetHeight() - (this.GutterSize + (r - this.origin.r + 1) * this.CellSize)) * this.scale / window.devicePixelRatio,
             };
+        }
+        Snap() {
+            this.origin.r = Math.round(this.origin.r);
+            this.origin.c = Math.round(this.origin.c);
+            const performedSnapped = !this.snapped;
+            this.snapped = true;
+            return performedSnapped;
+        }
+        SmoothlySetOrigin(coord) {
+            this.origin = coord;
+            this.snapped = false;
+        }
+        SnappySetOrigin(coord) {
+            this.SmoothlySetOrigin(coord);
+            this.Snap();
+        }
+        GetColumnOffset() {
+            return (this.origin.c - Math.floor(this.origin.c)) * this.CellSize;
+        }
+        GetRowOffset() {
+            return (this.origin.r - Math.floor(this.origin.r)) * this.CellSize;
         }
     }
 
@@ -27414,6 +27468,15 @@ var karel = (function (exports, bootstrap) {
             this.karelController.RegisterStepController(this.onStep.bind(this));
             this.waffle = new SelectionWaffle(gizmos.selectionBox);
             this.clickMode = "normal";
+            this.pinch = {
+                pointers: [],
+                prevDiff: -1,
+                startZoom: 1,
+                freed: false,
+                cell: { r: 1, c: 1 },
+                proportions: { left: 0, bottom: 0 },
+            };
+            this.followScroll = true;
         }
         SetClickMode(mode) {
             this.clickMode = mode;
@@ -27494,7 +27557,7 @@ var karel = (function (exports, bootstrap) {
         UpdateWaffle() {
             this.waffle.UpdateWaffle(this.selection, this.renderer);
         }
-        SetScale(scale) {
+        SetScale(scale, updateScroll = true) {
             this.renderer.scale = scale;
             this.scale = scale;
             //FIXME, this should be in update waffle
@@ -27511,6 +27574,9 @@ var karel = (function (exports, bootstrap) {
             this.UpdateWaffle();
             this.Update();
             this.UpdateScrollElements();
+            if (updateScroll) {
+                this.ReFocusCurrentElement();
+            }
         }
         RecalculateScale() {
             this.renderer.scale = this.scale;
@@ -27518,13 +27584,28 @@ var karel = (function (exports, bootstrap) {
             this.Update();
             this.UpdateScrollElements();
         }
-        TrackMouse(e) {
+        ClientXYToStateXY(clientX, clientY) {
             let canvas = this.renderer.canvasContext.canvas;
             let boundingBox = canvas.getBoundingClientRect();
-            let x = (e.clientX - boundingBox.left) * canvas.width / boundingBox.width;
-            let y = (e.clientY - boundingBox.top) * canvas.height / boundingBox.height;
-            this.state.cursorX = x / this.renderer.scale;
-            this.state.cursorY = y / this.renderer.scale;
+            let x = (clientX - boundingBox.left) * canvas.width / boundingBox.width;
+            let y = (clientY - boundingBox.top) * canvas.height / boundingBox.height;
+            x /= this.renderer.scale;
+            y /= this.renderer.scale;
+            return { x, y };
+        }
+        ClientXYToProportions(clientX, clientY) {
+            let canvas = this.renderer.canvasContext.canvas;
+            let boundingBox = canvas.getBoundingClientRect();
+            let x = (clientX - boundingBox.left) / boundingBox.width;
+            let y = (clientY - boundingBox.top) / boundingBox.height;
+            let left = x;
+            let bottom = 1 - y;
+            return { left, bottom };
+        }
+        TrackMouse(e) {
+            let { x, y } = this.ClientXYToStateXY(e.clientX, e.clientY);
+            this.state.cursorX = x;
+            this.state.cursorY = y;
             this.state.cellPair = this.renderer.PointToCell(this.state.cursorX, this.state.cursorY);
             if (this.selection.state === "selecting") {
                 let cell = this.state.cellPair;
@@ -27568,6 +27649,70 @@ var karel = (function (exports, bootstrap) {
                 this.selection.state = "selecting";
             }
             $(":focus").blur();
+        }
+        PointerDown(e) {
+            this.pinch.pointers.push(e);
+        }
+        PointerUp(e) {
+            const index = this.pinch.pointers.findIndex((cachedEv) => cachedEv.pointerId === e.pointerId);
+            if (index !== -1)
+                this.pinch.pointers.splice(index, 1);
+            if (this.pinch.pointers.length < 2) {
+                this.pinch.prevDiff = -1;
+                if (this.renderer.Snap()) {
+                    this.Update();
+                    this.UpdateWaffle();
+                }
+                this.followScroll = true;
+            }
+        }
+        PointerMove(e) {
+            const index = this.pinch.pointers.findIndex((cachedEv) => cachedEv.pointerId === e.pointerId);
+            if (index !== -1)
+                this.pinch.pointers[index] = e;
+            // If two pointers are down, check for pinch gestures
+            if (this.pinch.pointers.length === 2) {
+                let cX = (this.pinch.pointers[0].clientX + this.pinch.pointers[1].clientX) / 2;
+                let cY = (this.pinch.pointers[0].clientY + this.pinch.pointers[1].clientY) / 2;
+                this.pinch.proportions = this.ClientXYToProportions(cX, cY);
+                // Calculate the distance between the two pointers
+                const diffX = Math.abs(this.pinch.pointers[0].clientX - this.pinch.pointers[1].clientX);
+                const diffY = Math.abs(this.pinch.pointers[0].clientY - this.pinch.pointers[1].clientY);
+                let curDiff = Math.sqrt(diffX * diffX + diffY * diffY);
+                if (this.pinch.prevDiff > 0) {
+                    let delta = curDiff / this.pinch.prevDiff;
+                    if (!this.pinch.freed) {
+                        if (0.9 < delta && delta < 1.1) {
+                            return;
+                        }
+                        else if (0.8 < delta && delta < 1) {
+                            delta = (delta - 0.8) * 2 + 0.8;
+                        }
+                        else if (1 < delta && delta < 1.2) {
+                            delta = (delta - 1.1) * 2 + 1.1;
+                        }
+                        else {
+                            this.pinch.freed = true;
+                        }
+                    }
+                    let newZoom = this.pinch.startZoom * delta;
+                    if (newZoom < 0.5)
+                        newZoom = 0.5;
+                    if (newZoom > 8)
+                        newZoom = 8;
+                    this.SetScale(newZoom, false);
+                    this.FocusCellToScreenPortion(this.pinch.cell.r, this.pinch.cell.c, this.pinch.proportions.left, this.pinch.proportions.bottom, false // Do not snap
+                    );
+                }
+                else {
+                    this.pinch.prevDiff = curDiff;
+                    this.pinch.startZoom = this.scale;
+                    this.pinch.freed = false;
+                    let { x, y } = this.ClientXYToStateXY(cX, cY);
+                    this.pinch.cell = this.renderer.PointToCell(x, y, true);
+                    this.followScroll = false;
+                }
+            }
         }
         SetKarelOnSelection(direction = "north") {
             if (this.lock)
@@ -27733,8 +27878,29 @@ var karel = (function (exports, bootstrap) {
             let c = this.selection.c - 1;
             this.FocusTo(r, c);
         }
+        ReFocusCurrentElement() {
+            const origin = this.renderer.GetOrigin();
+            this.FocusTo(origin.r, origin.c);
+        }
+        FocusCellToScreenPortion(r, c, leftRatio, bottomRatio, snap = true) {
+            const cols = this.renderer.GetColCount("noRounding");
+            const rows = this.renderer.GetRowCount("noRounding");
+            const w = this.karelController.world.w;
+            const h = this.karelController.world.h;
+            let target_c = c - leftRatio * cols;
+            let target_r = r - bottomRatio * rows;
+            if (target_c < 1)
+                target_c = 1;
+            if (target_r < 1)
+                target_r = 1;
+            if (target_c > w)
+                target_c = w;
+            if (target_r > h)
+                target_r = h;
+            this.FocusTo(target_r, target_c, snap);
+        }
         TrackFocus(r, c) {
-            let origin = this.renderer.origin;
+            let origin = this.renderer.GetOrigin();
             let rows = this.renderer.GetRowCount("floor");
             let cols = this.renderer.GetColCount("floor");
             if (rows * cols === 0) {
@@ -27743,12 +27909,12 @@ var karel = (function (exports, bootstrap) {
             }
             if (origin.c <= c
                 && c < origin.c + cols
-                && origin.f <= r
-                && r < origin.f + rows) {
+                && origin.r <= r
+                && r < origin.r + rows) {
                 //Karel is already on focus.
                 return;
             }
-            let tr = origin.f;
+            let tr = origin.r;
             let tc = origin.c;
             if (r < tr) {
                 tr = r;
@@ -27767,13 +27933,27 @@ var karel = (function (exports, bootstrap) {
         TrackFocusToKarel() {
             this.TrackFocus(this.karelController.world.i, this.karelController.world.j);
         }
-        FocusTo(r, c) {
+        FocusTo(r, c, snap = true) {
+            this.karelController.world.w;
+            let worldHeight = this.karelController.world.h;
             let left = (c - 1 + 0.1) / (this.karelController.world.w - this.renderer.GetColCount("floor") + 1);
-            left = left < 0 ? 0 : left;
-            left = left > 1 ? 1 : left;
+            if (left < 0) {
+                c = 1;
+                left = 0;
+            }
+            else if (left > 1) {
+                c = 1 + (worldHeight - this.renderer.GetRowCount("floor") + 1);
+                left = 1;
+            }
             let top = (r - 1 + 0.01) / (this.karelController.world.h - this.renderer.GetRowCount("floor") + 1);
-            top = top < 0 ? 0 : top;
-            top = top > 1 ? 1 : top;
+            if (top < 0) {
+                r = 1;
+                top = 0;
+            }
+            else if (top > 1) {
+                r = 1 + (worldHeight - this.renderer.GetRowCount("floor") + 1);
+                top = 1;
+            }
             // let la =0, lb = 1;
             // let ta =0, tb = 1;
             // let left = (la+lb)/2.0;
@@ -27799,10 +27979,18 @@ var karel = (function (exports, bootstrap) {
             //         ta=tb=tm;
             //     }
             // }
-            this.renderer.origin = {
-                c: c,
-                f: r,
-            };
+            if (snap) {
+                this.renderer.SnappySetOrigin({
+                    c: c,
+                    r: r,
+                });
+            }
+            else {
+                this.renderer.SmoothlySetOrigin({
+                    c: c,
+                    r: r,
+                });
+            }
             // this.lockScroll=true;
             this.container.scrollLeft = left * (this.container.scrollWidth - this.container.clientWidth);
             this.container.scrollTop = (1 - top) * (this.container.scrollHeight - this.container.clientHeight);
@@ -27931,12 +28119,29 @@ var karel = (function (exports, bootstrap) {
             this.Update();
         }
         ChangeOriginFromScroll(left, top) {
+            if (!this.followScroll) {
+                return;
+            }
             let worldWidth = this.karelController.world.w;
             let worldHeight = this.karelController.world.h;
-            this.renderer.origin = {
-                f: Math.floor(1 + Math.max(0, (worldHeight - this.renderer.GetRowCount("floor") + 1) * top)),
-                c: Math.floor(1 + Math.max(0, (worldWidth - this.renderer.GetColCount("floor") + 1) * left)),
-            };
+            // this.renderer.SnappySetOrigin({
+            //     r: Math.floor(
+            //         1 + Math.max(
+            //             0,
+            //             (worldHeight - this.renderer.GetRowCount("floor") + 1) * top
+            //         )
+            //     ),
+            //     c: Math.floor(
+            //         1 + Math.max(
+            //             0,
+            //             (worldWidth - this.renderer.GetColCount("floor") + 1) * left
+            //         )
+            //     ),
+            // });
+            this.renderer.SnappySetOrigin({
+                r: 1 + Math.max(0, (worldHeight - this.renderer.GetRowCount("floor") + 1) * top),
+                c: 1 + Math.max(0, (worldWidth - this.renderer.GetColCount("floor") + 1) * left),
+            });
         }
         UpdateScroll(left, top) {
             this.ChangeOriginFromScroll(left, top);
@@ -28392,6 +28597,9 @@ var karel = (function (exports, bootstrap) {
                 if (GetCurrentSetting().autoInputMode === true)
                     this.SetAlternativeInput();
             });
+            this.worldCanvas.on("pointerdown", this.worldController.PointerDown.bind(this.worldController));
+            this.worldCanvas.on("pointerup pointercancel pointerout pointerleave", this.worldController.PointerUp.bind(this.worldController));
+            this.worldCanvas.on("pointermove", this.worldController.PointerMove.bind(this.worldController));
             const zooms = ["0.5", "0.75", "1", "1.5", "2.0", "2.5", "4"];
             this.worldZoom.on("change", () => {
                 let scale = parseFloat(String(this.worldZoom.val()));

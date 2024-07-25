@@ -5,6 +5,8 @@ import { SelectionBox, SelectionWaffle } from "./waffle";
 import { CellSelection, SelectionState } from "./selection";
 import { CellPair } from "../cellPair";
 import { karel } from "../../../js";
+import { GetCurrentSetting } from "../settings";
+import { freezeEditors } from "../editor/editor";
 
 
 type Gizmos = {
@@ -21,6 +23,15 @@ type MouseState = {
 
 type ClickMode = "normal" | "alternate"
 
+type PinchData = {
+    pointers: PointerEvent[]
+    prevDiff:number
+    startZoom:number
+    freed:boolean
+    cell:CellPair
+    proportions:{left: number, bottom:number}
+}
+
 class WorldViewController {
     renderer: WorldRenderer
     container: HTMLElement
@@ -32,7 +43,8 @@ class WorldViewController {
     private karelController : KarelController;
     private waffle: SelectionWaffle
     private clickMode: ClickMode
-
+    private pinch: PinchData
+    private followScroll:boolean
 
     constructor(renderer: WorldRenderer, karelController: KarelController, container: HTMLElement,  gizmos: Gizmos) {
         this.renderer = renderer;
@@ -64,6 +76,15 @@ class WorldViewController {
 
         this.waffle = new SelectionWaffle(gizmos.selectionBox);
         this.clickMode = "normal";
+        this.pinch = {
+            pointers: [],
+            prevDiff: -1,
+            startZoom : 1,
+            freed:false,
+            cell: {r:1,c:1},
+            proportions: {left:0,bottom:0},
+        }
+        this.followScroll = true;
     }
 
     SetClickMode(mode:ClickMode) {
@@ -167,7 +188,7 @@ class WorldViewController {
         this.waffle.UpdateWaffle(this.selection, this.renderer);
     }
 
-    SetScale(scale: number) {
+    SetScale(scale: number, updateScroll:boolean=true) {
         this.renderer.scale = scale ;
         this.scale = scale;
         //FIXME, this should be in update waffle
@@ -190,6 +211,9 @@ class WorldViewController {
         this.UpdateWaffle();
         this.Update();             
         this.UpdateScrollElements();   
+        if (updateScroll) {
+            this.ReFocusCurrentElement();
+        }
     }
 
     RecalculateScale() {
@@ -199,13 +223,31 @@ class WorldViewController {
         this.UpdateScrollElements();   
     }
 
-    TrackMouse(e: MouseEvent) {
+    ClientXYToStateXY(clientX:number, clientY:number) {
         let canvas = this.renderer.canvasContext.canvas;
         let boundingBox = canvas.getBoundingClientRect();
-        let x = (e.clientX - boundingBox.left) * canvas.width / boundingBox.width;
-        let y = (e.clientY - boundingBox.top) * canvas.height / boundingBox.height;
-        this.state.cursorX = x / this.renderer.scale;
-        this.state.cursorY = y / this.renderer.scale;
+        let x = (clientX - boundingBox.left) * canvas.width / boundingBox.width;
+        let y = (clientY - boundingBox.top) * canvas.height / boundingBox.height;
+         x /= this.renderer.scale;
+        y /= this.renderer.scale;
+        return {x,y};
+    }
+
+    ClientXYToProportions(clientX:number, clientY:number) {
+        let canvas = this.renderer.canvasContext.canvas;
+        let boundingBox = canvas.getBoundingClientRect();
+        let x = (clientX - boundingBox.left)/ boundingBox.width;
+        let y = (clientY - boundingBox.top) / boundingBox.height;
+
+        let left = x;
+        let bottom = 1-y;
+        return {left,bottom};
+    }
+
+    TrackMouse(e: MouseEvent) {
+        let {x,y} = this.ClientXYToStateXY(e.clientX, e.clientY);
+        this.state.cursorX = x;
+        this.state.cursorY = y;
         this.state.cellPair = this.renderer.PointToCell(this.state.cursorX, this.state.cursorY);
 
         if (this.selection.state === "selecting") {
@@ -250,6 +292,81 @@ class WorldViewController {
         }
         $(":focus").blur();
         
+    }
+
+    PointerDown(e:PointerEvent) {
+        this.pinch.pointers.push(e);        
+    }
+    PointerUp(e:PointerEvent) {
+        const index = this.pinch.pointers.findIndex(
+            (cachedEv) => cachedEv.pointerId === e.pointerId,
+        );
+        if (index !== -1)
+            this.pinch.pointers.splice(index, 1);
+
+        if (this.pinch.pointers.length < 2) {
+            this.pinch.prevDiff = -1;
+            if (this.renderer.Snap()) {
+                this.Update();
+                this.UpdateWaffle();
+            }
+            this.followScroll = true;
+        }
+
+    }
+    PointerMove(e:PointerEvent) {
+
+        const index = this.pinch.pointers.findIndex(
+            (cachedEv) => cachedEv.pointerId === e.pointerId,
+        );
+        if (index !== -1)
+            this.pinch.pointers[index] = e;
+        // If two pointers are down, check for pinch gestures
+        if (this.pinch.pointers.length === 2) {
+            
+            let cX = (this.pinch.pointers[0].clientX + this.pinch.pointers[1].clientX)/2;
+            let cY = (this.pinch.pointers[0].clientY + this.pinch.pointers[1].clientY)/2;
+            this.pinch.proportions = this.ClientXYToProportions(cX, cY);
+            // Calculate the distance between the two pointers
+            const diffX = Math.abs(this.pinch.pointers[0].clientX - this.pinch.pointers[1].clientX);
+            const diffY = Math.abs(this.pinch.pointers[0].clientY - this.pinch.pointers[1].clientY);
+            let curDiff =  Math.sqrt(diffX*diffX+diffY*diffY);
+            if (this.pinch.prevDiff > 0) {
+                let delta = curDiff/this.pinch.prevDiff;
+                if (!this.pinch.freed) {
+                    if (0.9 < delta && delta < 1.1 ) {
+                        return;
+                    } else if (0.8 < delta && delta < 1) {
+                        delta = (delta-0.8)*2+0.8;
+                    } else if (1 < delta && delta < 1.2) {
+                        delta = (delta-1.1)*2+1.1;
+                    } else {
+                        this.pinch.freed = true;
+                    }
+                }
+
+
+                let newZoom = this.pinch.startZoom* delta;
+                if (newZoom < 0.5) newZoom=0.5;
+                if (newZoom > 8) newZoom=8;
+                this.SetScale(newZoom, false);
+                this.FocusCellToScreenPortion(
+                    this.pinch.cell.r, 
+                    this.pinch.cell.c,
+                    this.pinch.proportions.left,
+                    this.pinch.proportions.bottom,
+                    false // Do not snap
+                );
+            } else {
+                this.pinch.prevDiff = curDiff;
+                this.pinch.startZoom = this.scale;
+                this.pinch.freed = false;
+                let {x, y} = this.ClientXYToStateXY(cX,cY);
+                this.pinch.cell = this.renderer.PointToCell(x,y, true);
+                this.followScroll = false;
+                
+            }
+        }
     }
 
     SetKarelOnSelection(direction: "north" | "east" | "west" | "south" = "north") {
@@ -449,8 +566,29 @@ class WorldViewController {
         this.FocusTo(r, c);
     }
 
+    ReFocusCurrentElement() {
+        const origin = this.renderer.GetOrigin();
+        this.FocusTo(origin.r, origin.c)
+    }
+
+    FocusCellToScreenPortion(r:number, c:number, leftRatio:number, bottomRatio:number, snap:boolean=true) {
+        const cols = this.renderer.GetColCount("noRounding");
+        const rows = this.renderer.GetRowCount("noRounding");
+        const w = this.karelController.world.w;
+        const h = this.karelController.world.h;
+        let target_c = c - leftRatio * cols;
+        let target_r = r - bottomRatio * rows;
+        
+        if (target_c < 1) target_c =1;
+        if (target_r < 1) target_r =1;
+
+        if (target_c > w) target_c = w;
+        if (target_r > h) target_r = h;
+        this.FocusTo(target_r, target_c, snap);
+    }
+
     TrackFocus(r:number, c:number) {
-        let origin = this.renderer.origin;
+        let origin = this.renderer.GetOrigin();
         let rows = this.renderer.GetRowCount("floor");
         let cols = this.renderer.GetColCount("floor");
 
@@ -463,14 +601,14 @@ class WorldViewController {
         if (
             origin.c <= c 
             &&  c < origin.c + cols
-            && origin.f <= r
-            &&  r < origin.f + rows
+            && origin.r <= r
+            &&  r < origin.r + rows
         ) {
             //Karel is already on focus.
             return;
         }
 
-        let tr = origin.f;
+        let tr = origin.r;
         let tc = origin.c;
 
         if (r < tr) {
@@ -493,15 +631,27 @@ class WorldViewController {
         this.TrackFocus(this.karelController.world.i,this.karelController.world.j);
     }
 
-    FocusTo(r: number, c: number) {
-
+    FocusTo(r: number, c: number, snap:boolean = true) {
+        let worldWidth = this.karelController.world.w;
+        let worldHeight = this.karelController.world.h;
         
         let left = (c-1 + 0.1) / (this.karelController.world.w - this.renderer.GetColCount("floor") + 1);
-        left = left < 0 ? 0 : left;
-        left = left > 1 ? 1 : left;
+        if (left < 0) {
+            c=1;
+            left=0;
+        } else if(left > 1) {
+            c = 1+ (worldHeight - this.renderer.GetRowCount("floor") + 1);
+            left =1;
+        }
         let top = (r-1 + 0.01) / (this.karelController.world.h - this.renderer.GetRowCount("floor") + 1);
-        top = top < 0 ? 0 : top;
-        top = top > 1 ? 1 : top;
+
+        if (top < 0) {
+            r = 1;
+            top=0;
+        } else if(top > 1) {
+            r = 1+(worldHeight - this.renderer.GetRowCount("floor") + 1);
+            top =1;
+        }
 
         // let la =0, lb = 1;
         // let ta =0, tb = 1;
@@ -531,10 +681,17 @@ class WorldViewController {
         //         ta=tb=tm;
         //     }
         // }
-
-        this.renderer.origin = {
-            c:c,
-            f:r,
+        if (snap) {
+            this.renderer.SnappySetOrigin({
+                c:c,
+                r:r,
+            });
+        } else {
+            
+            this.renderer.SmoothlySetOrigin({
+                c:c,
+                r:r,
+            });
         }
         // this.lockScroll=true;
         this.container.scrollLeft = left * (this.container.scrollWidth - this.container.clientWidth);        
@@ -704,23 +861,42 @@ class WorldViewController {
     }
 
     ChangeOriginFromScroll(left:number, top:number) {
+        if (!this.followScroll) {
+            return;
+        }
         let worldWidth = this.karelController.world.w;
         let worldHeight = this.karelController.world.h;
 
-        this.renderer.origin = {
-            f: Math.floor(
+        // this.renderer.SnappySetOrigin({
+        //     r: Math.floor(
+        //         1 + Math.max(
+        //             0,
+        //             (worldHeight - this.renderer.GetRowCount("floor") + 1) * top
+        //         )
+        //     ),
+        //     c: Math.floor(
+        //         1 + Math.max(
+        //             0,
+        //             (worldWidth - this.renderer.GetColCount("floor") + 1) * left
+        //         )
+        //     ),
+        // });
+
+        
+        this.renderer.SnappySetOrigin({
+            r: 
                 1 + Math.max(
                     0,
                     (worldHeight - this.renderer.GetRowCount("floor") + 1) * top
                 )
-            ),
-            c: Math.floor(
+            ,
+            c: 
                 1 + Math.max(
                     0,
                     (worldWidth - this.renderer.GetColCount("floor") + 1) * left
                 )
-            ),
-        }
+            ,
+        });
     }
 
     UpdateScroll(left: number, top: number): void {

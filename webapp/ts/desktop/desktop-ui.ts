@@ -174,6 +174,20 @@ class DesktopController {
                     this.SetAlternativeInput();
             }
         );
+
+        
+        this.worldCanvas.on(
+            "pointerdown",
+            this.worldController.PointerDown.bind(this.worldController)
+        );
+        this.worldCanvas.on(
+            "pointerup pointercancel pointerout pointerleave",
+            this.worldController.PointerUp.bind(this.worldController)
+        );
+        this.worldCanvas.on(
+            "pointermove",
+            this.worldController.PointerMove.bind(this.worldController)
+        );
         
 
         const zooms = ["0.5", "0.75", "1", "1.5", "2.0", "2.5", "4"]
