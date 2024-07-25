@@ -246,6 +246,7 @@ class WorldRenderer {
         let w = this.GetWidth();
         let cols = this.GetColCount();
         let rows = this.GetRowCount();
+        this.ResetTransform();
         this.TranslateOffset(true, true);
         this.canvasContext.strokeStyle = this.style.gridBorderColor;
         if (this.mode === "error") {
@@ -335,6 +336,8 @@ class WorldRenderer {
     }
 
     private ColorCell(r: number, c: number, color:string) : void {
+        this.ResetTransform();
+        this.TranslateOffset(true, true);
         let h = this.GetHeight();
         let x = c*this.CellSize+this.GutterSize;
         let y = h-((r+1)*this.CellSize+this.GutterSize);
@@ -459,7 +462,9 @@ class WorldRenderer {
     private DrawDumpCells() {
         for (let i =0; i < this.GetRowCount(); i++) {
             for (let j =0; j < this.GetColCount(); j++) {
-                if (this.world.getDumpCell(i+this.origin.r, j + this.origin.c)) {
+                let r = i + Math.floor(this.origin.r);
+                let c = j + Math.floor(this.origin.c);
+                if (this.world.getDumpCell(r,c)) {
                     this.ColorCell(i,j, this.style.exportCellBackground);
                 }
             }

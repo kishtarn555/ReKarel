@@ -22394,13 +22394,13 @@ var karel = (function (exports, bootstrap) {
             this.ResetTransform();
             this.canvasContext.fillStyle = this.style.gridBorderColor;
             this.canvasContext.fillRect(0, h - this.GutterSize, this.GutterSize, this.GutterSize);
-            // this.DrawGutterWalls();
         }
         DrawGrid() {
             let h = this.GetHeight();
             let w = this.GetWidth();
             let cols = this.GetColCount();
             let rows = this.GetRowCount();
+            this.ResetTransform();
             this.TranslateOffset(true, true);
             this.canvasContext.strokeStyle = this.style.gridBorderColor;
             if (this.mode === "error") {
@@ -22481,6 +22481,8 @@ var karel = (function (exports, bootstrap) {
             }
         }
         ColorCell(r, c, color) {
+            this.ResetTransform();
+            this.TranslateOffset(true, true);
             let h = this.GetHeight();
             let x = c * this.CellSize + this.GutterSize;
             let y = h - ((r + 1) * this.CellSize + this.GutterSize);
@@ -22547,47 +22549,6 @@ var karel = (function (exports, bootstrap) {
             this.canvasContext.lineWidth = lineOr;
             this.ResetTransform();
         }
-        DrawGutterWalls() {
-            let c = this.origin.c;
-            let dc = 0;
-            if (!this.snapped) {
-                if (this.GetColumnOffset() < 2) {
-                    c = Math.floor(this.origin.c);
-                    dc = 0;
-                }
-                else if (this.CellSize - this.GetColumnOffset() < 2) {
-                    c = Math.ceil(this.origin.c);
-                    dc = 1;
-                }
-            }
-            let r = this.origin.r;
-            let dr = 0;
-            if (!this.snapped) {
-                if (this.GetRowOffset() < 2) {
-                    r = Math.floor(this.origin.r);
-                    dr = 0;
-                }
-                else if (this.CellSize - this.GetRowOffset() < 2) {
-                    r = Math.ceil(this.origin.r);
-                    dr = 1;
-                }
-            }
-            this.ResetTransform();
-            for (let i = 0; i < this.GetRowCount(); i++) {
-                let rr = i + Math.floor(this.origin.r);
-                let walls = this.world.walls(rr, c);
-                if ((walls & (1 << 0)) !== 0) {
-                    this.DrawWall(i, dc, "west");
-                }
-            }
-            for (let j = 0; j < this.GetColCount(); j++) {
-                let cc = j + Math.floor(this.origin.c);
-                let walls = this.world.walls(r, cc);
-                if ((walls & (1 << 3)) !== 0) {
-                    this.DrawWall(dr, j, "south");
-                }
-            }
-        }
         DrawWalls() {
             for (let i = 0; i < this.GetRowCount(); i++) {
                 for (let j = 0; j < this.GetColCount(); j++) {
@@ -22625,7 +22586,9 @@ var karel = (function (exports, bootstrap) {
         DrawDumpCells() {
             for (let i = 0; i < this.GetRowCount(); i++) {
                 for (let j = 0; j < this.GetColCount(); j++) {
-                    if (this.world.getDumpCell(i + this.origin.r, j + this.origin.c)) {
+                    let r = i + Math.floor(this.origin.r);
+                    let c = j + Math.floor(this.origin.c);
+                    if (this.world.getDumpCell(r, c)) {
                         this.ColorCell(i, j, this.style.exportCellBackground);
                     }
                 }
