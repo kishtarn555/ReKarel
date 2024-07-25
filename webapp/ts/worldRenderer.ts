@@ -132,7 +132,7 @@ class WorldRenderer {
         let w = this.GetWidth();
         
         this.canvasContext.fillStyle = this.style.gutterBackgroundColor;
-        this.canvasContext.fillRect(0, 0, this.GutterSize, h - this.GutterSize);
+        this.canvasContext.fillRect(0, 0, this.GutterSize-1, h - this.GutterSize);
         let rows = this.GetRowCount();
         this.canvasContext.strokeStyle = this.style.gridBorderColor;
         let r1=-1,r2=-1;
@@ -144,7 +144,7 @@ class WorldRenderer {
             let sr2 = h-(this.GutterSize+ (r2+1) *this.CellSize);
             this.canvasContext.fillStyle = this.style.gutterSelectionBackgroundColor;
             
-            this.canvasContext.fillRect(0, sr2, this.GutterSize, sr1-sr2);
+            this.canvasContext.fillRect(0, sr2, this.GutterSize-1, sr1-sr2);
 
 
         }
@@ -153,7 +153,7 @@ class WorldRenderer {
         this.canvasContext.beginPath();
         for (let i =0; i < rows; i++) {
             this.canvasContext.moveTo(0, h-(this.GutterSize+ (i+1) *this.CellSize)+0.5);
-            this.canvasContext.lineTo(this.GutterSize, h-(this.GutterSize+ (i+1) *this.CellSize)+0.5);
+            this.canvasContext.lineTo(this.GutterSize-1, h-(this.GutterSize+ (i+1) *this.CellSize)+0.5);
         }
         this.canvasContext.stroke();
         
@@ -187,7 +187,7 @@ class WorldRenderer {
         let h = this.GetHeight();
         let w = this.GetWidth();
         this.canvasContext.fillStyle = this.style.gutterBackgroundColor;
-        this.canvasContext.fillRect(this.GutterSize, h - this.GutterSize, w, h);
+        this.canvasContext.fillRect(this.GutterSize, h - this.GutterSize+1, w, this.GutterSize);
         let cols = this.GetColCount();
         this.canvasContext.strokeStyle = this.style.gridBorderColor;
         let c1 = -1, c2=-1;        
@@ -198,7 +198,7 @@ class WorldRenderer {
             let sc2 = (this.GutterSize+ (c2+1) *this.CellSize);
             this.canvasContext.fillStyle = this.style.gutterSelectionBackgroundColor;
             
-            this.canvasContext.fillRect(sc1, h - this.GutterSize, sc2-sc1, this.GutterSize+1);
+            this.canvasContext.fillRect(sc1, h - this.GutterSize+1, sc2-sc1, this.GutterSize);
             
 
         }
@@ -206,7 +206,7 @@ class WorldRenderer {
         this.canvasContext.beginPath();
         for (let i =0; i < cols; i++) {
             this.canvasContext.moveTo(this.GutterSize+(i+1)*this.CellSize-0.5, h);            
-            this.canvasContext.lineTo(this.GutterSize+(i+1)*this.CellSize-0.5, h-this.GutterSize);
+            this.canvasContext.lineTo(this.GutterSize+(i+1)*this.CellSize-0.5, h-this.GutterSize+1);
         }
         this.canvasContext.stroke();
         this.canvasContext.fillStyle= this.style.gutterColor;
@@ -239,9 +239,6 @@ class WorldRenderer {
         this.ResetTransform();
         this.canvasContext.fillStyle = this.style.gridBorderColor;
         this.canvasContext.fillRect(0, h-this.GutterSize, this.GutterSize, this.GutterSize);
-        if (this.snapped)
-        this.DrawGutterWalls();
-
     }
 
     private DrawGrid(): void {
@@ -275,7 +272,7 @@ class WorldRenderer {
         if (this.mode === "error") {
             this.canvasContext.fillStyle = this.style.errorGridBackgroundColor;
         }
-        this.canvasContext.fillRect(this.GutterSize, 0, w-this.GutterSize, h-this.GutterSize);
+        this.canvasContext.fillRect(0, 0, w, h);
     }
 
     private DrawKarel(r: number, c:number, orientation: "north" | "east" | "south" | "west" = "north") : void {
@@ -422,20 +419,6 @@ class WorldRenderer {
         this.ResetTransform();
     }
 
-    private DrawGutterWalls() {
-            for (let i =0; i < this.GetRowCount(); i++) {
-                let walls = this.world.walls(i + this.origin.r, this.origin.c);
-                if ((walls & (1<<0))!==0) {
-                    this.DrawWall(i,0, "west");
-                }
-            } 
-            for (let j =0; j < this.GetColCount(); j++) {
-                let walls = this.world.walls(this.origin.r, j + this.origin.c);
-                if ((walls & (1<<3))!==0) {
-                    this.DrawWall(0,j, "south");
-            }
-        }
-    }
     private DrawWalls() {        
         for (let i =0; i < this.GetRowCount(); i++) {
             for (let j =0; j < this.GetColCount(); j++) {
