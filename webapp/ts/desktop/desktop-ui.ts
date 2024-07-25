@@ -335,7 +335,10 @@ class DesktopController {
             [87,[[basic, ()=>{this.worldController.ToggleWall("north");}]]],
             [68,[[basic, ()=>{this.worldController.ToggleWall("east");}]]],
             [83,[[basic, ()=>{this.worldController.ToggleWall("south");}]]],
-            [65,[[basic, ()=>{this.worldController.ToggleWall("west");}]]],
+            [65,[
+                [ctrl, ()=>{this.worldController.Select(1, 1, 100, 100);}],
+                [basic, ()=>{this.worldController.ToggleWall("west");}]
+            ]],
             [88,[[basic, ()=>{this.worldController.ToggleWall("outer");}]]],
             [37,[[basic, ()=>{this.worldController.MoveSelection(0,-1, e.shiftKey);}]] ],
             [38,[[basic, ()=>{this.worldController.MoveSelection(1, 0, e.shiftKey);}]]],
