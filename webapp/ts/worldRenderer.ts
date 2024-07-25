@@ -137,8 +137,8 @@ class WorldRenderer {
         this.canvasContext.strokeStyle = this.style.gridBorderColor;
         let r1=-1,r2=-1;
         if (selection != null) {
-            r1 = Math.min(selection.r, selection.r + (selection.rows-1)*selection.dr)-Math.floor(this.origin.r);
-            r2 = Math.max(selection.r, selection.r + (selection.rows-1)*selection.dr)-Math.floor(this.origin.r);
+            r1 = Math.min(selection.r, selection.r + (selection.rows-1)*selection.dr)-this.origin.r;
+            r2 = Math.max(selection.r, selection.r + (selection.rows-1)*selection.dr)-this.origin.r;
             
             let sr1 = h-(this.GutterSize+ (r1) *this.CellSize);
             let sr2 = h-(this.GutterSize+ (r2+1) *this.CellSize);
@@ -148,8 +148,8 @@ class WorldRenderer {
 
 
         }
-        
         this.TranslateOffset(true, false);
+        
         this.canvasContext.beginPath();
         for (let i =0; i < rows; i++) {
             this.canvasContext.moveTo(0, h-(this.GutterSize+ (i+1) *this.CellSize)+0.5);
@@ -240,7 +240,7 @@ class WorldRenderer {
         this.canvasContext.fillStyle = this.style.gridBorderColor;
         this.canvasContext.fillRect(0, h-this.GutterSize, this.GutterSize, this.GutterSize);
         if (this.snapped)
-            this.DrawGutterWalls();
+        this.DrawGutterWalls();
 
     }
 
@@ -423,16 +423,16 @@ class WorldRenderer {
     }
 
     private DrawGutterWalls() {
-        for (let i =0; i < this.GetRowCount(); i++) {
-            let walls = this.world.walls(i + this.origin.r, this.origin.c);
-            if ((walls & (1<<0))!==0) {
-                this.DrawWall(i,0, "west");
-            }
-        } 
-        for (let j =0; j < this.GetColCount(); j++) {
-            let walls = this.world.walls(this.origin.r, j + this.origin.c);
-            if ((walls & (1<<3))!==0) {
-                this.DrawWall(0,j, "south");
+            for (let i =0; i < this.GetRowCount(); i++) {
+                let walls = this.world.walls(i + this.origin.r, this.origin.c);
+                if ((walls & (1<<0))!==0) {
+                    this.DrawWall(i,0, "west");
+                }
+            } 
+            for (let j =0; j < this.GetColCount(); j++) {
+                let walls = this.world.walls(this.origin.r, j + this.origin.c);
+                if ((walls & (1<<3))!==0) {
+                    this.DrawWall(0,j, "south");
             }
         }
     }

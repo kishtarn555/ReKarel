@@ -22314,8 +22314,8 @@ var karel = (function (exports, bootstrap) {
             this.canvasContext.strokeStyle = this.style.gridBorderColor;
             let r1 = -1, r2 = -1;
             if (selection != null) {
-                r1 = Math.min(selection.r, selection.r + (selection.rows - 1) * selection.dr) - Math.floor(this.origin.r);
-                r2 = Math.max(selection.r, selection.r + (selection.rows - 1) * selection.dr) - Math.floor(this.origin.r);
+                r1 = Math.min(selection.r, selection.r + (selection.rows - 1) * selection.dr) - this.origin.r;
+                r2 = Math.max(selection.r, selection.r + (selection.rows - 1) * selection.dr) - this.origin.r;
                 let sr1 = h - (this.GutterSize + (r1) * this.CellSize);
                 let sr2 = h - (this.GutterSize + (r2 + 1) * this.CellSize);
                 this.canvasContext.fillStyle = this.style.gutterSelectionBackgroundColor;
