@@ -475,7 +475,6 @@ class WorldRenderer {
         let h = this.GetHeight();
         let w = this.GetWidth();
         this.canvasContext.clearRect(0, 0, w, h);
-        this.DrawGutters(selection);
         this.DrawBackground();
         this.DrawDumpCells();
         this.DrawGrid();        
@@ -483,8 +482,9 @@ class WorldRenderer {
             world.i, 
             world.j,  
             this.GetOrientation(world.orientation)
-            )
+        )
         this.DrawWalls();
+        this.DrawGutters(selection);
         // this.DrawBeepers();       
     }
 
