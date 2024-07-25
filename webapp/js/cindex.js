@@ -27710,7 +27710,6 @@ var karel = (function (exports, bootstrap) {
                     this.pinch.freed = false;
                     let { x, y } = this.ClientXYToStateXY(cX, cY);
                     this.pinch.cell = this.renderer.PointToCell(x, y, true);
-                    this.Select(this.pinch.cell.r, this.pinch.cell.c, this.pinch.cell.r, this.pinch.cell.c);
                     this.followScroll = false;
                 }
             }
