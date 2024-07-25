@@ -22634,14 +22634,16 @@ var karel = (function (exports, bootstrap) {
             return "north";
         }
         PointToCell(x, y) {
+            x += this.GetColumnOffset();
+            y -= this.GetRowOffset();
             let c = (x - this.GutterSize) / this.CellSize;
             let r = ((this.GetHeight() - y) - this.GutterSize) / this.CellSize;
             if (c < 0 || r < 0) {
                 return { r: -1, c: -1 };
             }
             return {
-                r: Math.floor(r) + this.origin.r,
-                c: Math.floor(c) + this.origin.c,
+                r: Math.round(Math.floor(r) + Math.floor(this.origin.r)),
+                c: Math.round(Math.floor(c) + Math.floor(this.origin.c)),
             };
         }
         CellToPoint(r, c) {

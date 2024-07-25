@@ -518,6 +518,8 @@ class WorldRenderer {
     }
 
     PointToCell(x:number, y:number) : CellPair {
+        x+=this.GetColumnOffset();
+        y-=this.GetRowOffset();
         let c = (x-this.GutterSize)/this.CellSize;
         let r = ((this.GetHeight()-y)-this.GutterSize)/this.CellSize;
 
@@ -526,8 +528,8 @@ class WorldRenderer {
         }
         
         return {
-            r: Math.floor(r) + this.origin.r, 
-            c: Math.floor(c) + this.origin.c,
+            r: Math.round(Math.floor(r) + Math.floor(this.origin.r)), 
+            c: Math.round(Math.floor(c) + Math.floor(this.origin.c)),
         };
     }
 
