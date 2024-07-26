@@ -12,6 +12,7 @@ import { getEditors } from "./editor/editorsInstances";
 import { HookSession, RestoreSession } from "./session";
 import { RegisterHighlightListeners } from "./editor/editor.listeners";
 import { editorJava2pascal, editorPascal2Java } from "./editor/transpiler";
+import { MobileUI } from "./mobile/mobile";
 
 
 let KarelWorld: World = new World(100, 100);
@@ -115,6 +116,7 @@ let DesktopUI = new DesktopController(
             },
             beeperInput: $("#beeperBag"),
             infiniteBeeperInput: $("#infiniteBeepersBtn"),
+            beeperCollapse:$("#beeperInputCollapse"),
             delayInput: $("#delayPanel"),
             delayAdd:$("#addDelayBtn"),
             delayRemove: $("#removeDelayBtn"),
@@ -213,10 +215,31 @@ let DesktopUI = new DesktopController(
         },
         callStack: {
             panel : $("#pilaTab")
-        }
+        },
     },
     karelController
 );
+
+const MobileUIC = new MobileUI ({
+    controls: {
+        beeperInput: $("#phoneBeeperBag"),
+        delayAdd: $(),
+        delayInput: $(),
+        delayRemove: $(),
+        infiniteBeeperInput: $("#phoneInfiniteBeepersBtn"),
+        beeperCollapse: $("#beeperInputPhoneCollapse"),
+        execution: {
+            compile: $("#phoneCompileKarel"),
+            reset: $("#phoneResetWorld"),
+            run: $("#phoneRunKarel"),
+            step: $("#phoneStepProgram"),
+            stepOver: $("#phoneStepOverProgram"),
+            stepOut: $("#phoneStepOutProgram"),
+            future: $("#phoneFutureProgram"),
+        }
+    }
+});
+
 let PhoneUI = GetPhoneUIHelper({
     editor: phoneEditor,
     mainEdtior: desktopEditor,

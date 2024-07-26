@@ -1,6 +1,7 @@
 import bootstrap from "bootstrap";
 import { ControllerState, KarelController } from "../KarelController";
 import { WorldViewController } from "../worldViewController/worldViewController";
+import { AppVars } from "../volatileMemo";
 
 type ExecutionToolbar = {
     reset: JQuery,
@@ -15,6 +16,7 @@ type ExecutionToolbar = {
 export type ControlBarData = {
     execution: ExecutionToolbar,
     beeperInput: JQuery,
+    beeperCollapse:JQuery
     infiniteBeeperInput: JQuery,
     delayInput: JQuery,
     delayAdd: JQuery,
@@ -35,6 +37,9 @@ export class ControlBar  {
 
     Init() {
         KarelController.GetInstance().RegisterStateChangeObserver(this.OnKarelControllerStateChange.bind(this));
+        WorldViewController.GetInstance().RegisterBeeperBagListener(()=>{
+            this.UpdateBeeperBag();
+        });
 
         this.ConnectExecutionButtonGroup();
 
@@ -57,6 +62,7 @@ export class ControlBar  {
         });
         this.ui.delayInput.on("change", () => {
             let delay:number = parseInt(this.ui.delayInput.val() as string);
+            AppVars.delay = delay;
             KarelController.GetInstance().ChangeAutoStepDelay(delay);
         });
 
@@ -80,7 +86,7 @@ export class ControlBar  {
     }
 
     private AutoStep() {
-        let delay:number = parseInt(this.ui.delayInput.val() as string);
+        let delay:number = AppVars.delay;
         if(KarelController.GetInstance().StartAutoStep(delay))
             this.SetPlayMode();
     }
@@ -145,14 +151,14 @@ export class ControlBar  {
     }
 
     private ActivateInfiniteBeepers() {
-        bootstrap.Collapse.getOrCreateInstance($("#beeperInputCollapse")[0]).hide();
+        bootstrap.Collapse.getOrCreateInstance(this.ui.beeperCollapse[0]).hide();
         this.ui.infiniteBeeperInput.removeClass("btn-body");
         this.ui.infiniteBeeperInput.addClass("btn-info");
     }
 
     
     private DeactivateInfiniteBeepers() {
-        bootstrap.Collapse.getOrCreateInstance($("#beeperInputCollapse")[0]).show();
+        bootstrap.Collapse.getOrCreateInstance(this.ui.beeperCollapse[0]).show();
         this.ui.infiniteBeeperInput.removeClass("btn-info");
         this.ui.infiniteBeeperInput.addClass("btn-body");
     }
