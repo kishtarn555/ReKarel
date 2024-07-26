@@ -224,7 +224,7 @@ const MobileUIC = new MobileUI ({
     controls: {
         beeperInput: $("#phoneBeeperBag"),
         delayAdd: $(),
-        delayInput: $(),
+        delayInput: $("#phoneDelayPanel"),
         delayRemove: $(),
         infiniteBeeperInput: $("#phoneInfiniteBeepersBtn"),
         beeperCollapse: $("#beeperInputPhoneCollapse"),

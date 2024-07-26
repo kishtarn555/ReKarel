@@ -48,6 +48,12 @@
 }
 
 
+.btn-body {
+    --bs-btn-bg: rgba(var(--bs-body-bg-rgb), var(--bs-bg-opacity)) !important;
+    --bs-btn-hover-bg: var(--bs-secondary-bg) !important;
+  }
+
+
 
 html,
 body {

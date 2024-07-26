@@ -40,6 +40,7 @@ export class ControlBar  {
         WorldViewController.GetInstance().RegisterBeeperBagListener(()=>{
             this.UpdateBeeperBag();
         });
+        AppVars.registerDelayChangeListener((amount)=>this.ui.delayInput.val(amount));
 
         this.ConnectExecutionButtonGroup();
 
@@ -62,7 +63,7 @@ export class ControlBar  {
         });
         this.ui.delayInput.on("change", () => {
             let delay:number = parseInt(this.ui.delayInput.val() as string);
-            AppVars.delay = delay;
+            AppVars.setDelay(delay);
             KarelController.GetInstance().ChangeAutoStepDelay(delay);
         });
 
@@ -86,7 +87,7 @@ export class ControlBar  {
     }
 
     private AutoStep() {
-        let delay:number = AppVars.delay;
+        let delay:number = AppVars.getDelay();
         if(KarelController.GetInstance().StartAutoStep(delay))
             this.SetPlayMode();
     }

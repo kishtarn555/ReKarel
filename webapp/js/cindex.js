@@ -28204,9 +28204,25 @@ var karel = (function (exports, bootstrap) {
 
     var AppVars;
     (function (AppVars) {
+        const onDelayChangeListeners = [];
         AppVars.randomBeeperMinimum = 1;
         AppVars.randomBeeperMaximum = 99;
-        AppVars.delay = 300;
+        let delay = 300;
+        function getDelay() {
+            return delay;
+        }
+        AppVars.getDelay = getDelay;
+        function setDelay(_delay) {
+            delay = _delay;
+            for (const listener of onDelayChangeListeners) {
+                listener(delay);
+            }
+        }
+        AppVars.setDelay = setDelay;
+        function registerDelayChangeListener(listener) {
+            onDelayChangeListeners.push(listener);
+        }
+        AppVars.registerDelayChangeListener = registerDelayChangeListener;
     })(AppVars || (AppVars = {}));
 
     class DesktopContextMenu {
@@ -28409,6 +28425,7 @@ var karel = (function (exports, bootstrap) {
             WorldViewController.GetInstance().RegisterBeeperBagListener(() => {
                 this.UpdateBeeperBag();
             });
+            AppVars.registerDelayChangeListener((amount) => this.ui.delayInput.val(amount));
             this.ConnectExecutionButtonGroup();
         }
         ConnectExecutionButtonGroup() {
@@ -28430,7 +28447,7 @@ var karel = (function (exports, bootstrap) {
             });
             this.ui.delayInput.on("change", () => {
                 let delay = parseInt(this.ui.delayInput.val());
-                AppVars.delay = delay;
+                AppVars.setDelay(delay);
                 KarelController.GetInstance().ChangeAutoStepDelay(delay);
             });
             this.ui.delayAdd.on("click", () => {
@@ -28452,7 +28469,7 @@ var karel = (function (exports, bootstrap) {
             KarelController.GetInstance().RegisterNewWorldObserver((_ctr, _state, _newInstance) => { this.UpdateBeeperBag(); });
         }
         AutoStep() {
-            let delay = AppVars.delay;
+            let delay = AppVars.getDelay();
             if (KarelController.GetInstance().StartAutoStep(delay))
                 this.SetPlayMode();
         }
@@ -31421,7 +31438,7 @@ var karel = (function (exports, bootstrap) {
         controls: {
             beeperInput: $("#phoneBeeperBag"),
             delayAdd: $(),
-            delayInput: $(),
+            delayInput: $("#phoneDelayPanel"),
             delayRemove: $(),
             infiniteBeeperInput: $("#phoneInfiniteBeepersBtn"),
             beeperCollapse: $("#beeperInputPhoneCollapse"),
