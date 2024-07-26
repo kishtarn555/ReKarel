@@ -27448,6 +27448,7 @@ var karel = (function (exports, bootstrap) {
 
     class WorldViewController {
         constructor(renderer, karelController, container, gizmos) {
+            WorldViewController._instance = this;
             this.renderer = renderer;
             this.container = container;
             this.lock = false;
@@ -27483,6 +27484,10 @@ var karel = (function (exports, bootstrap) {
                 proportions: { left: 0, bottom: 0 },
             };
             this.followScroll = true;
+            this.onBeepersChangeListeners = [];
+        }
+        static GetInstance() {
+            return WorldViewController._instance;
         }
         SetClickMode(mode) {
             this.clickMode = mode;
@@ -27496,8 +27501,12 @@ var karel = (function (exports, bootstrap) {
         GetBeepersInBag() {
             return this.karelController.world.bagBuzzers;
         }
-        SetBeepersInBag(ammount) {
-            this.karelController.world.setBagBuzzers(ammount);
+        SetBeepersInBag(amount) {
+            this.karelController.world.setBagBuzzers(amount);
+            this.NotifyBeeperBagUpdate(amount);
+        }
+        RegisterBeeperBagListener(listener) {
+            this.onBeepersChangeListeners.push(listener);
         }
         CheckUpdate() {
             if (this.karelController.world.dirty) {
@@ -28186,12 +28195,18 @@ var karel = (function (exports, bootstrap) {
             this.FocusOrigin();
             this.UpdateScrollElements();
         }
+        NotifyBeeperBagUpdate(amount) {
+            for (const callback of this.onBeepersChangeListeners) {
+                callback(amount);
+            }
+        }
     }
 
     var AppVars;
     (function (AppVars) {
         AppVars.randomBeeperMinimum = 1;
         AppVars.randomBeeperMaximum = 99;
+        AppVars.delay = 300;
     })(AppVars || (AppVars = {}));
 
     class DesktopContextMenu {
@@ -28391,6 +28406,9 @@ var karel = (function (exports, bootstrap) {
         }
         Init() {
             KarelController.GetInstance().RegisterStateChangeObserver(this.OnKarelControllerStateChange.bind(this));
+            WorldViewController.GetInstance().RegisterBeeperBagListener(() => {
+                this.UpdateBeeperBag();
+            });
             this.ConnectExecutionButtonGroup();
         }
         ConnectExecutionButtonGroup() {
@@ -28412,6 +28430,7 @@ var karel = (function (exports, bootstrap) {
             });
             this.ui.delayInput.on("change", () => {
                 let delay = parseInt(this.ui.delayInput.val());
+                AppVars.delay = delay;
                 KarelController.GetInstance().ChangeAutoStepDelay(delay);
             });
             this.ui.delayAdd.on("click", () => {
@@ -28433,7 +28452,7 @@ var karel = (function (exports, bootstrap) {
             KarelController.GetInstance().RegisterNewWorldObserver((_ctr, _state, _newInstance) => { this.UpdateBeeperBag(); });
         }
         AutoStep() {
-            let delay = parseInt(this.ui.delayInput.val());
+            let delay = AppVars.delay;
             if (KarelController.GetInstance().StartAutoStep(delay))
                 this.SetPlayMode();
         }
@@ -28489,12 +28508,12 @@ var karel = (function (exports, bootstrap) {
             }
         }
         ActivateInfiniteBeepers() {
-            bootstrap.Collapse.getOrCreateInstance($("#beeperInputCollapse")[0]).hide();
+            bootstrap.Collapse.getOrCreateInstance(this.ui.beeperCollapse[0]).hide();
             this.ui.infiniteBeeperInput.removeClass("btn-body");
             this.ui.infiniteBeeperInput.addClass("btn-info");
         }
         DeactivateInfiniteBeepers() {
-            bootstrap.Collapse.getOrCreateInstance($("#beeperInputCollapse")[0]).show();
+            bootstrap.Collapse.getOrCreateInstance(this.ui.beeperCollapse[0]).show();
             this.ui.infiniteBeeperInput.removeClass("btn-info");
             this.ui.infiniteBeeperInput.addClass("btn-body");
         }
@@ -31216,6 +31235,17 @@ var karel = (function (exports, bootstrap) {
         }
     }
 
+    class MobileUI {
+        constructor(data) {
+            MobileUI._instance = this;
+            this.controlBar = new ControlBar(data.controls, WorldViewController.GetInstance());
+            this.controlBar.Init();
+        }
+        static GetInstance() {
+            return this._instance;
+        }
+    }
+
     let KarelWorld = new World(100, 100);
     let karelController = new KarelController(KarelWorld);
     var [desktopEditor, phoneEditor] = getEditors();
@@ -31286,6 +31316,7 @@ var karel = (function (exports, bootstrap) {
             },
             beeperInput: $("#beeperBag"),
             infiniteBeeperInput: $("#infiniteBeepersBtn"),
+            beeperCollapse: $("#beeperInputCollapse"),
             delayInput: $("#delayPanel"),
             delayAdd: $("#addDelayBtn"),
             delayRemove: $("#removeDelayBtn"),
@@ -31384,8 +31415,27 @@ var karel = (function (exports, bootstrap) {
         },
         callStack: {
             panel: $("#pilaTab")
-        }
+        },
     }, karelController);
+    new MobileUI({
+        controls: {
+            beeperInput: $("#phoneBeeperBag"),
+            delayAdd: $(),
+            delayInput: $(),
+            delayRemove: $(),
+            infiniteBeeperInput: $("#phoneInfiniteBeepersBtn"),
+            beeperCollapse: $("#beeperInputPhoneCollapse"),
+            execution: {
+                compile: $("#phoneCompileKarel"),
+                reset: $("#phoneResetWorld"),
+                run: $("#phoneRunKarel"),
+                step: $("#phoneStepProgram"),
+                stepOver: $("#phoneStepOverProgram"),
+                stepOut: $("#phoneStepOutProgram"),
+                future: $("#phoneFutureProgram"),
+            }
+        }
+    });
     let PhoneUI = GetPhoneUIHelper({
         editor: phoneEditor,
         mainEdtior: desktopEditor,

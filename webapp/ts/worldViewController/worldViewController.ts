@@ -32,6 +32,8 @@ type PinchData = {
     proportions:{left: number, bottom:number}
 }
 
+type OnBeepersChangeCallback = (beepers:number)=>void
+
 class WorldViewController {
     renderer: WorldRenderer
     container: HTMLElement
@@ -45,8 +47,11 @@ class WorldViewController {
     private clickMode: ClickMode
     private pinch: PinchData
     private followScroll:boolean
+    private onBeepersChangeListeners;
+    private static _instance:WorldViewController;
 
     constructor(renderer: WorldRenderer, karelController: KarelController, container: HTMLElement,  gizmos: Gizmos) {
+        WorldViewController._instance = this;
         this.renderer = renderer;
         this.container = container;
         this.lock = false;
@@ -85,59 +90,70 @@ class WorldViewController {
             proportions: {left:0,bottom:0},
         }
         this.followScroll = true;
+        this.onBeepersChangeListeners = [];
     }
 
+    static GetInstance() {
+        return WorldViewController._instance;
+    }
+
+    
     SetClickMode(mode:ClickMode) {
         this.clickMode = mode;
     }
-
+    
     Lock() {
         this.lock = true;
     }
-
+    
     UnLock() {
         this.lock = false;
     }
-
-
-
+    
+    
+    
     
     GetBeepersInBag(): number {
         return this.karelController.world.bagBuzzers;
     }
-
-    SetBeepersInBag(ammount : number) {
-        this.karelController.world.setBagBuzzers(ammount);
+    
+    SetBeepersInBag(amount : number) {
+        this.karelController.world.setBagBuzzers(amount);
+        this.NotifyBeeperBagUpdate(amount);
     }
+    
 
+    RegisterBeeperBagListener(listener:OnBeepersChangeCallback) {
+        this.onBeepersChangeListeners.push(listener);
+    }
     
     CheckUpdate() {
         if (this.karelController.world.dirty) {
             this.Update();
         }
     }
-
+    
     ErrorMode() {
         this.renderer.ErrorMode();
         this.Update();
     }
-
+    
     NormalMode() {
         this.renderer.NormalMode();
         this.Update();
     }
-
+    
     Select(r: number, c: number, r2: number, c2: number, state:SelectionState="normal") {
         if (
             r > this.karelController.world.h ||
             c > this.karelController.world.w ||
             r < 1 ||
             c < 1
-
+            
         ) {
             return;
         }
-
+        
         this.selection.SetData({
             r: r,
             c: c,
@@ -150,14 +166,14 @@ class WorldViewController {
         this.UpdateGutter();
         this.UpdateWaffle();
     }
-
+    
     GetCoords2() {
         return {
             r2:this.selection.r + (this.selection.rows-1)*this.selection.dr,
             c2:this.selection.c + (this.selection.cols-1)*this.selection.dc,
         }
     }
-
+    
     MoveSelection(dr: number, dc: number, moveSecond =false) {
         let {r2,c2}=this.GetCoords2();
         let r = this.selection.r;
@@ -165,7 +181,7 @@ class WorldViewController {
         if (moveSecond) {                    
             r2 += dr;
             c2 += dc;      
-                          
+            
         } else {
             r += dr;
             c += dc;
@@ -179,15 +195,15 @@ class WorldViewController {
         if (r2 < 1 || c2 < 1 || r2 > this.karelController.world.h || c2 > this.karelController.world.w) {
             return;
         }
-
+        
         this.TrackFocus(r2,c2);
         this.Select(r, c, r2, c2);
     }
-
+    
     UpdateWaffle() {
         this.waffle.UpdateWaffle(this.selection, this.renderer);
     }
-
+    
     SetScale(scale: number, updateScroll:boolean=true) {
         this.renderer.scale = scale ;
         this.scale = scale;
@@ -203,11 +219,11 @@ class WorldViewController {
         
         // this.gizmos.selectionBox.right.style.maxHeight = `${this.renderer.CellSize * scale}px`;
         // this.gizmos.selectionBox.right.style.minHeight = `${this.renderer.CellSize * scale}px`;
-
+        
         // this.gizmos.selectionBox.bottom.style.top = `${this.renderer.CellSize * scale}px`;
         // this.gizmos.selectionBox.right.style.left = `${this.renderer.CellSize * scale}px`;
-
-
+        
+        
         this.UpdateWaffle();
         this.Update();             
         this.UpdateScrollElements();   
@@ -215,55 +231,55 @@ class WorldViewController {
             this.ReFocusCurrentElement();
         }
     }
-
+    
     RecalculateScale() {
         this.renderer.scale = this.scale;
         this.UpdateWaffle();
         this.Update();             
         this.UpdateScrollElements();   
     }
-
+    
     ClientXYToStateXY(clientX:number, clientY:number) {
         let canvas = this.renderer.canvasContext.canvas;
         let boundingBox = canvas.getBoundingClientRect();
         let x = (clientX - boundingBox.left) * canvas.width / boundingBox.width;
         let y = (clientY - boundingBox.top) * canvas.height / boundingBox.height;
-         x /= this.renderer.scale;
+        x /= this.renderer.scale;
         y /= this.renderer.scale;
         return {x,y};
     }
-
+    
     ClientXYToProportions(clientX:number, clientY:number) {
         let canvas = this.renderer.canvasContext.canvas;
         let boundingBox = canvas.getBoundingClientRect();
         let x = (clientX - boundingBox.left)/ boundingBox.width;
         let y = (clientY - boundingBox.top) / boundingBox.height;
-
+        
         let left = x;
         let bottom = 1-y;
         return {left,bottom};
     }
-
+    
     TrackMouse(e: MouseEvent) {
         let {x,y} = this.ClientXYToStateXY(e.clientX, e.clientY);
         this.state.cursorX = x;
         this.state.cursorY = y;
         this.state.cellPair = this.renderer.PointToCell(this.state.cursorX, this.state.cursorY);
-
+        
         if (this.selection.state === "selecting") {
             let cell = this.state.cellPair;
             this.ExtendSelection(cell.r, cell.c, "selecting");
         }
-
+        
     }
-
+    
     ExtendSelection(r:number, c:number, state:SelectionState="normal") {
         if (r < 0 || r > KarelController.GetInstance().world.h) return;
         if (c < 0 || c > KarelController.GetInstance().world.w) return;
         
         this.Select(this.selection.r, this.selection.c, r, c,state);
     }
-
+    
     ClickUp(e: MouseEvent) {
         let cell = this.renderer.PointToCell(this.state.cursorX, this.state.cursorY);
         if (this.selection.state!=="selecting") return; 
@@ -274,7 +290,7 @@ class WorldViewController {
             this.Select(cell.r, cell.c, this.selection.r, this.selection.c);            
         }
     }
-
+    
     ClickDown(e:MouseEvent) {
         e.preventDefault();
         if (this.clickMode === "normal") {
@@ -293,7 +309,7 @@ class WorldViewController {
         $(":focus").blur();
         
     }
-
+    
     PointerDown(e:PointerEvent) {
         this.pinch.pointers.push(e);        
     }
@@ -303,7 +319,7 @@ class WorldViewController {
         );
         if (index !== -1)
             this.pinch.pointers.splice(index, 1);
-
+        
         if (this.pinch.pointers.length < 2) {
             this.pinch.prevDiff = -1;
             if (this.renderer.Snap()) {
@@ -312,10 +328,10 @@ class WorldViewController {
             }
             this.followScroll = true;
         }
-
+        
     }
     PointerMove(e:PointerEvent) {
-
+        
         const index = this.pinch.pointers.findIndex(
             (cachedEv) => cachedEv.pointerId === e.pointerId,
         );
@@ -344,8 +360,8 @@ class WorldViewController {
                         this.pinch.freed = true;
                     }
                 }
-
-
+                
+                
                 let newZoom = this.pinch.startZoom* delta;
                 if (newZoom < 0.5) newZoom=0.5;
                 if (newZoom > 8) newZoom=8;
@@ -945,6 +961,12 @@ class WorldViewController {
         this.FocusOrigin();
         this.UpdateScrollElements();
 
+    }
+
+    private NotifyBeeperBagUpdate(amount:number) {
+        for (const callback of this.onBeepersChangeListeners) {
+            callback(amount);
+        }
     }
 
 }
