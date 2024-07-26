@@ -40,6 +40,7 @@ export class ControlBar  {
         WorldViewController.GetInstance().RegisterBeeperBagListener(()=>{
             this.UpdateBeeperBag();
         });
+        AppVars.registerDelayChangeListener((amount)=>this.ui.delayInput.val(amount));
 
         this.ConnectExecutionButtonGroup();
 

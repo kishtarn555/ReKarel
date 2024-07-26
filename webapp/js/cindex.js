@@ -28425,6 +28425,7 @@ var karel = (function (exports, bootstrap) {
             WorldViewController.GetInstance().RegisterBeeperBagListener(() => {
                 this.UpdateBeeperBag();
             });
+            AppVars.registerDelayChangeListener((amount) => this.ui.delayInput.val(amount));
             this.ConnectExecutionButtonGroup();
         }
         ConnectExecutionButtonGroup() {
@@ -31437,7 +31438,7 @@ var karel = (function (exports, bootstrap) {
         controls: {
             beeperInput: $("#phoneBeeperBag"),
             delayAdd: $(),
-            delayInput: $(),
+            delayInput: $("#phoneDelayPanel"),
             delayRemove: $(),
             infiniteBeeperInput: $("#phoneInfiniteBeepersBtn"),
             beeperCollapse: $("#beeperInputPhoneCollapse"),
