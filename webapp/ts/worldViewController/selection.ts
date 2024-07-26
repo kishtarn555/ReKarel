@@ -1,3 +1,4 @@
+import { CellPair } from "../cellPair"
 
 
 
@@ -42,6 +43,13 @@ export class CellSelection {
         this.dr=data.dr;
         this.dc=data.dc;
         this.state=data.state;
+    }
+
+    GetSecondAnchor():CellPair {
+        return {
+            r: this.r + (this.rows-1)*this.dr,
+            c: this.c + (this.cols-1)*this.dc, 
+        }
     }
 }
 

@@ -27438,6 +27438,12 @@ var karel = (function (exports, bootstrap) {
             this.dc = data.dc;
             this.state = data.state;
         }
+        GetSecondAnchor() {
+            return {
+                r: this.r + (this.rows - 1) * this.dr,
+                c: this.c + (this.cols - 1) * this.dc,
+            };
+        }
     }
 
     class WorldViewController {
@@ -27871,12 +27877,16 @@ var karel = (function (exports, bootstrap) {
         FocusKarel() {
             let r = this.karelController.world.i;
             let c = this.karelController.world.j;
-            this.FocusTo(r, c);
+            this.FocusCellToScreenPortion(r, c, 0.5, 0.5, true);
         }
         FocusSelection() {
-            let r = this.selection.r - 1;
-            let c = this.selection.c - 1;
-            this.FocusTo(r, c);
+            let r1 = this.selection.r;
+            let c1 = this.selection.c;
+            let { r, c } = this.selection.GetSecondAnchor();
+            let cR = (r1 + r) / 2;
+            let cC = (c1 + c) / 2;
+            this.FocusCellToScreenPortion(cR, cC, 0.5, 0.5);
+            this.TrackFocus(r1, c1);
         }
         ReFocusCurrentElement() {
             const origin = this.renderer.GetOrigin();
