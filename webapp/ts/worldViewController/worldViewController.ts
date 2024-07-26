@@ -556,14 +556,19 @@ class WorldViewController {
         let r = this.karelController.world.i;
         let c = this.karelController.world.j;
 
-        this.FocusTo(r, c);
+        this.FocusCellToScreenPortion(r, c,0.5, 0.5, true);
     }
     
     FocusSelection() {
-        let r = this.selection.r - 1;
-        let c = this.selection.c - 1;
+        let r1 = this.selection.r;
+        let c1 = this.selection.c;
+        
+        let {r, c} = this.selection.GetSecondAnchor();
 
-        this.FocusTo(r, c);
+        let cR = (r1+r)/2;
+        let cC = (c1+c)/2;
+        this.FocusCellToScreenPortion(cR, cC,0.5,0.5);
+        this.TrackFocus(r1, c1);
     }
 
     ReFocusCurrentElement() {
