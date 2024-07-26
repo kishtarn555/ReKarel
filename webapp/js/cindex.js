@@ -789,6 +789,7 @@ var karel = (function (exports, bootstrap) {
             direction: 'vertical',
             onDragEnd: ResizeCanvas,
             minSize: 0,
+            gutterSize: 15
         });
     }
 

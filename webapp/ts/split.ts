@@ -20,6 +20,7 @@ function splitPanels (ResizeCanvas: ()=>void) {
         direction: 'vertical',
         onDragEnd: ResizeCanvas,
         minSize: 0,
+        gutterSize: 15
     });
 }
 
