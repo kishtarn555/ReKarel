@@ -293,6 +293,7 @@ class WorldViewController {
     
     ClickDown(e:MouseEvent) {
         e.preventDefault();
+        this.renderer.canvasContext.canvas.focus();
         if (this.clickMode === "normal") {
             let cell = this.renderer.PointToCell(this.state.cursorX, this.state.cursorY);
             if (cell.r < 0) {
