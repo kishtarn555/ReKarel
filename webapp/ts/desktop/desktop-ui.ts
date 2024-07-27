@@ -16,14 +16,10 @@ import { ControlBar, ControlBarData } from './controlBar';
 import { AppVars } from '../volatileMemo';
 import { HistoryToolbar } from '../worldViewController/commit';
 import { GetCurrentSetting } from '../settings';
+import { FocusBar, FocusToolbar } from './focusBar';
 
 
-type FocusToolbar = {
-    origin: JQuery,
-    karel: JQuery,
-    selector: JQuery,
-    
-}
+
 
 
 type InputModeToolbar = {
@@ -80,7 +76,7 @@ class DesktopController {
     wallToolbar: WallToolbar;
     evaluateToolbar: EvaluateToolbar;
 
-    focusToolbar: FocusToolbar;
+    focusControlBar: FocusBar;
     historyToolbar: HistoryToolbar;
 
     contextMenu: DesktopContextMenu
@@ -115,7 +111,7 @@ class DesktopController {
         this.wallToolbar = elements.toolbar.wall;
         this.evaluateToolbar = elements.toolbar.evaluate;
 
-        this.focusToolbar = elements.toolbar.focus;
+        this.focusControlBar = new FocusBar(elements.toolbar.focus);
         this.historyToolbar = elements.toolbar.history;
 
         
@@ -257,9 +253,8 @@ class DesktopController {
         this.wallToolbar.west.on("click", ()=>this.worldController.ToggleWall("west"));
         this.wallToolbar.outside.on("click", ()=>this.worldController.ToggleWall("outer"));
 
-        this.focusToolbar.karel.on("click", ()=>this.worldController.FocusKarel());
-        this.focusToolbar.origin.on("click", ()=>this.worldController.FocusOrigin());
-        this.focusToolbar.selector.on("click", ()=>this.worldController.FocusSelection());
+        this.focusControlBar.Connect()
+
 
         this.evaluateToolbar.evaluate.on("click", ()=> this.worldController.SetCellEvaluation(true));
         this.evaluateToolbar.ignore.on("click", ()=> this.worldController.SetCellEvaluation(false));
