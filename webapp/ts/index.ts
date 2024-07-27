@@ -121,12 +121,12 @@ let DesktopUI = new DesktopController(
             delayAdd:$("#addDelayBtn"),
             delayRemove: $("#removeDelayBtn"),
         },
-        toolbar: {
-            inputMode: {
-                indicator: $("#inputModeIndicator"),
-                drag:$("#dragSelectionMode"),
-                alternate:$("#alternateSelectionMode")
-            },
+        inputMode: {
+            indicator: $("#inputModeIndicator"),
+            drag:$("#dragSelectionMode"),
+            alternate:$("#alternateSelectionMode")
+        },
+        worldToolbar: {
             karel: {
                 north: $("#desktopKarelNorth"),
                 east: $("#desktopKarelEast"),
@@ -148,43 +148,45 @@ let DesktopUI = new DesktopController(
                 west: $("#desktopWestWall"),
                 outside: $("#desktopOuterWall"),
             },
-            focus: {
-                karel: $("#desktopGoKarel"),
-                origin: $("#desktopGoHome"),
-                selector: $("#desktopGoSelection"),
-            },
-            history: {
-                undo:$("#desktopUndo"),
-                redo:$("#desktopRedo"),
-            },
-            evaluate: {
-                evaluate: $("#desktopEvaluateCell"),
-                ignore: $("#desktopIgnoreCell"),
-            }
+        },
+        focus: {
+            karel: $("#desktopGoKarel"),
+            origin: $("#desktopGoHome"),
+            selector: $("#desktopGoSelection"),
+        },
+        history: {
+            undo:$("#desktopUndo"),
+            redo:$("#desktopRedo"),
+        },
+        evaluate: {
+            evaluate: $("#desktopEvaluateCell"),
+            ignore: $("#desktopIgnoreCell"),
         },
         context: {
             toggler: $("#contextMenuToggler"),
             container: $("#contextMenuDiv"),
-            beepers: {
-                addOne: $("#contextAddBeeper"),
-                removeOne: $("#contextDecrementBeeper"),
-                infinite: $("#contextSetInfinite"),
-                ammount: $("#contextSetAmmount"),
-                clear: $("#contextRemoveAll"),
-                random: $("#contextRandomBeeper"),
-            },
-            karel: {
-                north: $("#contextKarelNorth"),
-                east: $("#contextKarelEast"),
-                south: $("#contextKarelSouth"),
-                west: $("#contextKarelWest"),
-            },
-            wall: {
-                north: $("#contextNorthWall"),
-                east: $("#contextEastWall"),
-                south: $("#contextSouthWall"),
-                west: $("#contextWestWall"),
-                outside: $("#contextOuterWall"),
+            worldBar: { 
+                beepers: {
+                    addOne: $("#contextAddBeeper"),
+                    removeOne: $("#contextDecrementBeeper"),
+                    infinite: $("#contextSetInfinite"),
+                    ammount: $("#contextSetAmmount"),
+                    clear: $("#contextRemoveAll"),
+                    random: $("#contextRandomBeeper"),
+                },
+                karel: {
+                    north: $("#contextKarelNorth"),
+                    east: $("#contextKarelEast"),
+                    south: $("#contextKarelSouth"),
+                    west: $("#contextKarelWest"),
+                },
+                wall: {
+                    north: $("#contextNorthWall"),
+                    east: $("#contextEastWall"),
+                    south: $("#contextSouthWall"),
+                    west: $("#contextWestWall"),
+                    outside: $("#contextOuterWall"),
+                },
             },
             evaluate: {
                 evaluate: $("#contextEvaluateCell"),
@@ -243,7 +245,31 @@ const MobileUIC = new MobileUI ({
         karel:$("#phoneGoKarel"),
         selector:$("#phoneGoSelection"),
     },
-    startExec: $("#phoneExecMode")
+    worldBar: {
+        karel: {
+            north: $("#phoneKarelNorth"),
+            east: $("#phoneKarelEast"),
+            south: $("#phoneKarelSouth"),
+            west: $("#phoneKarelWest"),
+        },
+        beepers: {
+            addOne: $("#phoneAddBeeper"),
+            removeOne: $("#phoneDecrementBeeper"),
+            infinite: $("#phoneSetInfinite"),
+            ammount: $("#phoneSetAmmount"),
+            clear: $("#phoneRemoveAll"),
+            random: $("#phoneRandomBeeper"),
+        },
+        wall: {
+            north: $("#phoneNorthWall"),
+            east: $("#phoneEastWall"),
+            south: $("#phoneSouthWall"),
+            west: $("#phoneWestWall"),
+            outside: $("#phoneOuterWall"),
+        },
+    },
+    startExec: $("#phoneExecMode"),
+    previousOpBtn: $("#phoneRepeat"),
 });
 
 let PhoneUI = GetPhoneUIHelper({

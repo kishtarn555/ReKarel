@@ -1,14 +1,13 @@
 import bootstrap from "bootstrap"
-import { BeeperToolbar, EvaluateToolbar, KarelToolbar, WallToolbar } from "./commonTypes"
 import { WorldViewController } from "../worldViewController/worldViewController"
 import { AppVars } from "../volatileMemo"
+import { EvaluateToolbar } from "./evaluate"
+import { WorldBar, WorldToolbarData } from "./worldToolbar"
 
 export type ContextMenuData = {
     toggler: JQuery,
     container: JQuery
-    beepers: BeeperToolbar,
-    karel: KarelToolbar,
-    wall: WallToolbar,
+    worldBar: WorldToolbarData,
     evaluate: EvaluateToolbar
     
 }
@@ -16,18 +15,14 @@ export type ContextMenuData = {
 export class DesktopContextMenu {
     toggler: JQuery
     container: JQuery
-    beepers: BeeperToolbar
-    karel: KarelToolbar
-    wall: WallToolbar
+    worldBar: WorldBar
     evaluate: EvaluateToolbar
 
 
     constructor(data: ContextMenuData, worldCanvas:JQuery, worldController:WorldViewController) {
         this.toggler = data.toggler;
         this.container = data.container;
-        this.beepers = data.beepers;
-        this.karel = data.karel;
-        this.wall = data.wall;
+        this.worldBar = new WorldBar(data.worldBar);
         this.evaluate = data.evaluate;
         this.Hook(worldCanvas, worldController);
     }
@@ -51,23 +46,10 @@ export class DesktopContextMenu {
                 }).bind(this)
             );
         }
-        ContextAction(this.beepers.addOne, ()=>worldController.ChangeBeepers(1));
-        ContextAction(this.beepers.removeOne, ()=>worldController.ChangeBeepers(-1));        
-        ContextAction(this.beepers.infinite, ()=>worldController.SetBeepers(-1));
-        ContextAction(this.beepers.clear, ()=>worldController.SetBeepers(0));
-        ContextAction(this.beepers.random, ()=>worldController.SetRandomBeepers(AppVars.randomBeeperMinimum, AppVars.randomBeeperMaximum));
-
-        
-        ContextAction(this.karel.north, ()=>worldController.SetKarelOnSelection("north"));
-        ContextAction(this.karel.east, ()=>worldController.SetKarelOnSelection("east"));
-        ContextAction(this.karel.south, ()=>worldController.SetKarelOnSelection("south"));
-        ContextAction(this.karel.west, ()=>worldController.SetKarelOnSelection("west"));
-        
-        ContextAction(this.wall .north, ()=>worldController.ToggleWall("north"));
-        ContextAction(this.wall .east, ()=>worldController.ToggleWall("east"));
-        ContextAction(this.wall .south, ()=>worldController.ToggleWall("south"));
-        ContextAction(this.wall .west, ()=>worldController.ToggleWall("west"));
-        ContextAction(this.wall .outside, ()=>worldController.ToggleWall("outer"));
+        this.worldBar.Connect();
+        this.worldBar.OnClick((()=> {
+            this.ToggleContextMenu();
+        }).bind(this))
 
         ContextAction(this.evaluate.evaluate, ()=>worldController.SetCellEvaluation(true) );
         ContextAction(this.evaluate.ignore, ()=>worldController.SetCellEvaluation(false) );
