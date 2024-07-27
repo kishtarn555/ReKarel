@@ -242,7 +242,8 @@ const MobileUIC = new MobileUI ({
         origin:$("#phoneGoHome"),
         karel:$("#phoneGoKarel"),
         selector:$("#phoneGoSelection"),
-    }
+    },
+    startExec: $("#phoneExecMode")
 });
 
 let PhoneUI = GetPhoneUIHelper({
