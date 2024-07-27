@@ -67,6 +67,151 @@
         </div>
     </div>
 
+    <div class="btn-group-vertical mb-2" role="group" aria-label="Vertical button group" data-kl-state="world">
+        <div class="btn-group dropstart" aria-labelledby="beeperManipulationPhone">
+            <button type="button" class="btn btn-body dropdown-toggle ps-0 pe-0 pb-2 pt-2 border-secondary" 
+            data-bs-toggle="dropdown" aria-expanded="false" id="beeperManipulationPhone">
+                <i class="bi bi-1-square-fill text-success"></i>
+            </button>
+            <ul class="dropdown-menu position-fixed"
+                aria-labelledby="beeperManipulationPhone">
+                <li>
+                    <button class="dropdown-item" id="phoneAddBeeper">
+                        <i class="bi bi-1-square-fill text-success"></i> Agregar
+                        uno (E)
+                    </button>
+                </li>
+                <li>
+                    <button class="dropdown-item" id="phoneDecrementBeeper">
+                        <i class="bi bi-1-square-fill text-danger"></i> Quitar
+                        uno (Q)
+                    </button>
+                </li>
+                <li>
+                    <hr class="dropdown-divider">
+                </li>
+                <li>
+                    <button class="dropdown-item" id="phoneSetAmmount"
+                        data-bs-toggle="modal" data-bs-target="#ammountModal">
+                        <i class="bi bi-123 text-info"></i> Elegir cantidad (C)
+                    </button>
+                </li>
+                <li>
+                    <button class="dropdown-item" id="phoneSetInfinite">
+                        <i class="bi bi-infinity text-warning"></i> Infinitos
+                        (T)
+                    </button>
+                </li>
+                <li>
+                    <button class="dropdown-item" id="phoneRemoveAll">
+                        <i class="bi bi-slash-circle-fill text-danger"></i>
+                        Quitar todos (0)
+                    </button>
+                </li>
+                
+                <li>
+                    <button class="dropdown-item" id="phoneRandomBeeper">
+                        <i class="bi bi-dice-6-fill text-primary"></i>
+                        Aleatorio (R)
+                    </button>
+                </li>
+
+            </ul>
+        </div>
+        <div class="btn-group dropstart" aria-labelledby="orientationEditorPhone"
+            title="Situar a Karel">
+            <button type="button" class="btn btn-body dropdown-toggle ps-0 pe-0 pb-2 pt-2 border-secondary" 
+            data-bs-toggle="dropdown" aria-expanded="false" id="orientationEditorPhone">
+                <!-- Karel-up.svg -->
+                <i class="text-primary h-auto w-auto">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16"
+                        height="16" fill="currentColor" class="bi bi-arrow-up"
+                        viewBox="0 0 16 16">
+                        <path xmlns="http://www.w3.org/2000/svg"
+                            fill-rule="evenodd"
+                            d="m 8,0.6640625 c 0.00276,0 -6.2505726,6.2982652 -6.2519531,6.296875 -4.423e-4,-4.454e-4 2.2613062,1.6e-4 4.0058593,0 V 15.535156 H 10.246094 V 6.9609375 c 1.744553,1.6e-4 4.006301,-4.454e-4 4.005859,0 C 14.250573,6.9623277 7.9972389,0.6640625 8,0.6640625 Z" />
+                    </svg>
+                </i>
+            </button>
+            <ul class="dropdown-menu position-fixed"
+                aria-labelledby="orientationEditorPhone">
+                <li>
+                    <button class="dropdown-item" id="phoneKarelNorth">
+                        <!-- Karel-up.svg -->
+                        <i class="text-primary h-auto w-auto">
+                            @@include('../svg/karelUp.svg')
+                        </i>
+                        Situar Karel al norte (G)
+                    </button>
+                </li>
+                <li>
+                    <button class="dropdown-item" id="phoneKarelEast">
+                        <!-- Karel-right.svg -->
+                        <i class="text-primary h-auto w-auto">
+                            @@include('../svg/karelRight.svg')
+                        </i>
+                        Situar Karel al este (G)
+                    </button>
+                </li>
+                <li>
+                    <button class="dropdown-item" id="phoneKarelSouth">
+                        <!-- Karel-down.svg -->
+                        <i class="text-primary h-auto w-auto">
+                            @@include('../svg/karelDown.svg')
+                        </i>
+                        Situar Karel al sur (G)
+                    </button>
+                </li>
+                <li>
+                    <button class="dropdown-item" id="phoneKarelWest">
+                        <!-- Karel-left.svg -->
+                        <i class="text-primary h-auto w-auto">
+                            @@include('../svg/karelLeft.svg')
+                        </i>
+                        Situar Karel al oeste (G)
+                    </button>
+                </li>
+            </ul>
+        </div>
+        <div class="btn-group dropstart" aria-labelledby="wallEditPhone"
+            title="Colocar paredes">
+            <button type="button" class="btn btn-body dropdown-toggle ps-0 pe-0 pb-2 pt-2 border-secondary" 
+            data-bs-toggle="dropdown" aria-expanded="false" id="wallEditPhone">
+                <i class="bi bi-border"></i>
+            </button>
+            <ul class="dropdown-menu position-fixed" aria-labelledby="wallEditPhone">
+                <li>
+                    <button class="dropdown-item" id="phoneNorthWall">
+                        <i class="bi bi-border-top"></i> Pared norte (W)
+                    </button>
+                </li>
+                <li>
+                    <button class="dropdown-item" id="phoneEastWall">
+                        <i class="bi bi-border-right"></i> Pared este (D)
+                    </button>
+                </li>
+                <li>
+                    <button class="dropdown-item" id="phoneSouthWall">
+                        <i class="bi bi-border-bottom"></i> Pared sur (S)
+                    </button>
+                </li>
+                <li>
+                    <button class="dropdown-item" class="dropdown-item"
+                        id="phoneWestWall">
+                        <i class="bi bi-border-left"></i> Pared oeste (A)
+                    </button>
+                </li>
+                <li>
+                    <button class="dropdown-item" class="dropdown-item"
+                        id="phoneOuterWall">
+                        <i class="bi bi-border-outer"></i> Rodear cuadrado (X)
+                    </button>
+                </li>
+
+            </ul>
+        </div>
+    </div>
+
     
     <div class="btn-group-vertical mb-2" role="group" aria-label="Vertical button group" id="phoneRunToolbar">
         <button type="button" class="btn btn-body pt-3 pb-3 p-2 border-secondary" title="Ir al origen (1,1)" id="phoneGoHome">
