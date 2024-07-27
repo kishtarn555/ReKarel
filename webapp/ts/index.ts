@@ -237,6 +237,11 @@ const MobileUIC = new MobileUI ({
             stepOut: $("#phoneStepOutProgram"),
             future: $("#phoneFutureProgram"),
         }
+    },
+    focus: {
+        origin:$("#phoneGoHome"),
+        karel:$("#phoneGoKarel"),
+        selector:$("#phoneGoSelection"),
     }
 });
 

@@ -28599,6 +28599,18 @@ var karel = (function (exports, bootstrap) {
         }
     }
 
+    class FocusBar {
+        constructor(ui) {
+            this.data = ui;
+        }
+        Connect() {
+            const worldController = WorldViewController.GetInstance();
+            this.data.karel.on("click", () => worldController.FocusKarel());
+            this.data.origin.on("click", () => worldController.FocusOrigin());
+            this.data.selector.on("click", () => worldController.FocusSelection());
+        }
+    }
+
     class DesktopController {
         constructor(elements, karelController) {
             this.editor = elements.desktopEditor;
@@ -28617,7 +28629,7 @@ var karel = (function (exports, bootstrap) {
             this.karelToolbar = elements.toolbar.karel;
             this.wallToolbar = elements.toolbar.wall;
             this.evaluateToolbar = elements.toolbar.evaluate;
-            this.focusToolbar = elements.toolbar.focus;
+            this.focusControlBar = new FocusBar(elements.toolbar.focus);
             this.historyToolbar = elements.toolbar.history;
             this.console = new KarelConsole(elements.console);
             this.karelController = karelController;
@@ -28707,9 +28719,7 @@ var karel = (function (exports, bootstrap) {
             this.wallToolbar.south.on("click", () => this.worldController.ToggleWall("south"));
             this.wallToolbar.west.on("click", () => this.worldController.ToggleWall("west"));
             this.wallToolbar.outside.on("click", () => this.worldController.ToggleWall("outer"));
-            this.focusToolbar.karel.on("click", () => this.worldController.FocusKarel());
-            this.focusToolbar.origin.on("click", () => this.worldController.FocusOrigin());
-            this.focusToolbar.selector.on("click", () => this.worldController.FocusSelection());
+            this.focusControlBar.Connect();
             this.evaluateToolbar.evaluate.on("click", () => this.worldController.SetCellEvaluation(true));
             this.evaluateToolbar.ignore.on("click", () => this.worldController.SetCellEvaluation(false));
             this.historyToolbar.undo.on("click", () => this.worldController.Undo());
@@ -31257,7 +31267,9 @@ var karel = (function (exports, bootstrap) {
         constructor(data) {
             MobileUI._instance = this;
             this.controlBar = new ControlBar(data.controls, WorldViewController.GetInstance());
+            this.focusBar = new FocusBar(data.focus);
             this.controlBar.Init();
+            this.focusBar.Connect();
         }
         static GetInstance() {
             return this._instance;
@@ -31452,6 +31464,11 @@ var karel = (function (exports, bootstrap) {
                 stepOut: $("#phoneStepOutProgram"),
                 future: $("#phoneFutureProgram"),
             }
+        },
+        focus: {
+            origin: $("#phoneGoHome"),
+            karel: $("#phoneGoKarel"),
+            selector: $("#phoneGoSelection"),
         }
     });
     let PhoneUI = GetPhoneUIHelper({
