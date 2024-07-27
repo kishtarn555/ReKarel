@@ -1,15 +1,21 @@
 <div class="flex-grow-0 flex shrink-0 d-flex flex-column bg-body-secondary flex-nowrap ps-2 pt-2 pe-1 overflow-y-scroll">
-    <div class="btn-group-vertical mb-2" role="group" aria-label="Vertical button group">
-        <button type="button" class="btn btn-body pt-3 pb-3 p-2 border-secondary" title="Compila el programa" data-kl-state="code"
+    <div class="btn-group-vertical mb-2" role="group" aria-label="Vertical button group" data-kl-state="code">
+        <button type="button" class="btn btn-body pt-3 pb-3 p-2 border-secondary" title="Compila el programa" 
             id="phoneCompileKarel">
             <i class="bi bi-microsoft"></i>
         </button>
-        <button type="button" class="btn btn-body pt-3 pb-3 p-2 border-secondary" title="Detiene la ejecución" data-kl-state="execution"
+    </div>
+
+    <div class="btn-group-vertical mb-2" role="group" aria-label="Vertical button group" data-kl-state="execution">
+        <button type="button" class="btn btn-danger pt-3 pb-3 p-2 border-secondary" title="Detiene la ejecución"
             id="phoneResetWorld">
             <i class="bi bi-stop-circle"></i>
         </button>
-        <button type="button" class="btn btn-body pt-3 pb-3 p-2 border-secondary" title="Detiene la ejecución" data-kl-state="code" data-kl-state2="world"
-            id="phoneStartRun">
+    </div>
+    
+    <div class="btn-group-vertical mb-2" role="group" aria-label="Vertical button group" data-kl-state="code" data-kl-state2="world">
+        <button type="button" class="btn btn-success pt-3 pb-3 p-2 border-secondary" title="Detiene la ejecución" 
+            id="phoneExecMode">
             <i class="bi bi-play-circle"></i>
         </button>
     </div>
