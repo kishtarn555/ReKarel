@@ -28227,13 +28227,50 @@ var karel = (function (exports, bootstrap) {
         AppVars.registerDelayChangeListener = registerDelayChangeListener;
     })(AppVars || (AppVars = {}));
 
+    class WorldBar {
+        constructor(ui) {
+            this.data = ui;
+        }
+        Connect() {
+            const worldController = WorldViewController.GetInstance();
+            this.data.beepers.addOne.on("click", () => worldController.ChangeBeepers(1));
+            this.data.beepers.removeOne.on("click", () => worldController.ChangeBeepers(-1));
+            this.data.beepers.infinite.on("click", () => worldController.SetBeepers(-1));
+            this.data.beepers.clear.on("click", () => worldController.SetBeepers(0));
+            this.data.beepers.random.on("click", () => worldController.SetRandomBeepers(AppVars.randomBeeperMinimum, AppVars.randomBeeperMaximum));
+            this.data.karel.north.on("click", () => worldController.SetKarelOnSelection("north"));
+            this.data.karel.east.on("click", () => worldController.SetKarelOnSelection("east"));
+            this.data.karel.south.on("click", () => worldController.SetKarelOnSelection("south"));
+            this.data.karel.west.on("click", () => worldController.SetKarelOnSelection("west"));
+            this.data.wall.north.on("click", () => worldController.ToggleWall("north"));
+            this.data.wall.east.on("click", () => worldController.ToggleWall("east"));
+            this.data.wall.south.on("click", () => worldController.ToggleWall("south"));
+            this.data.wall.west.on("click", () => worldController.ToggleWall("west"));
+            this.data.wall.outside.on("click", () => worldController.ToggleWall("outer"));
+        }
+        OnClick(event) {
+            this.data.beepers.addOne.on("click", event);
+            this.data.beepers.removeOne.on("click", event);
+            this.data.beepers.infinite.on("click", event);
+            this.data.beepers.clear.on("click", event);
+            this.data.beepers.random.on("click", event);
+            this.data.karel.north.on("click", event);
+            this.data.karel.east.on("click", event);
+            this.data.karel.south.on("click", event);
+            this.data.karel.west.on("click", event);
+            this.data.wall.north.on("click", event);
+            this.data.wall.east.on("click", event);
+            this.data.wall.south.on("click", event);
+            this.data.wall.west.on("click", event);
+            this.data.wall.outside.on("click", event);
+        }
+    }
+
     class DesktopContextMenu {
         constructor(data, worldCanvas, worldController) {
             this.toggler = data.toggler;
             this.container = data.container;
-            this.beepers = data.beepers;
-            this.karel = data.karel;
-            this.wall = data.wall;
+            this.worldBar = new WorldBar(data.worldBar);
             this.evaluate = data.evaluate;
             this.Hook(worldCanvas, worldController);
         }
@@ -28252,20 +28289,10 @@ var karel = (function (exports, bootstrap) {
                     method();
                 }).bind(this));
             };
-            ContextAction(this.beepers.addOne, () => worldController.ChangeBeepers(1));
-            ContextAction(this.beepers.removeOne, () => worldController.ChangeBeepers(-1));
-            ContextAction(this.beepers.infinite, () => worldController.SetBeepers(-1));
-            ContextAction(this.beepers.clear, () => worldController.SetBeepers(0));
-            ContextAction(this.beepers.random, () => worldController.SetRandomBeepers(AppVars.randomBeeperMinimum, AppVars.randomBeeperMaximum));
-            ContextAction(this.karel.north, () => worldController.SetKarelOnSelection("north"));
-            ContextAction(this.karel.east, () => worldController.SetKarelOnSelection("east"));
-            ContextAction(this.karel.south, () => worldController.SetKarelOnSelection("south"));
-            ContextAction(this.karel.west, () => worldController.SetKarelOnSelection("west"));
-            ContextAction(this.wall.north, () => worldController.ToggleWall("north"));
-            ContextAction(this.wall.east, () => worldController.ToggleWall("east"));
-            ContextAction(this.wall.south, () => worldController.ToggleWall("south"));
-            ContextAction(this.wall.west, () => worldController.ToggleWall("west"));
-            ContextAction(this.wall.outside, () => worldController.ToggleWall("outer"));
+            this.worldBar.Connect();
+            this.worldBar.OnClick((() => {
+                this.ToggleContextMenu();
+            }).bind(this));
             ContextAction(this.evaluate.evaluate, () => worldController.SetCellEvaluation(true));
             ContextAction(this.evaluate.ignore, () => worldController.SetCellEvaluation(false));
         }
@@ -28625,13 +28652,11 @@ var karel = (function (exports, bootstrap) {
             this.delayInput = elements.controlBar.delayInput;
             this.delayAdd = elements.controlBar.delayAdd;
             this.delayRemove = elements.controlBar.delayRemove;
-            this.inputModeToolbar = elements.toolbar.inputMode;
-            this.beeperToolbar = elements.toolbar.beepers;
-            this.karelToolbar = elements.toolbar.karel;
-            this.wallToolbar = elements.toolbar.wall;
-            this.evaluateToolbar = elements.toolbar.evaluate;
-            this.focusControlBar = new FocusBar(elements.toolbar.focus);
-            this.historyToolbar = elements.toolbar.history;
+            this.inputModeToolbar = elements.inputMode;
+            this.worldBar = new WorldBar(elements.worldToolbar);
+            this.evaluateToolbar = elements.evaluate;
+            this.focusControlBar = new FocusBar(elements.focus);
+            this.historyToolbar = elements.history;
             this.console = new KarelConsole(elements.console);
             this.karelController = karelController;
             this.worldController = new WorldViewController(new WorldRenderer(this.worldCanvas[0].getContext("2d"), DefaultWRStyle, 1), karelController, elements.worldContainer[0], elements.gizmos);
@@ -28706,20 +28731,7 @@ var karel = (function (exports, bootstrap) {
         ConnectToolbar() {
             this.inputModeToolbar.alternate.on("click", () => this.SetAlternativeInput());
             this.inputModeToolbar.drag.on("click", () => this.SetDragInput());
-            this.beeperToolbar.addOne.on("click", () => this.worldController.ChangeBeepers(1));
-            this.beeperToolbar.removeOne.on("click", () => this.worldController.ChangeBeepers(-1));
-            this.beeperToolbar.infinite.on("click", () => this.worldController.SetBeepers(-1));
-            this.beeperToolbar.clear.on("click", () => this.worldController.SetBeepers(0));
-            this.beeperToolbar.random.on("click", () => this.worldController.SetRandomBeepers(AppVars.randomBeeperMinimum, AppVars.randomBeeperMaximum));
-            this.karelToolbar.north.on("click", () => this.worldController.SetKarelOnSelection("north"));
-            this.karelToolbar.east.on("click", () => this.worldController.SetKarelOnSelection("east"));
-            this.karelToolbar.south.on("click", () => this.worldController.SetKarelOnSelection("south"));
-            this.karelToolbar.west.on("click", () => this.worldController.SetKarelOnSelection("west"));
-            this.wallToolbar.north.on("click", () => this.worldController.ToggleWall("north"));
-            this.wallToolbar.east.on("click", () => this.worldController.ToggleWall("east"));
-            this.wallToolbar.south.on("click", () => this.worldController.ToggleWall("south"));
-            this.wallToolbar.west.on("click", () => this.worldController.ToggleWall("west"));
-            this.wallToolbar.outside.on("click", () => this.worldController.ToggleWall("outer"));
+            this.worldBar.Connect();
             this.focusControlBar.Connect();
             this.evaluateToolbar.evaluate.on("click", () => this.worldController.SetCellEvaluation(true));
             this.evaluateToolbar.ignore.on("click", () => this.worldController.SetCellEvaluation(false));
@@ -31391,12 +31403,12 @@ var karel = (function (exports, bootstrap) {
             delayAdd: $("#addDelayBtn"),
             delayRemove: $("#removeDelayBtn"),
         },
-        toolbar: {
-            inputMode: {
-                indicator: $("#inputModeIndicator"),
-                drag: $("#dragSelectionMode"),
-                alternate: $("#alternateSelectionMode")
-            },
+        inputMode: {
+            indicator: $("#inputModeIndicator"),
+            drag: $("#dragSelectionMode"),
+            alternate: $("#alternateSelectionMode")
+        },
+        worldToolbar: {
             karel: {
                 north: $("#desktopKarelNorth"),
                 east: $("#desktopKarelEast"),
@@ -31418,43 +31430,45 @@ var karel = (function (exports, bootstrap) {
                 west: $("#desktopWestWall"),
                 outside: $("#desktopOuterWall"),
             },
-            focus: {
-                karel: $("#desktopGoKarel"),
-                origin: $("#desktopGoHome"),
-                selector: $("#desktopGoSelection"),
-            },
-            history: {
-                undo: $("#desktopUndo"),
-                redo: $("#desktopRedo"),
-            },
-            evaluate: {
-                evaluate: $("#desktopEvaluateCell"),
-                ignore: $("#desktopIgnoreCell"),
-            }
+        },
+        focus: {
+            karel: $("#desktopGoKarel"),
+            origin: $("#desktopGoHome"),
+            selector: $("#desktopGoSelection"),
+        },
+        history: {
+            undo: $("#desktopUndo"),
+            redo: $("#desktopRedo"),
+        },
+        evaluate: {
+            evaluate: $("#desktopEvaluateCell"),
+            ignore: $("#desktopIgnoreCell"),
         },
         context: {
             toggler: $("#contextMenuToggler"),
             container: $("#contextMenuDiv"),
-            beepers: {
-                addOne: $("#contextAddBeeper"),
-                removeOne: $("#contextDecrementBeeper"),
-                infinite: $("#contextSetInfinite"),
-                ammount: $("#contextSetAmmount"),
-                clear: $("#contextRemoveAll"),
-                random: $("#contextRandomBeeper"),
-            },
-            karel: {
-                north: $("#contextKarelNorth"),
-                east: $("#contextKarelEast"),
-                south: $("#contextKarelSouth"),
-                west: $("#contextKarelWest"),
-            },
-            wall: {
-                north: $("#contextNorthWall"),
-                east: $("#contextEastWall"),
-                south: $("#contextSouthWall"),
-                west: $("#contextWestWall"),
-                outside: $("#contextOuterWall"),
+            worldBar: {
+                beepers: {
+                    addOne: $("#contextAddBeeper"),
+                    removeOne: $("#contextDecrementBeeper"),
+                    infinite: $("#contextSetInfinite"),
+                    ammount: $("#contextSetAmmount"),
+                    clear: $("#contextRemoveAll"),
+                    random: $("#contextRandomBeeper"),
+                },
+                karel: {
+                    north: $("#contextKarelNorth"),
+                    east: $("#contextKarelEast"),
+                    south: $("#contextKarelSouth"),
+                    west: $("#contextKarelWest"),
+                },
+                wall: {
+                    north: $("#contextNorthWall"),
+                    east: $("#contextEastWall"),
+                    south: $("#contextSouthWall"),
+                    west: $("#contextWestWall"),
+                    outside: $("#contextOuterWall"),
+                },
             },
             evaluate: {
                 evaluate: $("#contextEvaluateCell"),

@@ -8,7 +8,6 @@ import { ControllerState, KarelController } from '../KarelController';
 import { GetOrCreateInstanceFactory } from 'bootstrap/js/dist/base-component';
 import { freezeEditors, unfreezeEditors } from '../editor/editor';
 import { ContextMenuData, DesktopContextMenu } from './contextMenu';
-import { BeeperToolbar, EvaluateToolbar, KarelToolbar, WallToolbar } from './commonTypes';
 import { CallStack, CallStackUI } from './callStack';
 import { ConsoleTab, KarelConsole } from './console';
 import { DefaultWRStyle } from '../KarelStyles';
@@ -17,9 +16,8 @@ import { AppVars } from '../volatileMemo';
 import { HistoryToolbar } from '../worldViewController/commit';
 import { GetCurrentSetting } from '../settings';
 import { FocusBar, FocusToolbar } from './focusBar';
-
-
-
+import { WorldBar, WorldToolbarData } from './worldToolbar';
+import { EvaluateToolbar } from './evaluate';
 
 
 type InputModeToolbar = {
@@ -27,6 +25,10 @@ type InputModeToolbar = {
     alternate:JQuery,
     drag:JQuery
 }
+
+
+
+
 
 interface DesktopElements {
     desktopEditor: EditorView
@@ -36,16 +38,12 @@ interface DesktopElements {
     worldZoom: JQuery,
     lessZoom: JQuery,
     moreZoom: JQuery,
-    controlBar: ControlBarData,
-    toolbar: {
-        inputMode: InputModeToolbar
-        beepers: BeeperToolbar
-        karel: KarelToolbar
-        wall: WallToolbar
-        focus: FocusToolbar
-        history: HistoryToolbar
-        evaluate: EvaluateToolbar
-    },
+    controlBar: ControlBarData,    
+    inputMode: InputModeToolbar
+    worldToolbar: WorldToolbarData,    
+    focus: FocusToolbar,
+    history: HistoryToolbar,
+    evaluate: EvaluateToolbar,
     context: ContextMenuData,
     console: ConsoleTab,
     callStack: CallStackUI
@@ -71,9 +69,7 @@ class DesktopController {
 
     inputModeToolbar: InputModeToolbar;
 
-    beeperToolbar: BeeperToolbar;
-    karelToolbar: KarelToolbar;
-    wallToolbar: WallToolbar;
+    worldBar: WorldBar;
     evaluateToolbar: EvaluateToolbar;
 
     focusControlBar: FocusBar;
@@ -105,14 +101,12 @@ class DesktopController {
         this.delayAdd = elements.controlBar.delayAdd;
         this.delayRemove = elements.controlBar.delayRemove;
 
-        this.inputModeToolbar = elements.toolbar.inputMode;
-        this.beeperToolbar = elements.toolbar.beepers;
-        this.karelToolbar = elements.toolbar.karel;
-        this.wallToolbar = elements.toolbar.wall;
-        this.evaluateToolbar = elements.toolbar.evaluate;
+        this.inputModeToolbar = elements.inputMode;
+        this.worldBar = new WorldBar(elements.worldToolbar);
+        this.evaluateToolbar = elements.evaluate;
 
-        this.focusControlBar = new FocusBar(elements.toolbar.focus);
-        this.historyToolbar = elements.toolbar.history;
+        this.focusControlBar = new FocusBar(elements.focus);
+        this.historyToolbar = elements.history;
 
         
         
@@ -235,23 +229,8 @@ class DesktopController {
     private ConnectToolbar() {      
         this.inputModeToolbar.alternate.on("click", ()=>this.SetAlternativeInput());
         this.inputModeToolbar.drag.on("click", ()=>this.SetDragInput());
-        
-        this.beeperToolbar.addOne.on("click", ()=>this.worldController.ChangeBeepers(1));
-        this.beeperToolbar.removeOne.on("click", ()=>this.worldController.ChangeBeepers(-1));        
-        this.beeperToolbar.infinite.on("click", ()=>this.worldController.SetBeepers(-1));
-        this.beeperToolbar.clear.on("click", ()=>this.worldController.SetBeepers(0));
-        this.beeperToolbar.random.on("click", ()=>this.worldController.SetRandomBeepers(AppVars.randomBeeperMinimum, AppVars.randomBeeperMaximum));
-
-        this.karelToolbar.north.on("click", ()=>this.worldController.SetKarelOnSelection("north"));
-        this.karelToolbar.east.on("click", ()=>this.worldController.SetKarelOnSelection("east"));
-        this.karelToolbar.south.on("click", ()=>this.worldController.SetKarelOnSelection("south"));
-        this.karelToolbar.west.on("click", ()=>this.worldController.SetKarelOnSelection("west"));
-        
-        this.wallToolbar.north.on("click", ()=>this.worldController.ToggleWall("north"));
-        this.wallToolbar.east.on("click", ()=>this.worldController.ToggleWall("east"));
-        this.wallToolbar.south.on("click", ()=>this.worldController.ToggleWall("south"));
-        this.wallToolbar.west.on("click", ()=>this.worldController.ToggleWall("west"));
-        this.wallToolbar.outside.on("click", ()=>this.worldController.ToggleWall("outer"));
+    
+        this.worldBar.Connect();
 
         this.focusControlBar.Connect()
 
