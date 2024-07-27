@@ -245,6 +245,29 @@ const MobileUIC = new MobileUI ({
         karel:$("#phoneGoKarel"),
         selector:$("#phoneGoSelection"),
     },
+    worldBar: {
+        beepers: {
+            addOne:$(),
+            ammount: $(),
+            clear: $(),
+            infinite: $(),
+            random: $(),
+            removeOne: $()
+        },
+        wall: {
+            north: $(),
+            east: $(),
+            south: $(),
+            west: $(),
+            outside: $()
+        },
+        karel: {
+            north: $(),
+            east: $(),
+            south: $(),
+            west: $(),
+        },
+    },
     startExec: $("#phoneExecMode")
 });
 

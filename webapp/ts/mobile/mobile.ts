@@ -1,5 +1,6 @@
 import { ControlBar, ControlBarData } from "../desktop/controlBar"
 import { FocusBar, FocusToolbar } from "../desktop/focusBar"
+import { WorldBar, WorldToolbarData } from "../desktop/worldToolbar"
 import { getEditors } from "../editor/editorsInstances"
 import { KarelController } from "../KarelController"
 import { WorldViewController } from "../worldViewController/worldViewController"
@@ -7,7 +8,8 @@ import { WorldViewController } from "../worldViewController/worldViewController"
 type MobileUIData = {
     controls:ControlBarData
     focus: FocusToolbar
-    startExec: JQuery
+    startExec: JQuery,
+    worldBar: WorldToolbarData
 }
 
 
@@ -17,6 +19,7 @@ type MobileState = "execution" | "code" | "world"
 export class MobileUI {
     private controlBar: ControlBar
     private focusBar: FocusBar
+    private worldBar: WorldBar
     private startExec: JQuery
     private state: MobileState
     private static _instance:MobileUI
@@ -25,9 +28,11 @@ export class MobileUI {
         MobileUI._instance = this;
         this.controlBar = new ControlBar(data.controls, WorldViewController.GetInstance());
         this.focusBar = new FocusBar(data.focus);
+        this.worldBar = new WorldBar(data.worldBar);
         this.startExec = data.startExec;
         this.controlBar.Init();
         this.focusBar.Connect();
+        this.worldBar.Connect();
 
         KarelController.GetInstance().RegisterStateChangeObserver((_, state)=> {
             if (state === "unstarted" && this.state === "execution") {

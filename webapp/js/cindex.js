@@ -31281,9 +31281,11 @@ var karel = (function (exports, bootstrap) {
             MobileUI._instance = this;
             this.controlBar = new ControlBar(data.controls, WorldViewController.GetInstance());
             this.focusBar = new FocusBar(data.focus);
+            this.worldBar = new WorldBar(data.worldBar);
             this.startExec = data.startExec;
             this.controlBar.Init();
             this.focusBar.Connect();
+            this.worldBar.Connect();
             KarelController.GetInstance().RegisterStateChangeObserver((_, state) => {
                 if (state === "unstarted" && this.state === "execution") {
                     this.SetState("world");
@@ -31523,6 +31525,29 @@ var karel = (function (exports, bootstrap) {
             origin: $("#phoneGoHome"),
             karel: $("#phoneGoKarel"),
             selector: $("#phoneGoSelection"),
+        },
+        worldBar: {
+            beepers: {
+                addOne: $(),
+                ammount: $(),
+                clear: $(),
+                infinite: $(),
+                random: $(),
+                removeOne: $()
+            },
+            wall: {
+                north: $(),
+                east: $(),
+                south: $(),
+                west: $(),
+                outside: $()
+            },
+            karel: {
+                north: $(),
+                east: $(),
+                south: $(),
+                west: $(),
+            },
         },
         startExec: $("#phoneExecMode")
     });
