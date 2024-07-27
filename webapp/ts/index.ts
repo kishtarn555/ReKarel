@@ -246,26 +246,26 @@ const MobileUIC = new MobileUI ({
         selector:$("#phoneGoSelection"),
     },
     worldBar: {
+        karel: {
+            north: $("#phoneKarelNorth"),
+            east: $("#phoneKarelEast"),
+            south: $("#phoneKarelSouth"),
+            west: $("#phoneKarelWest"),
+        },
         beepers: {
-            addOne:$(),
-            ammount: $(),
-            clear: $(),
-            infinite: $(),
-            random: $(),
-            removeOne: $()
+            addOne: $("#phoneAddBeeper"),
+            removeOne: $("#phoneDecrementBeeper"),
+            infinite: $("#phoneSetInfinite"),
+            ammount: $("#phoneSetAmmount"),
+            clear: $("#phoneRemoveAll"),
+            random: $("#phoneRandomBeeper"),
         },
         wall: {
-            north: $(),
-            east: $(),
-            south: $(),
-            west: $(),
-            outside: $()
-        },
-        karel: {
-            north: $(),
-            east: $(),
-            south: $(),
-            west: $(),
+            north: $("#phoneNorthWall"),
+            east: $("#phoneEastWall"),
+            south: $("#phoneSouthWall"),
+            west: $("#phoneWestWall"),
+            outside: $("#phoneOuterWall"),
         },
     },
     startExec: $("#phoneExecMode")
