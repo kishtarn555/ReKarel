@@ -9,7 +9,8 @@ type MobileUIData = {
     controls:ControlBarData
     focus: FocusToolbar
     startExec: JQuery,
-    worldBar: WorldToolbarData
+    worldBar: WorldToolbarData,
+    previousOpBtn:JQuery
 }
 
 
@@ -21,6 +22,7 @@ export class MobileUI {
     private focusBar: FocusBar
     private worldBar: WorldBar
     private startExec: JQuery
+    private previousOpBtn: JQuery
     private state: MobileState
     private static _instance:MobileUI
 
@@ -30,9 +32,11 @@ export class MobileUI {
         this.focusBar = new FocusBar(data.focus);
         this.worldBar = new WorldBar(data.worldBar);
         this.startExec = data.startExec;
+        this.previousOpBtn = data.previousOpBtn;
         this.controlBar.Init();
         this.focusBar.Connect();
         this.worldBar.Connect();
+        this.worldBar.OnClick(this.OnWorldOp.bind(this));
 
         KarelController.GetInstance().RegisterStateChangeObserver((_, state)=> {
             if (state === "unstarted" && this.state === "execution") {
@@ -84,5 +88,13 @@ export class MobileUI {
         })
     }
 
+    private OnWorldOp(e: JQuery.ClickEvent) {
+        const target = $(e.target);
+        const icon = target.find("i"); 
+        this.previousOpBtn.empty();
+        this.previousOpBtn.append(icon.clone());
+        this.previousOpBtn.off("click.repeat");
+        this.previousOpBtn.on("click.repeat", ()=>target.trigger("click"));
+    }
     
 }

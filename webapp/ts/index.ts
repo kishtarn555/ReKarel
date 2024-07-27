@@ -268,7 +268,8 @@ const MobileUIC = new MobileUI ({
             outside: $("#phoneOuterWall"),
         },
     },
-    startExec: $("#phoneExecMode")
+    startExec: $("#phoneExecMode"),
+    previousOpBtn: $("#phoneRepeat"),
 });
 
 let PhoneUI = GetPhoneUIHelper({

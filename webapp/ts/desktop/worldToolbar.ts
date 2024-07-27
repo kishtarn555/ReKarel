@@ -60,7 +60,7 @@ export class WorldBar {
         this.data.wall.outside.on("click", ()=>worldController.ToggleWall("outer"));
     }
 
-    OnClick(event:()=>void) {                    
+    OnClick(event:(e:JQuery.Event)=>void) {                    
         this.data.beepers.addOne.on("click", event); 
         this.data.beepers.removeOne.on("click", event); 
         this.data.beepers.infinite.on("click", event); 

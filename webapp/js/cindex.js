@@ -31283,9 +31283,11 @@ var karel = (function (exports, bootstrap) {
             this.focusBar = new FocusBar(data.focus);
             this.worldBar = new WorldBar(data.worldBar);
             this.startExec = data.startExec;
+            this.previousOpBtn = data.previousOpBtn;
             this.controlBar.Init();
             this.focusBar.Connect();
             this.worldBar.Connect();
+            this.worldBar.OnClick(this.OnWorldOp.bind(this));
             KarelController.GetInstance().RegisterStateChangeObserver((_, state) => {
                 if (state === "unstarted" && this.state === "execution") {
                     this.SetState("world");
@@ -31327,6 +31329,14 @@ var karel = (function (exports, bootstrap) {
             this.startExec.on("click", () => {
                 this.SetState("execution");
             });
+        }
+        OnWorldOp(e) {
+            const target = $(e.target);
+            const icon = target.find("i");
+            this.previousOpBtn.empty();
+            this.previousOpBtn.append(icon.clone());
+            this.previousOpBtn.off("click.repeat");
+            this.previousOpBtn.on("click.repeat", () => target.trigger("click"));
         }
     }
 
@@ -31549,7 +31559,8 @@ var karel = (function (exports, bootstrap) {
                 outside: $("#phoneOuterWall"),
             },
         },
-        startExec: $("#phoneExecMode")
+        startExec: $("#phoneExecMode"),
+        previousOpBtn: $("#phoneRepeat"),
     });
     let PhoneUI = GetPhoneUIHelper({
         editor: phoneEditor,
