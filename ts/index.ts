@@ -7,7 +7,7 @@ import { World } from "../js/karel";
 import { karel } from "../js";
 import { KarelController } from "./KarelController";
 import { responsiveHack } from "./responsive-load";
-import { InitSettings, StartSettings } from "./settings";
+import { InitSettings, StartSettings } from "./settingsLoader";
 import { getEditors } from "./editor/editorsInstances";
 import { HookSession, RestoreSession } from "./session";
 import { RegisterHighlightListeners } from "./editor/editor.listeners";
