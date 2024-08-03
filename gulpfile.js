@@ -4,10 +4,10 @@ import replace from 'gulp-replace'
 import insert  from 'gulp-insert'
 import clean  from 'gulp-clean'
 
-const mainPath = "webapp/html/index.html"
-const pascalPath = "webapp/html/docs/pascal/ayuda-pascal.html"
-const javaPath = "webapp/html/docs/java/ayuda-java.html"
-const rekarelDocsPath = "webapp/html/docs/rekarel/ayuda-rekarel.html"
+const mainPath = "html/index.html"
+const pascalPath = "html/docs/pascal/ayuda-pascal.html"
+const javaPath = "html/docs/java/ayuda-java.html"
+const rekarelDocsPath = "html/docs/rekarel/ayuda-rekarel.html"
 const mainPathDist = "webapp/"
 
 gulp.task('bundle-html', ()=> {
