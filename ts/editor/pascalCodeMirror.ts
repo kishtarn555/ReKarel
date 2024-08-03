@@ -1,4 +1,4 @@
-import { parser as pascalparser } from "../../js/lezer_pascal";
+import { parser as pascalparser } from "../../webapp/js/lezer_pascal";
 import {LanguageSupport} from "@codemirror/language"
 
 
@@ -84,8 +84,8 @@ const pascalLanguage = LRLanguage.define({
 
 
   import {completeFromList} from "@codemirror/autocomplete"
-import { BuiltIn, IfStatement, IterateStatement, Prototipo, WhileStatement } from "../../js/lezer_pascal.terms";
-import { Define } from "../../js/lezer_java.terms";
+import { BuiltIn, IfStatement, IterateStatement, Prototipo, WhileStatement } from "../../webapp/js/lezer_pascal.terms";
+import { Define } from "../../webapp/js/lezer_java.terms";
 
   const pascalCompletion = pascalLanguage.data.of({
     autocomplete: completeFromList([
