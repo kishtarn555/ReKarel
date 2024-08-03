@@ -1,5 +1,6 @@
 import { DefaultWRStyle, WR_CLEAN, WR_CONTRAST, WR_DARK } from "../KarelStyles";
-import { GetCurrentSetting, SetWorldRendererStyle } from "../settings";
+import { GetCurrentSetting } from "../settings";
+import { SetWorldRendererStyle } from "../settingsLoader";
 import { WRStyle, isWRStyle } from "../worldRenderer";
 import { WorldViewController } from "../worldViewController/worldViewController";
 
