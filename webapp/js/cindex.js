@@ -28622,9 +28622,9 @@ var karel = (function (exports, bootstrap) {
                     output = karelController.world.output();
                 }
                 $(modal.worldData).val(output);
+                setWorldData(output, modal);
             });
         }
-        setWorldData(output, modal);
     }
     const fileRegex = /^[a-zA-Z0-9._]+$/;
     function setFileNameLink(modal) {
