@@ -3,7 +3,7 @@ import { Compartment } from '@codemirror/state'
 import bootstrap from 'bootstrap';
 import { WorldRenderer, WRStyle } from '../worldRenderer';
 import { WorldViewController, Gizmos } from "../worldViewController/worldViewController";
-import { World } from '../../../js/karel';
+import { World } from '../../js/karel';
 import { ControllerState, KarelController } from '../KarelController';
 import { GetOrCreateInstanceFactory } from 'bootstrap/js/dist/base-component';
 import { freezeEditors, unfreezeEditors } from '../editor/editor';

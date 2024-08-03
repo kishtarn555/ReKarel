@@ -1,5 +1,5 @@
-import { java2pascalParser } from "../../../js/java2pascal";
-import { pascal2javaParser } from "../../../js/pascal2java";
+import { java2pascalParser } from "../../js/java2pascal";
+import { pascal2javaParser } from "../../js/pascal2java";
 import { KarelConsole } from "../desktop/console";
 import { SetText } from "./editor";
 import { getEditors } from "./editorsInstances";

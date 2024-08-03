@@ -1,10 +1,10 @@
 import { WorldRenderer } from "../worldRenderer";
 import { KarelController } from "../KarelController";
-import { World } from "../../../js/karel";
+import { World } from "../../js/karel";
 import { SelectionBox, SelectionWaffle } from "./waffle";
 import { CellSelection, SelectionState } from "./selection";
 import { CellPair } from "../cellPair";
-import { karel } from "../../../js";
+import { karel } from "../../js";
 import { GetCurrentSetting } from "../settings";
 import { freezeEditors } from "../editor/editor";
 

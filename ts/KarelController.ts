@@ -1,4 +1,4 @@
-import { World, compile, detectLanguage } from "../../js/karel";
+import { World, compile, detectLanguage } from "../js/karel";
 // import { WorldViewController } from "./worldViewController";
 import { EditorView } from "codemirror";
 import { decodeRuntimeError } from "./errorCodes";
