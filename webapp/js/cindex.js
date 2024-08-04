@@ -28008,7 +28008,6 @@ var karel = (function (exports, bootstrap) {
             });
             AppVars.registerDelayChangeListener((amount) => this.ui.delayInput.val(amount));
             this.ConnectExecutionButtonGroup();
-            this.DeactivateInfiniteBeepers();
         }
         ConnectExecutionButtonGroup() {
             const exec = this.ui.execution;
