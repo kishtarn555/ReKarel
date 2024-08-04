@@ -43,6 +43,7 @@ export class ControlBar  {
         AppVars.registerDelayChangeListener((amount)=>this.ui.delayInput.val(amount));
 
         this.ConnectExecutionButtonGroup();
+        this.DeactivateInfiniteBeepers();
 
     }
     private ConnectExecutionButtonGroup() {
@@ -152,14 +153,14 @@ export class ControlBar  {
     }
 
     private ActivateInfiniteBeepers() {
-        bootstrap.Collapse.getOrCreateInstance(this.ui.beeperCollapse[0]).hide();
+        bootstrap.Collapse.getOrCreateInstance(this.ui.beeperCollapse[0], {toggle:true}).hide();
         this.ui.infiniteBeeperInput.removeClass("btn-body");
         this.ui.infiniteBeeperInput.addClass("btn-info");
     }
 
     
     private DeactivateInfiniteBeepers() {
-        bootstrap.Collapse.getOrCreateInstance(this.ui.beeperCollapse[0]).show();
+        bootstrap.Collapse.getOrCreateInstance(this.ui.beeperCollapse[0], {toggle:false}).show();
         this.ui.infiniteBeeperInput.removeClass("btn-info");
         this.ui.infiniteBeeperInput.addClass("btn-body");
     }
