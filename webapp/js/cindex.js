@@ -784,6 +784,13 @@ var karel = (function (exports, bootstrap) {
             direction: 'vertical',
             minSize: 0,
         });
+        Split(['#mobileCodePanel', '#mobileWorldPanel', '#mobileStatePanel'], {
+            sizes: [30, 40, 30],
+            direction: 'vertical',
+            onDragEnd: ResizeCanvas,
+            minSize: 0,
+            gutterSize: 15
+        });
     }
 
     /**
@@ -22156,42 +22163,11 @@ var karel = (function (exports, bootstrap) {
                 ])
             ]
         });
-        let otherState = EditorState.create({
-            doc: startState.doc,
-            extensions: [
-                drawSelection(),
-                lineNumbers(),
-                highlightActiveLine(),
-                keymap.of([
-                    indentWithTab,
-                    ...defaultKeymap,
-                    { key: "Mod-z", run: () => undo(mainView) },
-                    { key: "Mod-y", mac: "Mod-Shift-z", run: () => redo(mainView) }
-                ])
-            ]
-        });
-        let syncAnnotation = Annotation.define();
-        function syncDispatch(tr, view, other) {
-            view.update([tr]);
-            if (!tr.changes.empty && !tr.annotation(syncAnnotation)) {
-                let annotations = [syncAnnotation.of(true)];
-                let userEvent = tr.annotation(Transaction.userEvent);
-                if (userEvent)
-                    annotations.push(Transaction.userEvent.of(userEvent));
-                other.dispatch({ changes: tr.changes, annotations });
-            }
-        }
         let mainView = new EditorView({
             state: startState,
             parent: document.querySelector("#splitter-left-top-pane"),
-            dispatch: tr => syncDispatch(tr, mainView, otherView)
         });
-        let otherView = new EditorView({
-            state: otherState,
-            parent: document.querySelector("#phoneEditor"),
-            dispatch: tr => syncDispatch(tr, otherView, mainView)
-        });
-        return [mainView, otherView];
+        return [mainView];
     }
     function freezeEditors(editor) {
         editor.dispatch({
@@ -22278,7 +22254,7 @@ var karel = (function (exports, bootstrap) {
     class WorldRenderer {
         constructor(canvasContext, style, scale) {
             this.canvasContext = canvasContext;
-            this.origin = { f: 1, c: 1 };
+            this.origin = { r: 1, c: 1 };
             this.CellSize = 28;
             this.margin = 8;
             this.GutterSize = 28;
@@ -22286,6 +22262,10 @@ var karel = (function (exports, bootstrap) {
             this.world = undefined;
             this.scale = scale;
             this.mode = "normal";
+            this.snapped = true;
+        }
+        GetOrigin() {
+            return this.origin;
         }
         GetWidth() {
             return this.canvasContext.canvas.width / this.scale;
@@ -22296,17 +22276,21 @@ var karel = (function (exports, bootstrap) {
         GetRowCount(mode = "ceil") {
             switch (mode) {
                 case "ceil":
-                    return Math.ceil((this.GetHeight() - this.GutterSize) / this.CellSize);
+                    return Math.ceil((this.GetHeight() - this.GutterSize) / this.CellSize) + (this.snapped ? 0 : 1);
                 case "floor":
                     return Math.floor((this.GetHeight() - this.GutterSize) / this.CellSize);
+                case "noRounding":
+                    return (this.GetHeight() - this.GutterSize) / this.CellSize;
             }
         }
         GetColCount(mode = "ceil") {
             switch (mode) {
                 case "ceil":
-                    return Math.ceil((this.GetWidth() - this.GutterSize) / this.CellSize);
+                    return Math.ceil((this.GetWidth() - this.GutterSize) / this.CellSize) + (this.snapped ? 0 : 1);
                 case "floor":
                     return Math.floor((this.GetWidth() - this.GutterSize) / this.CellSize);
+                case "noRounding":
+                    return (this.GetWidth() - this.GutterSize) / this.CellSize;
             }
         }
         ErrorMode() {
@@ -22322,25 +22306,27 @@ var karel = (function (exports, bootstrap) {
             return this.world.w;
         }
         DrawVerticalGutter(selection = null) {
+            this.ResetTransform();
             let h = this.GetHeight();
             this.GetWidth();
             this.canvasContext.fillStyle = this.style.gutterBackgroundColor;
-            this.canvasContext.fillRect(0, 0, this.GutterSize, h - this.GutterSize);
+            this.canvasContext.fillRect(0, 0, this.GutterSize - 1, h - this.GutterSize);
             let rows = this.GetRowCount();
             this.canvasContext.strokeStyle = this.style.gridBorderColor;
             let r1 = -1, r2 = -1;
             if (selection != null) {
-                r1 = Math.min(selection.r, selection.r + (selection.rows - 1) * selection.dr) - this.origin.f;
-                r2 = Math.max(selection.r, selection.r + (selection.rows - 1) * selection.dr) - this.origin.f;
+                r1 = Math.min(selection.r, selection.r + (selection.rows - 1) * selection.dr) - this.origin.r;
+                r2 = Math.max(selection.r, selection.r + (selection.rows - 1) * selection.dr) - this.origin.r;
                 let sr1 = h - (this.GutterSize + (r1) * this.CellSize);
                 let sr2 = h - (this.GutterSize + (r2 + 1) * this.CellSize);
                 this.canvasContext.fillStyle = this.style.gutterSelectionBackgroundColor;
-                this.canvasContext.fillRect(0, sr2, this.GutterSize, sr1 - sr2);
+                this.canvasContext.fillRect(0, sr2, this.GutterSize - 1, sr1 - sr2);
             }
+            this.TranslateOffset(true, false);
             this.canvasContext.beginPath();
             for (let i = 0; i < rows; i++) {
                 this.canvasContext.moveTo(0, h - (this.GutterSize + (i + 1) * this.CellSize) + 0.5);
-                this.canvasContext.lineTo(this.GutterSize, h - (this.GutterSize + (i + 1) * this.CellSize) + 0.5);
+                this.canvasContext.lineTo(this.GutterSize - 1, h - (this.GutterSize + (i + 1) * this.CellSize) + 0.5);
             }
             this.canvasContext.stroke();
             this.canvasContext.fillStyle = this.style.gutterColor;
@@ -22348,6 +22334,7 @@ var karel = (function (exports, bootstrap) {
             this.canvasContext.textAlign = "center";
             this.canvasContext.textBaseline = "middle";
             for (let i = 0; i < rows; i++) {
+                let r = i + Math.floor(this.origin.r);
                 // this.canvasContext.measureText()
                 if (i < r1 || i > r2) {
                     this.canvasContext.fillStyle = this.style.gutterColor;
@@ -22355,15 +22342,16 @@ var karel = (function (exports, bootstrap) {
                 else {
                     this.canvasContext.fillStyle = this.style.gutterSelectionColor;
                 }
-                if (i + this.origin.f <= this.GetWorldRowCount())
-                    this.DrawTextVerticallyAlign(`${i + this.origin.f}`, this.GutterSize / 2, h - (this.GutterSize + (i + 0.5) * this.CellSize), this.GutterSize - this.margin);
+                if (r <= this.GetWorldRowCount())
+                    this.DrawTextVerticallyAlign(`${r}`, this.GutterSize / 2, h - (this.GutterSize + (i + 0.5) * this.CellSize), this.GutterSize - this.margin);
             }
         }
         DrawHorizontalGutter(selection = null) {
+            this.ResetTransform();
             let h = this.GetHeight();
             let w = this.GetWidth();
             this.canvasContext.fillStyle = this.style.gutterBackgroundColor;
-            this.canvasContext.fillRect(this.GutterSize, h - this.GutterSize, w, h);
+            this.canvasContext.fillRect(this.GutterSize, h - this.GutterSize + 1, w, this.GutterSize);
             let cols = this.GetColCount();
             this.canvasContext.strokeStyle = this.style.gridBorderColor;
             let c1 = -1, c2 = -1;
@@ -22373,12 +22361,13 @@ var karel = (function (exports, bootstrap) {
                 let sc1 = (this.GutterSize + (c1) * this.CellSize);
                 let sc2 = (this.GutterSize + (c2 + 1) * this.CellSize);
                 this.canvasContext.fillStyle = this.style.gutterSelectionBackgroundColor;
-                this.canvasContext.fillRect(sc1, h - this.GutterSize, sc2 - sc1, this.GutterSize + 1);
+                this.canvasContext.fillRect(sc1, h - this.GutterSize + 1, sc2 - sc1, this.GutterSize);
             }
+            this.TranslateOffset(false, true);
             this.canvasContext.beginPath();
             for (let i = 0; i < cols; i++) {
                 this.canvasContext.moveTo(this.GutterSize + (i + 1) * this.CellSize - 0.5, h);
-                this.canvasContext.lineTo(this.GutterSize + (i + 1) * this.CellSize - 0.5, h - this.GutterSize);
+                this.canvasContext.lineTo(this.GutterSize + (i + 1) * this.CellSize - 0.5, h - this.GutterSize + 1);
             }
             this.canvasContext.stroke();
             this.canvasContext.fillStyle = this.style.gutterColor;
@@ -22392,25 +22381,28 @@ var karel = (function (exports, bootstrap) {
                 else {
                     this.canvasContext.fillStyle = this.style.gutterSelectionColor;
                 }
+                const c = i + Math.floor(this.origin.c);
                 // this.canvasContext.measureText()            
-                if (i + this.origin.c <= this.GetWorldColCount())
-                    this.DrawTextVerticallyAlign(`${i + this.origin.c}`, this.GutterSize + i * this.CellSize + 0.5 * this.CellSize, h - this.GutterSize / 2, this.CellSize - this.margin);
+                if (c <= this.GetWorldColCount())
+                    this.DrawTextVerticallyAlign(`${c}`, this.GutterSize + i * this.CellSize + 0.5 * this.CellSize, h - this.GutterSize / 2, this.CellSize - this.margin);
             }
         }
         DrawGutters(selection = null) {
             let h = this.GetHeight();
             this.GetWidth();
-            this.canvasContext.fillStyle = this.style.gridBorderColor;
-            this.canvasContext.fillRect(0, h - this.GutterSize, this.GutterSize, this.GutterSize);
             this.DrawVerticalGutter(selection);
             this.DrawHorizontalGutter(selection);
-            this.DrawGutterWalls();
+            this.ResetTransform();
+            this.canvasContext.fillStyle = this.style.gridBorderColor;
+            this.canvasContext.fillRect(0, h - this.GutterSize, this.GutterSize, this.GutterSize);
         }
         DrawGrid() {
             let h = this.GetHeight();
             let w = this.GetWidth();
             let cols = this.GetColCount();
             let rows = this.GetRowCount();
+            this.ResetTransform();
+            this.TranslateOffset(true, true);
             this.canvasContext.strokeStyle = this.style.gridBorderColor;
             if (this.mode === "error") {
                 this.canvasContext.strokeStyle = this.style.errorGridBorderColor;
@@ -22418,10 +22410,10 @@ var karel = (function (exports, bootstrap) {
             this.canvasContext.beginPath();
             for (let i = 0; i < rows; i++) {
                 this.canvasContext.moveTo(this.GutterSize, h - (this.GutterSize + (i + 1) * this.CellSize) + 0.5);
-                this.canvasContext.lineTo(w, h - (this.GutterSize + (i + 1) * this.CellSize) + 0.5);
+                this.canvasContext.lineTo(w + this.CellSize, h - (this.GutterSize + (i + 1) * this.CellSize) + 0.5);
             }
             for (let i = 0; i < cols; i++) {
-                this.canvasContext.moveTo(this.GutterSize + (i + 1) * this.CellSize - 0.5, 0);
+                this.canvasContext.moveTo(this.GutterSize + (i + 1) * this.CellSize - 0.5, -this.CellSize);
                 this.canvasContext.lineTo(this.GutterSize + (i + 1) * this.CellSize - 0.5, h - this.GutterSize);
             }
             this.canvasContext.stroke();
@@ -22433,20 +22425,21 @@ var karel = (function (exports, bootstrap) {
             if (this.mode === "error") {
                 this.canvasContext.fillStyle = this.style.errorGridBackgroundColor;
             }
-            this.canvasContext.fillRect(this.GutterSize, 0, w - this.GutterSize, h - this.GutterSize);
+            this.canvasContext.fillRect(0, 0, w, h);
         }
         DrawKarel(r, c, orientation = "north") {
-            if (r - this.origin.f < 0 || r - this.origin.f >= this.GetRowCount()) {
+            this.ResetTransform();
+            if (r - this.origin.r < -1 || r - this.origin.r >= this.GetRowCount()) {
                 // Cull Karel it's outside view by y coord
                 return;
             }
-            if (c - this.origin.c < 0 || c - this.origin.c >= this.GetColCount()) {
+            if (c - this.origin.c < -1 || c - this.origin.c >= this.GetColCount()) {
                 // Cull Karel it's outside view by x coord
                 return;
             }
             let h = this.GetHeight();
             let x = this.GutterSize + this.CellSize * (c - this.origin.c) + this.CellSize / 2;
-            let y = h - (this.GutterSize + this.CellSize * (r - this.origin.f) + this.CellSize / 2);
+            let y = h - (this.GutterSize + this.CellSize * (r - this.origin.r) + this.CellSize / 2);
             this.canvasContext.translate(x - 0.5, y + 0.5);
             this.canvasContext.fillStyle = this.style.karelColor;
             this.canvasContext.beginPath();
@@ -22478,7 +22471,19 @@ var karel = (function (exports, bootstrap) {
             this.canvasContext.setTransform(1, 0, 0, 1, 0, 0);
             this.canvasContext.scale(this.scale, this.scale);
         }
+        TranslateOffset(rows, cols) {
+            let offsetC = this.GetColumnOffset();
+            let offsetR = this.GetRowOffset();
+            if (cols) {
+                this.canvasContext.translate(-offsetC, 0);
+            }
+            if (rows) {
+                this.canvasContext.translate(0, offsetR);
+            }
+        }
         ColorCell(r, c, color) {
+            this.ResetTransform();
+            this.TranslateOffset(true, true);
             let h = this.GetHeight();
             let x = c * this.CellSize + this.GutterSize;
             let y = h - ((r + 1) * this.CellSize + this.GutterSize);
@@ -22520,6 +22525,7 @@ var karel = (function (exports, bootstrap) {
             let h = this.GetHeight();
             let x = this.GutterSize + (c + 0.5) * this.CellSize;
             let y = h - (this.GutterSize + (r + 0.5) * this.CellSize);
+            this.TranslateOffset(true, true);
             this.canvasContext.translate(x, y);
             switch (type) {
                 case "north":
@@ -22544,24 +22550,12 @@ var karel = (function (exports, bootstrap) {
             this.canvasContext.lineWidth = lineOr;
             this.ResetTransform();
         }
-        DrawGutterWalls() {
-            for (let i = 0; i < this.GetRowCount(); i++) {
-                let walls = this.world.walls(i + this.origin.f, this.origin.c);
-                if ((walls & (1 << 0)) !== 0) {
-                    this.DrawWall(i, 0, "west");
-                }
-            }
-            for (let j = 0; j < this.GetColCount(); j++) {
-                let walls = this.world.walls(this.origin.f, j + this.origin.c);
-                if ((walls & (1 << 3)) !== 0) {
-                    this.DrawWall(0, j, "south");
-                }
-            }
-        }
         DrawWalls() {
             for (let i = 0; i < this.GetRowCount(); i++) {
                 for (let j = 0; j < this.GetColCount(); j++) {
-                    let walls = this.world.walls(i + this.origin.f, j + this.origin.c);
+                    let r = i + Math.floor(this.origin.r);
+                    let c = j + Math.floor(this.origin.c);
+                    let walls = this.world.walls(r, c);
                     for (let k = 0; k < 4; k++) {
                         if ((walls & (1 << k)) !== 0) {
                             this.DrawWall(i, j, this.GetOrientation(k));
@@ -22571,9 +22565,13 @@ var karel = (function (exports, bootstrap) {
             }
         }
         DrawBeepers() {
+            this.ResetTransform();
+            this.TranslateOffset(true, true);
             for (let i = 0; i < this.GetRowCount(); i++) {
                 for (let j = 0; j < this.GetColCount(); j++) {
-                    let buzzers = this.world.buzzers(i + this.origin.f, j + this.origin.c);
+                    let r = i + Math.floor(this.origin.r);
+                    let c = j + Math.floor(this.origin.c);
+                    let buzzers = this.world.buzzers(r, c);
                     if (buzzers !== 0) {
                         this.DrawBeeperSquare({
                             r: i,
@@ -22589,7 +22587,9 @@ var karel = (function (exports, bootstrap) {
         DrawDumpCells() {
             for (let i = 0; i < this.GetRowCount(); i++) {
                 for (let j = 0; j < this.GetColCount(); j++) {
-                    if (this.world.getDumpCell(i + this.origin.f, j + this.origin.c)) {
+                    let r = i + Math.floor(this.origin.r);
+                    let c = j + Math.floor(this.origin.c);
+                    if (this.world.getDumpCell(r, c)) {
                         this.ColorCell(i, j, this.style.exportCellBackground);
                     }
                 }
@@ -22601,13 +22601,14 @@ var karel = (function (exports, bootstrap) {
             let h = this.GetHeight();
             let w = this.GetWidth();
             this.canvasContext.clearRect(0, 0, w, h);
-            this.DrawGutters(selection);
             this.DrawBackground();
             this.DrawDumpCells();
             this.DrawGrid();
             this.DrawKarel(world.i, world.j, this.GetOrientation(world.orientation));
             this.DrawWalls();
             this.DrawBeepers();
+            this.DrawGutters(selection);
+            this.ResetTransform();
         }
         GetOrientation(n) {
             switch (n) {
@@ -22622,22 +22623,51 @@ var karel = (function (exports, bootstrap) {
             }
             return "north";
         }
-        PointToCell(x, y) {
+        PointToCell(x, y, precise = false) {
+            x += this.GetColumnOffset();
+            y -= this.GetRowOffset();
             let c = (x - this.GutterSize) / this.CellSize;
             let r = ((this.GetHeight() - y) - this.GutterSize) / this.CellSize;
+            if (precise) {
+                return {
+                    r: r + Math.floor(this.origin.r),
+                    c: c + Math.floor(this.origin.c)
+                };
+            }
             if (c < 0 || r < 0) {
                 return { r: -1, c: -1 };
             }
             return {
-                r: Math.floor(r) + this.origin.f,
-                c: Math.floor(c) + this.origin.c,
+                r: Math.round(Math.floor(r) + Math.floor(this.origin.r)),
+                c: Math.round(Math.floor(c) + Math.floor(this.origin.c)),
             };
         }
         CellToPoint(r, c) {
             return {
                 x: (this.GutterSize + (c - this.origin.c) * this.CellSize) * this.scale / window.devicePixelRatio,
-                y: (this.GetHeight() - (this.GutterSize + (r - this.origin.f + 1) * this.CellSize)) * this.scale / window.devicePixelRatio,
+                y: (this.GetHeight() - (this.GutterSize + (r - this.origin.r + 1) * this.CellSize)) * this.scale / window.devicePixelRatio,
             };
+        }
+        Snap() {
+            this.origin.r = Math.round(this.origin.r);
+            this.origin.c = Math.round(this.origin.c);
+            const performedSnapped = !this.snapped;
+            this.snapped = true;
+            return performedSnapped;
+        }
+        SmoothlySetOrigin(coord) {
+            this.origin = coord;
+            this.snapped = false;
+        }
+        SnappySetOrigin(coord) {
+            this.SmoothlySetOrigin(coord);
+            this.Snap();
+        }
+        GetColumnOffset() {
+            return (this.origin.c - Math.floor(this.origin.c)) * this.CellSize;
+        }
+        GetRowOffset() {
+            return (this.origin.r - Math.floor(this.origin.r)) * this.CellSize;
         }
     }
 
@@ -26126,262 +26156,6 @@ var karel = (function (exports, bootstrap) {
         gutterSelectionColor: "#ffffff",
     };
 
-    function clearAllDisplayClasses(element) {
-        $(element).removeClass("d-none");
-        $(element).removeClass("d-lg-block");
-        $(element).removeClass("d-lg-none");
-    }
-    function hideElement$1(element) {
-        $(element).addClass("d-none");
-    }
-    function SetResponsiveness() {
-        clearAllDisplayClasses("#desktopView");
-        clearAllDisplayClasses("#phoneView");
-        $("#phoneView").addClass("d-lg-none");
-        $("#desktopView").addClass("d-none");
-        $("#desktopView").addClass("d-lg-block");
-    }
-    function SetDesktopView() {
-        clearAllDisplayClasses("#phoneView");
-        clearAllDisplayClasses("#desktopView");
-        hideElement$1("#phoneView");
-    }
-    function SetPhoneView() {
-        clearAllDisplayClasses("#phoneView");
-        clearAllDisplayClasses("#desktopView");
-        hideElement$1("#desktopView");
-    }
-    function responsiveHack() {
-        $("#phoneView").removeClass("position-absolute");
-        {
-            $("#phoneView").addClass("d-none");
-        }
-        $("#loadingModal").remove();
-    }
-
-    let editors = createEditors();
-    function getEditors() {
-        return editors;
-    }
-
-    function applyTheme(theme) {
-        SetEditorTheme(theme.extensions, getEditors()[0]);
-        const root = $(":root")[0];
-        root.style.setProperty("--editor-color", theme.color);
-        root.style.setProperty("--editor-background", theme.backgroundColor);
-        root.style.setProperty("--editor-gutter-bg", theme.gutterBackgroundColor);
-        root.style.setProperty("--editor-gutter", theme.gutterColor);
-    }
-
-    const DarkCodeTheme = {
-        color: "#9CDCFE",
-        backgroundColor: "#1F1F1F",
-        gutterBackgroundColor: "#1F1F1F",
-        gutterColor: "#6e7681",
-        extensions: [
-            syntaxHighlighting(HighlightStyle.define([
-                { tag: tags.atom, color: "#DCDCAA" },
-                { tag: tags.className, color: "#4EC9B0" },
-                { tag: tags.keyword, color: "#C586C0" },
-                { tag: tags.controlKeyword, color: "#C586C0" },
-                { tag: tags.definitionKeyword, color: "#569CD6" },
-                { tag: tags.number, color: "#b5cea8" },
-                { tag: tags.operator, color: "#efefef" },
-                { tag: tags.brace, color: "#FFD700" },
-                { tag: tags.blockComment, color: "#6A9955", fontStyle: "italic" },
-                { tag: tags.comment, color: "#6A9955", fontStyle: "italic" },
-                { tag: tags.constant(tags.variableName), color: "#DCDCAA" },
-            ])),
-            EditorView.theme({
-                '&.cm-focused .cm-selectionBackground, ::selection': {
-                    backgroundColor: "#b3c6c7"
-                }
-            })
-        ]
-    };
-    const LightCodeTheme = {
-        color: "#0451A5",
-        backgroundColor: "#FAFAFA",
-        gutterBackgroundColor: "#FAFAFA",
-        gutterColor: "#6e7681",
-        extensions: [
-            syntaxHighlighting(HighlightStyle.define([
-                { tag: tags.atom, color: "#795E26" },
-                { tag: tags.className, color: "#4EC9B0" },
-                { tag: tags.keyword, color: "#AF00DB" },
-                { tag: tags.controlKeyword, color: "#AF00DB" },
-                { tag: tags.definitionKeyword, color: "#569CD6" },
-                { tag: tags.number, color: "#098658" },
-                { tag: tags.operator, color: "#050505" },
-                { tag: tags.brace, color: "#0431FA" },
-                { tag: tags.blockComment, color: "#008000", fontStyle: "italic" },
-                { tag: tags.comment, color: "#008000", fontStyle: "italic" },
-                { tag: tags.constant(tags.variableName), color: "#795E26" },
-            ])),
-            EditorView.theme({
-                '&.cm-focused .cm-selectionBackground, ::selection': {
-                    backgroundColor: "#b3c6c7"
-                }
-            })
-        ]
-    };
-
-    const darkClassicHighlight = {
-        color: "var(--bs-body-color)",
-        backgroundColor: "rgba(var(--bs-body-bg-rgb), var(--bs-bg-opacity))",
-        gutterBackgroundColor: "var(--bs-secondary-bg)",
-        gutterColor: "var(--bs-emphasis-color)",
-        extensions: [
-            syntaxHighlighting(HighlightStyle.define([
-                { tag: tags.atom, color: "#93bf74" },
-                { tag: tags.keyword, color: "#C586C0" },
-                { tag: tags.className, color: "#C586C0" },
-                { tag: tags.brace, color: "#94a4cb" },
-                { tag: tags.number, color: "#569CD6" },
-                { tag: tags.operator, color: "#77a1d5" },
-                { tag: tags.blockComment, color: "#a0b6b6", fontStyle: "italic" },
-                { tag: tags.comment, color: "#a0b6b6", fontStyle: "italic" },
-                { tag: tags.constant(tags.variableName), color: "#9CDCFE" },
-            ])),
-            EditorView.theme({
-                '&.cm-focused .cm-selectionBackground, ::selection': {
-                    backgroundColor: "#4e4d48"
-                }
-            })
-        ]
-    };
-
-    const OMIHighlight = {
-        color: "#FFFF00",
-        backgroundColor: "#000080",
-        gutterBackgroundColor: "#F5F5F5",
-        gutterColor: "#000000",
-        extensions: [
-            syntaxHighlighting(HighlightStyle.define([
-                { tag: tags.atom, color: "#00FFFF" },
-                { tag: tags.keyword, color: "#00FFFF" },
-                { tag: tags.controlKeyword, color: "#00FFFF" },
-                { tag: tags.definitionKeyword, color: "#00FFFF" },
-                { tag: tags.number, color: "#FF00FF" },
-                { tag: tags.operator, color: "#00FFFF" },
-                { tag: tags.brace, color: "#00FFFF" },
-                { tag: tags.constant(tags.variableName), color: "#00FFFF" },
-            ])),
-            EditorView.theme({
-                '&.cm-focused .cm-selectionBackground, ::selection': {
-                    backgroundColor: "#0000FF"
-                }
-            })
-        ]
-    };
-
-    const ReKarelHighlight = {
-        color: "#fafafa",
-        backgroundColor: "rgb(var(--bs-body-bg-rgb))",
-        gutterBackgroundColor: "var(--bs-secondary-bg)",
-        gutterColor: "var(--bs-emphasis-color)",
-        extensions: [
-            syntaxHighlighting(HighlightStyle.define([
-                { tag: tags.atom, color: "#ffda6a" },
-                { tag: tags.keyword, color: "#ea868f" },
-                { tag: tags.brace, color: "#ea868f" },
-                { tag: tags.controlKeyword, color: "#6ea8fe" },
-                { tag: tags.definitionKeyword, color: "#6ea8fe" },
-                { tag: tags.number, color: "#ffda6a" },
-                { tag: tags.operator, color: "#77a1d5" },
-                { tag: tags.blockComment, color: "#75b798", fontStyle: "italic" },
-                { tag: tags.comment, color: "#75b798", fontStyle: "italic" },
-                { tag: tags.constant(tags.variableName), color: "#6edff6" },
-            ])),
-            EditorView.theme({
-                '&.cm-focused .cm-selectionBackground, ::selection': {
-                    backgroundColor: "#4e4d48"
-                }
-            })
-        ]
-    };
-    const LightReKarelHighlight = {
-        color: "#2e2e2e",
-        backgroundColor: "rgb(var(--bs-body-bg-rgb))",
-        gutterBackgroundColor: "var(--bs-secondary-bg)",
-        gutterColor: "var(--bs-emphasis-color)",
-        extensions: [
-            syntaxHighlighting(HighlightStyle.define([
-                { tag: tags.atom, color: "#ff9c07" },
-                { tag: tags.keyword, color: "#c62e3d" },
-                { tag: tags.brace, color: "#c62e3d" },
-                { tag: tags.controlKeyword, color: "#0d6efd " },
-                { tag: tags.definitionKeyword, color: "#0d6efd " },
-                { tag: tags.number, color: "#ff9c07" },
-                { tag: tags.operator, color: "#77a1d5" },
-                { tag: tags.blockComment, color: "#198754", fontStyle: "italic" },
-                { tag: tags.comment, color: "#198754", fontStyle: "italic" },
-                { tag: tags.constant(tags.variableName), color: "#24a7db" },
-            ])),
-        ]
-    };
-
-    const SepiaTheme = {
-        color: "#3a3d42",
-        backgroundColor: "#fffde5",
-        gutterBackgroundColor: "#d9ceb6",
-        gutterColor: "#2d2e3b",
-        extensions: [
-            syntaxHighlighting(HighlightStyle.define([
-                { tag: tags.atom, color: "#707894" },
-                { tag: tags.keyword, color: "#cb3551" },
-                { tag: tags.controlKeyword, color: "#3f9c4f" },
-                { tag: tags.definitionKeyword, color: "#3f9c4f" },
-                { tag: tags.number, color: "#22867e" },
-                { tag: tags.operator, color: "#3f9c4f" },
-                { tag: tags.blockComment, color: "#973d1a", fontStyle: "italic" },
-                { tag: tags.comment, color: "#973d1a", fontStyle: "italic" },
-                { tag: tags.constant(tags.variableName), color: "#1f34a1" },
-            ])),
-            EditorView.theme({
-                '&.cm-focused .cm-selectionBackground, ::selection': {
-                    backgroundColor: "#b3c6c7"
-                }
-            })
-        ]
-    };
-
-    const DarkEditorThemes = {
-        'classic': darkClassicHighlight,
-        'rekarel': ReKarelHighlight,
-        'sepia': SepiaTheme,
-        'omi': OMIHighlight,
-        'code': DarkCodeTheme,
-    };
-    const LightEditorThemes = {
-        'classic': classicHighlight,
-        'rekarel': LightReKarelHighlight,
-        'sepia': SepiaTheme,
-        'omi': OMIHighlight,
-        'code': LightCodeTheme,
-    };
-
-    function SetLightTheme(theme) {
-        $(":root").attr("data-bs-theme", "light");
-        applyTheme(LightEditorThemes[theme]);
-    }
-    function SetDarkTheme(theme) {
-        $(":root").attr("data-bs-theme", "dark");
-        applyTheme(DarkEditorThemes[theme]);
-    }
-    function SetSystemTheme(theme) {
-        if (window.matchMedia) {
-            if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
-                SetDarkTheme(theme);
-            }
-            else {
-                SetLightTheme(theme);
-            }
-            return;
-        }
-        SetLightTheme(theme); //Default light theme
-    }
-
     const APP_SETTING = 'appSettings';
     const SETTINGS_VERSION = "0.7.0";
     let appSettings = {
@@ -26394,152 +26168,8 @@ var karel = (function (exports, bootstrap) {
         worldRendererStyle: DefaultWRStyle,
         slowExecutionLimit: 200000
     };
-    function isFontSize(str) {
-        return 6 < str && str < 31;
-    }
-    function isResponsiveInterfaces(str) {
-        return ["auto", "desktop", "mobile"].indexOf(str) > -1;
-    }
-    function isTheme(str) {
-        return ["system", "light", "dark"].indexOf(str) > -1;
-    }
-    let DesktopUI$1;
-    function applySettings(settings, desktopUI) {
-        switch (settings.interface) {
-            case "auto":
-                SetResponsiveness();
-                break;
-            case "desktop":
-                SetDesktopView();
-                break;
-            case "mobile":
-                SetPhoneView();
-                break;
-            default:
-                SetDesktopView();
-                break;
-        }
-        if (!(settings.editorTheme in DarkEditorThemes))
-            settings.editorTheme = "classic";
-        switch (settings.theme) {
-            case "system":
-                SetSystemTheme(settings.editorTheme);
-                break;
-            case "light":
-                SetLightTheme(settings.editorTheme);
-                break;
-            case "dark":
-                SetDarkTheme(settings.editorTheme);
-                break;
-            default:
-                SetDarkTheme(settings.editorTheme);
-        }
-        const root = $(":root")[0];
-        root.style.setProperty("--editor-font-size", `${settings.editorFontSize}pt`);
-        root.style.setProperty("--waffle-color", `${settings.worldRendererStyle.waffleColor}`);
-        if (settings.interface == "desktop")
-            desktopUI.ResizeCanvas();
-        desktopUI.worldController.renderer.style = settings.worldRendererStyle;
-        desktopUI.worldController.Update();
-        if (localStorage)
-            localStorage.setItem(APP_SETTING, JSON.stringify(appSettings));
-    }
-    function setSettings(event, desktopUI) {
-        var _a;
-        let interfaceType = $("#settingsForm select[name=interface]").val();
-        let fontSize = $("#settingsForm input[name=fontSize]").val();
-        let slowModeLimit = $("#settingsSlowModeLimit").val();
-        let theme = $("#settingsForm select[name=theme]").val();
-        let style = $("#settingsForm select[name=editorStyle]").val();
-        let autoInput = ((_a = $("#settingsAutoInputMode").prop("checked")) !== null && _a !== void 0 ? _a : true);
-        console.log(fontSize);
-        if (isResponsiveInterfaces(interfaceType)) {
-            appSettings.interface = interfaceType;
-        }
-        if (isFontSize(fontSize)) {
-            appSettings.editorFontSize = fontSize;
-        }
-        if (isTheme(theme)) {
-            appSettings.theme = theme;
-        }
-        appSettings.slowExecutionLimit = slowModeLimit;
-        appSettings.editorTheme = style;
-        appSettings.autoInputMode = autoInput;
-        console.log(appSettings);
-        applySettings(appSettings, desktopUI);
-        event.preventDefault();
-        return false;
-    }
-    function loadSettingsFromMemory() {
-        const jsonString = localStorage === null || localStorage === void 0 ? void 0 : localStorage.getItem(APP_SETTING);
-        if (jsonString) {
-            const memorySettings = JSON.parse(jsonString);
-            if (memorySettings.version == null)
-                return;
-            if (memorySettings.version !== SETTINGS_VERSION) {
-                localStorage.removeItem(memorySettings);
-                return;
-            }
-            appSettings = memorySettings;
-        }
-    }
-    function loadSettingsToModal() {
-        console.log("show", appSettings);
-        $("#settingsInterface").val(appSettings.interface);
-        $("#settingsFontSize").val(appSettings.editorFontSize);
-        $("#settingsTheme").val(appSettings.theme);
-        $("#settingsStyle").val(appSettings.editorTheme);
-        $("#settingsSlowModeLimit").val(appSettings.slowExecutionLimit);
-        $("#settingsAutoInputMode").prop("checked", appSettings.autoInputMode);
-        showOrHideSlowExecutionLimit();
-    }
-    function InitSettings(desktopUI) {
-        DesktopUI$1 = desktopUI;
-        loadSettingsFromMemory();
-        $("#settingsModal").on("show.bs.modal", (e) => {
-            loadSettingsToModal();
-        });
-        $("#settingsForm").on("submit", (e) => {
-            setSettings(e, desktopUI);
-        });
-    }
-    function showOrHideSlowExecutionLimit() {
-        if ($("#settingsSlowModeLimit").val() > 200000) {
-            $("#slowModeWarning").show();
-        }
-        else {
-            $("#slowModeWarning").hide();
-        }
-    }
-    function StartSettings(desktopUI) {
-        applySettings(appSettings, desktopUI);
-        $(document).on("keydown", (e) => {
-            if (e.ctrlKey && e.which === 75) {
-                let fontSize = appSettings.editorFontSize;
-                fontSize--;
-                if (fontSize < 7)
-                    fontSize = 7;
-                appSettings.editorFontSize = fontSize;
-                applySettings(appSettings, desktopUI);
-                e.preventDefault();
-                return false;
-            }
-            if (e.ctrlKey && e.which === 76) {
-                let fontSize = appSettings.editorFontSize;
-                fontSize++;
-                if (fontSize > 30)
-                    fontSize = 30;
-                appSettings.editorFontSize = fontSize;
-                applySettings(appSettings, desktopUI);
-                e.preventDefault();
-                return false;
-            }
-        });
-        $("#settingsSlowModeLimit").on("change", () => showOrHideSlowExecutionLimit());
-    }
-    function SetWorldRendererStyle(style) {
-        appSettings.worldRendererStyle = style;
-        applySettings(appSettings, DesktopUI$1);
+    function SetSettings(settings) {
+        appSettings = settings;
     }
     function GetCurrentSetting() { return appSettings; }
 
@@ -26603,6 +26233,11 @@ var karel = (function (exports, bootstrap) {
         }
     }
     const throbber = new Throbber($("#throbber"));
+
+    let editors = createEditors();
+    function getEditors() {
+        return editors;
+    }
 
     const parseErrorState = StateEffect.define({
         map: ({ from, to }, change) => ({ from: change.mapPos(from), to: change.mapPos(to) })
@@ -27356,10 +26991,17 @@ var karel = (function (exports, bootstrap) {
             this.dc = data.dc;
             this.state = data.state;
         }
+        GetSecondAnchor() {
+            return {
+                r: this.r + (this.rows - 1) * this.dr,
+                c: this.c + (this.cols - 1) * this.dc,
+            };
+        }
     }
 
     class WorldViewController {
         constructor(renderer, karelController, container, gizmos) {
+            WorldViewController._instance = this;
             this.renderer = renderer;
             this.container = container;
             this.lock = false;
@@ -27386,6 +27028,19 @@ var karel = (function (exports, bootstrap) {
             this.karelController.RegisterStepController(this.onStep.bind(this));
             this.waffle = new SelectionWaffle(gizmos.selectionBox);
             this.clickMode = "normal";
+            this.pinch = {
+                pointers: [],
+                prevDiff: -1,
+                startZoom: 1,
+                freed: false,
+                cell: { r: 1, c: 1 },
+                proportions: { left: 0, bottom: 0 },
+            };
+            this.followScroll = true;
+            this.onBeepersChangeListeners = [];
+        }
+        static GetInstance() {
+            return WorldViewController._instance;
         }
         SetClickMode(mode) {
             this.clickMode = mode;
@@ -27399,8 +27054,12 @@ var karel = (function (exports, bootstrap) {
         GetBeepersInBag() {
             return this.karelController.world.bagBuzzers;
         }
-        SetBeepersInBag(ammount) {
-            this.karelController.world.setBagBuzzers(ammount);
+        SetBeepersInBag(amount) {
+            this.karelController.world.setBagBuzzers(amount);
+            this.NotifyBeeperBagUpdate(amount);
+        }
+        RegisterBeeperBagListener(listener) {
+            this.onBeepersChangeListeners.push(listener);
         }
         CheckUpdate() {
             if (this.karelController.world.dirty) {
@@ -27466,7 +27125,7 @@ var karel = (function (exports, bootstrap) {
         UpdateWaffle() {
             this.waffle.UpdateWaffle(this.selection, this.renderer);
         }
-        SetScale(scale) {
+        SetScale(scale, updateScroll = true) {
             this.renderer.scale = scale;
             this.scale = scale;
             //FIXME, this should be in update waffle
@@ -27483,6 +27142,9 @@ var karel = (function (exports, bootstrap) {
             this.UpdateWaffle();
             this.Update();
             this.UpdateScrollElements();
+            if (updateScroll) {
+                this.ReFocusCurrentElement();
+            }
         }
         RecalculateScale() {
             this.renderer.scale = this.scale;
@@ -27490,13 +27152,28 @@ var karel = (function (exports, bootstrap) {
             this.Update();
             this.UpdateScrollElements();
         }
-        TrackMouse(e) {
+        ClientXYToStateXY(clientX, clientY) {
             let canvas = this.renderer.canvasContext.canvas;
             let boundingBox = canvas.getBoundingClientRect();
-            let x = (e.clientX - boundingBox.left) * canvas.width / boundingBox.width;
-            let y = (e.clientY - boundingBox.top) * canvas.height / boundingBox.height;
-            this.state.cursorX = x / this.renderer.scale;
-            this.state.cursorY = y / this.renderer.scale;
+            let x = (clientX - boundingBox.left) * canvas.width / boundingBox.width;
+            let y = (clientY - boundingBox.top) * canvas.height / boundingBox.height;
+            x /= this.renderer.scale;
+            y /= this.renderer.scale;
+            return { x, y };
+        }
+        ClientXYToProportions(clientX, clientY) {
+            let canvas = this.renderer.canvasContext.canvas;
+            let boundingBox = canvas.getBoundingClientRect();
+            let x = (clientX - boundingBox.left) / boundingBox.width;
+            let y = (clientY - boundingBox.top) / boundingBox.height;
+            let left = x;
+            let bottom = 1 - y;
+            return { left, bottom };
+        }
+        TrackMouse(e) {
+            let { x, y } = this.ClientXYToStateXY(e.clientX, e.clientY);
+            this.state.cursorX = x;
+            this.state.cursorY = y;
             this.state.cellPair = this.renderer.PointToCell(this.state.cursorX, this.state.cursorY);
             if (this.selection.state === "selecting") {
                 let cell = this.state.cellPair;
@@ -27524,6 +27201,7 @@ var karel = (function (exports, bootstrap) {
         }
         ClickDown(e) {
             e.preventDefault();
+            this.renderer.canvasContext.canvas.focus();
             if (this.clickMode === "normal") {
                 let cell = this.renderer.PointToCell(this.state.cursorX, this.state.cursorY);
                 if (cell.r < 0) {
@@ -27540,6 +27218,70 @@ var karel = (function (exports, bootstrap) {
                 this.selection.state = "selecting";
             }
             $(":focus").blur();
+        }
+        PointerDown(e) {
+            this.pinch.pointers.push(e);
+        }
+        PointerUp(e) {
+            const index = this.pinch.pointers.findIndex((cachedEv) => cachedEv.pointerId === e.pointerId);
+            if (index !== -1)
+                this.pinch.pointers.splice(index, 1);
+            if (this.pinch.pointers.length < 2) {
+                this.pinch.prevDiff = -1;
+                if (this.renderer.Snap()) {
+                    this.Update();
+                    this.UpdateWaffle();
+                }
+                this.followScroll = true;
+            }
+        }
+        PointerMove(e) {
+            const index = this.pinch.pointers.findIndex((cachedEv) => cachedEv.pointerId === e.pointerId);
+            if (index !== -1)
+                this.pinch.pointers[index] = e;
+            // If two pointers are down, check for pinch gestures
+            if (this.pinch.pointers.length === 2) {
+                let cX = (this.pinch.pointers[0].clientX + this.pinch.pointers[1].clientX) / 2;
+                let cY = (this.pinch.pointers[0].clientY + this.pinch.pointers[1].clientY) / 2;
+                this.pinch.proportions = this.ClientXYToProportions(cX, cY);
+                // Calculate the distance between the two pointers
+                const diffX = Math.abs(this.pinch.pointers[0].clientX - this.pinch.pointers[1].clientX);
+                const diffY = Math.abs(this.pinch.pointers[0].clientY - this.pinch.pointers[1].clientY);
+                let curDiff = Math.sqrt(diffX * diffX + diffY * diffY);
+                if (this.pinch.prevDiff > 0) {
+                    let delta = curDiff / this.pinch.prevDiff;
+                    if (!this.pinch.freed) {
+                        if (0.9 < delta && delta < 1.1) {
+                            return;
+                        }
+                        else if (0.8 < delta && delta < 1) {
+                            delta = (delta - 0.8) * 2 + 0.8;
+                        }
+                        else if (1 < delta && delta < 1.2) {
+                            delta = (delta - 1.1) * 2 + 1.1;
+                        }
+                        else {
+                            this.pinch.freed = true;
+                        }
+                    }
+                    let newZoom = this.pinch.startZoom * delta;
+                    if (newZoom < 0.5)
+                        newZoom = 0.5;
+                    if (newZoom > 8)
+                        newZoom = 8;
+                    this.SetScale(newZoom, false);
+                    this.FocusCellToScreenPortion(this.pinch.cell.r, this.pinch.cell.c, this.pinch.proportions.left, this.pinch.proportions.bottom, false // Do not snap
+                    );
+                }
+                else {
+                    this.pinch.prevDiff = curDiff;
+                    this.pinch.startZoom = this.scale;
+                    this.pinch.freed = false;
+                    let { x, y } = this.ClientXYToStateXY(cX, cY);
+                    this.pinch.cell = this.renderer.PointToCell(x, y, true);
+                    this.followScroll = false;
+                }
+            }
         }
         SetKarelOnSelection(direction = "north") {
             if (this.lock)
@@ -27698,15 +27440,40 @@ var karel = (function (exports, bootstrap) {
         FocusKarel() {
             let r = this.karelController.world.i;
             let c = this.karelController.world.j;
-            this.FocusTo(r, c);
+            this.FocusCellToScreenPortion(r, c, 0.5, 0.5, true);
         }
         FocusSelection() {
-            let r = this.selection.r - 1;
-            let c = this.selection.c - 1;
-            this.FocusTo(r, c);
+            let r1 = this.selection.r;
+            let c1 = this.selection.c;
+            let { r, c } = this.selection.GetSecondAnchor();
+            let cR = (r1 + r) / 2;
+            let cC = (c1 + c) / 2;
+            this.FocusCellToScreenPortion(cR, cC, 0.5, 0.5);
+            this.TrackFocus(r1, c1);
+        }
+        ReFocusCurrentElement() {
+            const origin = this.renderer.GetOrigin();
+            this.FocusTo(origin.r, origin.c);
+        }
+        FocusCellToScreenPortion(r, c, leftRatio, bottomRatio, snap = true) {
+            const cols = this.renderer.GetColCount("noRounding");
+            const rows = this.renderer.GetRowCount("noRounding");
+            const w = this.karelController.world.w;
+            const h = this.karelController.world.h;
+            let target_c = c - leftRatio * cols;
+            let target_r = r - bottomRatio * rows;
+            if (target_c < 1)
+                target_c = 1;
+            if (target_r < 1)
+                target_r = 1;
+            if (target_c > w)
+                target_c = w;
+            if (target_r > h)
+                target_r = h;
+            this.FocusTo(target_r, target_c, snap);
         }
         TrackFocus(r, c) {
-            let origin = this.renderer.origin;
+            let origin = this.renderer.GetOrigin();
             let rows = this.renderer.GetRowCount("floor");
             let cols = this.renderer.GetColCount("floor");
             if (rows * cols === 0) {
@@ -27715,12 +27482,12 @@ var karel = (function (exports, bootstrap) {
             }
             if (origin.c <= c
                 && c < origin.c + cols
-                && origin.f <= r
-                && r < origin.f + rows) {
+                && origin.r <= r
+                && r < origin.r + rows) {
                 //Karel is already on focus.
                 return;
             }
-            let tr = origin.f;
+            let tr = origin.r;
             let tc = origin.c;
             if (r < tr) {
                 tr = r;
@@ -27739,13 +27506,27 @@ var karel = (function (exports, bootstrap) {
         TrackFocusToKarel() {
             this.TrackFocus(this.karelController.world.i, this.karelController.world.j);
         }
-        FocusTo(r, c) {
+        FocusTo(r, c, snap = true) {
+            this.karelController.world.w;
+            let worldHeight = this.karelController.world.h;
             let left = (c - 1 + 0.1) / (this.karelController.world.w - this.renderer.GetColCount("floor") + 1);
-            left = left < 0 ? 0 : left;
-            left = left > 1 ? 1 : left;
+            if (left < 0) {
+                c = 1;
+                left = 0;
+            }
+            else if (left > 1) {
+                c = 1 + (worldHeight - this.renderer.GetRowCount("floor") + 1);
+                left = 1;
+            }
             let top = (r - 1 + 0.01) / (this.karelController.world.h - this.renderer.GetRowCount("floor") + 1);
-            top = top < 0 ? 0 : top;
-            top = top > 1 ? 1 : top;
+            if (top < 0) {
+                r = 1;
+                top = 0;
+            }
+            else if (top > 1) {
+                r = 1 + (worldHeight - this.renderer.GetRowCount("floor") + 1);
+                top = 1;
+            }
             // let la =0, lb = 1;
             // let ta =0, tb = 1;
             // let left = (la+lb)/2.0;
@@ -27771,10 +27552,18 @@ var karel = (function (exports, bootstrap) {
             //         ta=tb=tm;
             //     }
             // }
-            this.renderer.origin = {
-                c: c,
-                f: r,
-            };
+            if (snap) {
+                this.renderer.SnappySetOrigin({
+                    c: c,
+                    r: r,
+                });
+            }
+            else {
+                this.renderer.SmoothlySetOrigin({
+                    c: c,
+                    r: r,
+                });
+            }
             // this.lockScroll=true;
             this.container.scrollLeft = left * (this.container.scrollWidth - this.container.clientWidth);
             this.container.scrollTop = (1 - top) * (this.container.scrollHeight - this.container.clientHeight);
@@ -27903,12 +27692,29 @@ var karel = (function (exports, bootstrap) {
             this.Update();
         }
         ChangeOriginFromScroll(left, top) {
+            if (!this.followScroll) {
+                return;
+            }
             let worldWidth = this.karelController.world.w;
             let worldHeight = this.karelController.world.h;
-            this.renderer.origin = {
-                f: Math.floor(1 + Math.max(0, (worldHeight - this.renderer.GetRowCount("floor") + 1) * top)),
-                c: Math.floor(1 + Math.max(0, (worldWidth - this.renderer.GetColCount("floor") + 1) * left)),
-            };
+            // this.renderer.SnappySetOrigin({
+            //     r: Math.floor(
+            //         1 + Math.max(
+            //             0,
+            //             (worldHeight - this.renderer.GetRowCount("floor") + 1) * top
+            //         )
+            //     ),
+            //     c: Math.floor(
+            //         1 + Math.max(
+            //             0,
+            //             (worldWidth - this.renderer.GetColCount("floor") + 1) * left
+            //         )
+            //     ),
+            // });
+            this.renderer.SnappySetOrigin({
+                r: 1 + Math.max(0, (worldHeight - this.renderer.GetRowCount("floor") + 1) * top),
+                c: 1 + Math.max(0, (worldWidth - this.renderer.GetColCount("floor") + 1) * left),
+            });
         }
         UpdateScroll(left, top) {
             this.ChangeOriginFromScroll(left, top);
@@ -27943,21 +27749,80 @@ var karel = (function (exports, bootstrap) {
             this.FocusOrigin();
             this.UpdateScrollElements();
         }
+        NotifyBeeperBagUpdate(amount) {
+            for (const callback of this.onBeepersChangeListeners) {
+                callback(amount);
+            }
+        }
     }
 
     var AppVars;
     (function (AppVars) {
+        const onDelayChangeListeners = [];
         AppVars.randomBeeperMinimum = 1;
         AppVars.randomBeeperMaximum = 99;
+        let delay = 300;
+        function getDelay() {
+            return delay;
+        }
+        AppVars.getDelay = getDelay;
+        function setDelay(_delay) {
+            delay = _delay;
+            for (const listener of onDelayChangeListeners) {
+                listener(delay);
+            }
+        }
+        AppVars.setDelay = setDelay;
+        function registerDelayChangeListener(listener) {
+            onDelayChangeListeners.push(listener);
+        }
+        AppVars.registerDelayChangeListener = registerDelayChangeListener;
     })(AppVars || (AppVars = {}));
+
+    class WorldBar {
+        constructor(ui) {
+            this.data = ui;
+        }
+        Connect() {
+            const worldController = WorldViewController.GetInstance();
+            this.data.beepers.addOne.on("click", () => worldController.ChangeBeepers(1));
+            this.data.beepers.removeOne.on("click", () => worldController.ChangeBeepers(-1));
+            this.data.beepers.infinite.on("click", () => worldController.SetBeepers(-1));
+            this.data.beepers.clear.on("click", () => worldController.SetBeepers(0));
+            this.data.beepers.random.on("click", () => worldController.SetRandomBeepers(AppVars.randomBeeperMinimum, AppVars.randomBeeperMaximum));
+            this.data.karel.north.on("click", () => worldController.SetKarelOnSelection("north"));
+            this.data.karel.east.on("click", () => worldController.SetKarelOnSelection("east"));
+            this.data.karel.south.on("click", () => worldController.SetKarelOnSelection("south"));
+            this.data.karel.west.on("click", () => worldController.SetKarelOnSelection("west"));
+            this.data.wall.north.on("click", () => worldController.ToggleWall("north"));
+            this.data.wall.east.on("click", () => worldController.ToggleWall("east"));
+            this.data.wall.south.on("click", () => worldController.ToggleWall("south"));
+            this.data.wall.west.on("click", () => worldController.ToggleWall("west"));
+            this.data.wall.outside.on("click", () => worldController.ToggleWall("outer"));
+        }
+        OnClick(event) {
+            this.data.beepers.addOne.on("click", event);
+            this.data.beepers.removeOne.on("click", event);
+            this.data.beepers.infinite.on("click", event);
+            this.data.beepers.clear.on("click", event);
+            this.data.beepers.random.on("click", event);
+            this.data.karel.north.on("click", event);
+            this.data.karel.east.on("click", event);
+            this.data.karel.south.on("click", event);
+            this.data.karel.west.on("click", event);
+            this.data.wall.north.on("click", event);
+            this.data.wall.east.on("click", event);
+            this.data.wall.south.on("click", event);
+            this.data.wall.west.on("click", event);
+            this.data.wall.outside.on("click", event);
+        }
+    }
 
     class DesktopContextMenu {
         constructor(data, worldCanvas, worldController) {
             this.toggler = data.toggler;
             this.container = data.container;
-            this.beepers = data.beepers;
-            this.karel = data.karel;
-            this.wall = data.wall;
+            this.worldBar = new WorldBar(data.worldBar);
             this.evaluate = data.evaluate;
             this.Hook(worldCanvas, worldController);
         }
@@ -27976,20 +27841,10 @@ var karel = (function (exports, bootstrap) {
                     method();
                 }).bind(this));
             };
-            ContextAction(this.beepers.addOne, () => worldController.ChangeBeepers(1));
-            ContextAction(this.beepers.removeOne, () => worldController.ChangeBeepers(-1));
-            ContextAction(this.beepers.infinite, () => worldController.SetBeepers(-1));
-            ContextAction(this.beepers.clear, () => worldController.SetBeepers(0));
-            ContextAction(this.beepers.random, () => worldController.SetRandomBeepers(AppVars.randomBeeperMinimum, AppVars.randomBeeperMaximum));
-            ContextAction(this.karel.north, () => worldController.SetKarelOnSelection("north"));
-            ContextAction(this.karel.east, () => worldController.SetKarelOnSelection("east"));
-            ContextAction(this.karel.south, () => worldController.SetKarelOnSelection("south"));
-            ContextAction(this.karel.west, () => worldController.SetKarelOnSelection("west"));
-            ContextAction(this.wall.north, () => worldController.ToggleWall("north"));
-            ContextAction(this.wall.east, () => worldController.ToggleWall("east"));
-            ContextAction(this.wall.south, () => worldController.ToggleWall("south"));
-            ContextAction(this.wall.west, () => worldController.ToggleWall("west"));
-            ContextAction(this.wall.outside, () => worldController.ToggleWall("outer"));
+            this.worldBar.Connect();
+            this.worldBar.OnClick((() => {
+                this.ToggleContextMenu();
+            }).bind(this));
             ContextAction(this.evaluate.evaluate, () => worldController.SetCellEvaluation(true));
             ContextAction(this.evaluate.ignore, () => worldController.SetCellEvaluation(false));
         }
@@ -28148,6 +28003,10 @@ var karel = (function (exports, bootstrap) {
         }
         Init() {
             KarelController.GetInstance().RegisterStateChangeObserver(this.OnKarelControllerStateChange.bind(this));
+            WorldViewController.GetInstance().RegisterBeeperBagListener(() => {
+                this.UpdateBeeperBag();
+            });
+            AppVars.registerDelayChangeListener((amount) => this.ui.delayInput.val(amount));
             this.ConnectExecutionButtonGroup();
         }
         ConnectExecutionButtonGroup() {
@@ -28169,6 +28028,7 @@ var karel = (function (exports, bootstrap) {
             });
             this.ui.delayInput.on("change", () => {
                 let delay = parseInt(this.ui.delayInput.val());
+                AppVars.setDelay(delay);
                 KarelController.GetInstance().ChangeAutoStepDelay(delay);
             });
             this.ui.delayAdd.on("click", () => {
@@ -28190,7 +28050,7 @@ var karel = (function (exports, bootstrap) {
             KarelController.GetInstance().RegisterNewWorldObserver((_ctr, _state, _newInstance) => { this.UpdateBeeperBag(); });
         }
         AutoStep() {
-            let delay = parseInt(this.ui.delayInput.val());
+            let delay = AppVars.getDelay();
             if (KarelController.GetInstance().StartAutoStep(delay))
                 this.SetPlayMode();
         }
@@ -28246,12 +28106,12 @@ var karel = (function (exports, bootstrap) {
             }
         }
         ActivateInfiniteBeepers() {
-            bootstrap.Collapse.getOrCreateInstance($("#beeperInputCollapse")[0]).hide();
+            bootstrap.Collapse.getOrCreateInstance(this.ui.beeperCollapse[0], { toggle: true }).hide();
             this.ui.infiniteBeeperInput.removeClass("btn-body");
             this.ui.infiniteBeeperInput.addClass("btn-info");
         }
         DeactivateInfiniteBeepers() {
-            bootstrap.Collapse.getOrCreateInstance($("#beeperInputCollapse")[0]).show();
+            bootstrap.Collapse.getOrCreateInstance(this.ui.beeperCollapse[0], { toggle: false }).show();
             this.ui.infiniteBeeperInput.removeClass("btn-info");
             this.ui.infiniteBeeperInput.addClass("btn-body");
         }
@@ -28319,6 +28179,18 @@ var karel = (function (exports, bootstrap) {
         }
     }
 
+    class FocusBar {
+        constructor(ui) {
+            this.data = ui;
+        }
+        Connect() {
+            const worldController = WorldViewController.GetInstance();
+            this.data.karel.on("click", () => worldController.FocusKarel());
+            this.data.origin.on("click", () => worldController.FocusOrigin());
+            this.data.selector.on("click", () => worldController.FocusSelection());
+        }
+    }
+
     class DesktopController {
         constructor(elements, karelController) {
             this.editor = elements.desktopEditor;
@@ -28332,13 +28204,11 @@ var karel = (function (exports, bootstrap) {
             this.delayInput = elements.controlBar.delayInput;
             this.delayAdd = elements.controlBar.delayAdd;
             this.delayRemove = elements.controlBar.delayRemove;
-            this.inputModeToolbar = elements.toolbar.inputMode;
-            this.beeperToolbar = elements.toolbar.beepers;
-            this.karelToolbar = elements.toolbar.karel;
-            this.wallToolbar = elements.toolbar.wall;
-            this.evaluateToolbar = elements.toolbar.evaluate;
-            this.focusToolbar = elements.toolbar.focus;
-            this.historyToolbar = elements.toolbar.history;
+            this.inputModeToolbar = elements.inputMode;
+            this.worldBar = new WorldBar(elements.worldToolbar);
+            this.evaluateToolbar = elements.evaluate;
+            this.focusControlBar = new FocusBar(elements.focus);
+            this.historyToolbar = elements.history;
             this.console = new KarelConsole(elements.console);
             this.karelController = karelController;
             this.worldController = new WorldViewController(new WorldRenderer(this.worldCanvas[0].getContext("2d"), DefaultWRStyle, 1), karelController, elements.worldContainer[0], elements.gizmos);
@@ -28347,6 +28217,10 @@ var karel = (function (exports, bootstrap) {
             this.isControlInPlayMode = false;
             this.callStack = new CallStack(elements.callStack);
             this.controlbar = new ControlBar(elements.controlBar, this.worldController);
+            DesktopController._instance = this;
+        }
+        static GetInstance() {
+            return DesktopController._instance;
         }
         Init() {
             $(window).on("resize", this.ResizeCanvas.bind(this));
@@ -28360,6 +28234,9 @@ var karel = (function (exports, bootstrap) {
                 if (GetCurrentSetting().autoInputMode === true)
                     this.SetAlternativeInput();
             });
+            this.worldCanvas.on("pointerdown", this.worldController.PointerDown.bind(this.worldController));
+            this.worldCanvas.on("pointerup pointercancel pointerout pointerleave", this.worldController.PointerUp.bind(this.worldController));
+            this.worldCanvas.on("pointermove", this.worldController.PointerMove.bind(this.worldController));
             const zooms = ["0.5", "0.75", "1", "1.5", "2.0", "2.5", "4"];
             this.worldZoom.on("change", () => {
                 let scale = parseFloat(String(this.worldZoom.val()));
@@ -28406,23 +28283,8 @@ var karel = (function (exports, bootstrap) {
         ConnectToolbar() {
             this.inputModeToolbar.alternate.on("click", () => this.SetAlternativeInput());
             this.inputModeToolbar.drag.on("click", () => this.SetDragInput());
-            this.beeperToolbar.addOne.on("click", () => this.worldController.ChangeBeepers(1));
-            this.beeperToolbar.removeOne.on("click", () => this.worldController.ChangeBeepers(-1));
-            this.beeperToolbar.infinite.on("click", () => this.worldController.SetBeepers(-1));
-            this.beeperToolbar.clear.on("click", () => this.worldController.SetBeepers(0));
-            this.beeperToolbar.random.on("click", () => this.worldController.SetRandomBeepers(AppVars.randomBeeperMinimum, AppVars.randomBeeperMaximum));
-            this.karelToolbar.north.on("click", () => this.worldController.SetKarelOnSelection("north"));
-            this.karelToolbar.east.on("click", () => this.worldController.SetKarelOnSelection("east"));
-            this.karelToolbar.south.on("click", () => this.worldController.SetKarelOnSelection("south"));
-            this.karelToolbar.west.on("click", () => this.worldController.SetKarelOnSelection("west"));
-            this.wallToolbar.north.on("click", () => this.worldController.ToggleWall("north"));
-            this.wallToolbar.east.on("click", () => this.worldController.ToggleWall("east"));
-            this.wallToolbar.south.on("click", () => this.worldController.ToggleWall("south"));
-            this.wallToolbar.west.on("click", () => this.worldController.ToggleWall("west"));
-            this.wallToolbar.outside.on("click", () => this.worldController.ToggleWall("outer"));
-            this.focusToolbar.karel.on("click", () => this.worldController.FocusKarel());
-            this.focusToolbar.origin.on("click", () => this.worldController.FocusOrigin());
-            this.focusToolbar.selector.on("click", () => this.worldController.FocusSelection());
+            this.worldBar.Connect();
+            this.focusControlBar.Connect();
             this.evaluateToolbar.evaluate.on("click", () => this.worldController.SetCellEvaluation(true));
             this.evaluateToolbar.ignore.on("click", () => this.worldController.SetCellEvaluation(false));
             this.historyToolbar.undo.on("click", () => this.worldController.Undo());
@@ -28760,9 +28622,9 @@ var karel = (function (exports, bootstrap) {
                     output = karelController.world.output();
                 }
                 $(modal.worldData).val(output);
+                setWorldData(output, modal);
             });
         }
-        setWorldData(output, modal);
     }
     const fileRegex = /^[a-zA-Z0-9._]+$/;
     function setFileNameLink(modal) {
@@ -28844,6 +28706,461 @@ var karel = (function (exports, bootstrap) {
     function HookNavbar(navbar, editor, karelController) {
         $(navbar.openCode).on("click", () => getCode(editor));
         $(navbar.openWorldIn).on("click", () => getWorldIn(karelController));
+    }
+
+    function applyTheme(theme) {
+        SetEditorTheme(theme.extensions, getEditors()[0]);
+        const root = $(":root")[0];
+        root.style.setProperty("--editor-color", theme.color);
+        root.style.setProperty("--editor-background", theme.backgroundColor);
+        root.style.setProperty("--editor-gutter-bg", theme.gutterBackgroundColor);
+        root.style.setProperty("--editor-gutter", theme.gutterColor);
+    }
+
+    const DarkCodeTheme = {
+        color: "#9CDCFE",
+        backgroundColor: "#1F1F1F",
+        gutterBackgroundColor: "#1F1F1F",
+        gutterColor: "#6e7681",
+        extensions: [
+            syntaxHighlighting(HighlightStyle.define([
+                { tag: tags.atom, color: "#DCDCAA" },
+                { tag: tags.className, color: "#4EC9B0" },
+                { tag: tags.keyword, color: "#C586C0" },
+                { tag: tags.controlKeyword, color: "#C586C0" },
+                { tag: tags.definitionKeyword, color: "#569CD6" },
+                { tag: tags.number, color: "#b5cea8" },
+                { tag: tags.operator, color: "#efefef" },
+                { tag: tags.brace, color: "#FFD700" },
+                { tag: tags.blockComment, color: "#6A9955", fontStyle: "italic" },
+                { tag: tags.comment, color: "#6A9955", fontStyle: "italic" },
+                { tag: tags.constant(tags.variableName), color: "#DCDCAA" },
+            ])),
+            EditorView.theme({
+                '&.cm-focused .cm-selectionBackground, ::selection': {
+                    backgroundColor: "#b3c6c7"
+                }
+            })
+        ]
+    };
+    const LightCodeTheme = {
+        color: "#0451A5",
+        backgroundColor: "#FAFAFA",
+        gutterBackgroundColor: "#FAFAFA",
+        gutterColor: "#6e7681",
+        extensions: [
+            syntaxHighlighting(HighlightStyle.define([
+                { tag: tags.atom, color: "#795E26" },
+                { tag: tags.className, color: "#4EC9B0" },
+                { tag: tags.keyword, color: "#AF00DB" },
+                { tag: tags.controlKeyword, color: "#AF00DB" },
+                { tag: tags.definitionKeyword, color: "#569CD6" },
+                { tag: tags.number, color: "#098658" },
+                { tag: tags.operator, color: "#050505" },
+                { tag: tags.brace, color: "#0431FA" },
+                { tag: tags.blockComment, color: "#008000", fontStyle: "italic" },
+                { tag: tags.comment, color: "#008000", fontStyle: "italic" },
+                { tag: tags.constant(tags.variableName), color: "#795E26" },
+            ])),
+            EditorView.theme({
+                '&.cm-focused .cm-selectionBackground, ::selection': {
+                    backgroundColor: "#b3c6c7"
+                }
+            })
+        ]
+    };
+
+    const darkClassicHighlight = {
+        color: "var(--bs-body-color)",
+        backgroundColor: "rgba(var(--bs-body-bg-rgb), var(--bs-bg-opacity))",
+        gutterBackgroundColor: "var(--bs-secondary-bg)",
+        gutterColor: "var(--bs-emphasis-color)",
+        extensions: [
+            syntaxHighlighting(HighlightStyle.define([
+                { tag: tags.atom, color: "#93bf74" },
+                { tag: tags.keyword, color: "#C586C0" },
+                { tag: tags.className, color: "#C586C0" },
+                { tag: tags.brace, color: "#94a4cb" },
+                { tag: tags.number, color: "#569CD6" },
+                { tag: tags.operator, color: "#77a1d5" },
+                { tag: tags.blockComment, color: "#a0b6b6", fontStyle: "italic" },
+                { tag: tags.comment, color: "#a0b6b6", fontStyle: "italic" },
+                { tag: tags.constant(tags.variableName), color: "#9CDCFE" },
+            ])),
+            EditorView.theme({
+                '&.cm-focused .cm-selectionBackground, ::selection': {
+                    backgroundColor: "#4e4d48"
+                }
+            })
+        ]
+    };
+
+    const OMIHighlight = {
+        color: "#FFFF00",
+        backgroundColor: "#000080",
+        gutterBackgroundColor: "#F5F5F5",
+        gutterColor: "#000000",
+        extensions: [
+            syntaxHighlighting(HighlightStyle.define([
+                { tag: tags.atom, color: "#00FFFF" },
+                { tag: tags.keyword, color: "#00FFFF" },
+                { tag: tags.controlKeyword, color: "#00FFFF" },
+                { tag: tags.definitionKeyword, color: "#00FFFF" },
+                { tag: tags.number, color: "#FF00FF" },
+                { tag: tags.operator, color: "#00FFFF" },
+                { tag: tags.brace, color: "#00FFFF" },
+                { tag: tags.constant(tags.variableName), color: "#00FFFF" },
+            ])),
+            EditorView.theme({
+                '&.cm-focused .cm-selectionBackground, ::selection': {
+                    backgroundColor: "#0000FF"
+                }
+            })
+        ]
+    };
+
+    const ReKarelHighlight = {
+        color: "#fafafa",
+        backgroundColor: "rgb(var(--bs-body-bg-rgb))",
+        gutterBackgroundColor: "var(--bs-secondary-bg)",
+        gutterColor: "var(--bs-emphasis-color)",
+        extensions: [
+            syntaxHighlighting(HighlightStyle.define([
+                { tag: tags.atom, color: "#ffda6a" },
+                { tag: tags.keyword, color: "#ea868f" },
+                { tag: tags.brace, color: "#ea868f" },
+                { tag: tags.controlKeyword, color: "#6ea8fe" },
+                { tag: tags.definitionKeyword, color: "#6ea8fe" },
+                { tag: tags.number, color: "#ffda6a" },
+                { tag: tags.operator, color: "#77a1d5" },
+                { tag: tags.blockComment, color: "#75b798", fontStyle: "italic" },
+                { tag: tags.comment, color: "#75b798", fontStyle: "italic" },
+                { tag: tags.constant(tags.variableName), color: "#6edff6" },
+            ])),
+            EditorView.theme({
+                '&.cm-focused .cm-selectionBackground, ::selection': {
+                    backgroundColor: "#4e4d48"
+                }
+            })
+        ]
+    };
+    const LightReKarelHighlight = {
+        color: "#2e2e2e",
+        backgroundColor: "rgb(var(--bs-body-bg-rgb))",
+        gutterBackgroundColor: "var(--bs-secondary-bg)",
+        gutterColor: "var(--bs-emphasis-color)",
+        extensions: [
+            syntaxHighlighting(HighlightStyle.define([
+                { tag: tags.atom, color: "#ff9c07" },
+                { tag: tags.keyword, color: "#c62e3d" },
+                { tag: tags.brace, color: "#c62e3d" },
+                { tag: tags.controlKeyword, color: "#0d6efd " },
+                { tag: tags.definitionKeyword, color: "#0d6efd " },
+                { tag: tags.number, color: "#ff9c07" },
+                { tag: tags.operator, color: "#77a1d5" },
+                { tag: tags.blockComment, color: "#198754", fontStyle: "italic" },
+                { tag: tags.comment, color: "#198754", fontStyle: "italic" },
+                { tag: tags.constant(tags.variableName), color: "#24a7db" },
+            ])),
+        ]
+    };
+
+    const SepiaTheme = {
+        color: "#3a3d42",
+        backgroundColor: "#fffde5",
+        gutterBackgroundColor: "#d9ceb6",
+        gutterColor: "#2d2e3b",
+        extensions: [
+            syntaxHighlighting(HighlightStyle.define([
+                { tag: tags.atom, color: "#707894" },
+                { tag: tags.keyword, color: "#cb3551" },
+                { tag: tags.controlKeyword, color: "#3f9c4f" },
+                { tag: tags.definitionKeyword, color: "#3f9c4f" },
+                { tag: tags.number, color: "#22867e" },
+                { tag: tags.operator, color: "#3f9c4f" },
+                { tag: tags.blockComment, color: "#973d1a", fontStyle: "italic" },
+                { tag: tags.comment, color: "#973d1a", fontStyle: "italic" },
+                { tag: tags.constant(tags.variableName), color: "#1f34a1" },
+            ])),
+            EditorView.theme({
+                '&.cm-focused .cm-selectionBackground, ::selection': {
+                    backgroundColor: "#b3c6c7"
+                }
+            })
+        ]
+    };
+
+    const DarkEditorThemes = {
+        'classic': darkClassicHighlight,
+        'rekarel': ReKarelHighlight,
+        'sepia': SepiaTheme,
+        'omi': OMIHighlight,
+        'code': DarkCodeTheme,
+    };
+    const LightEditorThemes = {
+        'classic': classicHighlight,
+        'rekarel': LightReKarelHighlight,
+        'sepia': SepiaTheme,
+        'omi': OMIHighlight,
+        'code': LightCodeTheme,
+    };
+
+    function SetLightTheme(theme) {
+        $(":root").attr("data-bs-theme", "light");
+        applyTheme(LightEditorThemes[theme]);
+    }
+    function SetDarkTheme(theme) {
+        $(":root").attr("data-bs-theme", "dark");
+        applyTheme(DarkEditorThemes[theme]);
+    }
+    function SetSystemTheme(theme) {
+        if (window.matchMedia) {
+            if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+                SetDarkTheme(theme);
+            }
+            else {
+                SetLightTheme(theme);
+            }
+            return;
+        }
+        SetLightTheme(theme); //Default light theme
+    }
+
+    let mode = "responsive";
+    function clearAllDisplayClasses(element) {
+        $(element).removeClass("d-none");
+        $(element).removeClass("d-lg-block");
+        $(element).removeClass("d-lg-none");
+    }
+    function hideElement$1(element) {
+        $(element).addClass("d-none");
+    }
+    function SetResponsiveness() {
+        mode = "responsive";
+        clearAllDisplayClasses("#desktopView");
+        clearAllDisplayClasses("#phoneView");
+        $("#phoneView").addClass("d-lg-none");
+        $("#desktopView").addClass("d-none");
+        $("#desktopView").addClass("d-lg-flex");
+        setTimeout(() => checkVisibility());
+    }
+    function SetDesktopView() {
+        mode = "desktop";
+        previousResponsiveMode = "desktop";
+        clearAllDisplayClasses("#phoneView");
+        clearAllDisplayClasses("#desktopView");
+        hideElement$1("#phoneView");
+        MovePanels("desktop");
+    }
+    function SetPhoneView() {
+        mode = "mobile";
+        previousResponsiveMode = "mobile";
+        clearAllDisplayClasses("#phoneView");
+        clearAllDisplayClasses("#desktopView");
+        hideElement$1("#desktopView");
+        MovePanels("mobile");
+    }
+    const statePanel = $("#stateConsole");
+    const worldPane = $("#worldPane");
+    $("#worldContainer");
+    function MovePanels(target) {
+        const editor = getEditors()[0];
+        const dom = $(editor.dom);
+        dom.detach();
+        statePanel.detach();
+        worldPane.detach();
+        if (target === "mobile") {
+            $("#mobileCodePanel").append(dom);
+            $("#mobileWorldPane").prepend(worldPane);
+            $("#mobileStatePanel").append(statePanel);
+        }
+        else {
+            $("#splitter-left-top-pane").append(dom);
+            $("#splitter-left-bottom-pane").append(statePanel);
+            $("#desktopWorldSlot").prepend(worldPane);
+        }
+        DesktopController.GetInstance().ResizeCanvas();
+    }
+    let previousResponsiveMode = "desktop";
+    let phoneView = $("#phoneView");
+    let desktopView = $("#desktopView");
+    function checkVisibility() {
+        if (mode !== "responsive")
+            return;
+        if (previousResponsiveMode === "desktop") {
+            if (phoneView.css("display") !== "none") {
+                previousResponsiveMode = "mobile";
+                MovePanels("mobile");
+            }
+            return;
+        }
+        if (previousResponsiveMode === "mobile") {
+            if (desktopView.css("display") !== "none") {
+                previousResponsiveMode = "desktop";
+                MovePanels("desktop");
+            }
+            return;
+        }
+    }
+    function responsiveHack() {
+        $(window).on('resize', checkVisibility);
+        $("#phoneView").removeClass("position-absolute");
+        {
+            $("#phoneView").addClass("d-none");
+        }
+        $("#loadingModal").remove();
+        setTimeout(() => checkVisibility());
+    }
+
+    function isFontSize(str) {
+        return 6 < str && str < 31;
+    }
+    function isResponsiveInterfaces(str) {
+        return ["auto", "desktop", "mobile"].indexOf(str) > -1;
+    }
+    function isTheme(str) {
+        return ["system", "light", "dark"].indexOf(str) > -1;
+    }
+    let DesktopUI$1;
+    function applySettings(settings, desktopUI) {
+        SetSettings(settings);
+        switch (settings.interface) {
+            case "auto":
+                SetResponsiveness();
+                break;
+            case "desktop":
+                SetDesktopView();
+                break;
+            case "mobile":
+                SetPhoneView();
+                break;
+            default:
+                SetDesktopView();
+                break;
+        }
+        if (!(settings.editorTheme in DarkEditorThemes))
+            settings.editorTheme = "classic";
+        switch (settings.theme) {
+            case "system":
+                SetSystemTheme(settings.editorTheme);
+                break;
+            case "light":
+                SetLightTheme(settings.editorTheme);
+                break;
+            case "dark":
+                SetDarkTheme(settings.editorTheme);
+                break;
+            default:
+                SetDarkTheme(settings.editorTheme);
+        }
+        const root = $(":root")[0];
+        root.style.setProperty("--editor-font-size", `${settings.editorFontSize}pt`);
+        root.style.setProperty("--waffle-color", `${settings.worldRendererStyle.waffleColor}`);
+        if (settings.interface == "desktop")
+            desktopUI.ResizeCanvas();
+        desktopUI.worldController.renderer.style = settings.worldRendererStyle;
+        desktopUI.worldController.Update();
+        if (localStorage)
+            localStorage.setItem(APP_SETTING, JSON.stringify(settings));
+    }
+    function setSettings(event, desktopUI) {
+        var _a;
+        const appSettings = GetCurrentSetting();
+        let interfaceType = $("#settingsForm select[name=interface]").val();
+        let fontSize = $("#settingsForm input[name=fontSize]").val();
+        let slowModeLimit = $("#settingsSlowModeLimit").val();
+        let theme = $("#settingsForm select[name=theme]").val();
+        let style = $("#settingsForm select[name=editorStyle]").val();
+        let autoInput = ((_a = $("#settingsAutoInputMode").prop("checked")) !== null && _a !== void 0 ? _a : true);
+        if (isResponsiveInterfaces(interfaceType)) {
+            appSettings.interface = interfaceType;
+        }
+        if (isFontSize(fontSize)) {
+            appSettings.editorFontSize = fontSize;
+        }
+        if (isTheme(theme)) {
+            appSettings.theme = theme;
+        }
+        appSettings.slowExecutionLimit = slowModeLimit;
+        appSettings.editorTheme = style;
+        appSettings.autoInputMode = autoInput;
+        console.log(appSettings);
+        applySettings(appSettings, desktopUI);
+        event.preventDefault();
+        return false;
+    }
+    function loadSettingsFromMemory() {
+        const jsonString = localStorage === null || localStorage === void 0 ? void 0 : localStorage.getItem(APP_SETTING);
+        if (jsonString) {
+            const memorySettings = JSON.parse(jsonString);
+            if (memorySettings.version == null)
+                return;
+            if (memorySettings.version !== SETTINGS_VERSION) {
+                localStorage.removeItem(memorySettings);
+                return;
+            }
+            SetSettings(memorySettings);
+        }
+    }
+    function loadSettingsToModal() {
+        const appSettings = GetCurrentSetting();
+        $("#settingsInterface").val(appSettings.interface);
+        $("#settingsFontSize").val(appSettings.editorFontSize);
+        $("#settingsTheme").val(appSettings.theme);
+        $("#settingsStyle").val(appSettings.editorTheme);
+        $("#settingsSlowModeLimit").val(appSettings.slowExecutionLimit);
+        $("#settingsAutoInputMode").prop("checked", appSettings.autoInputMode);
+        showOrHideSlowExecutionLimit();
+    }
+    function InitSettings(desktopUI) {
+        DesktopUI$1 = desktopUI;
+        loadSettingsFromMemory();
+        $("#settingsModal").on("show.bs.modal", (e) => {
+            loadSettingsToModal();
+        });
+        $("#settingsForm").on("submit", (e) => {
+            setSettings(e, desktopUI);
+        });
+    }
+    function showOrHideSlowExecutionLimit() {
+        if ($("#settingsSlowModeLimit").val() > 200000) {
+            $("#slowModeWarning").show();
+        }
+        else {
+            $("#slowModeWarning").hide();
+        }
+    }
+    function StartSettings(desktopUI) {
+        const appSettings = GetCurrentSetting();
+        applySettings(appSettings, desktopUI);
+        $(document).on("keydown", (e) => {
+            if (e.ctrlKey && e.which === 75) {
+                let fontSize = appSettings.editorFontSize;
+                fontSize--;
+                if (fontSize < 7)
+                    fontSize = 7;
+                appSettings.editorFontSize = fontSize;
+                applySettings(appSettings, desktopUI);
+                e.preventDefault();
+                return false;
+            }
+            if (e.ctrlKey && e.which === 76) {
+                let fontSize = appSettings.editorFontSize;
+                fontSize++;
+                if (fontSize > 30)
+                    fontSize = 30;
+                appSettings.editorFontSize = fontSize;
+                applySettings(appSettings, desktopUI);
+                e.preventDefault();
+                return false;
+            }
+        });
+        $("#settingsSlowModeLimit").on("change", () => showOrHideSlowExecutionLimit());
+    }
+    function SetWorldRendererStyle(style) {
+        const appSettings = GetCurrentSetting();
+        appSettings.worldRendererStyle = style;
+        applySettings(appSettings, DesktopUI$1);
     }
 
     function parseFormData() {
@@ -30966,6 +31283,70 @@ var karel = (function (exports, bootstrap) {
         }
     }
 
+    class MobileUI {
+        constructor(data) {
+            MobileUI._instance = this;
+            this.controlBar = new ControlBar(data.controls, WorldViewController.GetInstance());
+            this.focusBar = new FocusBar(data.focus);
+            this.worldBar = new WorldBar(data.worldBar);
+            this.startExec = data.startExec;
+            this.previousOpBtn = data.previousOpBtn;
+            this.controlBar.Init();
+            this.focusBar.Connect();
+            this.worldBar.Connect();
+            this.worldBar.OnClick(this.OnWorldOp.bind(this));
+            KarelController.GetInstance().RegisterStateChangeObserver((_, state) => {
+                if (state === "unstarted" && this.state === "execution") {
+                    this.SetState("world");
+                    return;
+                }
+                if (state !== "unstarted" && this.state !== "execution") {
+                    this.SetState("execution");
+                }
+            });
+            $(`*[data-kl-state="world"]`).addClass("d-none");
+            $(`*[data-kl-state="execution"]`).addClass("d-none");
+            $(`*[data-kl-state="code"]`).addClass("d-none");
+            this.state = "world";
+            this.SetState("world");
+            this.Connect();
+            const editor = getEditors()[0];
+            $(editor.contentDOM).on("focus", () => {
+                if (this.state !== "execution") {
+                    this.SetState("code");
+                }
+            });
+            $("#worldCanvas").on("focus", () => {
+                if (this.state !== "execution") {
+                    this.SetState("world");
+                }
+            });
+        }
+        static GetInstance() {
+            return this._instance;
+        }
+        SetState(state) {
+            $(`*[data-kl-state="${this.state}"]`).addClass("d-none");
+            $(`*[data-kl-state2="${this.state}"]`).addClass("d-none");
+            this.state = state;
+            $(`*[data-kl-state="${this.state}"]`).removeClass("d-none");
+            $(`*[data-kl-state2="${this.state}"]`).removeClass("d-none");
+        }
+        Connect() {
+            this.startExec.on("click", () => {
+                this.SetState("execution");
+            });
+        }
+        OnWorldOp(e) {
+            const target = $(e.target);
+            const icon = target.find("i");
+            this.previousOpBtn.empty();
+            this.previousOpBtn.append(icon.clone());
+            this.previousOpBtn.off("click.repeat");
+            this.previousOpBtn.on("click.repeat", () => target.trigger("click"));
+        }
+    }
+
     let KarelWorld = new World(100, 100);
     let karelController = new KarelController(KarelWorld);
     var [desktopEditor, phoneEditor] = getEditors();
@@ -31036,16 +31417,17 @@ var karel = (function (exports, bootstrap) {
             },
             beeperInput: $("#beeperBag"),
             infiniteBeeperInput: $("#infiniteBeepersBtn"),
+            beeperCollapse: $("#beeperInputCollapse"),
             delayInput: $("#delayPanel"),
             delayAdd: $("#addDelayBtn"),
             delayRemove: $("#removeDelayBtn"),
         },
-        toolbar: {
-            inputMode: {
-                indicator: $("#inputModeIndicator"),
-                drag: $("#dragSelectionMode"),
-                alternate: $("#alternateSelectionMode")
-            },
+        inputMode: {
+            indicator: $("#inputModeIndicator"),
+            drag: $("#dragSelectionMode"),
+            alternate: $("#alternateSelectionMode")
+        },
+        worldToolbar: {
             karel: {
                 north: $("#desktopKarelNorth"),
                 east: $("#desktopKarelEast"),
@@ -31067,43 +31449,45 @@ var karel = (function (exports, bootstrap) {
                 west: $("#desktopWestWall"),
                 outside: $("#desktopOuterWall"),
             },
-            focus: {
-                karel: $("#desktopGoKarel"),
-                origin: $("#desktopGoHome"),
-                selector: $("#desktopGoSelection"),
-            },
-            history: {
-                undo: $("#desktopUndo"),
-                redo: $("#desktopRedo"),
-            },
-            evaluate: {
-                evaluate: $("#desktopEvaluateCell"),
-                ignore: $("#desktopIgnoreCell"),
-            }
+        },
+        focus: {
+            karel: $("#desktopGoKarel"),
+            origin: $("#desktopGoHome"),
+            selector: $("#desktopGoSelection"),
+        },
+        history: {
+            undo: $("#desktopUndo"),
+            redo: $("#desktopRedo"),
+        },
+        evaluate: {
+            evaluate: $("#desktopEvaluateCell"),
+            ignore: $("#desktopIgnoreCell"),
         },
         context: {
             toggler: $("#contextMenuToggler"),
             container: $("#contextMenuDiv"),
-            beepers: {
-                addOne: $("#contextAddBeeper"),
-                removeOne: $("#contextDecrementBeeper"),
-                infinite: $("#contextSetInfinite"),
-                ammount: $("#contextSetAmmount"),
-                clear: $("#contextRemoveAll"),
-                random: $("#contextRandomBeeper"),
-            },
-            karel: {
-                north: $("#contextKarelNorth"),
-                east: $("#contextKarelEast"),
-                south: $("#contextKarelSouth"),
-                west: $("#contextKarelWest"),
-            },
-            wall: {
-                north: $("#contextNorthWall"),
-                east: $("#contextEastWall"),
-                south: $("#contextSouthWall"),
-                west: $("#contextWestWall"),
-                outside: $("#contextOuterWall"),
+            worldBar: {
+                beepers: {
+                    addOne: $("#contextAddBeeper"),
+                    removeOne: $("#contextDecrementBeeper"),
+                    infinite: $("#contextSetInfinite"),
+                    ammount: $("#contextSetAmmount"),
+                    clear: $("#contextRemoveAll"),
+                    random: $("#contextRandomBeeper"),
+                },
+                karel: {
+                    north: $("#contextKarelNorth"),
+                    east: $("#contextKarelEast"),
+                    south: $("#contextKarelSouth"),
+                    west: $("#contextKarelWest"),
+                },
+                wall: {
+                    north: $("#contextNorthWall"),
+                    east: $("#contextEastWall"),
+                    south: $("#contextSouthWall"),
+                    west: $("#contextWestWall"),
+                    outside: $("#contextOuterWall"),
+                },
             },
             evaluate: {
                 evaluate: $("#contextEvaluateCell"),
@@ -31134,8 +31518,57 @@ var karel = (function (exports, bootstrap) {
         },
         callStack: {
             panel: $("#pilaTab")
-        }
+        },
     }, karelController);
+    new MobileUI({
+        controls: {
+            beeperInput: $("#phoneBeeperBag"),
+            delayAdd: $(),
+            delayInput: $("#phoneDelayPanel"),
+            delayRemove: $(),
+            infiniteBeeperInput: $("#phoneInfiniteBeepersBtn"),
+            beeperCollapse: $("#beeperInputPhoneCollapse"),
+            execution: {
+                compile: $("#phoneCompileKarel"),
+                reset: $("#phoneResetWorld"),
+                run: $("#phoneRunKarel"),
+                step: $("#phoneStepProgram"),
+                stepOver: $("#phoneStepOverProgram"),
+                stepOut: $("#phoneStepOutProgram"),
+                future: $("#phoneFutureProgram"),
+            }
+        },
+        focus: {
+            origin: $("#phoneGoHome"),
+            karel: $("#phoneGoKarel"),
+            selector: $("#phoneGoSelection"),
+        },
+        worldBar: {
+            karel: {
+                north: $("#phoneKarelNorth"),
+                east: $("#phoneKarelEast"),
+                south: $("#phoneKarelSouth"),
+                west: $("#phoneKarelWest"),
+            },
+            beepers: {
+                addOne: $("#phoneAddBeeper"),
+                removeOne: $("#phoneDecrementBeeper"),
+                infinite: $("#phoneSetInfinite"),
+                ammount: $("#phoneSetAmmount"),
+                clear: $("#phoneRemoveAll"),
+                random: $("#phoneRandomBeeper"),
+            },
+            wall: {
+                north: $("#phoneNorthWall"),
+                east: $("#phoneEastWall"),
+                south: $("#phoneSouthWall"),
+                west: $("#phoneWestWall"),
+                outside: $("#phoneOuterWall"),
+            },
+        },
+        startExec: $("#phoneExecMode"),
+        previousOpBtn: $("#phoneRepeat"),
+    });
     let PhoneUI = GetPhoneUIHelper({
         editor: phoneEditor,
         mainEdtior: desktopEditor,
