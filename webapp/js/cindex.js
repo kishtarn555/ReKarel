@@ -28505,7 +28505,7 @@ var karel = (function (exports, bootstrap) {
         $(data.uiData.confirmModal.messageField).html(data.modalData.message);
         $(data.uiData.confirmModal.confirmBtn).on("click", data.modalData.accept);
         $(data.uiData.confirmModal.rejectBtn).on("click", data.modalData.reject);
-        let modal = new bootstrap.Modal($(data.uiData.confirmModal.modal).get(0));
+        let modal = bootstrap.Modal.getOrCreateInstance($(data.uiData.confirmModal.modal).get(0));
         modal.show();
     }
     function confirmPromptEnd(event) {
