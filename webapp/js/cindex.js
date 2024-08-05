@@ -28337,7 +28337,7 @@ var karel = (function (exports, bootstrap) {
                 [80, [[basic, () => { this.worldController.ToggleKarelPosition(false); }]]],
                 [82, [[basic, () => {
                                 if (e.altKey)
-                                    (new bootstrap.Modal("#randomBeepersModal")).show();
+                                    (bootstrap.Modal.getOrCreateInstance("#randomBeepersModal")).show();
                                 else
                                     this.worldController.SetRandomBeepers(AppVars.randomBeeperMinimum, AppVars.randomBeeperMaximum);
                             }]]
