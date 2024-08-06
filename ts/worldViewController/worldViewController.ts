@@ -878,6 +878,65 @@ class WorldViewController {
 
             }
         }
+
+        for (let i = rmin; i <= rmax; i++) {
+            if (cmin!=1) {
+                const oriWalls = world.walls(i, cmin-1);
+                const nextWalls = oriWalls & (~(1<<2));
+                world.setWallMask(i, cmin-1, nextWalls);
+                if (oriWalls != nextWalls) {
+                    op.addCommit({
+                        forward:()=>
+                            world.setWallMask(i, cmin-1, nextWalls),
+                        backward:()=> 
+                            world.setWallMask(i, cmin-1, oriWalls)                            
+                    })
+                }                
+            }
+            if (cmax!=world.w) {
+                const oriWalls = world.walls(i, cmax+1);
+                const nextWalls = oriWalls & (~(1<<0));
+                world.setWallMask(i, cmax+1, nextWalls);
+                if (oriWalls != nextWalls) {
+                    op.addCommit({
+                        forward:()=>
+                            world.setWallMask(i, cmax+1, nextWalls),
+                        backward:()=> 
+                            world.setWallMask(i, cmax+1, oriWalls)                            
+                    })
+                }                
+            }
+        }
+
+        for (let j = cmin; j <= cmax; j++) {
+            if (rmin!=1) {
+                const oriWalls = world.walls(rmin-1, j);
+                const nextWalls = oriWalls & (~(1<<1));
+                world.setWallMask(rmin-1, j, nextWalls);
+                if (oriWalls != nextWalls) {
+                    op.addCommit({
+                        forward:()=>
+                            world.setWallMask(rmin-1, j, nextWalls),
+                        backward:()=> 
+                            world.setWallMask(rmin-1, j, oriWalls)                            
+                    })
+                }                
+            }
+            if (rmax!=world.h) {
+                const oriWalls = world.walls(rmax+1, j);
+                const nextWalls = oriWalls & (~(1<<3));
+                world.setWallMask(rmax+1, j, nextWalls);
+                if (oriWalls != nextWalls) {
+                    op.addCommit({
+                        forward:()=>
+                            world.setWallMask(rmax+1, j, nextWalls),
+                        backward:()=> 
+                            world.setWallMask(rmax+1, j, oriWalls)                            
+                    })
+                }                
+            }
+        }
+
         history.EndOperation();
         this.Update();
     }
