@@ -42,7 +42,7 @@ export function confirmPrompt(evenet) {
         data.modalData.reject
     );
 
-    let modal = new bootstrap.Modal($(data.uiData.confirmModal.modal).get(0)); 
+    let modal = bootstrap.Modal.getOrCreateInstance($(data.uiData.confirmModal.modal).get(0)); 
     modal.show();
 }
 
