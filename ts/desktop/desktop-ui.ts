@@ -35,7 +35,6 @@ interface DesktopElements {
     worldContainer: JQuery,
     worldCanvas: JQuery,
     gizmos: Gizmos,
-    worldZoom: JQuery,
     lessZoom: JQuery,
     moreZoom: JQuery,
     controlBar: ControlBarData,    
@@ -54,7 +53,6 @@ class DesktopController {
 
     worldContainer: JQuery;
     worldCanvas: JQuery;
-    worldZoom: JQuery;
     lessZoom: JQuery;
     moreZoom: JQuery;
     
@@ -90,7 +88,6 @@ class DesktopController {
         this.editor = elements.desktopEditor;
         this.worldContainer = elements.worldContainer;
         this.worldCanvas = elements.worldCanvas;
-        this.worldZoom = elements.worldZoom;
         this.lessZoom = elements.lessZoom;
         this.moreZoom = elements.moreZoom;
 
@@ -180,22 +177,21 @@ class DesktopController {
         );
         
 
-        const zooms = ["0.5", "0.75", "1", "1.5", "2.0", "2.5", "4"]
-        this.worldZoom.on("change", ()=> {
-            let scale = parseFloat(String(this.worldZoom.val()));
+        
+        this.lessZoom.on("click", ()=> {
+            let scale = this.worldController.scale / 1.41421356;
+            if (scale < 0.25) { // FIXME: Dont hardcode this value
+                scale = 0.25;
+            }
             this.worldController.SetScale(scale);
         });
-        this.lessZoom.on("click", ()=> {
-            let val = String(this.worldZoom.val());
-            let nzoom = zooms.indexOf(val)-1;
-            if (nzoom < 0)nzoom=0;
-            this.worldZoom.val( zooms[nzoom]).trigger('change');;
-        });
         this.moreZoom.on("click", ()=> {
-            let val = String(this.worldZoom.val());
-            let nzoom = zooms.indexOf(val)+1;
-            if (nzoom >= zooms.length)nzoom=zooms.length-1;
-            this.worldZoom.val( zooms[nzoom]).trigger('change');;
+            let scale = this.worldController.scale * 1.41421356;
+            if (scale > 8) { // FIXME: Dont hardcode this value
+                scale = 8;
+            }
+            this.worldController.SetScale(scale);
+            
         });
 
         this.controlbar.Init();

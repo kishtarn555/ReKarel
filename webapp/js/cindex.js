@@ -28244,7 +28244,6 @@ var karel = (function (exports, bootstrap) {
             this.editor = elements.desktopEditor;
             this.worldContainer = elements.worldContainer;
             this.worldCanvas = elements.worldCanvas;
-            this.worldZoom = elements.worldZoom;
             this.lessZoom = elements.lessZoom;
             this.moreZoom = elements.moreZoom;
             this.beeperBagInput = elements.controlBar.beeperInput;
@@ -28285,24 +28284,19 @@ var karel = (function (exports, bootstrap) {
             this.worldCanvas.on("pointerdown", this.worldController.PointerDown.bind(this.worldController));
             this.worldCanvas.on("pointerup pointercancel pointerout pointerleave", this.worldController.PointerUp.bind(this.worldController));
             this.worldCanvas.on("pointermove", this.worldController.PointerMove.bind(this.worldController));
-            const zooms = ["0.5", "0.75", "1", "1.5", "2.0", "2.5", "4"];
-            this.worldZoom.on("change", () => {
-                let scale = parseFloat(String(this.worldZoom.val()));
+            this.lessZoom.on("click", () => {
+                let scale = this.worldController.scale / 1.41421356;
+                if (scale < 0.25) { // FIXME: Dont hardcode this value
+                    scale = 0.25;
+                }
                 this.worldController.SetScale(scale);
             });
-            this.lessZoom.on("click", () => {
-                let val = String(this.worldZoom.val());
-                let nzoom = zooms.indexOf(val) - 1;
-                if (nzoom < 0)
-                    nzoom = 0;
-                this.worldZoom.val(zooms[nzoom]).trigger('change');
-            });
             this.moreZoom.on("click", () => {
-                let val = String(this.worldZoom.val());
-                let nzoom = zooms.indexOf(val) + 1;
-                if (nzoom >= zooms.length)
-                    nzoom = zooms.length - 1;
-                this.worldZoom.val(zooms[nzoom]).trigger('change');
+                let scale = this.worldController.scale * 1.41421356;
+                if (scale > 8) { // FIXME: Dont hardcode this value
+                    scale = 8;
+                }
+                this.worldController.SetScale(scale);
             });
             this.controlbar.Init();
             this.ConnectToolbar();
@@ -31554,7 +31548,6 @@ var karel = (function (exports, bootstrap) {
             HorizontalScrollElement: $("#worldScrolledContainerHorizontal"),
             VerticalScrollElement: $("#worldScrolledContainerVertical"),
         },
-        worldZoom: $("#zoomDekstop"),
         lessZoom: $("#removeZoomBtn"),
         moreZoom: $("#addZoomBtn"),
         console: {
