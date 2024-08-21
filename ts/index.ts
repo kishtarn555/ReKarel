@@ -205,7 +205,6 @@ let DesktopUI = new DesktopController(
             HorizontalScrollElement: $("#worldScrolledContainerHorizontal"),
             VerticalScrollElement: $("#worldScrolledContainerVertical"),
         },
-        worldZoom: $("#zoomDekstop"),
         lessZoom: $("#removeZoomBtn"),
         moreZoom: $("#addZoomBtn"),
         console: {
