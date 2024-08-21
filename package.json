@@ -6,8 +6,8 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "npx tsc && rollup --config",
-    "lezer_java": "npx lezer-generator .\\webapp\\codemirror\\java.grammar -o .\\webapp\\js\\lezer_java.js ",
-    "lezer_pascal": "npx lezer-generator .\\webapp\\codemirror\\pascal.grammar -o .\\webapp\\js\\lezer_pascal.js ",
+    "lezer_java": "npx lezer-generator .\\codemirror\\java.grammar -o .\\webapp\\js\\lezer_java.js ",
+    "lezer_pascal": "npx lezer-generator .\\codemirror\\pascal.grammar -o .\\webapp\\js\\lezer_pascal.js ",
     "jison_java": "npx jison .\\gramaticas\\kareljava.jison -o .\\js\\kareljava.js  && npx gulp process-jison-java",
     "jison_java2pascal": "npx jison .\\gramaticas\\java2pascal.jison -o .\\js\\java2pascal.js  && npx gulp process-jison-java2pascal",
     "jison_pascal2java": "npx jison .\\gramaticas\\pascal2java.jison -o .\\js\\pascal2java.js && npx gulp process-jison-pascal2java"

@@ -38,7 +38,7 @@ IfStatement {
 }
 
 Block {
-     Begin End | Begin expressionList End
+    Begin expressionList End
 }
 
 expression {
@@ -47,7 +47,11 @@ expression {
 }
 
 expressionList {
-    expression | expressionList ";"  expression?
+    genExpr | expressionList ";"  genExpr
+}
+
+genExpr {
+    expression | ""
 }
 
 
