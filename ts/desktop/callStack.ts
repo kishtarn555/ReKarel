@@ -50,8 +50,7 @@ export class CallStack {
         //FIXME: Don't hardcode the id. #pilaTab
         const karelController = KarelController.GetInstance();
         let runtime = karelController.GetRuntime();
-        // @ts-ignore
-        runtime.addEventListener('call', evt=> {   
+        runtime.eventController.addEventListener('call', evt=> {   
             if (runtime.state.stackSize == MAX_STACK_SIZE+1) {
                 this.panel.prepend(
                     '<div class="alert alert-warning">' +
@@ -69,20 +68,14 @@ export class CallStack {
               '<div class="well well-small">' + this.getCallInfo(evt)+'</div>',
             );
           });
-          // @ts-ignore
-          runtime.addEventListener('return', evt=> {
+          runtime.eventController.addEventListener('return', evt=> {
             if (runtime.state.stackSize > MAX_STACK_SIZE) {
-
-              runtime.raw_opcodes
-
               this.panel.find('>:first-child').html(this.getCollapsedHTML(evt));
-
               return;
             }
             var arreglo = this.panel.find('>:first-child').remove();
           });
-          // @ts-ignore
-          runtime.addEventListener('start', evt=> {
+          runtime.eventController.addEventListener('start', evt=> {
             this.clearStack();
           });
     }

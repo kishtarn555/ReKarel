@@ -15,7 +15,7 @@ export function SaveSession(lang:string) {
     sessionStorage.setItem("rekarel:code", code);
     sessionStorage.setItem("rekarel:lang", lang);
 
-    let world = KarelController.GetInstance().world.save();
+    let world = KarelController.GetInstance().world.save("start");
     sessionStorage.setItem("rekarel:world", world);
 }
 

@@ -24,7 +24,7 @@ function setInputWorld(modal:WorldSaveModal, karelController: KarelController) {
     $(modal.inputField).val(filename.replace(/\.out$/, ".in"));
     setFileNameLink(modal);
 
-    const input = karelController.world.save();
+    const input = karelController.world.save("start");
     $(modal.worldData).val(input);
     setWorldData(input, modal);
 }

@@ -1,12 +1,9 @@
 import { WorldRenderer } from "../worldRenderer";
 import { KarelController } from "../KarelController";
-import { World } from "../../js/karel";
+import { World } from "@rekarel/core";
 import { SelectionBox, SelectionWaffle } from "./waffle";
 import { CellSelection, SelectionState } from "./selection";
 import { CellPair } from "../cellPair";
-import { karel } from "../../js";
-import { GetCurrentSetting } from "../settings";
-import { freezeEditors } from "../editor/editor";
 
 
 type Gizmos = {
@@ -547,11 +544,7 @@ class WorldViewController {
 
         if (rotate) {
             function doRotation() {
-                world.rotate(
-                    ['OESTE', 'NORTE', 'ESTE', 'SUR'][
-                    (world.orientation + 3)%4
-                    ]
-                );
+                world.rotate();
             }
             op.addCommit({
                 forward:()=>doRotation(),
@@ -864,7 +857,7 @@ class WorldViewController {
                     })
                 }
                     
-                world.setDumpCell(i, j, 0);
+                world.setDumpCell(i, j, false);
                 world.setWallMask(i,j,0);
                 const nextWalls = world.walls(i,j);
                 if (nextWalls!== oriWalls) {

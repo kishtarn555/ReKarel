@@ -1,4 +1,4 @@
-import { World } from "../../js/karel";
+import { DumpTypes } from "@rekarel/core";
 import { KarelController } from "../KarelController";
 
 
@@ -29,16 +29,16 @@ export type EvaluatorData = {
 function getData(ui:EvaluatorData) {
     console.log("GetDATA?");
     const kcInstance = KarelController.GetInstance();
-    ui.evaluatePosition.prop("checked", kcInstance.world.getDumps(World.DUMP_POSITION));
-    ui.evaluateOrientation.prop("checked", kcInstance.world.getDumps(World.DUMP_ORIENTATION));
-    ui.evaluateBag.prop("checked", kcInstance.world.getDumps(World.DUMP_BAG));
-    ui.evaluateUniverse.prop("checked", kcInstance.world.getDumps(World.DUMP_ALL_BUZZERS));
+    ui.evaluatePosition.prop("checked", kcInstance.world.getDumps(DumpTypes.DUMP_POSITION));
+    ui.evaluateOrientation.prop("checked", kcInstance.world.getDumps(DumpTypes.DUMP_ORIENTATION));
+    ui.evaluateBag.prop("checked", kcInstance.world.getDumps(DumpTypes.DUMP_BAG));
+    ui.evaluateUniverse.prop("checked", kcInstance.world.getDumps(DumpTypes.DUMP_ALL_BUZZERS));
 
     
-    ui.countMoves.prop("checked", kcInstance.world.getDumps(World.DUMP_MOVE));
-    ui.countTurns.prop("checked", kcInstance.world.getDumps(World.DUMP_LEFT));
-    ui.countPicks.prop("checked", kcInstance.world.getDumps(World.DUMP_PICK_BUZZER));
-    ui.countPuts.prop("checked", kcInstance.world.getDumps(World.DUMP_LEAVE_BUZZER));
+    ui.countMoves.prop("checked", kcInstance.world.getDumps(DumpTypes.DUMP_MOVE));
+    ui.countTurns.prop("checked", kcInstance.world.getDumps(DumpTypes.DUMP_LEFT));
+    ui.countPicks.prop("checked", kcInstance.world.getDumps(DumpTypes.DUMP_PICK_BUZZER));
+    ui.countPuts.prop("checked", kcInstance.world.getDumps(DumpTypes.DUMP_LEAVE_BUZZER));
 
     ui.maxInstructions.val(kcInstance.world.maxInstructions);
     ui.maxStackSize.val(kcInstance.world.maxStackSize);
@@ -54,15 +54,15 @@ function getData(ui:EvaluatorData) {
 function setData(ui: EvaluatorData) {
     console.log("SetDATA?");
     const kcInstance = KarelController.GetInstance();
-    kcInstance.world.setDumps(World.DUMP_POSITION, ui.evaluatePosition.prop("checked"));
-    kcInstance.world.setDumps(World.DUMP_ORIENTATION, ui.evaluateOrientation.prop("checked"));
-    kcInstance.world.setDumps(World.DUMP_BAG, ui.evaluateBag.prop("checked"));
-    kcInstance.world.setDumps(World.DUMP_ALL_BUZZERS, ui.evaluateUniverse.prop("checked"));
+    kcInstance.world.setDumps(DumpTypes.DUMP_POSITION, ui.evaluatePosition.prop("checked"));
+    kcInstance.world.setDumps(DumpTypes.DUMP_ORIENTATION, ui.evaluateOrientation.prop("checked"));
+    kcInstance.world.setDumps(DumpTypes.DUMP_BAG, ui.evaluateBag.prop("checked"));
+    kcInstance.world.setDumps(DumpTypes.DUMP_ALL_BUZZERS, ui.evaluateUniverse.prop("checked"));
 
-    kcInstance.world.setDumps(World.DUMP_MOVE, ui.countMoves.prop("checked"));
-    kcInstance.world.setDumps(World.DUMP_LEFT, ui.countTurns.prop("checked"));
-    kcInstance.world.setDumps(World.DUMP_PICK_BUZZER, ui.countPicks.prop("checked"));
-    kcInstance.world.setDumps(World.DUMP_LEAVE_BUZZER, ui.countPuts.prop("checked"));
+    kcInstance.world.setDumps(DumpTypes.DUMP_MOVE, ui.countMoves.prop("checked"));
+    kcInstance.world.setDumps(DumpTypes.DUMP_LEFT, ui.countTurns.prop("checked"));
+    kcInstance.world.setDumps(DumpTypes.DUMP_PICK_BUZZER, ui.countPicks.prop("checked"));
+    kcInstance.world.setDumps(DumpTypes.DUMP_LEAVE_BUZZER, ui.countPuts.prop("checked"));
 
     
     function validateMax(inputVal:any, min:number=1) {
