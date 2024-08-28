@@ -1,5 +1,4 @@
-import { java2pascalParser } from "../../js/java2pascal";
-import { pascal2javaParser } from "../../js/pascal2java";
+import { java2PascalTranspiler, pascal2JavaTranspiler } from "@rekarel/core";
 import { KarelConsole } from "../desktop/console";
 import { SetText } from "./editor";
 import { getEditors } from "./editorsInstances";
@@ -10,7 +9,7 @@ export function editorJava2pascal() {
 
     const source = editor.state.doc.toString();
     try {
-        const response=java2pascalParser(source)
+        const response=java2PascalTranspiler(source)
         console.log(response)
         SetText(editor,`${response}`);
     } catch (e) {
@@ -23,7 +22,7 @@ export function editorPascal2Java() {
 
     const source = editor.state.doc.toString();
     try {
-        const response=pascal2javaParser(source)
+        const response=pascal2JavaTranspiler(source)
         console.log(response)
         SetText(editor,`${response}`);
     } catch (e) {

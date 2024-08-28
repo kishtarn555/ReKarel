@@ -1,4 +1,4 @@
-import { World } from "../js/karel";
+import { World } from "@rekarel/core";
 import { CellPair } from "./cellPair";
 import { CellSelection } from "./worldViewController/selection";
 

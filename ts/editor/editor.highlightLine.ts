@@ -27,7 +27,6 @@ const karelLineTheme = EditorView.baseTheme({
   
   function lineHighlightDeco(view: EditorView) {
     let pos = view.state.facet(karelLineFacet)
-    console.log(pos)
     let builder = new RangeSetBuilder<Decoration>()
     if (pos!==-1) {
         let line = view.state.doc.line(pos)
