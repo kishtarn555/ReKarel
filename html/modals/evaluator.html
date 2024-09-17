@@ -70,7 +70,12 @@
                                 
                                 <div class="col border rounded p-0 ms-1 me-1">
                                     <div>
-                                        <label class="bg-body-secondary p-1 w-100" for="maxStack">Tamaño máximo de la pila</label>
+                                        <label class="bg-body-secondary p-1 w-100" for="maxStack">
+                                            Límite de llamadas simultaneas en la pila
+                                            <span title="Cantidad de llamadas simultaneas en la pila, independiente del número de parámetros">
+                                                <i class="bi bi-question-circle"></i>
+                                            </span>
+                                        </label>
                                     </div>
                                     <div>
                                         <input class="w-100 bg-body form-control border border-0" type="number" id="maxStack" min="1">
@@ -93,7 +98,13 @@
                                 
                                 <div class="col border rounded p-0 ms-1 me-1">
                                     <div>
-                                        <label class="bg-body-secondary p-1 w-100" for="stackMemory">Número máximo de parámetros en la pila</label>
+                                        <label class="bg-body-secondary p-1 w-100" for="stackMemory">
+                                            Memoria máxima del stack
+                                            <span title="Cada llamada consume max(1, Num. de parámetros) memoria de la pila">
+                                                <i class="bi bi-question-circle"></i>
+                                            </span>
+                                        </label>
+                                        
                                     </div>
                                     <div>
                                         <input class="w-100 bg-body form-control border border-0" type="number" id="stackMemory" min="0">
