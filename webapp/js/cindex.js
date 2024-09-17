@@ -32955,10 +32955,12 @@ var karel = (function (exports, bootstrap) {
         StartSettings(DesktopUI);
         RestoreSession();
     });
+    const GetKarelController = KarelController.GetInstance;
     function MoveEditorCursorToLine(line, column = 0) {
         SelectLine(desktopEditor, line, column);
     }
 
+    exports.GetKarelController = GetKarelController;
     exports.MoveEditorCursorToLine = MoveEditorCursorToLine;
 
     return exports;

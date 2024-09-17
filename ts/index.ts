@@ -445,7 +445,7 @@ $(document).ready(() => {
     RestoreSession();
 })
 
-
+export const GetKarelController = KarelController.GetInstance;
 
 export function MoveEditorCursorToLine(line:number, column:number=0) {
     SelectLine(desktopEditor, line, column);
