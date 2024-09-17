@@ -27,7 +27,6 @@ export type EvaluatorData = {
 
 
 function getData(ui:EvaluatorData) {
-    console.log("GetDATA?");
     const kcInstance = KarelController.GetInstance();
     ui.evaluatePosition.prop("checked", kcInstance.world.getDumps(DumpTypes.DUMP_POSITION));
     ui.evaluateOrientation.prop("checked", kcInstance.world.getDumps(DumpTypes.DUMP_ORIENTATION));
@@ -52,7 +51,6 @@ function getData(ui:EvaluatorData) {
 }
 
 function setData(ui: EvaluatorData) {
-    console.log("SetDATA?");
     const kcInstance = KarelController.GetInstance();
     kcInstance.world.setDumps(DumpTypes.DUMP_POSITION, ui.evaluatePosition.prop("checked"));
     kcInstance.world.setDumps(DumpTypes.DUMP_ORIENTATION, ui.evaluateOrientation.prop("checked"));
@@ -70,12 +68,12 @@ function setData(ui: EvaluatorData) {
         const isValid = isInteger && Number(inputVal) >= min;
         return isValid;
     }
-    const maxInstructions = ui.maxInstructions.val();
-    const maxStackSize = ui.maxStackSize.val();
-    const maxMove = ui.maxMove.val();
-    const maxTurnLeft = ui.maxTurnLeft.val();
-    const maxPickBuzzer = ui.maxPickBuzzer.val();
-    const maxLeaveBuzzer = ui.maxLeaveBuzzer.val();
+    const maxInstructions = parseInt(`${ui.maxInstructions.val()}`);
+    const maxStackSize = parseInt(`${ui.maxStackSize.val()}`);
+    const maxMove = parseInt(`${ui.maxMove.val()}`);
+    const maxTurnLeft = parseInt(`${ui.maxTurnLeft.val()}`);
+    const maxPickBuzzer = parseInt(`${ui.maxPickBuzzer.val()}`);
+    const maxLeaveBuzzer = parseInt(`${ui.maxLeaveBuzzer.val()}`);
     if (validateMax(maxInstructions))
         kcInstance.world.maxInstructions = maxInstructions as number;    
     if (validateMax(maxStackSize))
