@@ -32324,7 +32324,6 @@ var karel = (function (exports, bootstrap) {
     }
 
     function getData(ui) {
-        console.log("GetDATA?");
         const kcInstance = KarelController.GetInstance();
         ui.evaluatePosition.prop("checked", kcInstance.world.getDumps(DumpTypes.DUMP_POSITION));
         ui.evaluateOrientation.prop("checked", kcInstance.world.getDumps(DumpTypes.DUMP_ORIENTATION));
@@ -32342,7 +32341,6 @@ var karel = (function (exports, bootstrap) {
         ui.maxLeaveBuzzer.val(kcInstance.world.maxLeaveBuzzer);
     }
     function setData(ui) {
-        console.log("SetDATA?");
         const kcInstance = KarelController.GetInstance();
         kcInstance.world.setDumps(DumpTypes.DUMP_POSITION, ui.evaluatePosition.prop("checked"));
         kcInstance.world.setDumps(DumpTypes.DUMP_ORIENTATION, ui.evaluateOrientation.prop("checked"));
@@ -32357,12 +32355,12 @@ var karel = (function (exports, bootstrap) {
             const isValid = isInteger && Number(inputVal) >= min;
             return isValid;
         }
-        const maxInstructions = ui.maxInstructions.val();
-        const maxStackSize = ui.maxStackSize.val();
-        const maxMove = ui.maxMove.val();
-        const maxTurnLeft = ui.maxTurnLeft.val();
-        const maxPickBuzzer = ui.maxPickBuzzer.val();
-        const maxLeaveBuzzer = ui.maxLeaveBuzzer.val();
+        const maxInstructions = parseInt(`${ui.maxInstructions.val()}`);
+        const maxStackSize = parseInt(`${ui.maxStackSize.val()}`);
+        const maxMove = parseInt(`${ui.maxMove.val()}`);
+        const maxTurnLeft = parseInt(`${ui.maxTurnLeft.val()}`);
+        const maxPickBuzzer = parseInt(`${ui.maxPickBuzzer.val()}`);
+        const maxLeaveBuzzer = parseInt(`${ui.maxLeaveBuzzer.val()}`);
         if (validateMax(maxInstructions))
             kcInstance.world.maxInstructions = maxInstructions;
         if (validateMax(maxStackSize))
