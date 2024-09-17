@@ -37,13 +37,22 @@ export class CallStack {
 
       let runtime = karelController.GetRuntime();
       
-      const onclick = `karel.MoveEditorCursorToLine(${evt.line +1})`;
+      const onclick = `karel.MoveEditorCursorToLine(${evt.details.line +1})`;
+
+      let params = "";
+      if (evt.details.params.length > 0) {
+        const len = evt.details.params.length;
+        params+= `${evt.details.params[len - 1]}`;
+        for (let i =  len -2; i >= 0; i--) {
+          params += `, ${evt.details.params[i]}`;
+        }
+      }
       return `<span class="text-info">${runtime.state.stackSize}</span> - ` +
-                evt.function +
+                evt.details.function +
                 ' (' +
-                `<span class="text-primary"><b>${evt.param}</b></span>` +
+                `<span class="text-primary"><b>${params}</b></span>` +
                 `) <a href="#" class="badge bg-primary text-decoration-none" onclick="${onclick}"> Desde línea ` +
-                (evt.line + 1) +
+                (evt.details.line + 1) +
                 '</a>';
     }
     private OnStackChanges() {

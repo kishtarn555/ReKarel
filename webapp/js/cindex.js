@@ -22744,84 +22744,204 @@ var karel = (function (exports, bootstrap) {
       }
     */
     var kareljava = (function(){
-    var o=function(k,v,o,l){for(o=o||{},l=k.length;l--;o[k[l]]=v);return o},$V0=[1,8],$V1=[5,15],$V2=[2,61],$V3=[1,16],$V4=[1,19],$V5=[1,25],$V6=[1,36],$V7=[1,26],$V8=[1,27],$V9=[1,28],$Va=[1,29],$Vb=[1,30],$Vc=[1,38],$Vd=[1,39],$Ve=[1,40],$Vf=[6,11,19,20,21,22,23,24,25,31,34,35,65],$Vg=[6,11,19,20,21,22,23,24,25,31,33,34,35,65],$Vh=[1,70],$Vi=[1,71],$Vj=[1,72],$Vk=[1,93],$Vl=[1,89],$Vm=[1,91],$Vn=[1,94],$Vo=[1,95],$Vp=[1,96],$Vq=[1,97],$Vr=[1,98],$Vs=[1,99],$Vt=[1,100],$Vu=[1,101],$Vv=[1,102],$Vw=[1,103],$Vx=[1,104],$Vy=[1,105],$Vz=[1,106],$VA=[1,107],$VB=[1,108],$VC=[1,109],$VD=[1,110],$VE=[1,111],$VF=[1,117],$VG=[9,36],$VH=[1,118],$VI=[9,36,38],$VJ=[8,9,36,38];
+    var o=function(k,v,o,l){for(o=o||{},l=k.length;l--;o[k[l]]=v);return o},$V0=[1,5],$V1=[4,16],$V2=[1,19],$V3=[1,20],$V4=[1,21],$V5=[5,28,29,30],$V6=[1,29],$V7=[8,9,18,27,53,54,55,56,57],$V8=[1,39],$V9=[6,11,18,19,32,33,34,35,36,37,38,44,47,50,51],$Va=[9,27],$Vb=[1,71],$Vc=[1,58],$Vd=[1,59],$Ve=[1,60],$Vf=[1,61],$Vg=[1,62],$Vh=[1,63],$Vi=[1,64],$Vj=[1,72],$Vk=[1,74],$Vl=[1,75],$Vm=[1,76],$Vn=[6,11,18,19,32,33,34,35,36,37,38,44,47,49,50,51],$Vo=[1,93],$Vp=[1,95],$Vq=[1,100],$Vr=[1,101],$Vs=[1,102],$Vt=[1,103],$Vu=[1,104],$Vv=[1,105],$Vw=[1,106],$Vx=[1,107],$Vy=[1,108],$Vz=[1,109],$VA=[1,110],$VB=[1,111],$VC=[1,112],$VD=[1,113],$VE=[1,114],$VF=[1,115],$VG=[1,116],$VH=[1,117],$VI=[1,119],$VJ=[1,120],$VK=[1,121],$VL=[1,122],$VM=[1,135],$VN=[1,136],$VO=[1,137],$VP=[1,138],$VQ=[1,139],$VR=[1,140],$VS=[9,18,27,53,54,55,56,57],$VT=[9,18,27,53,54],$VU=[9,18,27,53,54,55];
     var parser = {trace: function trace () { },
     yy: {},
-    symbols_: {"error":2,"program":3,"CLASS":4,"PROG":5,"BEGIN":6,"def_list":7,"(":8,")":9,"block":10,"END":11,"EOF":12,"expr_list":13,"def":14,"DEF":15,"line":16,"var":17,"expr":18,"FORWARD":19,";":20,"LEFT":21,"PICKBUZZER":22,"LEAVEBUZZER":23,"HALT":24,"RET":25,"call":26,"cond":27,"loop":28,"repeat":29,"integer":30,"IF":31,"term":32,"ELSE":33,"WHILE":34,"REPEAT":35,"OR":36,"and_term":37,"AND":38,"not_term":39,"NOT":40,"clause":41,"IFZ":42,"bool_fun":43,"IFNFWALL":44,"IFFWALL":45,"IFNLWALL":46,"IFLWALL":47,"IFNRWALL":48,"IFRWALL":49,"IFWBUZZER":50,"IFNWBUZZER":51,"IFBBUZZER":52,"IFNBBUZZER":53,"IFW":54,"IFN":55,"IFE":56,"IFS":57,"IFNW":58,"IFNN":59,"IFNE":60,"IFNS":61,"NUM":62,"INC":63,"DEC":64,"VAR":65,"$accept":0,"$end":1},
-    terminals_: {2:"error",4:"CLASS",5:"PROG",6:"BEGIN",8:"(",9:")",11:"END",12:"EOF",15:"DEF",19:"FORWARD",20:";",21:"LEFT",22:"PICKBUZZER",23:"LEAVEBUZZER",24:"HALT",25:"RET",31:"IF",33:"ELSE",34:"WHILE",35:"REPEAT",36:"OR",38:"AND",40:"NOT",42:"IFZ",44:"IFNFWALL",45:"IFFWALL",46:"IFNLWALL",47:"IFLWALL",48:"IFNRWALL",49:"IFRWALL",50:"IFWBUZZER",51:"IFNWBUZZER",52:"IFBBUZZER",53:"IFNBBUZZER",54:"IFW",55:"IFN",56:"IFE",57:"IFS",58:"IFNW",59:"IFNN",60:"IFNE",61:"IFNS",62:"NUM",63:"INC",64:"DEC",65:"VAR"},
-    productions_: [0,[3,10],[3,9],[10,3],[7,2],[7,1],[14,6],[14,7],[13,2],[13,1],[18,4],[18,4],[18,4],[18,4],[18,4],[18,4],[18,2],[18,1],[18,1],[18,1],[18,1],[18,1],[26,3],[26,4],[27,6],[27,8],[28,6],[29,6],[32,3],[32,1],[37,3],[37,1],[39,2],[39,1],[41,4],[41,1],[41,3],[41,3],[43,1],[43,1],[43,1],[43,1],[43,1],[43,1],[43,1],[43,1],[43,1],[43,1],[43,1],[43,1],[43,1],[43,1],[43,1],[43,1],[43,1],[43,1],[30,1],[30,1],[30,4],[30,4],[17,1],[16,0]],
+    symbols_: {"error":2,"program":3,"CLASS":4,"PROG":5,"BEGIN":6,"def_list":7,"(":8,")":9,"block":10,"END":11,"EOF":12,"import_list":13,"expr_list":14,"import":15,"IMPORT":16,"package":17,";":18,"VAR":19,".":20,"*":21,"def":22,"funct_type":23,"var":24,"paramList":25,"param":26,",":27,"DEF":28,"INT":29,"BOOL":30,"expr":31,"FORWARD":32,"LEFT":33,"PICKBUZZER":34,"LEAVEBUZZER":35,"HALT":36,"CONTINUE":37,"BREAK":38,"return":39,"call":40,"cond":41,"loop":42,"repeat":43,"RET":44,"term":45,"int_termList":46,"IF":47,"bool_term":48,"ELSE":49,"WHILE":50,"REPEAT":51,"int_term":52,"OR":53,"AND":54,"==":55,"<":56,"<=":57,"NOT":58,"clause":59,"IFZ":60,"bool_fun":61,"integer":62,"IFNFWALL":63,"IFFWALL":64,"IFNLWALL":65,"IFLWALL":66,"IFNRWALL":67,"IFRWALL":68,"IFWBUZZER":69,"IFNWBUZZER":70,"IFBBUZZER":71,"IFNBBUZZER":72,"IFW":73,"IFN":74,"IFE":75,"IFS":76,"IFNW":77,"IFNN":78,"IFNE":79,"IFNS":80,"int_literal":81,"INC":82,"DEC":83,"NUM":84,"$accept":0,"$end":1},
+    terminals_: {2:"error",4:"CLASS",5:"PROG",6:"BEGIN",8:"(",9:")",11:"END",12:"EOF",16:"IMPORT",18:";",19:"VAR",20:".",21:"*",27:",",28:"DEF",29:"INT",30:"BOOL",32:"FORWARD",33:"LEFT",34:"PICKBUZZER",35:"LEAVEBUZZER",36:"HALT",37:"CONTINUE",38:"BREAK",44:"RET",47:"IF",49:"ELSE",50:"WHILE",51:"REPEAT",53:"OR",54:"AND",55:"==",56:"<",57:"<=",58:"NOT",60:"IFZ",63:"IFNFWALL",64:"IFFWALL",65:"IFNLWALL",66:"IFLWALL",67:"IFNRWALL",68:"IFRWALL",69:"IFWBUZZER",70:"IFNWBUZZER",71:"IFBBUZZER",72:"IFNBBUZZER",73:"IFW",74:"IFN",75:"IFE",76:"IFS",77:"IFNW",78:"IFNN",79:"IFNE",80:"IFNS",82:"INC",83:"DEC",84:"NUM"},
+    productions_: [0,[3,10],[3,9],[3,11],[3,10],[10,3],[13,2],[13,1],[15,3],[17,3],[17,3],[7,2],[7,1],[22,5],[22,6],[25,3],[25,1],[26,1],[23,1],[23,1],[23,1],[14,2],[14,0],[31,4],[31,4],[31,4],[31,4],[31,4],[31,2],[31,2],[31,2],[31,2],[31,1],[31,1],[31,1],[31,1],[31,1],[39,3],[39,1],[39,2],[40,3],[40,4],[46,3],[46,1],[41,5],[41,7],[42,5],[43,5],[45,3],[45,3],[45,3],[45,3],[45,3],[45,2],[45,3],[45,1],[48,1],[52,1],[59,4],[59,1],[59,3],[59,1],[59,1],[59,1],[61,1],[61,1],[61,1],[61,1],[61,1],[61,1],[61,1],[61,1],[61,1],[61,1],[61,1],[61,1],[61,1],[61,1],[61,1],[61,1],[61,1],[61,1],[62,1],[62,4],[62,4],[62,6],[62,6],[81,1],[24,1]],
     performAction: function anonymous(yytext, yyleng, yylineno, yy, yystate /* action[1] */, $$ /* vstack */, _$ /* lstack */) {
     /* this == yyval */
 
     var $0 = $$.length - 1;
     switch (yystate) {
     case 1:
-     return validate($$[$0-6], $$[$0-2].concat([['LINE', yylineno], ['HALT']]), yy); 
+     
+          resetCompiler();
+          return {
+            compiler: COMPILER,
+            language: LANG,
+            variablesCanBeFunctions: VarsAsFuncs,
+            requieresFunctionPrototypes: reqsPrototypes,
+            packages: [],
+            functions: $$[$0-6],
+            program: $$[$0-2].concat([['LINE', yylineno, 0], ['HALT']]),
+            yy:yy,
+          } 
     case 2:
-     return validate([], $$[$0-2].concat([['LINE', yylineno], ['HALT']]), yy); 
-    case 3: case 16: case 37:
+      
+          resetCompiler();
+          return {
+            compiler: COMPILER,
+            language: LANG,
+            requieresFunctionPrototypes: reqsPrototypes,
+            variablesCanBeFunctions: VarsAsFuncs,
+            packages: [],
+            functions: [],
+            program: $$[$0-2].concat([['LINE', yylineno, 0], ['HALT']]),
+            yy:yy,
+          }
+    case 3:
+      
+          resetCompiler();
+          return {
+            compiler: COMPILER,
+            language: LANG,
+            requieresFunctionPrototypes: reqsPrototypes,
+            variablesCanBeFunctions: VarsAsFuncs,
+            packages: $$[$0-10],
+            functions: $$[$0-6],
+            program: $$[$0-2].concat([['LINE', yylineno, 0], ['HALT']]),
+            yy:yy,
+          }
+    case 4:
+      
+          resetCompiler();
+          return {
+            compiler: COMPILER,
+            language: LANG,
+            packages: $$[$0-9],
+            requieresFunctionPrototypes: reqsPrototypes,
+            variablesCanBeFunctions: VarsAsFuncs,
+            functions: [],
+            program: $$[$0-2].concat([['LINE', yylineno, 0], ['HALT']]),
+            yy:yy,
+          }
+    case 5: case 30: case 31: case 54:
      this.$ = $$[$0-1]; 
     break;
-    case 4: case 8:
+    case 6: case 11: case 21:
      this.$ = $$[$0-1].concat($$[$0]); 
     break;
-    case 5: case 9: case 17: case 18: case 19: case 20: case 29: case 31: case 33: case 35:
+    case 7: case 12: case 16: case 32: case 33: case 34: case 35: case 55:
      this.$ = $$[$0]; 
     break;
-    case 6:
+    case 8:
+     this.$ = [[$$[$0-1]]]; 
+    break;
+    case 9:
+
+        this.$= $$[$0-2]+"."+$$[$0];
+      
+    break;
+    case 10:
+
+        this.$= $$[$0-2]+".*";
+      
+    break;
+    case 13:
      
+          this._$.first_line = _$[$0-4].first_line;
+          this._$.first_column = _$[$0-4].first_column;
+          this._$.last_line = _$[$0-2].last_line;
+          this._$.last_column = _$[$0-2].last_column;
+          this.$ = [{
+            name: $$[$0-3], 
+            code: [
+              locToIR(_$[$0-2]),
+              ...$$[$0],
+              ['RET', '__DEFAULT', _$[$0-4]],
+            ],  
+            params: [], 
+            loc: this._$, 
+            returnType: $$[$0-4]
+          }];
+        
+    break;
+    case 14:
+
           this._$.first_line = _$[$0-5].first_line;
           this._$.first_column = _$[$0-5].first_column;
           this._$.last_line = _$[$0-3].last_line;
           this._$.last_column = _$[$0-3].last_column;
-          this.$ = [[$$[$0-3], $$[$0-4].concat($$[$0]).concat([['RET']]), 1, this._$]];
-           
-    break;
-    case 7:
-
-          this._$.first_line = _$[$0-6].first_line;
-          this._$.first_column = _$[$0-6].first_column;
-          this._$.last_line = _$[$0-4].last_line;
-          this._$.last_column = _$[$0-4].last_column;
-        	var result = $$[$0-5].concat($$[$0]).concat([['RET']]);
-        	for (var i = 0; i < result.length; i++) {
-        		if (result[i][0] == 'PARAM') {
-        			if (result[i][1] == $$[$0-2]) {
-        				result[i][1] = 0;
-        			} else {
-    						yy.parser.parseError("Unknown variable: " + $$[$0-2], {
-    							text: result[i][1],
-    							line: yylineno,
-                  loc:result[i][2]
-    						});
-        			}
-        		}
-        	}
-        	this.$ = [[$$[$0-4], result, 2,this._$]];
+        	let result = [
+            
+              locToIR(_$[$0-3]),
+              ...$$[$0],
+              ['RET', '__DEFAULT', _$[$0-5]]
+          ];
+          [$$[$0-1]];
+        	this.$ = [{
+            name: $$[$0-4], 
+            code: result, 
+            params: $$[$0-2],
+            loc: this._$, 
+            returnType: $$[$0-5]
+          }];
         
     break;
-    case 10:
-     this.$ = [['LINE', yylineno], ['WORLDWALLS'], ['ORIENTATION'], ['MASK'], ['AND'], ['NOT'], ['EZ', 'WALL'], ['FORWARD']]; 
-    break;
-    case 11:
-     this.$ = [['LINE', yylineno], ['LEFT']]; 
-    break;
-    case 12:
-     this.$ = [['LINE', yylineno], ['WORLDBUZZERS'], ['EZ', 'WORLDUNDERFLOW'], ['PICKBUZZER']]; 
-    break;
-    case 13:
-     this.$ = [['LINE', yylineno], ['BAGBUZZERS'], ['EZ', 'BAGUNDERFLOW'], ['LEAVEBUZZER']]; 
-    break;
-    case 14:
-     this.$ = [['LINE', yylineno], ['HALT']]; 
-    break;
     case 15:
-     this.$ = [['LINE', yylineno], ['RET']]; 
+     this.$=$$[$0-2].concat($$[$0]); 
     break;
-    case 21:
+    case 17:
+     
+          this.$= [{
+            name: $$[$0],
+            loc: _$[$0]
+          }];
+        
+    break;
+    case 18:
+     this.$ = "VOID"; 
+    break;
+    case 19:
+     this.$ = "INT"; 
+    break;
+    case 20:
+     this.$ = "BOOL"; 
+    break;
+    case 22: case 36:
      this.$ = []; 
     break;
-    case 22:
+    case 23:
+     this.$ = [locToIR(_$[$0-3]), ['WORLDWALLS'], ['ORIENTATION'], ['MASK'], ['AND'], ['NOT'], ['EZ', 'WALL'], ['FORWARD']]; 
+    break;
+    case 24:
+     this.$ = [locToIR(_$[$0-3]), ['LEFT']]; 
+    break;
+    case 25:
+     this.$ = [locToIR(_$[$0-3]), ['WORLDBUZZERS'], ['EZ', 'WORLDUNDERFLOW'], ['PICKBUZZER']]; 
+    break;
+    case 26:
+     this.$ = [locToIR(_$[$0-3]), ['BAGBUZZERS'], ['EZ', 'BAGUNDERFLOW'], ['LEAVEBUZZER']]; 
+    break;
+    case 27:
+     this.$ = [locToIR(_$[$0-3]), ['HALT']]; 
+    break;
+    case 28:
+     this.$ = [locToIR(_$[$0-1]), ['CONTINUE', _$[$0-1]]]; 
+    break;
+    case 29:
+     this.$ = [locToIR(_$[$0-1]), ['BREAK', _$[$0-1]]]; 
+    break;
+    case 37:
+     this.$ = [
+          locToIR(_$[$0-2]),
+          ['RET', {
+            term: { operation: "ATOM", instructions:[["LOAD", 0]], dataType:"VOID" },
+            loc: _$[$0-2]
+          }]
+        ]; 
+    break;
+    case 38:
+     this.$ = [
+          locToIR(_$[$0]),
+          ['RET', {
+            term: { operation: "ATOM", instructions:[["LOAD", 0]], dataType:"VOID" },
+            loc: _$[$0]
+          }]
+        ]; 
+    break;
+    case 39:
+     this.$ = [
+          locToIR(_$[$0-1]),
+          ['RET', {
+            term: $$[$0],
+            loc: _$[$0-1]
+          }]
+        ]; 
+    break;
+    case 40:
      
           
           var loc = {
@@ -22830,121 +22950,386 @@ var karel = (function (exports, bootstrap) {
             last_line: _$[$0].last_line,
             last_column: _$[$0].last_column,
           };
-          this.$ = [['LINE', yylineno], ['LOAD', 0], ['CALL', $$[$0-2], 1, _$[$0-2], loc], ['LINE', yylineno]]; 
+          this.$ = [[
+            'CALL', 
+            {
+              target: $$[$0-2],
+              params: [],
+              nameLoc: _$[$0-2], 
+              argLoc: loc,
+            }
+          ]]; 
         
     break;
-    case 23:
+    case 41:
      
           this._$.first_column = _$[$0-3].first_column;
           this._$.first_line = _$[$0-3].first_line;
           this._$.last_column = _$[$0].last_column;
           this._$.last_line = _$[$0].last_line;
-          this.$ = [['LINE', yylineno]].concat($$[$0-1]).concat([['CALL', $$[$0-3], 2, _$[$0-3], _$[$0-1]], ['LINE', yylineno]]); 
+          this.$ = [[
+            'CALL', 
+            {
+              target: $$[$0-3], 
+              params: $$[$0-1],
+              nameLoc: _$[$0-3], 
+              argLoc: loc,
+            }
+          ]];  
         
     break;
-    case 24:
-     this.$ = $$[$0-4].concat($$[$0-2]).concat([['JZ', $$[$0].length]]).concat($$[$0]); 
-    break;
-    case 25:
-     this.$ = $$[$0-6].concat($$[$0-4]).concat([['JZ', 1 + $$[$0-2].length]]).concat($$[$0-2]).concat([['JMP', $$[$0].length]]).concat($$[$0]); 
-    break;
-    case 26:
-     this.$ = $$[$0-4].concat($$[$0-2]).concat([['JZ', 1 + $$[$0].length]]).concat($$[$0]).concat([['JMP', -1 -($$[$0-2].length + $$[$0].length + 2)]]); 
-    break;
-    case 27:
-     this.$ = $$[$0-4].concat($$[$0-2]).concat([['DUP'], ['LOAD', 0], ['EQ'], ['NOT'], ['JZ', $$[$0].length + 2]]).concat($$[$0]).concat([['DEC'], ['JMP', -1 -($$[$0].length + 6)], ['POP']]); 
-    break;
-    case 28:
-     this.$ = $$[$0-2].concat($$[$0]).concat([['OR']]); 
-    break;
-    case 30:
-     this.$ = $$[$0-2].concat($$[$0]).concat([['AND']]); 
-    break;
-    case 32:
-     this.$ = $$[$0].concat([['NOT']]); 
-    break;
-    case 34:
-     this.$ = $$[$0-1].concat([['NOT']]); 
-    break;
-    case 36:
-     this.$ = $$[$0-2]; 
-    break;
-    case 38:
-     this.$ = [['WORLDWALLS'], ['ORIENTATION'], ['MASK'], ['AND'], ['NOT']]; 
-    break;
-    case 39:
-     this.$ = [['WORLDWALLS'], ['ORIENTATION'], ['MASK'], ['AND']]; 
-    break;
-    case 40:
-     this.$ = [['WORLDWALLS'], ['ORIENTATION'], ['ROTL'], ['MASK'], ['AND'], ['NOT']]; 
-    break;
-    case 41:
-     this.$ = [['WORLDWALLS'], ['ORIENTATION'], ['ROTL'], ['MASK'], ['AND']]; 
-    break;
     case 42:
-     this.$ = [['WORLDWALLS'], ['ORIENTATION'], ['ROTR'], ['MASK'], ['AND'], ['NOT']]; 
+     
+          this.$ = $$[$0].concat([
+            {
+              term:$$[$0-2], 
+              operation: 'PASS',
+              dataType: 'INT',
+              loc: $$[$0-2].loc,
+              totalLoc: $$[$0-2].totalLoc,
+            } 
+          ]);
+        
     break;
     case 43:
-     this.$ = [['WORLDWALLS'], ['ORIENTATION'], ['ROTR'], ['MASK'], ['AND']]; 
+     
+          this.$ = [
+            {
+              term:$$[$0], 
+              operation: 'PASS',
+              dataType: 'INT',
+              loc: $$[$0].loc,
+              totalLoc: $$[$0].totalLoc,
+            } 
+          ]; 
+        
     break;
     case 44:
-     this.$ = [['WORLDBUZZERS'], ['LOAD', 0], ['EQ'], ['NOT']]; 
+     
+          const skipTag = UniqueTag('iskip');
+          this.$ = [[
+            "IF",
+            {
+              condition: $$[$0-2][0],
+              line: locToIR(_$[$0-4]),
+              skipTrueTag: skipTag,
+              trueCase: $$[$0]
+            }
+          ]];
+        
     break;
     case 45:
-     this.$ = [['WORLDBUZZERS'], ['NOT']]; 
+     
+          const toElse = UniqueTag('ielse');
+          const skipElse = UniqueTag('iskipelse');
+          this.$ = [[
+            "IF",
+            {
+              condition: $$[$0-4][0],
+              line: locToIR(_$[$0-6]),
+              skipTrueTag: toElse,
+              skipFalseTag: skipElse,
+              trueCase: $$[$0-2],
+              falseCase: $$[$0]
+            }
+          ]];
+        
     break;
     case 46:
-     this.$ = [['BAGBUZZERS'], ['LOAD', 0], ['EQ'], ['NOT']]; 
+     
+          const repeatTag = UniqueTag('lrepeat');
+          const endTag = UniqueTag('lend');
+          this.$ = [[
+            'WHILE',  
+            {
+              condition:   $$[$0-2][0],
+              line:         locToIR(_$[$0-4]),
+              repeatTag:    repeatTag,
+              endTag:       endTag,
+              instructions: $$[$0]
+            }
+          ]];
+        
     break;
     case 47:
-     this.$ = [['BAGBUZZERS'], ['NOT']]; 
+     
+          const repeatEnd = UniqueTag('rend');
+          const repeatLoop = UniqueTag('rloop');
+          this.$ = [[
+            "REPEAT",
+            {
+              line:       locToIR(_$[$0-4]),
+              loopCount:  $$[$0-2][0],
+              repeatTag:  repeatLoop,
+              endTag:     repeatEnd,
+              instructions: $$[$0]
+            }
+          ]]; 
+        
     break;
     case 48:
-     this.$ = [['ORIENTATION'], ['LOAD', 0], ['EQ']]; 
+     
+          this._$ = mergeLocs(_$[$0-2], _$[$0]);
+          this.$ = {
+            left: $$[$0-2], 
+            right: $$[$0], 
+            operation: "OR", 
+            dataType:"BOOL",
+            loc: _$[$0-1],
+            totalLoc: this._$
+          }; 
+        
     break;
     case 49:
-     this.$ = [['ORIENTATION'], ['LOAD', 1], ['EQ']]; 
+          
+          this._$ = mergeLocs(_$[$0-2], _$[$0]);
+          this.$ = {
+            left: $$[$0-2], 
+            right: $$[$0], 
+            operation: "AND", 
+            dataType:"BOOL",
+            loc: _$[$0-1],
+            totalLoc: this._$
+          };
+        
     break;
     case 50:
-     this.$ = [['ORIENTATION'], ['LOAD', 2], ['EQ']]; 
+     
+          this._$ = mergeLocs(_$[$0-2], _$[$0]);
+          this.$ = {
+            left: $$[$0-2], 
+            right: $$[$0], 
+            operation: "EQ", 
+            dataType:"BOOL"
+          };
+        
     break;
     case 51:
-     this.$ = [['ORIENTATION'], ['LOAD', 3], ['EQ']]; 
+
+          this._$ = mergeLocs(_$[$0-2], _$[$0]);
+          this.$ = {
+            left: $$[$0-2], 
+            right: $$[$0], 
+            operation: "LT", 
+            dataType:"BOOL",
+            loc: _$[$0-1],
+            totalLoc: this._$
+          };
+        
     break;
     case 52:
-     this.$ = [['ORIENTATION'], ['LOAD', 0], ['EQ'], ['NOT']]; 
+
+          this._$ = mergeLocs(_$[$0-2], _$[$0]);
+          this.$ = {
+            left: $$[$0-2], 
+            right: $$[$0], 
+            operation: "LTE", 
+            dataType:"BOOL",
+            loc: _$[$0-1],
+            totalLoc: this._$
+          };
+        
     break;
     case 53:
-     this.$ = [['ORIENTATION'], ['LOAD', 1], ['EQ'], ['NOT']]; 
-    break;
-    case 54:
-     this.$ = [['ORIENTATION'], ['LOAD', 2], ['EQ'], ['NOT']]; 
-    break;
-    case 55:
-     this.$ = [['ORIENTATION'], ['LOAD', 3], ['EQ'], ['NOT']]; 
+     
+          this._$ = mergeLocs(_$[$0-1], _$[$0]);
+          this.$ = {
+            term: $$[$0],       
+            operation: "NOT",
+            dataType:"BOOL",
+            loc: _$[$0-1],
+            totalLoc: this._$
+          };
+        
     break;
     case 56:
-     this.$ = [['PARAM', $$[$0], _$[$0]]]; 
+     
+          this.$ = [[
+            'TERM', 
+            {
+              term:$$[$0], 
+              operation: 'PASS',
+              dataType: 'BOOL',
+              loc: $$[$0].loc,
+              totalLoc: $$[$0].totalLoc
+            }    
+          ]];
+        
     break;
     case 57:
-     this.$ = [['LOAD', parseInt(yytext)]]; 
+     
+          this.$ = [[
+            'TERM', 
+            {
+              term:$$[$0], 
+              operation: 'PASS',
+              dataType: 'INT',
+              loc: $$[$0].loc,
+              totalLoc: $$[$0].totalLoc
+            }    
+          ]];
+        
     break;
     case 58:
-     this.$ = $$[$0-1].concat([['INC']]); 
+     
+          this._$ = mergeLocs(_$[$0-3], _$[$0]);
+          this.$ = {
+            operation: "ATOM",
+            instructions: $$[$0-1].concat([['NOT']]),
+            dataType: "BOOL",
+            loc: _$[$0-3],
+            totalLoc: this._$
+          };
+        
     break;
     case 59:
-     this.$ = $$[$0-1].concat([['DEC']]); 
+     
+          this._$ = _$[$0];
+          this.$ = {
+            operation: "ATOM",
+            instructions: $$[$0],
+            dataType: "BOOL",
+            loc: this._$,
+            totalLoc: this._$
+          };
+        
     break;
     case 60:
-     this.$ = yytext; 
+     
+          this._$ = mergeLocs(_$[$0-2], _$[$0]);
+          this.$ = {
+            operation: "ATOM",
+            instructions: $$[$0-2],
+            dataType: "BOOL",
+            loc: _$[$0-2],
+            totalLoc: this._$
+          };
+        
     break;
     case 61:
-     this.$ = [['LINE', yylineno]]; 
+
+          this._$ = _$[$0];
+          this.$ = {
+            operation: "ATOM",
+            instructions: $$[$0],
+            dataType: "INT",
+            loc: _$[$0],
+            totalLoc: _$[$0]
+          };
+        
+    break;
+    case 62:
+     
+          const callIR = $$[$0];
+          const callData = callIR[0][1];
+          this.$ = {
+            operation: "ATOM",
+            instructions: [...callIR, ['LRET']],
+            dataType: "$"+callData.target,
+            loc: _$[$0],
+            totalLoc: _$[$0]
+          };
+        
+    break;
+    case 63:
+     
+          const ir = [[
+            'VAR', 
+            {
+              target:$$[$0], 
+              loc: _$[$0],
+              couldBeFunction: false,
+            }
+          ]];        
+          this._$=_$[$0];
+          this.$ = {
+            operation: "ATOM",
+            instructions: ir,
+            dataType: "$"+$$[$0],
+            loc: _$[$0],
+            totalLoc: _$[$0]
+          }; 
+        
+    break;
+    case 64:
+     this.$ = [['WORLDWALLS'], ['ORIENTATION'], ['MASK'], ['AND'], ['NOT']]; 
+    break;
+    case 65:
+     this.$ = [['WORLDWALLS'], ['ORIENTATION'], ['MASK'], ['AND']]; 
+    break;
+    case 66:
+     this.$ = [['WORLDWALLS'], ['ORIENTATION'], ['ROTL'], ['MASK'], ['AND'], ['NOT']]; 
+    break;
+    case 67:
+     this.$ = [['WORLDWALLS'], ['ORIENTATION'], ['ROTL'], ['MASK'], ['AND']]; 
+    break;
+    case 68:
+     this.$ = [['WORLDWALLS'], ['ORIENTATION'], ['ROTR'], ['MASK'], ['AND'], ['NOT']]; 
+    break;
+    case 69:
+     this.$ = [['WORLDWALLS'], ['ORIENTATION'], ['ROTR'], ['MASK'], ['AND']]; 
+    break;
+    case 70:
+     this.$ = [['WORLDBUZZERS'], ['LOAD', 0], ['EQ'], ['NOT']]; 
+    break;
+    case 71:
+     this.$ = [['WORLDBUZZERS'], ['NOT']]; 
+    break;
+    case 72:
+     this.$ = [['BAGBUZZERS'], ['LOAD', 0], ['EQ'], ['NOT']]; 
+    break;
+    case 73:
+     this.$ = [['BAGBUZZERS'], ['NOT']]; 
+    break;
+    case 74:
+     this.$ = [['ORIENTATION'], ['LOAD', 0], ['EQ']]; 
+    break;
+    case 75:
+     this.$ = [['ORIENTATION'], ['LOAD', 1], ['EQ']]; 
+    break;
+    case 76:
+     this.$ = [['ORIENTATION'], ['LOAD', 2], ['EQ']]; 
+    break;
+    case 77:
+     this.$ = [['ORIENTATION'], ['LOAD', 3], ['EQ']]; 
+    break;
+    case 78:
+     this.$ = [['ORIENTATION'], ['LOAD', 0], ['EQ'], ['NOT']]; 
+    break;
+    case 79:
+     this.$ = [['ORIENTATION'], ['LOAD', 1], ['EQ'], ['NOT']]; 
+    break;
+    case 80:
+     this.$ = [['ORIENTATION'], ['LOAD', 2], ['EQ'], ['NOT']]; 
+    break;
+    case 81:
+     this.$ = [['ORIENTATION'], ['LOAD', 3], ['EQ'], ['NOT']]; 
+    break;
+    case 82:
+     this.$ = [['LOAD', $$[$0]]]; 
+    break;
+    case 83:
+     this.$ = $$[$0-1].concat([['INC', 1]]); 
+    break;
+    case 84:
+     this.$ = $$[$0-1].concat([['DEC', 1]]); 
+    break;
+    case 85:
+     this.$ = $$[$0-3].concat([['INC', $$[$0-1]]]); 
+    break;
+    case 86:
+     this.$ = $$[$0-3].concat([['DEC', $$[$0-1]]]); 
+    break;
+    case 87:
+     this.$ = parseInt(yytext); 
+    break;
+    case 88:
+     this.$ = yytext; 
     break;
     }
     },
-    table: [{3:1,4:[1,2]},{1:[3]},{5:[1,3]},{6:[1,4]},{5:[1,6],7:5,14:7,15:$V0},{5:[1,9],14:10,15:$V0},{8:[1,11]},o($V1,[2,5]),{16:12,65:$V2},{8:[1,13]},o($V1,[2,4]),{9:[1,14]},{17:15,65:$V3},{9:[1,17]},{6:$V4,10:18},{8:[1,20]},o([8,9],[2,60]),{6:$V4,10:21},{11:[1,22]},{6:$V4,10:35,13:23,17:37,18:24,19:$V5,20:$V6,21:$V7,22:$V8,23:$V9,24:$Va,25:$Vb,26:31,27:32,28:33,29:34,31:$Vc,34:$Vd,35:$Ve,65:$V3},{9:[1,41],17:42,65:$V3},{11:[1,43]},{12:[1,44]},{6:$V4,10:35,11:[1,45],17:37,18:46,19:$V5,20:$V6,21:$V7,22:$V8,23:$V9,24:$Va,25:$Vb,26:31,27:32,28:33,29:34,31:$Vc,34:$Vd,35:$Ve,65:$V3},o($Vf,[2,9]),{8:[1,47]},{8:[1,48]},{8:[1,49]},{8:[1,50]},{8:[1,51]},{8:[1,52]},{20:[1,53]},o($Vg,[2,17]),o($Vg,[2,18]),o($Vg,[2,19]),o($Vg,[2,20]),o($Vg,[2,21]),{8:[1,54]},{8:$V2,16:55},{8:$V2,16:56},{8:$V2,16:57},{6:$V4,10:58},{9:[1,59]},{12:[1,60]},{1:[2,2]},o([5,6,11,15,19,20,21,22,23,24,25,31,33,34,35,65],[2,3]),o($Vf,[2,8]),{9:[1,61]},{9:[1,62]},{9:[1,63]},{9:[1,64]},{9:[1,65]},{9:[1,66]},o($Vg,[2,16]),{9:[1,67],17:69,30:68,62:$Vh,63:$Vi,64:$Vj,65:$V3},{8:[1,73]},{8:[1,74]},{8:[1,75]},o($V1,[2,6]),{6:$V4,10:76},{1:[2,1]},{20:[1,77]},{20:[1,78]},{20:[1,79]},{20:[1,80]},{20:[1,81]},{20:[1,82]},{20:[2,22]},{9:[1,83]},{9:[2,56]},{9:[2,57]},{8:[1,84]},{8:[1,85]},{8:$Vk,32:86,37:87,39:88,40:$Vl,41:90,42:$Vm,43:92,44:$Vn,45:$Vo,46:$Vp,47:$Vq,48:$Vr,49:$Vs,50:$Vt,51:$Vu,52:$Vv,53:$Vw,54:$Vx,55:$Vy,56:$Vz,57:$VA,58:$VB,59:$VC,60:$VD,61:$VE},{8:$Vk,32:112,37:87,39:88,40:$Vl,41:90,42:$Vm,43:92,44:$Vn,45:$Vo,46:$Vp,47:$Vq,48:$Vr,49:$Vs,50:$Vt,51:$Vu,52:$Vv,53:$Vw,54:$Vx,55:$Vy,56:$Vz,57:$VA,58:$VB,59:$VC,60:$VD,61:$VE},{17:69,30:113,62:$Vh,63:$Vi,64:$Vj,65:$V3},o($V1,[2,7]),o($Vg,[2,10]),o($Vg,[2,11]),o($Vg,[2,12]),o($Vg,[2,13]),o($Vg,[2,14]),o($Vg,[2,15]),{20:[2,23]},{17:69,30:114,62:$Vh,63:$Vi,64:$Vj,65:$V3},{17:69,30:115,62:$Vh,63:$Vi,64:$Vj,65:$V3},{9:[1,116],36:$VF},o($VG,[2,29],{38:$VH}),o($VI,[2,31]),{8:$Vk,41:119,42:$Vm,43:92,44:$Vn,45:$Vo,46:$Vp,47:$Vq,48:$Vr,49:$Vs,50:$Vt,51:$Vu,52:$Vv,53:$Vw,54:$Vx,55:$Vy,56:$Vz,57:$VA,58:$VB,59:$VC,60:$VD,61:$VE},o($VI,[2,33]),{8:[1,120]},o($VI,[2,35],{8:[1,121]}),{8:$Vk,32:122,37:87,39:88,40:$Vl,41:90,42:$Vm,43:92,44:$Vn,45:$Vo,46:$Vp,47:$Vq,48:$Vr,49:$Vs,50:$Vt,51:$Vu,52:$Vv,53:$Vw,54:$Vx,55:$Vy,56:$Vz,57:$VA,58:$VB,59:$VC,60:$VD,61:$VE},o($VJ,[2,38]),o($VJ,[2,39]),o($VJ,[2,40]),o($VJ,[2,41]),o($VJ,[2,42]),o($VJ,[2,43]),o($VJ,[2,44]),o($VJ,[2,45]),o($VJ,[2,46]),o($VJ,[2,47]),o($VJ,[2,48]),o($VJ,[2,49]),o($VJ,[2,50]),o($VJ,[2,51]),o($VJ,[2,52]),o($VJ,[2,53]),o($VJ,[2,54]),o($VJ,[2,55]),{9:[1,123],36:$VF},{9:[1,124]},{9:[1,125]},{9:[1,126]},{6:$V4,10:35,17:37,18:127,19:$V5,20:$V6,21:$V7,22:$V8,23:$V9,24:$Va,25:$Vb,26:31,27:32,28:33,29:34,31:$Vc,34:$Vd,35:$Ve,65:$V3},{8:$Vk,37:128,39:88,40:$Vl,41:90,42:$Vm,43:92,44:$Vn,45:$Vo,46:$Vp,47:$Vq,48:$Vr,49:$Vs,50:$Vt,51:$Vu,52:$Vv,53:$Vw,54:$Vx,55:$Vy,56:$Vz,57:$VA,58:$VB,59:$VC,60:$VD,61:$VE},{8:$Vk,39:129,40:$Vl,41:90,42:$Vm,43:92,44:$Vn,45:$Vo,46:$Vp,47:$Vq,48:$Vr,49:$Vs,50:$Vt,51:$Vu,52:$Vv,53:$Vw,54:$Vx,55:$Vy,56:$Vz,57:$VA,58:$VB,59:$VC,60:$VD,61:$VE},o($VI,[2,32]),{17:69,30:130,62:$Vh,63:$Vi,64:$Vj,65:$V3},{9:[1,131]},{9:[1,132],36:$VF},{6:$V4,10:35,17:37,18:133,19:$V5,20:$V6,21:$V7,22:$V8,23:$V9,24:$Va,25:$Vb,26:31,27:32,28:33,29:34,31:$Vc,34:$Vd,35:$Ve,65:$V3},{6:$V4,10:35,17:37,18:134,19:$V5,20:$V6,21:$V7,22:$V8,23:$V9,24:$Va,25:$Vb,26:31,27:32,28:33,29:34,31:$Vc,34:$Vd,35:$Ve,65:$V3},{9:[2,58]},{9:[2,59]},o($Vf,[2,24],{33:[1,135]}),o($VG,[2,28],{38:$VH}),o($VI,[2,30]),{9:[1,136]},o($VI,[2,36]),o($VI,[2,37]),o($Vg,[2,26]),o($Vg,[2,27]),{6:$V4,10:35,17:37,18:137,19:$V5,20:$V6,21:$V7,22:$V8,23:$V9,24:$Va,25:$Vb,26:31,27:32,28:33,29:34,31:$Vc,34:$Vd,35:$Ve,65:$V3},o($VI,[2,34]),o($Vg,[2,25])],
-    defaultActions: {44:[2,2],60:[2,1],67:[2,22],69:[2,56],70:[2,57],83:[2,23],125:[2,58],126:[2,59]},
+    table: [{3:1,4:[1,2],13:3,15:4,16:$V0},{1:[3]},{5:[1,6]},{4:[1,7],15:8,16:$V0},o($V1,[2,7]),{17:9,19:[1,10]},{6:[1,11]},{5:[1,12]},o($V1,[2,6]),{18:[1,13]},{20:[1,14]},{5:[1,16],7:15,22:17,23:18,28:$V2,29:$V3,30:$V4},{6:[1,22]},o($V1,[2,8]),{19:[1,23],21:[1,24]},{5:[1,25],22:26,23:18,28:$V2,29:$V3,30:$V4},{8:[1,27]},o($V5,[2,12]),{19:$V6,24:28},{19:[2,18]},{19:[2,19]},{19:[2,20]},{5:[1,31],7:30,22:17,23:18,28:$V2,29:$V3,30:$V4},{18:[2,9]},{18:[2,10]},{8:[1,32]},o($V5,[2,11]),{9:[1,33]},{8:[1,34]},o($V7,[2,88]),{5:[1,35],22:26,23:18,28:$V2,29:$V3,30:$V4},{8:[1,36]},{9:[1,37]},{6:$V8,10:38},{9:[1,40],19:$V6,24:43,25:41,26:42},{8:[1,44]},{9:[1,45]},{6:$V8,10:46},{11:[1,47]},o($V9,[2,22],{14:48}),{6:$V8,10:49},{9:[1,50]},{9:[2,16],27:[1,51]},o($Va,[2,17]),{9:[1,52]},{6:$V8,10:53},{11:[1,54]},{12:[1,55]},{6:$V8,10:70,11:[1,56],18:$Vb,19:$V6,24:73,31:57,32:$Vc,33:$Vd,34:$Ve,35:$Vf,36:$Vg,37:$Vh,38:$Vi,39:65,40:66,41:67,42:68,43:69,44:$Vj,47:$Vk,50:$Vl,51:$Vm},o($V5,[2,13]),{6:$V8,10:77},{19:$V6,24:43,25:78,26:42},{6:$V8,10:79},{11:[1,80]},{12:[1,81]},{1:[2,2]},o([5,6,11,18,19,28,29,30,32,33,34,35,36,37,38,44,47,49,50,51],[2,5]),o($V9,[2,21]),{8:[1,82]},{8:[1,83]},{8:[1,84]},{8:[1,85]},{8:[1,86]},{18:[1,87]},{18:[1,88]},{18:[1,89]},{18:[1,90]},o($Vn,[2,32]),o($Vn,[2,33]),o($Vn,[2,34]),o($Vn,[2,35]),o($Vn,[2,36]),{8:[1,91],18:[2,38],19:$V6,24:99,40:98,45:92,58:$Vo,59:94,60:$Vp,61:96,62:97,63:$Vq,64:$Vr,65:$Vs,66:$Vt,67:$Vu,68:$Vv,69:$Vw,70:$Vx,71:$Vy,72:$Vz,73:$VA,74:$VB,75:$VC,76:$VD,77:$VE,78:$VF,79:$VG,80:$VH,81:118,82:$VI,83:$VJ,84:$VK},{8:$VL},{8:[1,123]},{8:[1,124]},{8:[1,125]},o($V5,[2,14]),{9:[2,15]},{11:[1,126]},{12:[1,127]},{1:[2,1]},{9:[1,128]},{9:[1,129]},{9:[1,130]},{9:[1,131]},{9:[1,132]},o($Vn,[2,28]),o($Vn,[2,29]),o($Vn,[2,30]),o($Vn,[2,31]),{8:$VM,9:[1,133],19:$V6,24:99,40:98,45:134,58:$Vo,59:94,60:$Vp,61:96,62:97,63:$Vq,64:$Vr,65:$Vs,66:$Vt,67:$Vu,68:$Vv,69:$Vw,70:$Vx,71:$Vy,72:$Vz,73:$VA,74:$VB,75:$VC,76:$VD,77:$VE,78:$VF,79:$VG,80:$VH,81:118,82:$VI,83:$VJ,84:$VK},{18:[2,39],53:$VN,54:$VO,55:$VP,56:$VQ,57:$VR},{8:$VM,19:$V6,24:99,40:98,45:141,58:$Vo,59:94,60:$Vp,61:96,62:97,63:$Vq,64:$Vr,65:$Vs,66:$Vt,67:$Vu,68:$Vv,69:$Vw,70:$Vx,71:$Vy,72:$Vz,73:$VA,74:$VB,75:$VC,76:$VD,77:$VE,78:$VF,79:$VG,80:$VH,81:118,82:$VI,83:$VJ,84:$VK},o($VS,[2,55]),{8:[1,142]},o($VS,[2,59],{8:[1,143]}),o($VS,[2,61]),o($VS,[2,62]),o($VS,[2,63],{8:$VL}),o($V7,[2,64]),o($V7,[2,65]),o($V7,[2,66]),o($V7,[2,67]),o($V7,[2,68]),o($V7,[2,69]),o($V7,[2,70]),o($V7,[2,71]),o($V7,[2,72]),o($V7,[2,73]),o($V7,[2,74]),o($V7,[2,75]),o($V7,[2,76]),o($V7,[2,77]),o($V7,[2,78]),o($V7,[2,79]),o($V7,[2,80]),o($V7,[2,81]),o($VS,[2,82]),{8:[1,144]},{8:[1,145]},o($VS,[2,87]),{8:$VM,9:[1,146],19:$V6,24:99,40:98,45:148,46:147,58:$Vo,59:94,60:$Vp,61:96,62:97,63:$Vq,64:$Vr,65:$Vs,66:$Vt,67:$Vu,68:$Vv,69:$Vw,70:$Vx,71:$Vy,72:$Vz,73:$VA,74:$VB,75:$VC,76:$VD,77:$VE,78:$VF,79:$VG,80:$VH,81:118,82:$VI,83:$VJ,84:$VK},{8:$VM,19:$V6,24:99,40:98,45:150,48:149,58:$Vo,59:94,60:$Vp,61:96,62:97,63:$Vq,64:$Vr,65:$Vs,66:$Vt,67:$Vu,68:$Vv,69:$Vw,70:$Vx,71:$Vy,72:$Vz,73:$VA,74:$VB,75:$VC,76:$VD,77:$VE,78:$VF,79:$VG,80:$VH,81:118,82:$VI,83:$VJ,84:$VK},{8:$VM,19:$V6,24:99,40:98,45:150,48:151,58:$Vo,59:94,60:$Vp,61:96,62:97,63:$Vq,64:$Vr,65:$Vs,66:$Vt,67:$Vu,68:$Vv,69:$Vw,70:$Vx,71:$Vy,72:$Vz,73:$VA,74:$VB,75:$VC,76:$VD,77:$VE,78:$VF,79:$VG,80:$VH,81:118,82:$VI,83:$VJ,84:$VK},{8:$VM,19:$V6,24:99,40:98,45:153,52:152,58:$Vo,59:94,60:$Vp,61:96,62:97,63:$Vq,64:$Vr,65:$Vs,66:$Vt,67:$Vu,68:$Vv,69:$Vw,70:$Vx,71:$Vy,72:$Vz,73:$VA,74:$VB,75:$VC,76:$VD,77:$VE,78:$VF,79:$VG,80:$VH,81:118,82:$VI,83:$VJ,84:$VK},{12:[1,154]},{1:[2,4]},{18:[1,155]},{18:[1,156]},{18:[1,157]},{18:[1,158]},{18:[1,159]},{18:[2,37]},{9:[1,160],53:$VN,54:$VO,55:$VP,56:$VQ,57:$VR},{8:$VM,19:$V6,24:99,40:98,45:134,58:$Vo,59:94,60:$Vp,61:96,62:97,63:$Vq,64:$Vr,65:$Vs,66:$Vt,67:$Vu,68:$Vv,69:$Vw,70:$Vx,71:$Vy,72:$Vz,73:$VA,74:$VB,75:$VC,76:$VD,77:$VE,78:$VF,79:$VG,80:$VH,81:118,82:$VI,83:$VJ,84:$VK},{8:$VM,19:$V6,24:99,40:98,45:161,58:$Vo,59:94,60:$Vp,61:96,62:97,63:$Vq,64:$Vr,65:$Vs,66:$Vt,67:$Vu,68:$Vv,69:$Vw,70:$Vx,71:$Vy,72:$Vz,73:$VA,74:$VB,75:$VC,76:$VD,77:$VE,78:$VF,79:$VG,80:$VH,81:118,82:$VI,83:$VJ,84:$VK},{8:$VM,19:$V6,24:99,40:98,45:162,58:$Vo,59:94,60:$Vp,61:96,62:97,63:$Vq,64:$Vr,65:$Vs,66:$Vt,67:$Vu,68:$Vv,69:$Vw,70:$Vx,71:$Vy,72:$Vz,73:$VA,74:$VB,75:$VC,76:$VD,77:$VE,78:$VF,79:$VG,80:$VH,81:118,82:$VI,83:$VJ,84:$VK},{8:$VM,19:$V6,24:99,40:98,45:163,58:$Vo,59:94,60:$Vp,61:96,62:97,63:$Vq,64:$Vr,65:$Vs,66:$Vt,67:$Vu,68:$Vv,69:$Vw,70:$Vx,71:$Vy,72:$Vz,73:$VA,74:$VB,75:$VC,76:$VD,77:$VE,78:$VF,79:$VG,80:$VH,81:118,82:$VI,83:$VJ,84:$VK},{8:$VM,19:$V6,24:99,40:98,45:164,58:$Vo,59:94,60:$Vp,61:96,62:97,63:$Vq,64:$Vr,65:$Vs,66:$Vt,67:$Vu,68:$Vv,69:$Vw,70:$Vx,71:$Vy,72:$Vz,73:$VA,74:$VB,75:$VC,76:$VD,77:$VE,78:$VF,79:$VG,80:$VH,81:118,82:$VI,83:$VJ,84:$VK},{8:$VM,19:$V6,24:99,40:98,45:165,58:$Vo,59:94,60:$Vp,61:96,62:97,63:$Vq,64:$Vr,65:$Vs,66:$Vt,67:$Vu,68:$Vv,69:$Vw,70:$Vx,71:$Vy,72:$Vz,73:$VA,74:$VB,75:$VC,76:$VD,77:$VE,78:$VF,79:$VG,80:$VH,81:118,82:$VI,83:$VJ,84:$VK},o($VS,[2,53]),{8:$VM,19:$V6,24:99,40:98,45:153,52:166,58:$Vo,59:94,60:$Vp,61:96,62:97,63:$Vq,64:$Vr,65:$Vs,66:$Vt,67:$Vu,68:$Vv,69:$Vw,70:$Vx,71:$Vy,72:$Vz,73:$VA,74:$VB,75:$VC,76:$VD,77:$VE,78:$VF,79:$VG,80:$VH,81:118,82:$VI,83:$VJ,84:$VK},{9:[1,167]},{8:$VM,19:$V6,24:99,40:98,45:153,52:168,58:$Vo,59:94,60:$Vp,61:96,62:97,63:$Vq,64:$Vr,65:$Vs,66:$Vt,67:$Vu,68:$Vv,69:$Vw,70:$Vx,71:$Vy,72:$Vz,73:$VA,74:$VB,75:$VC,76:$VD,77:$VE,78:$VF,79:$VG,80:$VH,81:118,82:$VI,83:$VJ,84:$VK},{8:$VM,19:$V6,24:99,40:98,45:153,52:169,58:$Vo,59:94,60:$Vp,61:96,62:97,63:$Vq,64:$Vr,65:$Vs,66:$Vt,67:$Vu,68:$Vv,69:$Vw,70:$Vx,71:$Vy,72:$Vz,73:$VA,74:$VB,75:$VC,76:$VD,77:$VE,78:$VF,79:$VG,80:$VH,81:118,82:$VI,83:$VJ,84:$VK},o($VS,[2,40]),{9:[1,170]},{9:[2,43],27:[1,171],53:$VN,54:$VO,55:$VP,56:$VQ,57:$VR},{9:[1,172]},{9:[2,56],53:$VN,54:$VO,55:$VP,56:$VQ,57:$VR},{9:[1,173]},{9:[1,174]},o($Va,[2,57],{53:$VN,54:$VO,55:$VP,56:$VQ,57:$VR}),{1:[2,3]},o($Vn,[2,23]),o($Vn,[2,24]),o($Vn,[2,25]),o($Vn,[2,26]),o($Vn,[2,27]),o($VS,[2,54]),o([9,18,27,53],[2,48],{54:$VO,55:$VP,56:$VQ,57:$VR}),o($VT,[2,49],{55:$VP,56:$VQ,57:$VR}),o($VT,[2,50],{56:$VQ,57:$VR}),o($VU,[2,51]),o($VU,[2,52]),{9:[1,175]},o($VS,[2,60]),{9:[1,176],27:[1,177]},{9:[1,178],27:[1,179]},o($VS,[2,41]),{8:$VM,19:$V6,24:99,40:98,45:148,46:180,58:$Vo,59:94,60:$Vp,61:96,62:97,63:$Vq,64:$Vr,65:$Vs,66:$Vt,67:$Vu,68:$Vv,69:$Vw,70:$Vx,71:$Vy,72:$Vz,73:$VA,74:$VB,75:$VC,76:$VD,77:$VE,78:$VF,79:$VG,80:$VH,81:118,82:$VI,83:$VJ,84:$VK},{6:$V8,10:70,18:$Vb,19:$V6,24:73,31:181,32:$Vc,33:$Vd,34:$Ve,35:$Vf,36:$Vg,37:$Vh,38:$Vi,39:65,40:66,41:67,42:68,43:69,44:$Vj,47:$Vk,50:$Vl,51:$Vm},{6:$V8,10:70,18:$Vb,19:$V6,24:73,31:182,32:$Vc,33:$Vd,34:$Ve,35:$Vf,36:$Vg,37:$Vh,38:$Vi,39:65,40:66,41:67,42:68,43:69,44:$Vj,47:$Vk,50:$Vl,51:$Vm},{6:$V8,10:70,18:$Vb,19:$V6,24:73,31:183,32:$Vc,33:$Vd,34:$Ve,35:$Vf,36:$Vg,37:$Vh,38:$Vi,39:65,40:66,41:67,42:68,43:69,44:$Vj,47:$Vk,50:$Vl,51:$Vm},o($VS,[2,58]),o($VS,[2,83]),{81:184,84:$VK},o($VS,[2,84]),{81:185,84:$VK},{9:[2,42]},o($V9,[2,44],{49:[1,186]}),o($Vn,[2,46]),o($Vn,[2,47]),{9:[1,187]},{9:[1,188]},{6:$V8,10:70,18:$Vb,19:$V6,24:73,31:189,32:$Vc,33:$Vd,34:$Ve,35:$Vf,36:$Vg,37:$Vh,38:$Vi,39:65,40:66,41:67,42:68,43:69,44:$Vj,47:$Vk,50:$Vl,51:$Vm},o($VS,[2,85]),o($VS,[2,86]),o($Vn,[2,45])],
+    defaultActions: {19:[2,18],20:[2,19],21:[2,20],23:[2,9],24:[2,10],55:[2,2],78:[2,15],81:[2,1],127:[2,4],133:[2,37],154:[2,3],180:[2,42]},
     parseError: function parseError (str, hash) {
         if (hash.recoverable) {
             this.trace(str);
@@ -23081,64 +23466,39 @@ var karel = (function (exports, bootstrap) {
         return true;
     }};
 
-    function validate(function_list, program, yy) {
-    	var functions = {};
-    	var prototypes = {};
 
-    	for (var i = 0; i < function_list.length; i++) {
-    		if (functions[function_list[i][0]]) {
-    			yy.parser.parseError("Function redefinition: " + function_list[i][0], {
-    				text: function_list[i][0],
-    				line: function_list[i][1][0][1],
-            loc: function_list[i][3]
-    			});
-    		}
+    const COMPILER= "RKJ 1.0.0";
+    const LANG = "ReKarel Java";
+    const VarsAsFuncs = false;
+    const reqsPrototypes = false;
+    //Tag counter
+    let tagCnt = 1;
 
-    		functions[function_list[i][0]] = program.length;
-    		prototypes[function_list[i][0]] = function_list[i][2];
-    		program = program.concat(function_list[i][1]);
-    	}
 
-    	var current_line = 1;
-    	for (var i = 0; i < program.length; i++) {
-    		if (program[i][0] == 'LINE') {
-    			current_line = program[i][1];
-    		} else if (program[i][0] == 'CALL') {
-    			if (!functions[program[i][1]] || !prototypes[program[i][1]]) {
-    				yy.parser.parseError("Undefined function: " + program[i][1], {
-    					text: program[i][1],
-    					line: current_line,
-              loc: program[i][3]
-    				});
-    			} else if (prototypes[program[i][1]] != program[i][2]) {
-    				yy.parser.parseError("Function parameter mismatch: " + program[i][1], {
-    					text: program[i][1],
-    					line: current_line,
-              loc: program[i][4],
-              parameters: program[i][2],
-    				});
-    			}
-
-    			program[i][2] = program[i][1];
-    			program[i][1] = functions[program[i][1]];
-          // Remove loc data which is only for error parsing
-          program[i].pop();
-          program[i].pop(); 
-    		} else if (program[i][0] == 'PARAM') {
-          if (program[i][1] != 0) {
-            yy.parser.parseError("Unknown variable: " + program[i][1], {
-              text: program[i][1],
-              line: current_line,
-              loc: program[i][2]
-            });
-          } else {
-            program[i].pop();
-          }
-    		}
-    	}
-
-    	return program;
+    function UniqueTag(tag) {
+      return `${tag}.${tagCnt++}`;
     }
+    function resetCompiler(tag) {
+      tagCnt = 1;
+    }
+
+    function mergeLocs(first, second) {
+      return {
+        first_line: first.first_line,
+        first_column: first.first_column,
+        last_line: second.last_line,
+        last_column: second.last_column,
+      }
+    }
+
+    function locToIR(loc) {
+      return [
+        "LINE",
+        loc.first_line - 1,
+        loc.first_column
+      ]
+    }
+
     /* generated by jison-lex 0.3.4 */
     var lexer = (function(){
     var lexer = ({
@@ -23474,55 +23834,66 @@ var karel = (function (exports, bootstrap) {
     break;
     case 3: return 4; 
     case 4: return 5; 
-    case 5: return 15; 
-    case 6: return 15; 
-    case 7: return 25; 
-    case 8: return 24; 
-    case 9: return 21; 
-    case 10: return 19; 
-    case 11: return 22; 
-    case 12: return 23; 
-    case 13: return 34; 
-    case 14: return 35; 
-    case 15: return 64; 
-    case 16: return 63; 
-    case 17: return 42; 
-    case 18: return 44; 
-    case 19: return 45; 
-    case 20: return 46; 
-    case 21: return 47; 
-    case 22: return 48; 
-    case 23: return 49; 
-    case 24: return 50; 
-    case 25: return 51; 
-    case 26: return 52; 
-    case 27: return 53; 
-    case 28: return 55; 
-    case 29: return 57; 
-    case 30: return 56; 
-    case 31: return 54; 
-    case 32: return 59; 
-    case 33: return 61; 
-    case 34: return 60; 
-    case 35: return 58; 
-    case 36: return 33; 
-    case 37: return 31; 
-    case 38: return 40; 
-    case 39: return 36; 
-    case 40: return 38; 
-    case 41: return 38; 
-    case 42: return 8; 
-    case 43: return 9; 
-    case 44: return 6; 
-    case 45: return 11; 
-    case 46: return 20; 
-    case 47: return 62; 
-    case 48: return 65; 
-    case 49: return 12; 
+    case 5: return 28; 
+    case 6: return 16; 
+    case 7: return 28; 
+    case 8: return 29; 
+    case 9: return 30; 
+    case 10: return 44; 
+    case 11: return 36; 
+    case 12: return 33; 
+    case 13: return 32; 
+    case 14: return 34; 
+    case 15: return 35; 
+    case 16: return 37; 
+    case 17: return 38; 
+    case 18: return 50; 
+    case 19: return 51; 
+    case 20: return 83; 
+    case 21: return 82; 
+    case 22: return 60; 
+    case 23: return 63; 
+    case 24: return 64; 
+    case 25: return 65; 
+    case 26: return 66; 
+    case 27: return 67; 
+    case 28: return 68; 
+    case 29: return 69; 
+    case 30: return 70; 
+    case 31: return 71; 
+    case 32: return 72; 
+    case 33: return 74; 
+    case 34: return 76; 
+    case 35: return 75; 
+    case 36: return 73; 
+    case 37: return 78; 
+    case 38: return 80; 
+    case 39: return 79; 
+    case 40: return 77; 
+    case 41: return 49; 
+    case 42: return 47; 
+    case 43: return 58; 
+    case 44: return 53; 
+    case 45: return 54; 
+    case 46: return 54; 
+    case 47: return 8; 
+    case 48: return 9; 
+    case 49: return 6; 
+    case 50: return 11; 
+    case 51: return 18; 
+    case 52: return 20; 
+    case 53: return 21; 
+    case 54: return 27; 
+    case 55: return 55; 
+    case 56: return 57; 
+    case 57: return 56; 
+    case 58: return 84; 
+    case 59: return 19; 
+    case 60: return 12; 
     }
     },
-    rules: [/^(?:\s+)/,/^(?:\/\/[^\n]*)/,/^(?:\/\*(?:[^*]|\*(?!\/))*\*\/)/,/^(?:class\b)/,/^(?:program\b)/,/^(?:define\b)/,/^(?:void\b)/,/^(?:return\b)/,/^(?:turnoff\b)/,/^(?:turnleft\b)/,/^(?:move\b)/,/^(?:pickbeeper\b)/,/^(?:putbeeper\b)/,/^(?:while\b)/,/^(?:iterate\b)/,/^(?:pred\b)/,/^(?:succ\b)/,/^(?:iszero\b)/,/^(?:frontIsClear\b)/,/^(?:frontIsBlocked\b)/,/^(?:leftIsClear\b)/,/^(?:leftIsBlocked\b)/,/^(?:rightIsClear\b)/,/^(?:rightIsBlocked\b)/,/^(?:nextToABeeper\b)/,/^(?:notNextToABeeper\b)/,/^(?:anyBeepersInBeeperBag\b)/,/^(?:noBeepersInBeeperBag\b)/,/^(?:facingNorth\b)/,/^(?:facingSouth\b)/,/^(?:facingEast\b)/,/^(?:facingWest\b)/,/^(?:notFacingNorth\b)/,/^(?:notFacingSouth\b)/,/^(?:notFacingEast\b)/,/^(?:notFacingWest\b)/,/^(?:else\b)/,/^(?:if\b)/,/^(?:!)/,/^(?:\|\|)/,/^(?:&&)/,/^(?:&)/,/^(?:\()/,/^(?:\))/,/^(?:\{)/,/^(?:\})/,/^(?:;)/,/^(?:[0-9]+)/,/^(?:[a-zA-Z][a-zA-Z0-9_]*)/,/^(?:$)/],
-    conditions: {"INITIAL":{"rules":[0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49],"inclusive":true}}
+    rules: [/^(?:\s+)/,/^(?:\/\/[^\n]*)/,/^(?:\/\*(?:[^*]|\*(?!\/))*\*\/)/,/^(?:class\b)/,/^(?:program\b)/,/^(?:define\b)/,/^(?:import\b)/,/^(?:void\b)/,/^(?:int\b)/,/^(?:bool\b)/,/^(?:return\b)/,/^(?:turnoff\b)/,/^(?:turnleft\b)/,/^(?:move\b)/,/^(?:pickbeeper\b)/,/^(?:putbeeper\b)/,/^(?:continue\b)/,/^(?:break\b)/,/^(?:while\b)/,/^(?:iterate\b)/,/^(?:pred\b)/,/^(?:succ\b)/,/^(?:iszero\b)/,/^(?:frontIsClear\b)/,/^(?:frontIsBlocked\b)/,/^(?:leftIsClear\b)/,/^(?:leftIsBlocked\b)/,/^(?:rightIsClear\b)/,/^(?:rightIsBlocked\b)/,/^(?:nextToABeeper\b)/,/^(?:notNextToABeeper\b)/,/^(?:anyBeepersInBeeperBag\b)/,/^(?:noBeepersInBeeperBag\b)/,/^(?:facingNorth\b)/,/^(?:facingSouth\b)/,/^(?:facingEast\b)/,/^(?:facingWest\b)/,/^(?:notFacingNorth\b)/,/^(?:notFacingSouth\b)/,/^(?:notFacingEast\b)/,/^(?:notFacingWest\b)/,/^(?:else\b)/,/^(?:if\b)/,/^(?:!)/,/^(?:\|\|)/,/^(?:&&)/,/^(?:&)/,/^(?:\()/,/^(?:\))/,/^(?:\{)/,/^(?:\})/,/^(?:;)/,/^(?:\.)/,/^(?:\*)/,/^(?:,)/,/^(?:==)/,/^(?:<=)/,/^(?:<)/,/^(?:[0-9]+)/,/^(?:[a-zA-Z][a-zA-Z0-9_]*)/,/^(?:$)/],
+    conditions: {"INITIAL":{"rules":[0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60],"inclusive":true}}
     });
     return lexer;
     })();
@@ -23533,7 +23904,7 @@ var karel = (function (exports, bootstrap) {
     Parser.prototype = parser;parser.Parser = Parser;
     return new Parser;
     })();
-    function javaParser() {
+    function javaParser$1() {
         return kareljava.parse.apply(kareljava, arguments);
     }
 
@@ -23611,216 +23982,591 @@ var karel = (function (exports, bootstrap) {
       }
     */
     var karelpascal = (function(){
-    var o=function(k,v,o,l){for(o=o||{},l=k.length;l--;o[k[l]]=v);return o},$V0=[1,6],$V1=[1,7],$V2=[8,12],$V3=[2,12],$V4=[1,13],$V5=[1,14],$V6=[1,15],$V7=[1,16],$V8=[1,17],$V9=[1,18],$Va=[1,23],$Vb=[1,25],$Vc=[1,26],$Vd=[1,27],$Ve=[1,28],$Vf=[2,62],$Vg=[1,35],$Vh=[8,12,33],$Vi=[8,12,33,38],$Vj=[16,47,49,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,67,68],$Vk=[6,13,18],$Vl=[1,49],$Vm=[1,50],$Vn=[1,51],$Vo=[1,59],$Vp=[1,55],$Vq=[1,57],$Vr=[1,60],$Vs=[1,61],$Vt=[1,62],$Vu=[1,63],$Vv=[1,64],$Vw=[1,65],$Vx=[1,66],$Vy=[1,67],$Vz=[1,68],$VA=[1,69],$VB=[1,70],$VC=[1,71],$VD=[1,72],$VE=[1,73],$VF=[1,74],$VG=[1,75],$VH=[1,76],$VI=[1,77],$VJ=[17,42],$VK=[1,89],$VL=[17,37,40,43],$VM=[1,90],$VN=[17,37,40,43,45];
+    var o=function(k,v,o,l){for(o=o||{},l=k.length;l--;o[k[l]]=v);return o},$V0=[1,5],$V1=[1,16],$V2=[1,17],$V3=[1,18],$V4=[1,13],$V5=[1,14],$V6=[1,15],$V7=[5,13],$V8=[9,15],$V9=[2,28],$Va=[1,47],$Vb=[1,28],$Vc=[1,29],$Vd=[1,30],$Ve=[1,31],$Vf=[1,32],$Vg=[1,33],$Vh=[1,34],$Vi=[1,40],$Vj=[1,41],$Vk=[1,44],$Vl=[1,45],$Vm=[1,46],$Vn=[1,58],$Vo=[9,15,50],$Vp=[9,15,50,58],$Vq=[1,62],$Vr=[1,61],$Vs=[1,64],$Vt=[1,69],$Vu=[1,70],$Vv=[1,71],$Vw=[1,72],$Vx=[1,73],$Vy=[1,74],$Vz=[1,75],$VA=[1,76],$VB=[1,77],$VC=[1,78],$VD=[1,79],$VE=[1,80],$VF=[1,81],$VG=[1,82],$VH=[1,83],$VI=[1,84],$VJ=[1,85],$VK=[1,86],$VL=[1,88],$VM=[1,89],$VN=[1,90],$VO=[1,91],$VP=[7,30,31,32,33,34,35],$VQ=[1,108],$VR=[1,109],$VS=[1,110],$VT=[1,111],$VU=[1,112],$VV=[9,15,24,29,50,57,58,60,63,64,65,66,67,68],$VW=[9,15,24,29,50,57,58,60,63,64,65],$VX=[9,15,24,29,50,57,58,60,63,64,65,66];
     var parser = {trace: function trace () { },
     yy: {},
-    symbols_: {"error":2,"program":3,"BEGINPROG":4,"def_list":5,"BEGINEXEC":6,"expr_list":7,"ENDEXEC":8,"ENDPROG":9,"EOF":10,"def":11,";":12,"PROTO":13,"line":14,"var":15,"(":16,")":17,"DEF":18,"AS":19,"expr":20,"genexpr":21,"FORWARD":22,"LEFT":23,"PICKBUZZER":24,"LEAVEBUZZER":25,"HALT":26,"RET":27,"call":28,"cond":29,"loop":30,"repeat":31,"BEGIN":32,"END":33,"integer":34,"IF":35,"term":36,"THEN":37,"ELSE":38,"WHILE":39,"DO":40,"REPEAT":41,"TIMES":42,"OR":43,"and_term":44,"AND":45,"not_term":46,"NOT":47,"clause":48,"IFZ":49,"bool_fun":50,"IFNFWALL":51,"IFFWALL":52,"IFNLWALL":53,"IFLWALL":54,"IFNRWALL":55,"IFRWALL":56,"IFWBUZZER":57,"IFNWBUZZER":58,"IFBBUZZER":59,"IFNBBUZZER":60,"IFW":61,"IFN":62,"IFE":63,"IFS":64,"IFNW":65,"IFNN":66,"IFNE":67,"IFNS":68,"NUM":69,"INC":70,"DEC":71,"VAR":72,"$accept":0,"$end":1},
-    terminals_: {2:"error",4:"BEGINPROG",6:"BEGINEXEC",8:"ENDEXEC",9:"ENDPROG",10:"EOF",12:";",13:"PROTO",16:"(",17:")",18:"DEF",19:"AS",22:"FORWARD",23:"LEFT",24:"PICKBUZZER",25:"LEAVEBUZZER",26:"HALT",27:"RET",32:"BEGIN",33:"END",35:"IF",37:"THEN",38:"ELSE",39:"WHILE",40:"DO",41:"REPEAT",42:"TIMES",43:"OR",45:"AND",47:"NOT",49:"IFZ",51:"IFNFWALL",52:"IFFWALL",53:"IFNLWALL",54:"IFLWALL",55:"IFNRWALL",56:"IFRWALL",57:"IFWBUZZER",58:"IFNWBUZZER",59:"IFBBUZZER",60:"IFNBBUZZER",61:"IFW",62:"IFN",63:"IFE",64:"IFS",65:"IFNW",66:"IFNN",67:"IFNE",68:"IFNS",69:"NUM",70:"INC",71:"DEC",72:"VAR"},
-    productions_: [0,[3,7],[3,6],[5,3],[5,2],[11,3],[11,6],[11,5],[11,8],[7,3],[7,1],[21,1],[21,0],[20,1],[20,1],[20,1],[20,1],[20,1],[20,1],[20,1],[20,1],[20,1],[20,1],[20,3],[28,1],[28,4],[29,5],[29,7],[30,5],[31,5],[36,3],[36,1],[44,3],[44,1],[46,2],[46,1],[48,4],[48,1],[48,3],[50,1],[50,1],[50,1],[50,1],[50,1],[50,1],[50,1],[50,1],[50,1],[50,1],[50,1],[50,1],[50,1],[50,1],[50,1],[50,1],[50,1],[50,1],[34,1],[34,1],[34,4],[34,4],[15,1],[14,0]],
+    symbols_: {"error":2,"program":3,"import_list":4,"BEGINPROG":5,"def_list":6,"BEGINEXEC":7,"expr_list":8,"ENDEXEC":9,"ENDPROG":10,"EOF":11,"import":12,"IMPORT":13,"package":14,";":15,"VAR":16,".":17,"*":18,"def":19,"prototype_type":20,"var":21,"(":22,"paramList":23,")":24,"funct_type":25,"AS":26,"expr":27,"param":28,",":29,"DEF_INT":30,"DEF_BOOL":31,"DEF":32,"PROTO_INT":33,"PROTO_BOOL":34,"PROTO":35,"genexpr":36,"FORWARD":37,"LEFT":38,"PICKBUZZER":39,"LEAVEBUZZER":40,"HALT":41,"CONTINUE":42,"BREAK":43,"return":44,"call":45,"cond":46,"loop":47,"repeat":48,"BEGIN":49,"END":50,"RET":51,"term":52,"parameteredCall":53,"int_termList":54,"IF":55,"bool_term":56,"THEN":57,"ELSE":58,"WHILE":59,"DO":60,"REPEAT":61,"int_term":62,"TIMES":63,"OR":64,"AND":65,"==":66,"<":67,"<=":68,"NOT":69,"clause":70,"IFZ":71,"bool_fun":72,"integer":73,"IFNFWALL":74,"IFFWALL":75,"IFNLWALL":76,"IFLWALL":77,"IFNRWALL":78,"IFRWALL":79,"IFWBUZZER":80,"IFNWBUZZER":81,"IFBBUZZER":82,"IFNBBUZZER":83,"IFW":84,"IFN":85,"IFE":86,"IFS":87,"IFNW":88,"IFNN":89,"IFNE":90,"IFNS":91,"int_literal":92,"INC":93,"DEC":94,"NUM":95,"$accept":0,"$end":1},
+    terminals_: {2:"error",5:"BEGINPROG",7:"BEGINEXEC",9:"ENDEXEC",10:"ENDPROG",11:"EOF",13:"IMPORT",15:";",16:"VAR",17:".",18:"*",22:"(",24:")",26:"AS",29:",",30:"DEF_INT",31:"DEF_BOOL",32:"DEF",33:"PROTO_INT",34:"PROTO_BOOL",35:"PROTO",37:"FORWARD",38:"LEFT",39:"PICKBUZZER",40:"LEAVEBUZZER",41:"HALT",42:"CONTINUE",43:"BREAK",49:"BEGIN",50:"END",51:"RET",55:"IF",57:"THEN",58:"ELSE",59:"WHILE",60:"DO",61:"REPEAT",63:"TIMES",64:"OR",65:"AND",66:"==",67:"<",68:"<=",69:"NOT",71:"IFZ",74:"IFNFWALL",75:"IFFWALL",76:"IFNLWALL",77:"IFLWALL",78:"IFNRWALL",79:"IFRWALL",80:"IFWBUZZER",81:"IFNWBUZZER",82:"IFBBUZZER",83:"IFNBBUZZER",84:"IFW",85:"IFN",86:"IFE",87:"IFS",88:"IFNW",89:"IFNN",90:"IFNE",91:"IFNS",93:"INC",94:"DEC",95:"NUM"},
+    productions_: [0,[3,8],[3,7],[3,7],[3,6],[4,2],[4,1],[12,3],[14,3],[14,3],[6,3],[6,2],[19,2],[19,5],[19,4],[19,7],[23,3],[23,1],[28,1],[25,1],[25,1],[25,1],[20,1],[20,1],[20,1],[8,3],[8,1],[36,1],[36,0],[27,1],[27,1],[27,1],[27,1],[27,1],[27,1],[27,1],[27,1],[27,1],[27,1],[27,1],[27,1],[27,3],[44,1],[44,2],[45,1],[45,1],[53,4],[54,3],[54,1],[46,4],[46,6],[47,4],[48,4],[52,3],[52,3],[52,3],[52,3],[52,3],[52,2],[52,3],[52,1],[56,1],[62,1],[70,4],[70,1],[70,1],[70,1],[70,1],[72,1],[72,1],[72,1],[72,1],[72,1],[72,1],[72,1],[72,1],[72,1],[72,1],[72,1],[72,1],[72,1],[72,1],[72,1],[72,1],[72,1],[72,1],[73,1],[73,4],[73,4],[73,6],[73,6],[92,1],[21,1]],
     performAction: function anonymous(yytext, yyleng, yylineno, yy, yystate /* action[1] */, $$ /* vstack */, _$ /* lstack */) {
     /* this == yyval */
 
     var $0 = $$.length - 1;
     switch (yystate) {
     case 1:
-     return validate($$[$0-5], $$[$0-3].concat([['LINE', yylineno], ['HALT']]), yy); 
+     
+          resetCompiler();
+          return {
+            compiler: COMPILER,
+            language: LANG,
+            requieresFunctionPrototypes: reqsPrototypes, 
+            variablesCanBeFunctions: VarsAsFuncs,
+            packages: $$[$0-7],
+            functions: $$[$0-5],
+            program: $$[$0-3].concat([['LINE', yylineno, 0], ['HALT']]),
+            yy:yy,
+          }; 
     case 2:
-     return validate([], $$[$0-3].concat([['LINE', yylineno], ['HALT']]), yy); 
+     
+          resetCompiler();
+          return {
+            compiler: COMPILER,
+            language: LANG,
+            requieresFunctionPrototypes: reqsPrototypes, 
+            variablesCanBeFunctions: VarsAsFuncs,
+            packages: $$[$0-6],
+            functions: [],
+            program: $$[$0-3].concat([['LINE', yylineno, 0], ['HALT']]),
+            yy:yy,
+          }; 
     case 3:
-     this.$ = $$[$0-2].concat($$[$0-1]); 
-    break;
-    case 4: case 23: case 38:
-     this.$ = $$[$0-1]; 
-    break;
+     
+          resetCompiler();
+          return {
+            compiler: COMPILER,
+            language: LANG,
+            requieresFunctionPrototypes: reqsPrototypes,  
+            variablesCanBeFunctions: VarsAsFuncs,
+            packages: [],
+            functions: $$[$0-5],
+            program: $$[$0-3].concat([['LINE', yylineno, 0], ['HALT']]),
+            yy:yy,
+          }; 
+    case 4:
+     
+          resetCompiler();
+          return {
+            compiler: COMPILER,
+            language: LANG,
+            requieresFunctionPrototypes: reqsPrototypes, 
+            variablesCanBeFunctions: VarsAsFuncs,
+            packages: [],
+            functions: [],
+            program: $$[$0-3].concat([['LINE', yylineno, 0], ['HALT']]),
+            yy:yy,
+          }; 
     case 5:
-     
-          this._$.first_line = _$[$0-2].first_line;
-          this._$.first_column = _$[$0-2].first_column;
-          this._$.last_line = _$[$0].last_line;
-          this._$.last_column = _$[$0].last_column;
-          this.$ = [[$$[$0].toLowerCase(), null, 1, $$[$0-1][0][1], this._$] ]; 
-        
+     this.$ = $$[$0-1].concat($$[$0]); 
     break;
-    case 6:
-     
-          this._$.first_line = _$[$0-5].first_line;
-          this._$.first_column = _$[$0-5].first_column;
-          this._$.last_line = _$[$0].last_line;
-          this._$.last_column = _$[$0].last_column;
-          this.$ = [[$$[$0-3].toLowerCase(), null, 2, $$[$0-4][0][1], this._$]]; 
-          
+    case 6: case 17: case 26: case 27: case 36: case 37: case 38: case 39: case 40: case 45: case 60:
+     this.$ = $$[$0]; 
     break;
     case 7:
-     
-          this._$.first_line = _$[$0-4].first_line;
-          this._$.first_column = _$[$0-4].first_column;
-          this._$.last_line = _$[$0-2].last_line;
-          this._$.last_column = _$[$0-2].last_column;
-
-          this.$ = [[$$[$0-2].toLowerCase(), $$[$0-3].concat($$[$0]).concat([['RET']]), 1, $$[$0-3][0][1], this._$, this._$]]; 
-        
+     this.$ = [[$$[$0-1]]]; 
     break;
     case 8:
 
+        this.$= $$[$0-2]+"."+$$[$0];
+      
+    break;
+    case 9:
+
+        this.$= $$[$0-2]+".*";
+      
+    break;
+    case 10:
+     this.$ = $$[$0-2].concat($$[$0-1]); 
+    break;
+    case 11: case 41: case 59:
+     this.$ = $$[$0-1]; 
+    break;
+    case 12:
+     
+          this._$.first_line = _$[$0-1].first_line;
+          this._$.first_column = _$[$0-1].first_column;
+          this._$.last_line = _$[$0].last_line;
+          this._$.last_column = _$[$0].last_column;
+          this.$ = [{
+            name: $$[$0].toLowerCase(), 
+            code: null, 
+            params: [],  
+            loc: this._$,
+            returnType: $$[$0-1]
+          }]; 
+        
+    break;
+    case 13:
+     
+          this._$.first_line = _$[$0-4].first_line;
+          this._$.first_column = _$[$0-4].first_column;
+          this._$.last_line = _$[$0].last_line;
+          this._$.last_column = _$[$0].last_column;
+          this.$ = [{
+            name: $$[$0-3].toLowerCase(), 
+            code: null, 
+            params: $$[$0-1],  
+            loc: this._$,
+            returnType: $$[$0-4]
+          }]; 
           
-          this._$.first_line = _$[$0-7].first_line;
-          this._$.first_column = _$[$0-7].first_column;
+    break;
+    case 14:
+     
+          this._$.first_line = _$[$0-3].first_line;
+          this._$.first_column = _$[$0-3].first_column;
+          this._$.last_line = _$[$0-2].last_line;
+          this._$.last_column = _$[$0-2].last_column;
+
+          this.$ = [{
+            name: $$[$0-2].toLowerCase(),  
+            code: [
+              locToIR(_$[$0-2]),
+              ...$$[$0],
+              ['RET', '__DEFAULT', _$[$0-3]]
+            ],
+            params: [], 
+            loc: this._$,
+            returnType: $$[$0-3]
+          }]; 
+        
+    break;
+    case 15:
+
+          
+          this._$.first_line = _$[$0-6].first_line;
+          this._$.first_column = _$[$0-6].first_column;
           this._$.last_line = _$[$0-5].last_line;
           this._$.last_column = _$[$0-5].last_column;
 
-        	var result = $$[$0-6].concat($$[$0]).concat([['RET']]);
-          var current_line = $$[$0-6][0][1];
-        	for (var i = 0; i < result.length; i++) {
-            if (result[i][0] == 'LINE') {
-              current_line = result[i][1];
-            } else if (result[i][0] == 'PARAM') {
-        			if (result[i][1] == $$[$0-3].toLowerCase()) {
-        				result[i][1] = 0;
-        			} else {
-        				yy.parser.parseError("Unknown variable: " + $$[$0-3], {
-                  text: result[i][1],
-                  line: current_line + 1,
-                  loc:result[i][2]
-                });
-        			}
-        		}
-        	}
-        	this.$ = [[$$[$0-5].toLowerCase(), result, 2, $$[$0-6][0][1],this._$, _$[$0-3]]];
+        	this.$ = [{
+            name: $$[$0-5].toLowerCase(),
+            code: [
+              locToIR(_$[$0-5]),
+              ...$$[$0],
+              ['RET', '__DEFAULT', _$[$0-6]]
+            ],
+            params: $$[$0-3],
+            loc: this._$,        
+            returnType: $$[$0-6]
+          }];
         
     break;
-    case 9:
-     this.$ = $$[$0-2].concat($$[$0]); 
-    break;
-    case 10: case 11: case 19: case 20: case 21: case 22: case 31: case 33: case 35: case 37:
-     this.$ = $$[$0]; 
-    break;
-    case 12:
-     this.$ = []; 
-    break;
-    case 13:
-     this.$ = [['LINE', yylineno], ['WORLDWALLS'], ['ORIENTATION'], ['MASK'], ['AND'], ['NOT'], ['EZ', 'WALL'], ['FORWARD']]; 
-    break;
-    case 14:
-     this.$ = [['LINE', yylineno], ['LEFT']]; 
-    break;
-    case 15:
-     this.$ = [['LINE', yylineno], ['WORLDBUZZERS'], ['EZ', 'WORLDUNDERFLOW'], ['PICKBUZZER']]; 
-    break;
     case 16:
-     this.$ = [['LINE', yylineno], ['BAGBUZZERS'], ['EZ', 'BAGUNDERFLOW'], ['LEAVEBUZZER']]; 
-    break;
-    case 17:
-     this.$ = [['LINE', yylineno], ['HALT']]; 
+     this.$=$$[$0-2].concat($$[$0]); 
     break;
     case 18:
-     this.$ = [['LINE', yylineno], ['RET']]; 
+     
+          this.$= [{
+            name: $$[$0],
+            loc: _$[$0]
+          }];
+        
     break;
-    case 24:
-     this.$ = [['LINE', yylineno], ['LOAD', 0], ['CALL', $$[$0].toLowerCase(), 1, _$[$0], _$[$0]], ['LINE', yylineno]]; 
+    case 19: case 22:
+     this.$ = "INT"; 
+    break;
+    case 20: case 23:
+     this.$ = "BOOL"; 
+    break;
+    case 21: case 24:
+     this.$ = "VOID"; 
     break;
     case 25:
-     this.$ = [['LINE', yylineno]].concat($$[$0-1]).concat([['CALL', $$[$0-3].toLowerCase(), 2, _$[$0-3], _$[$0-1]], ['LINE', yylineno]]); 
-    break;
-    case 26:
-     this.$ = $$[$0-3].concat($$[$0-2]).concat([['JZ', $$[$0].length]]).concat($$[$0]); 
-    break;
-    case 27:
-     this.$ = $$[$0-5].concat($$[$0-4]).concat([['JZ', 1 + $$[$0-2].length]]).concat($$[$0-2]).concat([['JMP', $$[$0].length]]).concat($$[$0]); 
+     this.$ = $$[$0-2].concat($$[$0]); 
     break;
     case 28:
-     this.$ = $$[$0-3].concat($$[$0-2]).concat([['JZ', 1 + $$[$0].length]]).concat($$[$0]).concat([['JMP', -1 -($$[$0-2].length + $$[$0].length + 2)]]); 
+     this.$ = []; 
     break;
     case 29:
-     this.$ = $$[$0-3].concat($$[$0-2]).concat([['DUP'], ['LOAD', 0], ['EQ'], ['NOT'], ['JZ', $$[$0].length + 2]]).concat($$[$0]).concat([['DEC'], ['JMP', -1 -($$[$0].length + 6)], ['POP']]); 
+     this.$ = [locToIR(_$[$0]), ['WORLDWALLS'], ['ORIENTATION'], ['MASK'], ['AND'], ['NOT'], ['EZ', 'WALL'], ['FORWARD']]; 
     break;
     case 30:
-     this.$ = $$[$0-2].concat($$[$0]).concat([['OR']]); 
+     this.$ = [locToIR(_$[$0]), ['LEFT']]; 
+    break;
+    case 31:
+     this.$ = [locToIR(_$[$0]), ['WORLDBUZZERS'], ['EZ', 'WORLDUNDERFLOW'], ['PICKBUZZER']]; 
     break;
     case 32:
-     this.$ = $$[$0-2].concat($$[$0]).concat([['AND']]); 
+     this.$ = [locToIR(_$[$0]), ['BAGBUZZERS'], ['EZ', 'BAGUNDERFLOW'], ['LEAVEBUZZER']]; 
+    break;
+    case 33:
+     this.$ = [locToIR(_$[$0]), ['HALT']]; 
     break;
     case 34:
-     this.$ = $$[$0].concat([['NOT']]); 
+     this.$ = [locToIR(_$[$0]), ['CONTINUE', _$[$0]]]; 
     break;
-    case 36:
-     this.$ = $$[$0-1].concat([['NOT']]); 
-    break;
-    case 39:
-     this.$ = [['WORLDWALLS'], ['ORIENTATION'], ['MASK'], ['AND'], ['NOT']]; 
-    break;
-    case 40:
-     this.$ = [['WORLDWALLS'], ['ORIENTATION'], ['MASK'], ['AND']]; 
-    break;
-    case 41:
-     this.$ = [['WORLDWALLS'], ['ORIENTATION'], ['ROTL'], ['MASK'], ['AND'], ['NOT']]; 
+    case 35:
+     this.$ = [locToIR(_$[$0]), ['BREAK', _$[$0]]]; 
     break;
     case 42:
-     this.$ = [['WORLDWALLS'], ['ORIENTATION'], ['ROTL'], ['MASK'], ['AND']]; 
+     this.$ = [
+          locToIR(_$[$0]),
+          ['RET', {
+            term: { operation: "ATOM", instructions:[["LOAD", 0]], dataType:"VOID" },
+            loc: _$[$0]
+          }]
+        ]; 
     break;
     case 43:
-     this.$ = [['WORLDWALLS'], ['ORIENTATION'], ['ROTR'], ['MASK'], ['AND'], ['NOT']]; 
+     this.$ = [
+          locToIR(_$[$0-1]),
+          ['RET', {
+            term: $$[$0],
+            loc: _$[$0-1]
+          }]
+        ]; 
     break;
     case 44:
-     this.$ = [['WORLDWALLS'], ['ORIENTATION'], ['ROTR'], ['MASK'], ['AND']]; 
-    break;
-    case 45:
-     this.$ = [['WORLDBUZZERS'], ['LOAD', 0], ['EQ'], ['NOT']]; 
+     
+          this.$ = [
+            [
+              'CALL', 
+              {
+                target:$$[$0].toLowerCase(), 
+                params: [],
+                nameLoc: _$[$0], 
+                argLoc: _$[$0]
+              }
+            ]
+          ];
+        
     break;
     case 46:
-     this.$ = [['WORLDBUZZERS'], ['NOT']]; 
+     
+          this.$ = [
+            [
+              'CALL', 
+              {
+                target: $$[$0-3].toLowerCase(),
+                params: $$[$0-1],
+                nameLoc: _$[$0-3], 
+                argLoc: _$[$0-1],
+              }
+            ]
+          ]; 
+        
     break;
     case 47:
-     this.$ = [['BAGBUZZERS'], ['LOAD', 0], ['EQ'], ['NOT']]; 
+     
+          this.$ = $$[$0].concat([
+            {
+              term:$$[$0-2], 
+              operation: 'PASS',
+              dataType: 'INT',
+              loc: _$[$0-2],
+              totalLoc: _$[$0-2]
+            } 
+          ]);
+        
     break;
     case 48:
-     this.$ = [['BAGBUZZERS'], ['NOT']]; 
+     
+          this.$ = [
+            {
+              term:$$[$0], 
+              operation: 'PASS',
+              dataType: 'INT',
+              loc: _$[$0],
+              totalLoc: _$[$0]
+            } 
+          ]; 
+        
     break;
     case 49:
-     this.$ = [['ORIENTATION'], ['LOAD', 0], ['EQ']]; 
+     
+          const skipTag = UniqueTag('iskip');
+          this.$ = [[
+            "IF",
+            {
+              condition: $$[$0-2][0],
+              line: locToIR(_$[$0-3]),
+              skipTrueTag: skipTag,
+              trueCase: $$[$0]
+            }
+          ]];
+        
     break;
     case 50:
-     this.$ = [['ORIENTATION'], ['LOAD', 1], ['EQ']]; 
+     
+          const toElse = UniqueTag('ielse');
+          const skipElse = UniqueTag('iskipelse');
+          this.$ = [[
+            "IF",
+            {
+              condition: $$[$0-4][0],
+              line: locToIR(_$[$0-5]),
+              skipTrueTag: toElse,
+              skipFalseTag: skipElse,
+              trueCase: $$[$0-2],
+              falseCase: $$[$0]
+            }
+          ]];
+        
     break;
     case 51:
-     this.$ = [['ORIENTATION'], ['LOAD', 2], ['EQ']]; 
+     
+          const repeatTag = UniqueTag('lrepeat');
+          const endTag = UniqueTag('lend');
+          this.$ = [[
+            'WHILE',  
+            {
+              condition:   $$[$0-2][0],
+              line:         locToIR(_$[$0-3]),
+              repeatTag:    repeatTag,
+              endTag:       endTag,
+              instructions: $$[$0]
+            }
+          ]];
+        
     break;
     case 52:
-     this.$ = [['ORIENTATION'], ['LOAD', 3], ['EQ']]; 
+     
+          const repeatEnd = UniqueTag('rend');
+          const repeatLoop = UniqueTag('rloop');
+          this.$ = [[
+            "REPEAT",
+            {
+              line:       locToIR(_$[$0-3]),
+              loopCount:  $$[$0-2][0],
+              repeatTag:  repeatLoop,
+              endTag:     repeatEnd,
+              instructions: $$[$0]
+            }
+          ]]; 
+        
     break;
     case 53:
-     this.$ = [['ORIENTATION'], ['LOAD', 0], ['EQ'], ['NOT']]; 
+     this.$ = {
+            left: $$[$0-2], 
+            right: $$[$0], 
+            operation: "OR", 
+            dataType:"BOOL",
+            loc: _$[$0-1],
+            totalLoc: this._$ 
+          }; 
     break;
     case 54:
-     this.$ = [['ORIENTATION'], ['LOAD', 1], ['EQ'], ['NOT']]; 
+     
+          this.$ = {
+            left: $$[$0-2], 
+            right: $$[$0], 
+            operation: "AND", 
+            dataType:"BOOL",
+            loc: _$[$0-1],
+            totalLoc: this._$
+          };
+        
     break;
     case 55:
-     this.$ = [['ORIENTATION'], ['LOAD', 2], ['EQ'], ['NOT']]; 
+     
+          this.$ = {
+            left: $$[$0-2], 
+            right: $$[$0], 
+            operation: "EQ", 
+            dataType:"BOOL",
+            loc: _$[$0-1],
+            totalLoc: this._$
+          };
+        
     break;
     case 56:
-     this.$ = [['ORIENTATION'], ['LOAD', 3], ['EQ'], ['NOT']]; 
+     
+          this.$ = {
+            left: $$[$0-2], 
+            right: $$[$0], 
+            operation: "LT", 
+            dataType:"BOOL",
+            loc: _$[$0-1],
+            totalLoc: this._$
+          };
+        
     break;
     case 57:
-     this.$ = [['PARAM', $$[$0].toLowerCase()]]; 
+     
+          this.$ = {
+            left: $$[$0-2], 
+            right: $$[$0], 
+            operation: "LTE", 
+            dataType:"BOOL",
+            loc: _$[$0-1],
+            totalLoc: this._$
+          };
+        
     break;
     case 58:
-     this.$ = [['LOAD', parseInt(yytext)]]; 
-    break;
-    case 59:
-     this.$ = $$[$0-1].concat([['INC']]); 
-    break;
-    case 60:
-     this.$ = $$[$0-1].concat([['DEC']]); 
+     
+          this.$ = {
+            term: $$[$0],       
+            operation: "NOT",
+            dataType:"BOOL" ,
+            loc: _$[$0-1],
+            totalLoc: this._$
+          };
+          
     break;
     case 61:
-     this.$ = yytext; 
+     
+          this.$ = [[
+            'TERM', 
+            {
+              term:$$[$0], 
+              operation: 'PASS',
+              dataType: 'BOOL',
+              loc: _$[$0],
+              totalLoc: _$[$0]
+            }    
+          ]];
+        
     break;
     case 62:
-     this.$ = [['LINE', yylineno]]; 
+     
+          this.$ = [[
+            'TERM', 
+            {
+              term:$$[$0], 
+              operation: 'PASS',
+              dataType: 'INT',
+              loc: _$[$0],
+              totalLoc: _$[$0]
+            }    
+          ]];
+        
+    break;
+    case 63:
+     
+           this.$ = {
+            operation: "ATOM",
+            instructions: $$[$0-1].concat([['NOT']]),
+            dataType: "BOOL",
+            loc: _$[$0-3],
+            totalLoc: this._$
+          };
+        
+    break;
+    case 64:
+     
+          this.$ = {
+            operation: "ATOM",
+            instructions: $$[$0],
+            dataType: "BOOL",
+            loc: _$[$0],
+            totalLoc: _$[$0]
+          }; 
+        
+    break;
+    case 65:
+
+          this.$ = {
+            operation: "ATOM",
+            instructions: $$[$0],
+            dataType: "INT",
+            loc: _$[$0],
+            totalLoc: _$[$0]
+          }; 
+          
+        
+    break;
+    case 66:
+     
+            const ir = [[
+              'VAR',
+              {
+                target: $$[$0].toLowerCase(), 
+                loc: _$[$0], 
+                couldBeFunction: true
+              }
+            ]]; 
+            this.$ = {
+              operation: "ATOM",
+              instructions: ir,
+              dataType: "$"+$$[$0].toLowerCase(),
+              loc: _$[$0],
+              totalLoc: _$[$0]
+            }; 
+          
+    break;
+    case 67:
+     
+          const callIR = $$[$0];
+          const callData = callIR[0][1];
+          this.$ = {
+            operation: "ATOM",
+            instructions: [...callIR, ['LRET']],
+            dataType: "$"+callData.target,
+            loc: _$[$0],
+            totalLoc: _$[$0]
+          };
+        
+    break;
+    case 68:
+     this.$ = [['WORLDWALLS'], ['ORIENTATION'], ['MASK'], ['AND'], ['NOT']]; 
+    break;
+    case 69:
+     this.$ = [['WORLDWALLS'], ['ORIENTATION'], ['MASK'], ['AND']]; 
+    break;
+    case 70:
+     this.$ = [['WORLDWALLS'], ['ORIENTATION'], ['ROTL'], ['MASK'], ['AND'], ['NOT']]; 
+    break;
+    case 71:
+     this.$ = [['WORLDWALLS'], ['ORIENTATION'], ['ROTL'], ['MASK'], ['AND']]; 
+    break;
+    case 72:
+     this.$ = [['WORLDWALLS'], ['ORIENTATION'], ['ROTR'], ['MASK'], ['AND'], ['NOT']]; 
+    break;
+    case 73:
+     this.$ = [['WORLDWALLS'], ['ORIENTATION'], ['ROTR'], ['MASK'], ['AND']]; 
+    break;
+    case 74:
+     this.$ = [['WORLDBUZZERS'], ['LOAD', 0], ['EQ'], ['NOT']]; 
+    break;
+    case 75:
+     this.$ = [['WORLDBUZZERS'], ['NOT']]; 
+    break;
+    case 76:
+     this.$ = [['BAGBUZZERS'], ['LOAD', 0], ['EQ'], ['NOT']]; 
+    break;
+    case 77:
+     this.$ = [['BAGBUZZERS'], ['NOT']]; 
+    break;
+    case 78:
+     this.$ = [['ORIENTATION'], ['LOAD', 0], ['EQ']]; 
+    break;
+    case 79:
+     this.$ = [['ORIENTATION'], ['LOAD', 1], ['EQ']]; 
+    break;
+    case 80:
+     this.$ = [['ORIENTATION'], ['LOAD', 2], ['EQ']]; 
+    break;
+    case 81:
+     this.$ = [['ORIENTATION'], ['LOAD', 3], ['EQ']]; 
+    break;
+    case 82:
+     this.$ = [['ORIENTATION'], ['LOAD', 0], ['EQ'], ['NOT']]; 
+    break;
+    case 83:
+     this.$ = [['ORIENTATION'], ['LOAD', 1], ['EQ'], ['NOT']]; 
+    break;
+    case 84:
+     this.$ = [['ORIENTATION'], ['LOAD', 2], ['EQ'], ['NOT']]; 
+    break;
+    case 85:
+     this.$ = [['ORIENTATION'], ['LOAD', 3], ['EQ'], ['NOT']]; 
+    break;
+    case 86:
+     this.$ = [['LOAD',  $$[$0]]]; 
+    break;
+    case 87:
+     this.$ = $$[$0-1].concat([['INC', 1]]); 
+    break;
+    case 88:
+     this.$ = $$[$0-1].concat([['DEC', 1]]); 
+    break;
+    case 89:
+     this.$ = $$[$0-3].concat([['INC', $$[$0-1]]]); 
+    break;
+    case 90:
+     this.$ = $$[$0-3].concat([['DEC', $$[$0-1]]]); 
+    break;
+    case 91:
+     this.$ = parseInt(yytext); 
+    break;
+    case 92:
+     this.$ = yytext; 
     break;
     }
     },
-    table: [{3:1,4:[1,2]},{1:[3]},{5:3,6:[1,4],11:5,13:$V0,18:$V1},{6:[1,8],11:9,13:$V0,18:$V1},o($V2,$V3,{7:10,21:11,20:12,28:19,29:20,30:21,31:22,15:24,22:$V4,23:$V5,24:$V6,25:$V7,26:$V8,27:$V9,32:$Va,35:$Vb,39:$Vc,41:$Vd,72:$Ve}),{12:[1,29]},{14:30,72:$Vf},{14:31,72:$Vf},o($V2,$V3,{21:11,20:12,28:19,29:20,30:21,31:22,15:24,7:32,22:$V4,23:$V5,24:$V6,25:$V7,26:$V8,27:$V9,32:$Va,35:$Vb,39:$Vc,41:$Vd,72:$Ve}),{12:[1,33]},{8:[1,34],12:$Vg},o($Vh,[2,10]),o($Vh,[2,11]),o($Vi,[2,13]),o($Vi,[2,14]),o($Vi,[2,15]),o($Vi,[2,16]),o($Vi,[2,17]),o($Vi,[2,18]),o($Vi,[2,19]),o($Vi,[2,20]),o($Vi,[2,21]),o($Vi,[2,22]),o([12,33],$V3,{21:11,20:12,28:19,29:20,30:21,31:22,15:24,7:36,22:$V4,23:$V5,24:$V6,25:$V7,26:$V8,27:$V9,32:$Va,35:$Vb,39:$Vc,41:$Vd,72:$Ve}),o($Vi,[2,24],{16:[1,37]}),o($Vj,$Vf,{14:38}),o($Vj,$Vf,{14:39}),o([69,70,71,72],$Vf,{14:40}),o([8,12,16,17,19,33,38,42],[2,61]),o($Vk,[2,4]),{15:41,72:$Ve},{15:42,72:$Ve},{8:[1,43],12:$Vg},o($Vk,[2,3]),{9:[1,44]},o($Vh,$V3,{20:12,28:19,29:20,30:21,31:22,15:24,21:45,22:$V4,23:$V5,24:$V6,25:$V7,26:$V8,27:$V9,32:$Va,35:$Vb,39:$Vc,41:$Vd,72:$Ve}),{12:$Vg,33:[1,46]},{15:48,34:47,69:$Vl,70:$Vm,71:$Vn,72:$Ve},{16:$Vo,36:52,44:53,46:54,47:$Vp,48:56,49:$Vq,50:58,51:$Vr,52:$Vs,53:$Vt,54:$Vu,55:$Vv,56:$Vw,57:$Vx,58:$Vy,59:$Vz,60:$VA,61:$VB,62:$VC,63:$VD,64:$VE,65:$VF,66:$VG,67:$VH,68:$VI},{16:$Vo,36:78,44:53,46:54,47:$Vp,48:56,49:$Vq,50:58,51:$Vr,52:$Vs,53:$Vt,54:$Vu,55:$Vv,56:$Vw,57:$Vx,58:$Vy,59:$Vz,60:$VA,61:$VB,62:$VC,63:$VD,64:$VE,65:$VF,66:$VG,67:$VH,68:$VI},{15:48,34:79,69:$Vl,70:$Vm,71:$Vn,72:$Ve},{12:[2,5],16:[1,80]},{16:[1,82],19:[1,81]},{9:[1,83]},{10:[1,84]},o($Vh,[2,9]),o($Vi,[2,23]),{17:[1,85]},o($VJ,[2,57]),o($VJ,[2,58]),{16:[1,86]},{16:[1,87]},{37:[1,88],43:$VK},o($VL,[2,31],{45:$VM}),o($VN,[2,33]),{16:$Vo,48:91,49:$Vq,50:58,51:$Vr,52:$Vs,53:$Vt,54:$Vu,55:$Vv,56:$Vw,57:$Vx,58:$Vy,59:$Vz,60:$VA,61:$VB,62:$VC,63:$VD,64:$VE,65:$VF,66:$VG,67:$VH,68:$VI},o($VN,[2,35]),{16:[1,92]},o($VN,[2,37]),{16:$Vo,36:93,44:53,46:54,47:$Vp,48:56,49:$Vq,50:58,51:$Vr,52:$Vs,53:$Vt,54:$Vu,55:$Vv,56:$Vw,57:$Vx,58:$Vy,59:$Vz,60:$VA,61:$VB,62:$VC,63:$VD,64:$VE,65:$VF,66:$VG,67:$VH,68:$VI},o($VN,[2,39]),o($VN,[2,40]),o($VN,[2,41]),o($VN,[2,42]),o($VN,[2,43]),o($VN,[2,44]),o($VN,[2,45]),o($VN,[2,46]),o($VN,[2,47]),o($VN,[2,48]),o($VN,[2,49]),o($VN,[2,50]),o($VN,[2,51]),o($VN,[2,52]),o($VN,[2,53]),o($VN,[2,54]),o($VN,[2,55]),o($VN,[2,56]),{40:[1,94],43:$VK},{42:[1,95]},{15:96,72:$Ve},{15:24,20:97,22:$V4,23:$V5,24:$V6,25:$V7,26:$V8,27:$V9,28:19,29:20,30:21,31:22,32:$Va,35:$Vb,39:$Vc,41:$Vd,72:$Ve},{15:98,72:$Ve},{10:[1,99]},{1:[2,2]},o($Vi,[2,25]),{15:48,34:100,69:$Vl,70:$Vm,71:$Vn,72:$Ve},{15:48,34:101,69:$Vl,70:$Vm,71:$Vn,72:$Ve},{15:24,20:102,22:$V4,23:$V5,24:$V6,25:$V7,26:$V8,27:$V9,28:19,29:20,30:21,31:22,32:$Va,35:$Vb,39:$Vc,41:$Vd,72:$Ve},{16:$Vo,44:103,46:54,47:$Vp,48:56,49:$Vq,50:58,51:$Vr,52:$Vs,53:$Vt,54:$Vu,55:$Vv,56:$Vw,57:$Vx,58:$Vy,59:$Vz,60:$VA,61:$VB,62:$VC,63:$VD,64:$VE,65:$VF,66:$VG,67:$VH,68:$VI},{16:$Vo,46:104,47:$Vp,48:56,49:$Vq,50:58,51:$Vr,52:$Vs,53:$Vt,54:$Vu,55:$Vv,56:$Vw,57:$Vx,58:$Vy,59:$Vz,60:$VA,61:$VB,62:$VC,63:$VD,64:$VE,65:$VF,66:$VG,67:$VH,68:$VI},o($VN,[2,34]),{15:48,34:105,69:$Vl,70:$Vm,71:$Vn,72:$Ve},{17:[1,106],43:$VK},{15:24,20:107,22:$V4,23:$V5,24:$V6,25:$V7,26:$V8,27:$V9,28:19,29:20,30:21,31:22,32:$Va,35:$Vb,39:$Vc,41:$Vd,72:$Ve},{15:24,20:108,22:$V4,23:$V5,24:$V6,25:$V7,26:$V8,27:$V9,28:19,29:20,30:21,31:22,32:$Va,35:$Vb,39:$Vc,41:$Vd,72:$Ve},{17:[1,109]},{12:[2,7]},{17:[1,110]},{1:[2,1]},{17:[1,111]},{17:[1,112]},o($Vh,[2,26],{38:[1,113]}),o($VL,[2,30],{45:$VM}),o($VN,[2,32]),{17:[1,114]},o($VN,[2,38]),o($Vi,[2,28]),o($Vi,[2,29]),{12:[2,6]},{19:[1,115]},o($VJ,[2,59]),o($VJ,[2,60]),{15:24,20:116,22:$V4,23:$V5,24:$V6,25:$V7,26:$V8,27:$V9,28:19,29:20,30:21,31:22,32:$Va,35:$Vb,39:$Vc,41:$Vd,72:$Ve},o($VN,[2,36]),{15:24,20:117,22:$V4,23:$V5,24:$V6,25:$V7,26:$V8,27:$V9,28:19,29:20,30:21,31:22,32:$Va,35:$Vb,39:$Vc,41:$Vd,72:$Ve},o($Vi,[2,27]),{12:[2,8]}],
-    defaultActions: {84:[2,2],97:[2,7],99:[2,1],109:[2,6],117:[2,8]},
+    table: [{3:1,4:2,5:[1,3],12:4,13:$V0},{1:[3]},{5:[1,6],12:7,13:$V0},{6:8,7:[1,9],19:10,20:11,25:12,30:$V1,31:$V2,32:$V3,33:$V4,34:$V5,35:$V6},o($V7,[2,6]),{14:19,16:[1,20]},{6:21,7:[1,22],19:10,20:11,25:12,30:$V1,31:$V2,32:$V3,33:$V4,34:$V5,35:$V6},o($V7,[2,5]),{7:[1,23],19:24,20:11,25:12,30:$V1,31:$V2,32:$V3,33:$V4,34:$V5,35:$V6},o($V8,$V9,{8:25,36:26,27:27,44:35,45:36,46:37,47:38,48:39,21:42,53:43,16:$Va,37:$Vb,38:$Vc,39:$Vd,40:$Ve,41:$Vf,42:$Vg,43:$Vh,49:$Vi,51:$Vj,55:$Vk,59:$Vl,61:$Vm}),{15:[1,48]},{16:$Va,21:49},{16:$Va,21:50},{16:[2,22]},{16:[2,23]},{16:[2,24]},{16:[2,19]},{16:[2,20]},{16:[2,21]},{15:[1,51]},{17:[1,52]},{7:[1,53],19:24,20:11,25:12,30:$V1,31:$V2,32:$V3,33:$V4,34:$V5,35:$V6},o($V8,$V9,{36:26,27:27,44:35,45:36,46:37,47:38,48:39,21:42,53:43,8:54,16:$Va,37:$Vb,38:$Vc,39:$Vd,40:$Ve,41:$Vf,42:$Vg,43:$Vh,49:$Vi,51:$Vj,55:$Vk,59:$Vl,61:$Vm}),o($V8,$V9,{36:26,27:27,44:35,45:36,46:37,47:38,48:39,21:42,53:43,8:55,16:$Va,37:$Vb,38:$Vc,39:$Vd,40:$Ve,41:$Vf,42:$Vg,43:$Vh,49:$Vi,51:$Vj,55:$Vk,59:$Vl,61:$Vm}),{15:[1,56]},{9:[1,57],15:$Vn},o($Vo,[2,26]),o($Vo,[2,27]),o($Vp,[2,29]),o($Vp,[2,30]),o($Vp,[2,31]),o($Vp,[2,32]),o($Vp,[2,33]),o($Vp,[2,34]),o($Vp,[2,35]),o($Vp,[2,36]),o($Vp,[2,37]),o($Vp,[2,38]),o($Vp,[2,39]),o($Vp,[2,40]),o([15,50],$V9,{36:26,27:27,44:35,45:36,46:37,47:38,48:39,21:42,53:43,8:59,16:$Va,37:$Vb,38:$Vc,39:$Vd,40:$Ve,41:$Vf,42:$Vg,43:$Vh,49:$Vi,51:$Vj,55:$Vk,59:$Vl,61:$Vm}),o($Vp,[2,42],{52:60,70:63,72:65,73:66,21:67,53:68,92:87,16:$Va,22:$Vq,69:$Vr,71:$Vs,74:$Vt,75:$Vu,76:$Vv,77:$Vw,78:$Vx,79:$Vy,80:$Vz,81:$VA,82:$VB,83:$VC,84:$VD,85:$VE,86:$VF,87:$VG,88:$VH,89:$VI,90:$VJ,91:$VK,93:$VL,94:$VM,95:$VN}),o($Vp,[2,44],{22:$VO}),o($Vp,[2,45]),{16:$Va,21:67,22:$Vq,52:93,53:68,56:92,69:$Vr,70:63,71:$Vs,72:65,73:66,74:$Vt,75:$Vu,76:$Vv,77:$Vw,78:$Vx,79:$Vy,80:$Vz,81:$VA,82:$VB,83:$VC,84:$VD,85:$VE,86:$VF,87:$VG,88:$VH,89:$VI,90:$VJ,91:$VK,92:87,93:$VL,94:$VM,95:$VN},{16:$Va,21:67,22:$Vq,52:93,53:68,56:94,69:$Vr,70:63,71:$Vs,72:65,73:66,74:$Vt,75:$Vu,76:$Vv,77:$Vw,78:$Vx,79:$Vy,80:$Vz,81:$VA,82:$VB,83:$VC,84:$VD,85:$VE,86:$VF,87:$VG,88:$VH,89:$VI,90:$VJ,91:$VK,92:87,93:$VL,94:$VM,95:$VN},{16:$Va,21:67,22:$Vq,52:96,53:68,62:95,69:$Vr,70:63,71:$Vs,72:65,73:66,74:$Vt,75:$Vu,76:$Vv,77:$Vw,78:$Vx,79:$Vy,80:$Vz,81:$VA,82:$VB,83:$VC,84:$VD,85:$VE,86:$VF,87:$VG,88:$VH,89:$VI,90:$VJ,91:$VK,92:87,93:$VL,94:$VM,95:$VN},o([9,15,22,24,26,29,50,57,58,60,63,64,65,66,67,68],[2,92]),o($VP,[2,11]),{15:[2,12],22:[1,97]},{22:[1,99],26:[1,98]},o($V7,[2,7]),{16:[1,100],18:[1,101]},o($V8,$V9,{36:26,27:27,44:35,45:36,46:37,47:38,48:39,21:42,53:43,8:102,16:$Va,37:$Vb,38:$Vc,39:$Vd,40:$Ve,41:$Vf,42:$Vg,43:$Vh,49:$Vi,51:$Vj,55:$Vk,59:$Vl,61:$Vm}),{9:[1,103],15:$Vn},{9:[1,104],15:$Vn},o($VP,[2,10]),{10:[1,105]},o($Vo,$V9,{27:27,44:35,45:36,46:37,47:38,48:39,21:42,53:43,36:106,16:$Va,37:$Vb,38:$Vc,39:$Vd,40:$Ve,41:$Vf,42:$Vg,43:$Vh,49:$Vi,51:$Vj,55:$Vk,59:$Vl,61:$Vm}),{15:$Vn,50:[1,107]},o($Vp,[2,43],{64:$VQ,65:$VR,66:$VS,67:$VT,68:$VU}),{16:$Va,21:67,22:$Vq,52:113,53:68,69:$Vr,70:63,71:$Vs,72:65,73:66,74:$Vt,75:$Vu,76:$Vv,77:$Vw,78:$Vx,79:$Vy,80:$Vz,81:$VA,82:$VB,83:$VC,84:$VD,85:$VE,86:$VF,87:$VG,88:$VH,89:$VI,90:$VJ,91:$VK,92:87,93:$VL,94:$VM,95:$VN},{16:$Va,21:67,22:$Vq,52:114,53:68,69:$Vr,70:63,71:$Vs,72:65,73:66,74:$Vt,75:$Vu,76:$Vv,77:$Vw,78:$Vx,79:$Vy,80:$Vz,81:$VA,82:$VB,83:$VC,84:$VD,85:$VE,86:$VF,87:$VG,88:$VH,89:$VI,90:$VJ,91:$VK,92:87,93:$VL,94:$VM,95:$VN},o($VV,[2,60]),{22:[1,115]},o($VV,[2,64]),o($VV,[2,65]),o($VV,[2,66],{22:$VO}),o($VV,[2,67]),o($VV,[2,68]),o($VV,[2,69]),o($VV,[2,70]),o($VV,[2,71]),o($VV,[2,72]),o($VV,[2,73]),o($VV,[2,74]),o($VV,[2,75]),o($VV,[2,76]),o($VV,[2,77]),o($VV,[2,78]),o($VV,[2,79]),o($VV,[2,80]),o($VV,[2,81]),o($VV,[2,82]),o($VV,[2,83]),o($VV,[2,84]),o($VV,[2,85]),o($VV,[2,86]),{22:[1,116]},{22:[1,117]},o($VV,[2,91]),{16:$Va,21:67,22:$Vq,52:119,53:68,54:118,69:$Vr,70:63,71:$Vs,72:65,73:66,74:$Vt,75:$Vu,76:$Vv,77:$Vw,78:$Vx,79:$Vy,80:$Vz,81:$VA,82:$VB,83:$VC,84:$VD,85:$VE,86:$VF,87:$VG,88:$VH,89:$VI,90:$VJ,91:$VK,92:87,93:$VL,94:$VM,95:$VN},{57:[1,120]},o([57,60],[2,61],{64:$VQ,65:$VR,66:$VS,67:$VT,68:$VU}),{60:[1,121]},{63:[1,122]},o([24,29,63],[2,62],{64:$VQ,65:$VR,66:$VS,67:$VT,68:$VU}),{16:$Va,21:125,23:123,28:124},{16:$Va,21:42,27:126,37:$Vb,38:$Vc,39:$Vd,40:$Ve,41:$Vf,42:$Vg,43:$Vh,44:35,45:36,46:37,47:38,48:39,49:$Vi,51:$Vj,53:43,55:$Vk,59:$Vl,61:$Vm},{16:$Va,21:125,23:127,28:124},{15:[2,8]},{15:[2,9]},{9:[1,128],15:$Vn},{10:[1,129]},{10:[1,130]},{11:[1,131]},o($Vo,[2,25]),o($Vp,[2,41]),{16:$Va,21:67,22:$Vq,52:132,53:68,69:$Vr,70:63,71:$Vs,72:65,73:66,74:$Vt,75:$Vu,76:$Vv,77:$Vw,78:$Vx,79:$Vy,80:$Vz,81:$VA,82:$VB,83:$VC,84:$VD,85:$VE,86:$VF,87:$VG,88:$VH,89:$VI,90:$VJ,91:$VK,92:87,93:$VL,94:$VM,95:$VN},{16:$Va,21:67,22:$Vq,52:133,53:68,69:$Vr,70:63,71:$Vs,72:65,73:66,74:$Vt,75:$Vu,76:$Vv,77:$Vw,78:$Vx,79:$Vy,80:$Vz,81:$VA,82:$VB,83:$VC,84:$VD,85:$VE,86:$VF,87:$VG,88:$VH,89:$VI,90:$VJ,91:$VK,92:87,93:$VL,94:$VM,95:$VN},{16:$Va,21:67,22:$Vq,52:134,53:68,69:$Vr,70:63,71:$Vs,72:65,73:66,74:$Vt,75:$Vu,76:$Vv,77:$Vw,78:$Vx,79:$Vy,80:$Vz,81:$VA,82:$VB,83:$VC,84:$VD,85:$VE,86:$VF,87:$VG,88:$VH,89:$VI,90:$VJ,91:$VK,92:87,93:$VL,94:$VM,95:$VN},{16:$Va,21:67,22:$Vq,52:135,53:68,69:$Vr,70:63,71:$Vs,72:65,73:66,74:$Vt,75:$Vu,76:$Vv,77:$Vw,78:$Vx,79:$Vy,80:$Vz,81:$VA,82:$VB,83:$VC,84:$VD,85:$VE,86:$VF,87:$VG,88:$VH,89:$VI,90:$VJ,91:$VK,92:87,93:$VL,94:$VM,95:$VN},{16:$Va,21:67,22:$Vq,52:136,53:68,69:$Vr,70:63,71:$Vs,72:65,73:66,74:$Vt,75:$Vu,76:$Vv,77:$Vw,78:$Vx,79:$Vy,80:$Vz,81:$VA,82:$VB,83:$VC,84:$VD,85:$VE,86:$VF,87:$VG,88:$VH,89:$VI,90:$VJ,91:$VK,92:87,93:$VL,94:$VM,95:$VN},o($VV,[2,58]),{24:[1,137],64:$VQ,65:$VR,66:$VS,67:$VT,68:$VU},{16:$Va,21:67,22:$Vq,52:96,53:68,62:138,69:$Vr,70:63,71:$Vs,72:65,73:66,74:$Vt,75:$Vu,76:$Vv,77:$Vw,78:$Vx,79:$Vy,80:$Vz,81:$VA,82:$VB,83:$VC,84:$VD,85:$VE,86:$VF,87:$VG,88:$VH,89:$VI,90:$VJ,91:$VK,92:87,93:$VL,94:$VM,95:$VN},{16:$Va,21:67,22:$Vq,52:96,53:68,62:139,69:$Vr,70:63,71:$Vs,72:65,73:66,74:$Vt,75:$Vu,76:$Vv,77:$Vw,78:$Vx,79:$Vy,80:$Vz,81:$VA,82:$VB,83:$VC,84:$VD,85:$VE,86:$VF,87:$VG,88:$VH,89:$VI,90:$VJ,91:$VK,92:87,93:$VL,94:$VM,95:$VN},{16:$Va,21:67,22:$Vq,52:96,53:68,62:140,69:$Vr,70:63,71:$Vs,72:65,73:66,74:$Vt,75:$Vu,76:$Vv,77:$Vw,78:$Vx,79:$Vy,80:$Vz,81:$VA,82:$VB,83:$VC,84:$VD,85:$VE,86:$VF,87:$VG,88:$VH,89:$VI,90:$VJ,91:$VK,92:87,93:$VL,94:$VM,95:$VN},{24:[1,141]},{24:[2,48],29:[1,142],64:$VQ,65:$VR,66:$VS,67:$VT,68:$VU},{16:$Va,21:42,27:143,37:$Vb,38:$Vc,39:$Vd,40:$Ve,41:$Vf,42:$Vg,43:$Vh,44:35,45:36,46:37,47:38,48:39,49:$Vi,51:$Vj,53:43,55:$Vk,59:$Vl,61:$Vm},{16:$Va,21:42,27:144,37:$Vb,38:$Vc,39:$Vd,40:$Ve,41:$Vf,42:$Vg,43:$Vh,44:35,45:36,46:37,47:38,48:39,49:$Vi,51:$Vj,53:43,55:$Vk,59:$Vl,61:$Vm},{16:$Va,21:42,27:145,37:$Vb,38:$Vc,39:$Vd,40:$Ve,41:$Vf,42:$Vg,43:$Vh,44:35,45:36,46:37,47:38,48:39,49:$Vi,51:$Vj,53:43,55:$Vk,59:$Vl,61:$Vm},{24:[1,146]},{24:[2,17],29:[1,147]},o([24,29],[2,18]),{15:[2,14]},{24:[1,148]},{10:[1,149]},{11:[1,150]},{11:[1,151]},{1:[2,4]},o([9,15,24,29,50,57,58,60,63,64],[2,53],{65:$VR,66:$VS,67:$VT,68:$VU}),o($VW,[2,54],{66:$VS,67:$VT,68:$VU}),o($VW,[2,55],{67:$VT,68:$VU}),o($VX,[2,56]),o($VX,[2,57]),o($VV,[2,59]),{24:[1,152]},{24:[1,153],29:[1,154]},{24:[1,155],29:[1,156]},o($VV,[2,46]),{16:$Va,21:67,22:$Vq,52:119,53:68,54:157,69:$Vr,70:63,71:$Vs,72:65,73:66,74:$Vt,75:$Vu,76:$Vv,77:$Vw,78:$Vx,79:$Vy,80:$Vz,81:$VA,82:$VB,83:$VC,84:$VD,85:$VE,86:$VF,87:$VG,88:$VH,89:$VI,90:$VJ,91:$VK,92:87,93:$VL,94:$VM,95:$VN},o($Vo,[2,49],{58:[1,158]}),o($Vp,[2,51]),o($Vp,[2,52]),{15:[2,13]},{16:$Va,21:125,23:159,28:124},{26:[1,160]},{11:[1,161]},{1:[2,2]},{1:[2,3]},o($VV,[2,63]),o($VV,[2,87]),{92:162,95:$VN},o($VV,[2,88]),{92:163,95:$VN},{24:[2,47]},{16:$Va,21:42,27:164,37:$Vb,38:$Vc,39:$Vd,40:$Ve,41:$Vf,42:$Vg,43:$Vh,44:35,45:36,46:37,47:38,48:39,49:$Vi,51:$Vj,53:43,55:$Vk,59:$Vl,61:$Vm},{24:[2,16]},{16:$Va,21:42,27:165,37:$Vb,38:$Vc,39:$Vd,40:$Ve,41:$Vf,42:$Vg,43:$Vh,44:35,45:36,46:37,47:38,48:39,49:$Vi,51:$Vj,53:43,55:$Vk,59:$Vl,61:$Vm},{1:[2,1]},{24:[1,166]},{24:[1,167]},o($Vp,[2,50]),{15:[2,15]},o($VV,[2,89]),o($VV,[2,90])],
+    defaultActions: {13:[2,22],14:[2,23],15:[2,24],16:[2,19],17:[2,20],18:[2,21],100:[2,8],101:[2,9],126:[2,14],131:[2,4],146:[2,13],150:[2,2],151:[2,3],157:[2,47],159:[2,16],161:[2,1],165:[2,15]},
     parseError: function parseError (str, hash) {
         if (hash.recoverable) {
             this.trace(str);
@@ -23957,101 +24703,29 @@ var karel = (function (exports, bootstrap) {
         return true;
     }};
 
-    function validate(function_list, program, yy) {
-    	var prototypes = {};
-    	var functions = {};
 
-    	for (var i = 0; i < function_list.length; i++) {
-    		if (function_list[i][1] == null) {
-    			if (prototypes[function_list[i][0]] || functions[function_list[i][0]]) {
-    				yy.parser.parseError("Prototype redefinition: " + function_list[i][0], {
-    					text: function_list[i][0],
-    					line: function_list[i][3],
-              loc: function_list[i][4],
-    				});
-    			}
-    			prototypes[function_list[i][0]] = function_list[i][2];
-    		} else {
-    			if (functions[function_list[i][0]]) {
-    				yy.parser.parseError("Function redefinition: " + function_list[i][0], {
-    					text: function_list[i][0],
-    					line: function_list[i][3],
-              loc: function_list[i][4]
-    				});
-    			} else if (prototypes[function_list[i][0]]) {
-    				if (prototypes[function_list[i][0]] != function_list[i][2]) {
-    					yy.parser.parseError("Prototype parameter mismatch: " + function_list[i][0], {
-    						text: function_list[i][0],
-    						line: function_list[i][3],
-                loc: function_list[i][5]
-    					});
-    				}
-    			}
+    const COMPILER= "RKP 1.0.0";
+    const LANG = "ReKarel Pascal";
+    const VarsAsFuncs = true;
+    const reqsPrototypes = false;
 
-    			prototypes[function_list[i][0]] = function_list[i][2];
-    			functions[function_list[i][0]] = program.length;
-    			var current_line = 1;
+    let tagCnt = 1;
 
-    			// This is only to make sure that any function that is called has been
-    			// either declared or defined previously. Other validations will be done
-    			// in the overall program loop below.
-    			for (var j = 0; j < function_list[i][1].length; j++) {
-    				if (function_list[i][1][j][0] == 'LINE') {
-    					current_line = function_list[i][1][j][1];
-    				} else if (function_list[i][1][j][0] == 'CALL' &&
-    						!functions[function_list[i][1][j][1]] &&
-    						!prototypes[function_list[i][1][j][1]]) {
-    					yy.parser.parseError("Undefined function: " + function_list[i][1][j][1], {
-    						text: function_list[i][1][j][1],
-    						line: current_line,
-                loc: function_list[i][1][j][4]
-    					});
-    				}
-    			}
-
-    			program = program.concat(function_list[i][1]);
-    		}
-    	}
-
-    	var current_line = 1;
-    	for (var i = 0; i < program.length; i++) {
-    		if (program[i][0] == 'LINE') {
-    			current_line = program[i][1];
-    		} else if (program[i][0] == 'CALL') {
-    			if (!functions[program[i][1]]) {
-    				yy.parser.parseError("Undefined function: " + program[i][1], {
-    					text: program[i][1],
-    					line: current_line,
-              loc: program[i][3]
-    				});
-    			} else if (prototypes[program[i][1]] != program[i][2]) {
-    				yy.parser.parseError("Function parameter mismatch: " + program[i][1], {
-    					text: program[i][1],
-    					line: current_line,
-              loc: program[i][4],          
-              parameters: program[i][2],
-    				});
-    			}
-    			program[i][2] = program[i][1];
-    			program[i][1] = functions[program[i][1]];
-          // Remove loc data which is only for error parsing
-          program[i].pop();
-          program[i].pop(); 
-    		} else if (program[i][0] == 'PARAM') {
-          if (program[i][1] != 0) {
-            yy.parser.parseError("Unknown variable: " + program[i][1], {
-              text: program[i][1],
-              line: current_line,
-              loc: program[i][2]
-            });
-          } else {
-            program[i].pop();
-          }
-    		}
-    	}
-
-    	return program;
+    function UniqueTag(tag) {
+      return `${tag}.${tagCnt++}`;
     }
+    function resetCompiler(tag) {
+      tagCnt = 1;
+    }
+
+    function locToIR(loc) {
+      return [
+        "LINE",
+        loc.first_line - 1,
+        loc.first_column
+      ]
+    }
+
     /* generated by jison-lex 0.3.4 */
     var lexer = (function(){
     var lexer = ({
@@ -24385,75 +25059,92 @@ var karel = (function (exports, bootstrap) {
     break;
     case 2:/* ignore */
     break;
-    case 3: return 4; 
-    case 4: return 6; 
-    case 5: return 6; 
-    case 6: return 8; 
-    case 7: return 8; 
-    case 8: return 9; 
-    case 9: return 18; 
-    case 10: return 18; 
-    case 11: return 13; 
+    case 3: return 5; 
+    case 4: return 7; 
+    case 5: return 7; 
+    case 6: return 9; 
+    case 7: return 9; 
+    case 8: return 10; 
+    case 9: return 32; 
+    case 10: return 32; 
+    case 11: return 32; 
     case 12: return 13; 
-    case 13: return 27; 
-    case 14: return 27; 
-    case 15: return 19; 
-    case 16: return 26; 
-    case 17: return 26; 
-    case 18: return 23; 
-    case 19: return 22; 
-    case 20: return 24; 
-    case 21: return 25; 
-    case 22: return 32; 
-    case 23: return 33; 
-    case 24: return 37; 
-    case 25: return 39; 
-    case 26: return 40; 
-    case 27: return 41; 
-    case 28: return 42; 
-    case 29: return 71; 
-    case 30: return 70; 
-    case 31: return 49; 
-    case 32: return 51; 
-    case 33: return 52; 
-    case 34: return 53; 
-    case 35: return 54; 
-    case 36: return 55; 
-    case 37: return 56; 
-    case 38: return 57; 
-    case 39: return 58; 
-    case 40: return 59; 
-    case 41: return 59; 
-    case 42: return 60; 
-    case 43: return 60; 
-    case 44: return 62; 
-    case 45: return 64; 
-    case 46: return 63; 
-    case 47: return 61; 
-    case 48: return 66; 
-    case 49: return 68; 
-    case 50: return 67; 
-    case 51: return 65; 
-    case 52: return 38; 
-    case 53: return 38; 
-    case 54: return 35; 
-    case 55: return 47; 
-    case 56: return 43; 
-    case 57: return 43; 
-    case 58: return 45; 
-    case 59: return 45; 
-    case 60: return 16; 
-    case 61: return 17; 
-    case 62: return 12; 
-    case 63: return 69; 
-    case 64: return 72; 
-    case 65: return 10; 
-    case 66:console.log(yy_.yytext);
+    case 13: return 35; 
+    case 14: return 35; 
+    case 15: return 33; 
+    case 16: return 30; 
+    case 17: return 30; 
+    case 18: return 34; 
+    case 19: return 31; 
+    case 20: return 31; 
+    case 21: return 51; 
+    case 22: return 51; 
+    case 23: return 51; 
+    case 24: return 26; 
+    case 25: return 41; 
+    case 26: return 41; 
+    case 27: return 38; 
+    case 28: return 37; 
+    case 29: return 39; 
+    case 30: return 40; 
+    case 31: return 42; 
+    case 32: return 43; 
+    case 33: return 49; 
+    case 34: return 50; 
+    case 35: return 57; 
+    case 36: return 59; 
+    case 37: return 60; 
+    case 38: return 61; 
+    case 39: return 63; 
+    case 40: return 94; 
+    case 41: return 93; 
+    case 42: return 71; 
+    case 43: return 74; 
+    case 44: return 75; 
+    case 45: return 76; 
+    case 46: return 77; 
+    case 47: return 78; 
+    case 48: return 79; 
+    case 49: return 80; 
+    case 50: return 81; 
+    case 51: return 82; 
+    case 52: return 82; 
+    case 53: return 83; 
+    case 54: return 83; 
+    case 55: return 85; 
+    case 56: return 87; 
+    case 57: return 86; 
+    case 58: return 84; 
+    case 59: return 89; 
+    case 60: return 91; 
+    case 61: return 90; 
+    case 62: return 88; 
+    case 63: return 58; 
+    case 64: return 58; 
+    case 65: return 55; 
+    case 66: return 69; 
+    case 67: return 64; 
+    case 68: return 64; 
+    case 69: return 65; 
+    case 70: return 65; 
+    case 71: return 22; 
+    case 72: return 24; 
+    case 73: return 15; 
+    case 74: return 17; 
+    case 75: return 29; 
+    case 76: return 18; 
+    case 77: return 66; 
+    case 78: return 68; 
+    case 79: return 67; 
+    case 80: return 95; 
+    case 81: return 16; 
+    case 82: return 11; 
+    case 83:console.log(yy_.yytext);
     break;
     }
     },
-    rules: [/^(?:\s+)/,/^(?:\{[^}]*\})/,/^(?:\(\*(?:[^*]|\*(?!\)))*\*\))/,/^(?:iniciar-programa)/,/^(?:inicia-ejecucion)/,/^(?:inicia-ejecución)/,/^(?:termina-ejecucion)/,/^(?:termina-ejecución)/,/^(?:finalizar-programa)/,/^(?:define-nueva-instruccion)/,/^(?:define-nueva-instrucción)/,/^(?:define-prototipo-instruccion)/,/^(?:define-prototipo-instrucción)/,/^(?:sal-de-instruccion)/,/^(?:sal-de-instrucción)/,/^(?:como)/,/^(?:apagate)/,/^(?:apágate)/,/^(?:gira-izquierda)/,/^(?:avanza)/,/^(?:coge-zumbador)/,/^(?:deja-zumbador)/,/^(?:inicio)/,/^(?:fin)/,/^(?:entonces)/,/^(?:mientras)/,/^(?:hacer)/,/^(?:repetir)/,/^(?:veces)/,/^(?:precede)/,/^(?:sucede)/,/^(?:si-es-cero)/,/^(?:frente-libre)/,/^(?:frente-bloqueado)/,/^(?:izquierda-libre)/,/^(?:izquierda-bloqueada)/,/^(?:derecha-libre)/,/^(?:derecha-bloqueada)/,/^(?:junto-a-zumbador)/,/^(?:no-junto-a-zumbador)/,/^(?:algun-zumbador-en-la-mochila)/,/^(?:algún-zumbador-en-la-mochila)/,/^(?:ningun-zumbador-en-la-mochila)/,/^(?:ningún-zumbador-en-la-mochila)/,/^(?:orientado-al-norte)/,/^(?:orientado-al-sur)/,/^(?:orientado-al-este)/,/^(?:orientado-al-oeste)/,/^(?:no-orientado-al-norte)/,/^(?:no-orientado-al-sur)/,/^(?:no-orientado-al-este)/,/^(?:no-orientado-al-oeste)/,/^(?:sino)/,/^(?:si-no)/,/^(?:si)/,/^(?:no)/,/^(?:o)/,/^(?:u)/,/^(?:y)/,/^(?:e)/,/^(?:\()/,/^(?:\))/,/^(?:;)/,/^(?:[0-9]+)/,/^(?:[A-Za-zÀ-ÖØ-öø-ÿ_][A-Za-zÀ-ÖØ-öø-ÿ0-9_-]*)/,/^(?:$)/,/^(?:.)/],
-    conditions: {"INITIAL":{"rules":[0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66],"inclusive":true}}
+    rules: [/^(?:\s+)/,/^(?:\{[^}]*\})/,/^(?:\(\*(?:[^*]|\*(?!\)))*\*\))/,/^(?:iniciar-programa)/,/^(?:inicia-ejecucion)/,/^(?:inicia-ejecución)/,/^(?:termina-ejecucion)/,/^(?:termina-ejecución)/,/^(?:finalizar-programa)/,/^(?:define-nueva-instruccion)/,/^(?:define-nueva-instrucción)/,/^(?:define)/,/^(?:usa)/,/^(?:define-prototipo-instruccion)/,/^(?:define-prototipo-instrucción)/,/^(?:define-prototipo-entero)/,/^(?:define-instrucción-entera)/,/^(?:define-instruccion-entera)/,/^(?:define-prototipo-booleano)/,/^(?:define-instrucción-booleana)/,/^(?:define-instruccion-booleana)/,/^(?:sal-de-instruccion)/,/^(?:sal-de-instrucción)/,/^(?:regresa)/,/^(?:como)/,/^(?:apagate)/,/^(?:apágate)/,/^(?:gira-izquierda)/,/^(?:avanza)/,/^(?:coge-zumbador)/,/^(?:deja-zumbador)/,/^(?:continua)/,/^(?:rompe)/,/^(?:inicio)/,/^(?:fin)/,/^(?:entonces)/,/^(?:mientras)/,/^(?:hacer)/,/^(?:repetir)/,/^(?:veces)/,/^(?:precede)/,/^(?:sucede)/,/^(?:si-es-cero)/,/^(?:frente-libre)/,/^(?:frente-bloqueado)/,/^(?:izquierda-libre)/,/^(?:izquierda-bloqueada)/,/^(?:derecha-libre)/,/^(?:derecha-bloqueada)/,/^(?:junto-a-zumbador)/,/^(?:no-junto-a-zumbador)/,/^(?:algun-zumbador-en-la-mochila)/,/^(?:algún-zumbador-en-la-mochila)/,/^(?:ningun-zumbador-en-la-mochila)/,/^(?:ningún-zumbador-en-la-mochila)/,/^(?:orientado-al-norte)/,/^(?:orientado-al-sur)/,/^(?:orientado-al-este)/,/^(?:orientado-al-oeste)/,/^(?:no-orientado-al-norte)/,/^(?:no-orientado-al-sur)/,/^(?:no-orientado-al-este)/,/^(?:no-orientado-al-oeste)/,/^(?:sino)/,/^(?:si-no)/,/^(?:si)/,/^(?:no)/,/^(?:o)/,/^(?:u)/,/^(?:y)/,/^(?:e)/,/^(?:\()/,/^(?:\))/,/^(?:;)/,/^(?:\.)/,/^(?:,)/,/^(?:\*)/,/^(?:==)/,/^(?:<=)/,/^(?:<)/,/^(?:[0-9]+)/,/^(?:[A-Za-zÀ-ÖØ-öø-ÿ_][A-Za-zÀ-ÖØ-öø-ÿ0-9_-]*)/,/^(?:$)/,/^(?:.)/],
+    conditions: {"INITIAL":{"rules":[0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,67,68,69,70,71,72,73,74,75,76,77,78,79,80,81,82,83],"inclusive":true}}
     });
     return lexer;
     })();
@@ -24464,12 +25155,797 @@ var karel = (function (exports, bootstrap) {
     Parser.prototype = parser;parser.Parser = Parser;
     return new Parser;
     })();
-    function pascalParser () {
+    function pascalParser$1 () {
         return karelpascal.parse.apply(karelpascal, arguments);
     }
 
-    const javaCompiler = javaParser;
-    const pascalCompiler = pascalParser;
+    function UnitePackages(packages) {
+        const booleans = new Map();
+        const numbers = new Map();
+        for (const pack of packages) {
+            pack.numberVariables.forEach((value, key, _) => {
+                numbers.set(key, value);
+            });
+            pack.booleanVariables.forEach((value, key, _) => {
+                booleans.set(key, value);
+            });
+        }
+        return {
+            booleanVariables: booleans,
+            numberVariables: numbers
+        };
+    }
+
+    const javaNumbers = new Map();
+    const javaBooleans = new Map();
+    javaNumbers.set("beeperBag", [["BAGBUZZERS"]]);
+    javaNumbers.set("floorBeepers", [["WORLDBUZZERS"]]);
+    javaBooleans.set("true", [["LOAD", 1]]);
+    javaBooleans.set("false", [["LOAD", 0]]);
+    const rekarelGlobalsJava = {
+        booleanVariables: javaBooleans,
+        numberVariables: javaNumbers
+    };
+    const pascalNumbers = new Map();
+    const pascalBooleans = new Map();
+    pascalNumbers.set("mochila", [["BAGBUZZERS"]]);
+    pascalNumbers.set("zumbadores-del-piso", [["WORLDBUZZERS"]]);
+    pascalBooleans.set("verdadero", [["LOAD", 1]]);
+    pascalBooleans.set("falso", [["LOAD", 0]]);
+    const rekarelGlobalsPascal = {
+        booleanVariables: pascalBooleans,
+        numberVariables: pascalNumbers
+    };
+
+    const java = [rekarelGlobalsJava];
+    const JavaPackages = {
+        "rekarel.globals": rekarelGlobalsJava,
+        "rekarel.*": UnitePackages(java)
+    };
+    const pascal = [rekarelGlobalsPascal];
+    const PascalPackages = {
+        "rekarel.globales": rekarelGlobalsPascal,
+        "rekarel.*": UnitePackages(pascal)
+    };
+
+    /**
+     * Represents a table with all definition data
+     */
+    class DefinitionTable {
+        constructor(variablesCanBeFunctions) {
+            this.functions = new Map();
+            this.variables = new Map();
+            this.variablesCanBeFunctions = variablesCanBeFunctions;
+        }
+        getType(identifier) {
+            if (this.variables.has(identifier)) {
+                return this.variables.get(identifier).dataType;
+            }
+            if (this.functions.has(identifier)) {
+                return this.functions.get(identifier).returnType;
+            }
+            return "undefined";
+        }
+        registerFunction(func) {
+            this.functions.set(func.name, {
+                arguments: func.params,
+                location: 0,
+                returnType: func.returnType
+            });
+        }
+        hasFunction(name) {
+            return this.functions.has(name);
+        }
+        getFunction(name) {
+            return this.functions.get(name);
+        }
+        setFunctionLoc(target, location) {
+            this.functions.get(target).location = location;
+        }
+        registerVar(name, val) {
+            this.variables.set(name, val);
+        }
+        hasVar(name) {
+            return this.variables.has(name);
+        }
+        getVar(name) {
+            return this.variables.get(name);
+        }
+    }
+
+    var CompilationError;
+    (function (CompilationError) {
+        (function (Errors) {
+            Errors[Errors["CALL_TYPE"] = 0] = "CALL_TYPE";
+            Errors[Errors["COMPARISON_TYPE"] = 1] = "COMPARISON_TYPE";
+            Errors[Errors["FUNCTION_ILLEGAL_NAME"] = 2] = "FUNCTION_ILLEGAL_NAME";
+            Errors[Errors["FUNCTION_REDEFINITION"] = 3] = "FUNCTION_REDEFINITION";
+            Errors[Errors["ILLEGAL_BREAK"] = 4] = "ILLEGAL_BREAK";
+            Errors[Errors["ILLEGAL_CONTINUE"] = 5] = "ILLEGAL_CONTINUE";
+            Errors[Errors["NO_EXPLICIT_RETURN"] = 6] = "NO_EXPLICIT_RETURN";
+            Errors[Errors["PARAMETER_ILLEGAL_NAME"] = 7] = "PARAMETER_ILLEGAL_NAME";
+            Errors[Errors["PROTOTYPE_PARAMETERS_MISS_MATCH"] = 8] = "PROTOTYPE_PARAMETERS_MISS_MATCH";
+            Errors[Errors["PROTOTYPE_TYPE_MISS_MATCH"] = 9] = "PROTOTYPE_TYPE_MISS_MATCH";
+            Errors[Errors["PROTOTYPE_REDEFINITION"] = 10] = "PROTOTYPE_REDEFINITION";
+            Errors[Errors["RETURN_TYPE"] = 11] = "RETURN_TYPE";
+            Errors[Errors["TOO_FEW_PARAMS_IN_CALL"] = 12] = "TOO_FEW_PARAMS_IN_CALL";
+            Errors[Errors["TOO_MANY_PARAMS_IN_CALL"] = 13] = "TOO_MANY_PARAMS_IN_CALL";
+            Errors[Errors["TYPE_ERROR"] = 14] = "TYPE_ERROR";
+            Errors[Errors["UNDEFINED_FUNCTION"] = 15] = "UNDEFINED_FUNCTION";
+            Errors[Errors["UNDEFINED_FUNCTION_OR_VARIABLE"] = 16] = "UNDEFINED_FUNCTION_OR_VARIABLE";
+            Errors[Errors["UNKNOWN_MODULE"] = 17] = "UNKNOWN_MODULE";
+            Errors[Errors["UNKNOWN_PACKAGE"] = 18] = "UNKNOWN_PACKAGE";
+            Errors[Errors["UNKNOWN_VARIABLE"] = 19] = "UNKNOWN_VARIABLE";
+        })(CompilationError.Errors || (CompilationError.Errors = {}));
+    })(CompilationError || (CompilationError = {}));
+
+    /**
+     * @throws If the AST is not type correct
+     * @param tree The ast expression to solve
+     * @param table Definition table
+     * @param yy Requiered to emmit compilation error
+     * @param scope.expectedReturn The type of the return in the current scope
+     * @returns Returns the equivalent AST into IRInstructions without AST
+     */
+    function resolveTerm(tree, definitions, scope, target, tags, yy) {
+        if (tree.operation === "ATOM") {
+            resolveListWithASTs(tree.instructions, definitions, scope, target, tags, yy);
+            if (tree.dataType.startsWith("$")) {
+                const termType = tree.dataType.substring(1);
+                if (scope.parameters.some(e => e.name === termType)) {
+                    return "INT";
+                }
+                return definitions.getType(tree.dataType.substring(1));
+            }
+            return tree.dataType;
+        }
+        if (tree.operation === "AND" || tree.operation === "OR") {
+            const leftType = resolveTerm(tree.left, definitions, scope, target, tags, yy);
+            const rightType = resolveTerm(tree.right, definitions, scope, target, tags, yy);
+            if (leftType !== "BOOL") {
+                yy.parser.parseError(`${tree.operation} operator uses booleans terms only, left is of type: ${leftType}`, {
+                    error: CompilationError.Errors.TYPE_ERROR,
+                    loc: tree.loc,
+                    line: tree.loc.first_line - 1,
+                    expectedType: "BOOL",
+                    actualType: leftType
+                });
+            }
+            if (rightType !== "BOOL") {
+                yy.parser.parseError(`${tree.operation} operator uses booleans terms only, right is of type: ${rightType}`, {
+                    error: CompilationError.Errors.TYPE_ERROR,
+                    loc: tree.loc,
+                    line: tree.loc.first_line - 1,
+                    expectedType: "BOOL",
+                    actualType: rightType
+                });
+            }
+            target.push([tree.operation]);
+            return tree.dataType;
+        }
+        if (tree.operation === "EQ") {
+            const leftType = resolveTerm(tree.left, definitions, scope, target, tags, yy);
+            const rightType = resolveTerm(tree.right, definitions, scope, target, tags, yy);
+            if (leftType !== rightType) {
+                yy.parser.parseError(`An equality comparison cannot be performed between type ${leftType} and ${rightType}`, {
+                    error: CompilationError.Errors.COMPARISON_TYPE,
+                    loc: tree.loc,
+                    line: tree.loc.first_line - 1,
+                    leftType: leftType,
+                    rightType: rightType
+                });
+            }
+            target.push([tree.operation]);
+            return tree.dataType;
+        }
+        if (tree.operation === "LT" || tree.operation === "LTE") {
+            const leftType = resolveTerm(tree.left, definitions, scope, target, tags, yy);
+            const rightType = resolveTerm(tree.right, definitions, scope, target, tags, yy);
+            if (leftType !== "INT") {
+                yy.parser.parseError(`${tree.operation} operator uses integer terms only, left is of type: ${leftType}`, {
+                    error: CompilationError.Errors.TYPE_ERROR,
+                    loc: tree.loc,
+                    line: tree.loc.first_line - 1,
+                    expectedType: "INT",
+                    actualType: leftType
+                });
+            }
+            if (rightType !== "INT") {
+                yy.parser.parseError(`${tree.operation} operator uses integer terms only, right is of type: ${rightType}`, {
+                    error: CompilationError.Errors.TYPE_ERROR,
+                    loc: tree.loc,
+                    line: tree.loc.first_line - 1,
+                    expectedType: "INT",
+                    actualType: rightType
+                });
+            }
+            target.push([tree.operation]);
+            return tree.dataType;
+        }
+        if (tree.operation === "NOT") {
+            const termType = resolveTerm(tree.term, definitions, scope, target, tags, yy);
+            if (termType !== "BOOL") {
+                yy.parser.parseError(`${tree.operation} operator uses a boolean terms only, but tried to negate a term of type: ${termType}`, {
+                    error: CompilationError.Errors.TYPE_ERROR,
+                    loc: tree.loc,
+                    line: tree.loc.first_line - 1,
+                    expectedType: "BOOL",
+                    actualType: termType
+                });
+            }
+            target.push([tree.operation]);
+            return tree.dataType;
+        }
+        if (tree.operation === "PASS") {
+            const termType = resolveTerm(tree.term, definitions, scope, target, tags, yy);
+            if (termType !== tree.dataType) {
+                yy.parser.parseError(`Expected a term of type ${tree.dataType}, but got ${termType}`, {
+                    error: CompilationError.Errors.TYPE_ERROR,
+                    loc: tree.loc,
+                    line: tree.loc.first_line - 1,
+                    expectedType: tree.dataType,
+                    actualType: termType
+                });
+            }
+            return tree.dataType;
+        }
+    }
+    function resolveVar(data, definitions, scope, target, yy) {
+        const parameterIdx = scope.parameters.findIndex(e => data.target === e.name);
+        if (parameterIdx !== -1) {
+            target.push(["PARAM", parameterIdx]);
+            return;
+        }
+        if (definitions.hasVar(data.target)) {
+            const IRs = definitions.getVar(data.target).instructions;
+            for (const instruction of IRs) {
+                target.push(instruction);
+            }
+            return;
+        }
+        if (data.couldBeFunction) {
+            //Resolve as an parameterless call
+            target.push(["LOAD", 0]); //FIXME: Don't forget to remove me after you change how variables work!
+            if (!definitions.hasFunction(data.target)) {
+                yy.parser.parseError("Undefined function or variable: " + data.target, {
+                    error: CompilationError.Errors.UNDEFINED_FUNCTION,
+                    functionName: data.target,
+                    line: data.loc.first_line - 1,
+                    loc: data.loc
+                });
+            }
+            target.push([
+                "CALL",
+                {
+                    target: data.target,
+                    nameLoc: data.loc,
+                    expectedType: data.expectedType,
+                    params: [],
+                }
+            ]);
+            target.push(["LRET"]);
+            return;
+        }
+        yy.parser.parseError("Unknown variable or parameter: " + data.target, {
+            error: CompilationError.Errors.UNKNOWN_VARIABLE,
+            variable: data.target,
+            line: data.loc.first_line - 1,
+            loc: data.loc
+        });
+    }
+    function resolveCall(data, definitions, scope, target, tags, yy) {
+        target.push(["LINE", data.nameLoc.first_line - 1, data.nameLoc.first_column]);
+        for (const parameter of data.params) {
+            resolveTerm(parameter, definitions, scope, target, tags, yy);
+        }
+        target.push(["LOAD", data.params.length]);
+        if (!definitions.hasFunction(data.target)) {
+            yy.parser.parseError("Undefined function: " + data.target, {
+                error: CompilationError.Errors.UNDEFINED_FUNCTION,
+                functionName: data.target,
+                line: data.nameLoc.first_line - 1,
+                loc: data.nameLoc
+            });
+            return null;
+        }
+        target.push(["CALL", data]);
+        target.push(["LINE", data.nameLoc.first_line - 1, data.nameLoc.first_column]);
+    }
+    function resolveReturn(data, definitions, scope, target, tags, yy) {
+        const retType = resolveTerm(data.term, definitions, scope, target, tags, yy);
+        if (scope.expectedReturn !== retType) {
+            yy.parser.parseError(`Cannot return a type: ${retType}, in a function of type: ${scope.expectedReturn}`, {
+                error: CompilationError.Errors.RETURN_TYPE,
+                line: data.loc.first_line - 1,
+                loc: data.loc,
+                expectedType: scope.expectedReturn,
+                actualType: retType
+            });
+        }
+        target.push(["SRET"]);
+        target.push(["RET", data]);
+    }
+    function resolveRepeat(data, definitions, scope, target, tags, yy) {
+        // Add line marker
+        target.push(data.line);
+        // Add load counter
+        resolveTerm(data.loopCount[1], definitions, scope, target, tags, yy);
+        // Add counter logic
+        resolveListWithASTs([
+            ['TAG', data.repeatTag],
+            ['DUP'],
+            ['LOAD', 0],
+            ['EQ'],
+            ['NOT'],
+            ['TJZ', data.endTag]
+        ], definitions, scope, target, tags, yy);
+        const loopScope = scope.withContinueBreakTarget(data.repeatTag, data.endTag);
+        // Add loop body
+        resolveListWithASTs(data.instructions, definitions, loopScope, target, tags, yy);
+        // Add loop end logic
+        resolveListWithASTs([
+            ['DEC', 1],
+            ['TJMP', data.repeatTag],
+            ['TAG', data.endTag],
+            ['POP'],
+        ], definitions, scope, target, tags, yy);
+    }
+    /**
+     * Resolves a while
+     * @param data
+     * @param definitions
+     * @param scope.parameters
+     * @param scope.expectedReturn
+     * @param target
+     * @param tags
+     * @param yy
+     */
+    function resolveWhile(data, definitions, scope, target, tags, yy) {
+        // Add repeat tag
+        resolveListWithASTs([
+            ['TAG', data.repeatTag],
+        ], definitions, scope, target, tags, yy);
+        // Add line marker
+        target.push(data.line);
+        // Add condition check
+        resolveTerm(data.condition[1], definitions, scope, target, tags, yy);
+        // Add skip logic
+        resolveListWithASTs([
+            ['TJZ', data.endTag]
+        ], definitions, scope, target, tags, yy);
+        const whileScope = scope.withContinueBreakTarget(data.repeatTag, data.endTag);
+        // Add loop body
+        resolveListWithASTs(data.instructions, definitions, whileScope, target, tags, yy);
+        // Add loop end logic
+        resolveListWithASTs([
+            ['TJMP', data.repeatTag],
+            ['TAG', data.endTag],
+        ], definitions, scope, target, tags, yy);
+    }
+    function resolveConditional(data, definitions, scope, target, tags, yy) {
+        let trueReturns = false, falseReturns = false;
+        // Add line marker
+        target.push(data.line);
+        resolveTerm(data.condition[1], definitions, scope, target, tags, yy);
+        resolveListWithASTs([["TJZ", data.skipTrueTag]], definitions, scope, target, tags, yy);
+        trueReturns = resolveListWithASTs(data.trueCase, definitions, scope, target, tags, yy).explicitReturn;
+        if (data.skipFalseTag) {
+            resolveListWithASTs([["TJMP", data.skipFalseTag]], definitions, scope, target, tags, yy);
+        }
+        resolveListWithASTs([["TAG", data.skipTrueTag]], definitions, scope, target, tags, yy);
+        if (data.skipFalseTag && data.falseCase) {
+            falseReturns = resolveListWithASTs(data.falseCase, definitions, scope, target, tags, yy).explicitReturn;
+            resolveListWithASTs([["TAG", data.skipFalseTag]], definitions, scope, target, tags, yy);
+        }
+        return {
+            explicitReturn: trueReturns && falseReturns
+        };
+    }
+    /**
+     * @throws Iterates through an IR list and resolve any AST it finds
+     * @param tree The ast expression to solve
+     * @param definitions Definition table
+     * @param yy Requiered to emmit compilation error
+     * @returns Returns the equivalent AST into IRInstructions without AST
+     */
+    function resolveListWithASTs(IRInstructions, definitions, scope, target, tags, yy) {
+        const info = {
+            explicitReturn: false
+        };
+        for (const instruction of IRInstructions) {
+            // Fixme: All vars should be in terms
+            if (instruction[0] === "VAR") {
+                resolveVar(instruction[1], definitions, scope, target, yy);
+                continue;
+            }
+            if (instruction[0] === "TERM") {
+                resolveTerm(instruction[1], definitions, scope, target, tags, yy);
+                continue;
+            }
+            if (instruction[0] === "TAG") {
+                tags[instruction[1]] = target.length;
+                continue;
+            }
+            if (instruction[0] === "CALL") {
+                resolveCall(instruction[1], definitions, scope, target, tags, yy);
+                continue;
+            }
+            if (instruction[0] === "RET") {
+                if (instruction[1] === "__DEFAULT") {
+                    //set SRET to 0
+                    target.push(["LOAD", 0]);
+                    target.push(["SRET"]);
+                    target.push(instruction);
+                    continue;
+                }
+                resolveReturn(instruction[1], definitions, scope, target, tags, yy);
+                info.explicitReturn = true;
+                continue;
+            }
+            if (instruction[0] === "REPEAT") {
+                resolveRepeat(instruction[1], definitions, scope, target, tags, yy);
+                continue;
+            }
+            if (instruction[0] === "WHILE") {
+                resolveWhile(instruction[1], definitions, scope, target, tags, yy);
+                continue;
+            }
+            if (instruction[0] === "IF") {
+                const ifInfo = resolveConditional(instruction[1], definitions, scope, target, tags, yy);
+                if (ifInfo.explicitReturn) {
+                    info.explicitReturn = true;
+                }
+                continue;
+            }
+            if (instruction[0] === "CONTINUE") {
+                if (scope.continueTarget == null) {
+                    yy.parser.parseError("Cannot use continue in this scope", {
+                        error: CompilationError.Errors.ILLEGAL_CONTINUE,
+                        loc: instruction[1],
+                        line: instruction[1].first_line - 1
+                    });
+                }
+                target.push(["TJMP", scope.continueTarget]);
+                continue;
+            }
+            if (instruction[0] === "BREAK") {
+                if (scope.breakTarget == null) {
+                    yy.parser.parseError("Cannot use break in this scope", {
+                        error: CompilationError.Errors.ILLEGAL_BREAK,
+                        loc: instruction[1],
+                        line: instruction[1].first_line - 1
+                    });
+                }
+                target.push(["TJMP", scope.breakTarget]);
+                continue;
+            }
+            target.push(instruction);
+        }
+        return info;
+    }
+
+    class Scope {
+        constructor(data) {
+            this.parameters = data.parameters;
+            this.expectedReturn = data.expectedReturn;
+            this.continueTarget = data.continueTarget;
+            this.breakTarget = data.breakTarget;
+        }
+        withContinueTarget(continueTarget) {
+            return new Scope({
+                parameters: this.parameters,
+                expectedReturn: this.expectedReturn,
+                continueTarget: continueTarget,
+                breakTarget: this.breakTarget
+            });
+        }
+        withBreakTarget(breakTarget) {
+            return new Scope({
+                parameters: this.parameters,
+                expectedReturn: this.expectedReturn,
+                continueTarget: this.continueTarget,
+                breakTarget: breakTarget
+            });
+        }
+        withContinueBreakTarget(continueTarget, breakTarget) {
+            return new Scope({
+                parameters: this.parameters,
+                expectedReturn: this.expectedReturn,
+                continueTarget: continueTarget,
+                breakTarget: breakTarget
+            });
+        }
+    }
+    const MAIN_SCOPE = new Scope({
+        expectedReturn: "VOID",
+        parameters: []
+    });
+
+    /**
+     * Checks that functions calls are valid, not defined multiple times and prototypes match
+     * @param data The IR generated by the parser
+     * @param bundle The bundle generated by the packages
+     * @param definitionTable The definition table to populate
+     */
+    function validateAndGetFunctionDefinitions(data, definitionTable) {
+        const yy = data.yy;
+        const prototypes = new Map();
+        for (const func of data.functions) {
+            //Check that the parameters do not overload a global
+            for (const parameter of func.params) {
+                if (definitionTable.hasVar(parameter.name)) {
+                    yy.parser.parseError("Cannot name a parameter as a global variable", {
+                        error: CompilationError.Errors.PARAMETER_ILLEGAL_NAME,
+                        parameterName: parameter.name,
+                        line: parameter.loc.first_line - 1,
+                        loc: parameter.loc
+                    });
+                    return false;
+                }
+            }
+            // Check that the function does not shadow a variable
+            if (definitionTable.hasVar(func.name)) {
+                yy.parser.parseError("Cannot name a function as a global variable", {
+                    error: CompilationError.Errors.FUNCTION_ILLEGAL_NAME,
+                    functionName: func.name,
+                    line: func.loc.first_line - 1,
+                    loc: func.loc
+                });
+                return false;
+            }
+            //Check if current func is a prototype
+            if (func.code == null) {
+                if (prototypes.has(func.name)) {
+                    yy.parser.parseError("Prototype redefinition: " + func.name, {
+                        error: CompilationError.Errors.PROTOTYPE_REDEFINITION,
+                        prototypeName: func.name,
+                        line: func.loc.first_line - 1,
+                        loc: func.loc,
+                    });
+                    return false;
+                }
+                prototypes.set(func.name, {
+                    argCount: func.params.length,
+                    defined: false,
+                    returnType: func.returnType
+                });
+                continue;
+            }
+            if (!prototypes.has(func.name)) {
+                prototypes.set(func.name, {
+                    argCount: func.params.length,
+                    defined: false,
+                    returnType: func.returnType
+                });
+            }
+            const proto = prototypes.get(func.name);
+            if (proto.defined) {
+                yy.parser.parseError("Function redefinition: " + func.name, {
+                    error: CompilationError.Errors.FUNCTION_REDEFINITION,
+                    functionName: func.name,
+                    line: func.loc.first_line - 1,
+                    loc: func.loc,
+                });
+                return false;
+            }
+            if (proto.argCount !== func.params.length) {
+                yy.parser.parseError("Prototype parameter mismatch: " + func.name, {
+                    error: CompilationError.Errors.PROTOTYPE_PARAMETERS_MISS_MATCH,
+                    line: func.loc.first_line - 1,
+                    loc: func.loc,
+                    functionName: func.name,
+                    functionParamCount: func.params.length,
+                    prototypeParamCount: proto.argCount
+                });
+                return false;
+            }
+            if (proto.returnType !== func.returnType) {
+                yy.parser.parseError("Prototype type mismatch: " + func.name, {
+                    error: CompilationError.Errors.PROTOTYPE_TYPE_MISS_MATCH,
+                    line: func.loc.first_line - 1,
+                    loc: func.loc,
+                    functionName: func.name,
+                    functionType: func.returnType,
+                    prototypeType: proto.returnType
+                });
+                return false;
+            }
+            prototypes.set(func.name, {
+                argCount: func.params.length,
+                defined: true,
+                returnType: func.returnType
+            });
+            definitionTable.registerFunction(func);
+            for (const instruction of func.code) {
+                if (data.requieresFunctionPrototypes && instruction[0] === "CALL") {
+                    //This check is only needed if declaration order mater, for languages like C or Pascal
+                    //Checks that the function called at this time has been declared above.
+                    const data = instruction[1];
+                    if (!prototypes.has(data.target)) {
+                        yy.parser.parseError("Undefined function: " + data.target, {
+                            error: CompilationError.Errors.UNDEFINED_FUNCTION,
+                            functionName: data.target,
+                            line: data.nameLoc.first_line - 1,
+                            loc: data.nameLoc
+                        });
+                        return false;
+                    }
+                }
+            }
+        }
+        return true;
+    }
+    /**
+     * This functions  creates a  bundle with all packages that the code has
+     * @throws Compilation error if it imports and invalid package
+     * @param data IntermediateRepresentation Object
+     * @param keywords Set of keywords, each package may add it
+     */
+    function loadPackages(data, definitions) {
+        const compPackages = data.language === "ReKarel Java" ? JavaPackages : PascalPackages;
+        const yy = data.yy;
+        for (const pack of data.packages) {
+            const packageName = pack[0].split(".")[0];
+            const moduleName = pack[0].split(".")[1];
+            if (packageName !== "rekarel") {
+                yy.parser.parseError("Package not recognized: " + pack[0], {
+                    error: CompilationError.Errors.UNKNOWN_PACKAGE,
+                    package: packageName,
+                    module: moduleName,
+                    full: pack[0],
+                    loc: pack[1],
+                    line: pack[1].first_line - 1,
+                });
+            }
+            if (!compPackages[pack[0]]) {
+                yy.parser.parseError("Module not found: " + pack[0], {
+                    error: CompilationError.Errors.UNKNOWN_MODULE,
+                    package: packageName,
+                    module: moduleName,
+                    full: pack[0],
+                    loc: pack[1],
+                    line: pack[1].first_line - 1,
+                });
+            }
+            const packObject = compPackages[pack[0]];
+            for (let [varName, varVal] of packObject.numberVariables) {
+                definitions.registerVar(varName, {
+                    instructions: varVal,
+                    dataType: "INT",
+                });
+            }
+            for (let [varName, varVal] of packObject.booleanVariables) {
+                definitions.registerVar(varName, {
+                    instructions: varVal,
+                    dataType: "BOOL",
+                });
+            }
+        }
+    }
+    /**
+     * Resolves AST instructions, Tags and TJMP.
+     * @throws If there's a type error
+     * @param IRInstructions The instructions to resolve
+     * @param yy Compiler information, used to throw compilation errors
+     * @param definitions Table of global definitions
+     * @param parameters Parameters of the scope
+     * @param expectedReturn The return type of the current scope
+     * @returns The IR with the complex IR resolved into simple IR
+     */
+    function resolveComplexIR(IRInstructions, yy, definitions, scope, func) {
+        let result = [];
+        const tags = {};
+        //Resolve AST and populate tags
+        let info = resolveListWithASTs(IRInstructions, definitions, scope, result, tags, yy);
+        // Check for explicit returns
+        if (scope.expectedReturn !== "VOID" && !info.explicitReturn) {
+            yy.parser.parseError(`Explicit return is required in function ${func.name}`, {
+                error: CompilationError.Errors.NO_EXPLICIT_RETURN,
+                loc: func.loc,
+                line: func.loc.first_line - 1,
+                functionName: func.name,
+                returnType: scope.expectedReturn,
+            });
+        }
+        // Resolve TJMP to JMP
+        return result.map((instruction, idx) => {
+            if (instruction[0] === "TJMP") {
+                const delta = tags[instruction[1]] - idx - 1;
+                return ["JMP", delta];
+            }
+            if (instruction[0] === "TJZ") {
+                const delta = tags[instruction[1]] - idx - 1;
+                return ["JZ", delta];
+            }
+            return instruction;
+        });
+    }
+    function generateOpcodesFromIR(data) {
+        const definitions = new DefinitionTable(data.variablesCanBeFunctions);
+        // Step 1 - Populate global definitions, and check for repeated definitions
+        loadPackages(data, definitions);
+        if (!validateAndGetFunctionDefinitions(data, definitions))
+            throw new Error("This should not be reachable, it should have thrown before");
+        // Step 2 - Resolve all AST/tags, such as terms.
+        let IRProgram = resolveComplexIR(data.program, data.yy, definitions, MAIN_SCOPE);
+        // Step 3 - Resolve all AST/tags from functions and Generate a single IR array.
+        for (const func of data.functions) {
+            if (func.code == null) {
+                //Skip prototypes
+                continue;
+            }
+            definitions.setFunctionLoc(func.name, IRProgram.length);
+            const functionScope = new Scope({
+                parameters: func.params,
+                expectedReturn: func.returnType
+            });
+            const code = resolveComplexIR(func.code, data.yy, definitions, functionScope, func);
+            IRProgram = IRProgram.concat(code);
+        }
+        //Step 4: Generate opcode. Resolve CALL into correct opcode
+        const program = [];
+        for (const instruction of IRProgram) {
+            if (instruction[0] === "CALL") {
+                const iData = instruction[1];
+                if (!definitions.hasFunction(iData.target)) {
+                    data.yy.parser.parseError("Undefined function: " + iData.target, {
+                        error: CompilationError.Errors.UNDEFINED_FUNCTION,
+                        functionName: iData.target,
+                        line: iData.nameLoc.first_line - 1,
+                        loc: iData.nameLoc
+                    });
+                    return null;
+                }
+                const targetFunc = definitions.getFunction(iData.target);
+                if (targetFunc.arguments.length < iData.params.length) {
+                    const extraParam = iData.params[iData.params.length - targetFunc.arguments.length - 1];
+                    data.yy.parser.parseError(`Too many parameters in call to function ${iData.target}, expected ${targetFunc.arguments.length}, got ${iData.params.length}`, {
+                        error: CompilationError.Errors.TOO_MANY_PARAMS_IN_CALL,
+                        line: extraParam.totalLoc.first_line - 1,
+                        loc: extraParam.totalLoc,
+                        functionName: iData.target,
+                        expectedParams: iData.params.length,
+                        actualParams: targetFunc.arguments.length
+                    });
+                }
+                if (targetFunc.arguments.length > iData.params.length) {
+                    data.yy.parser.parseError(`Too few parameters in call to function ${iData.target}, expected ${targetFunc.arguments.length}, got ${iData.params.length}`, {
+                        error: CompilationError.Errors.TOO_FEW_PARAMS_IN_CALL,
+                        line: iData.nameLoc.first_line - 1,
+                        loc: iData.nameLoc,
+                        funcName: iData.target,
+                        expectedParams: iData.params.length,
+                        actualParams: targetFunc.arguments.length
+                    });
+                }
+                if (iData.expectedType != null && iData.expectedType !== targetFunc.returnType) {
+                    data.yy.parser.parseError(`Expected a function of type ${iData.expectedType}, but ${iData.target} is ${targetFunc.returnType}`, {
+                        error: CompilationError.Errors.CALL_TYPE,
+                        line: iData.nameLoc.first_line - 1,
+                        loc: iData.nameLoc,
+                        funcName: iData.target,
+                        expectedCallType: iData.expectedType,
+                        functionType: targetFunc.returnType
+                    });
+                }
+                program.push([
+                    "CALL",
+                    targetFunc.location,
+                    iData.target,
+                ]);
+                continue;
+            }
+            if (instruction[0] === "RET") {
+                program.push(["RET"]);
+                continue;
+            }
+            program.push(instruction);
+        }
+        return program;
+    }
+
+    const javaParser = javaParser$1;
+    const pascalParser = pascalParser$1;
     function detectLanguage(code) {
         let rules = [
             /^\s+/,
@@ -24488,10 +25964,10 @@ var karel = (function (exports, bootstrap) {
                 if (m !== null) {
                     if (j == rules.length - 1) {
                         // el primer token de verdad.
-                        if (m[0] == 'class') {
+                        if (m[0] == 'class' || m[0] == 'import') {
                             return 'java';
                         }
-                        else if (m[0].toLowerCase() == 'iniciar-programa') {
+                        else if (m[0].toLowerCase() == 'iniciar-programa' || m[0].toLowerCase() == 'usa') {
                             return 'pascal';
                         }
                         else {
@@ -24521,7 +25997,16 @@ var karel = (function (exports, bootstrap) {
             default:
                 return null;
         }
-        return compiler(code);
+        const result = compiler(code);
+        return result;
+    }
+    function javaCompiler(code) {
+        const IR = javaParser(code);
+        return generateOpcodesFromIR(IR);
+    }
+    function pascalCompiler(code) {
+        const IR = pascalParser(code);
+        return generateOpcodesFromIR(IR);
     }
 
     class KarelRuntimeEvent extends Event {
@@ -24595,6 +26080,10 @@ var karel = (function (exports, bootstrap) {
         OpCodeID[OpCodeID["CALL"] = 25] = "CALL";
         OpCodeID[OpCodeID["RET"] = 26] = "RET";
         OpCodeID[OpCodeID["PARAM"] = 27] = "PARAM";
+        OpCodeID[OpCodeID["SRET"] = 28] = "SRET";
+        OpCodeID[OpCodeID["LRET"] = 29] = "LRET";
+        OpCodeID[OpCodeID["LT"] = 30] = "LT";
+        OpCodeID[OpCodeID["LTE"] = 31] = "LTE";
     })(OpCodeID || (OpCodeID = {}));
     function getOpCodeID(literal) {
         if (literal in OpCodeID) {
@@ -24602,7 +26091,6 @@ var karel = (function (exports, bootstrap) {
         }
         return -1;
     }
-
     var ErrorType;
     (function (ErrorType) {
         ErrorType["INSTRUCTION"] = "INSTRUCTION";
@@ -24611,7 +26099,10 @@ var karel = (function (exports, bootstrap) {
         ErrorType["WORLDUNDERFLOW"] = "WORLDUNDERFLOW";
         ErrorType["BAGUNDERFLOW"] = "BAGUNDERFLOW";
         ErrorType["INVALIDOPCODE"] = "INVALIDOPCODE";
+        ErrorType["STACKMEMORY"] = "STACKMEMORY";
+        ErrorType["CALLSIZE"] = "CALLMEMORY";
     })(ErrorType || (ErrorType = {}));
+
     class Runtime {
         constructor(world) {
             this.world = world;
@@ -24628,21 +26119,25 @@ var karel = (function (exports, bootstrap) {
             let function_idx = 0;
             this.program = new Int32Array(new ArrayBuffer(opcodes.length * 3 * 4));
             for (let i = 0; i < opcodes.length; i++) {
-                this.program[3 * i] = getOpCodeID(opcodes[i][0]);
-                if (opcodes[i].length > 1) {
-                    this.program[3 * i + 1] = opcodes[i][1];
+                const currentOpcode = opcodes[i];
+                this.program[3 * i] = getOpCodeID(currentOpcode[0]);
+                if (currentOpcode.length > 1) {
+                    this.program[3 * i + 1] = currentOpcode[1];
                 }
-                if (opcodes[i][0] == 'CALL') {
-                    if (!function_map.hasOwnProperty(opcodes[i][2])) {
-                        function_map[opcodes[i][2]] = function_idx;
-                        this.functionNames[function_idx++] = opcodes[i][2];
+                if (currentOpcode[0] == "LINE") {
+                    this.program[3 * i + 2] = currentOpcode[2];
+                }
+                if (currentOpcode[0] == 'CALL') {
+                    if (!function_map.hasOwnProperty(currentOpcode[2])) {
+                        function_map[currentOpcode[2]] = function_idx;
+                        this.functionNames[function_idx++] = currentOpcode[2];
                     }
-                    this.program[3 * i + 2] = function_map[opcodes[i][2]];
+                    this.program[3 * i + 2] = function_map[currentOpcode[2]];
                 }
-                else if (opcodes[i][0] == 'EZ') {
-                    this.program[3 * i + 1] = error_mapping.indexOf(opcodes[i][1]);
+                else if (currentOpcode[0] == 'EZ') {
+                    this.program[3 * i + 1] = error_mapping.indexOf(currentOpcode[1]);
                     if (this.program[3 * i + 1] == -1) {
-                        throw new Error('Invalid error: ' + opcodes[i][1]);
+                        throw new Error('Invalid error: ' + currentOpcode[1]);
                     }
                 }
             }
@@ -24657,9 +26152,12 @@ var karel = (function (exports, bootstrap) {
                 sp: -1,
                 fp: -1,
                 line: -1,
+                column: -1,
                 ic: 0,
+                ret: 0,
                 stack: new Int32Array(new ArrayBuffer((0xffff * 16 + 40) * 4)),
                 stackSize: 0,
+                stackMemory: 0,
                 // Instruction counts
                 moveCount: 0,
                 turnLeftCount: 0,
@@ -24711,7 +26209,7 @@ var karel = (function (exports, bootstrap) {
             let rot;
             let di = [0, 1, 0, -1];
             let dj = [-1, 0, 1, 0];
-            let param, newSP, op1, op2, fname;
+            let paramCount, newSP, op1, op2, fname;
             try {
                 if (this.debug) {
                     this.eventController.fireEvent('debug', this, {
@@ -24729,6 +26227,7 @@ var karel = (function (exports, bootstrap) {
                     }
                     case OpCodeID.LINE: {
                         this.state.line = this.program[3 * this.state.pc + 1];
+                        this.state.column = this.program[3 * this.state.pc + 2];
                         break;
                     }
                     case OpCodeID.LEFT: {
@@ -24888,35 +26387,44 @@ var karel = (function (exports, bootstrap) {
                         break;
                     }
                     case OpCodeID.DEC: {
-                        this.state.stack[this.state.sp]--;
+                        this.state.stack[this.state.sp] -= this.program[3 * this.state.pc + 1];
                         break;
                     }
                     case OpCodeID.INC: {
-                        this.state.stack[this.state.sp]++;
+                        this.state.stack[this.state.sp] += this.program[3 * this.state.pc + 1];
                         break;
                     }
                     case OpCodeID.CALL: {
                         this.state.ic++;
                         // sp, pc, param
-                        param = this.state.stack[this.state.sp--];
-                        newSP = this.state.sp;
+                        paramCount = this.state.stack[this.state.sp--];
+                        newSP = this.state.sp - paramCount;
                         fname = this.functionNames[this.program[3 * this.state.pc + 2]];
                         this.state.stack[++this.state.sp] = this.state.fp;
                         this.state.stack[++this.state.sp] = newSP;
                         this.state.stack[++this.state.sp] = this.state.pc;
-                        this.state.stack[++this.state.sp] = param;
-                        this.state.fp = newSP + 1;
+                        this.state.stack[++this.state.sp] = paramCount;
+                        this.state.fp = newSP + 1 + paramCount;
                         this.state.pc = this.program[3 * this.state.pc + 1];
                         this.state.jumped = true;
                         this.state.stackSize++;
+                        this.state.stackMemory += Math.max(1, paramCount);
                         if (this.state.stackSize >= this.world.maxStackSize) {
                             this.state.running = false;
                             this.state.error = ErrorType.STACK;
                         }
+                        else if (this.state.stackMemory >= this.world.maxStackMemory) {
+                            this.state.running = false;
+                            this.state.error = ErrorType.STACKMEMORY;
+                        }
+                        else if (paramCount > this.world.maxCallSize) {
+                            this.state.running = false;
+                            this.state.error = ErrorType.CALLSIZE;
+                        }
                         else if (!this.disableStackEvents) {
                             this.eventController.fireEvent('call', this, {
                                 function: fname,
-                                param: param,
+                                params: this.state.stack.subarray(this.state.fp - paramCount, this.state.fp),
                                 line: this.state.line,
                                 target: this,
                             });
@@ -24928,10 +26436,13 @@ var karel = (function (exports, bootstrap) {
                             this.state.running = false;
                             break;
                         }
+                        paramCount = this.state.stack[this.state.fp + 3];
                         this.state.pc = this.state.stack[this.state.fp + 2];
                         this.state.sp = this.state.stack[this.state.fp + 1];
                         this.state.fp = this.state.stack[this.state.fp];
                         this.state.stackSize--;
+                        this.state.stackMemory -= Math.max(1, paramCount);
+                        ;
                         if (!this.disableStackEvents) {
                             let param = this.state.stack[this.state.fp + 3];
                             let fname = "N/A";
@@ -24945,14 +26456,35 @@ var karel = (function (exports, bootstrap) {
                                 target: this,
                                 param: param,
                                 function: fname,
-                                line: line
+                                line: line,
+                                returnValue: this.state.ret
                             });
                         }
                         break;
                     }
                     case OpCodeID.PARAM: {
                         this.state.stack[++this.state.sp] =
-                            this.state.stack[this.state.fp + 3 + this.program[3 * this.state.pc + 1]];
+                            this.state.stack[this.state.fp - 1 - this.program[3 * this.state.pc + 1]];
+                        break;
+                    }
+                    case OpCodeID.SRET: {
+                        this.state.ret = this.state.stack[this.state.sp--];
+                        break;
+                    }
+                    case OpCodeID.LRET: {
+                        this.state.stack[++this.state.sp] = this.state.ret;
+                        break;
+                    }
+                    case OpCodeID.LT: {
+                        op2 = this.state.stack[this.state.sp--];
+                        op1 = this.state.stack[this.state.sp--];
+                        this.state.stack[++this.state.sp] = op1 < op2 ? 1 : 0;
+                        break;
+                    }
+                    case OpCodeID.LTE: {
+                        op2 = this.state.stack[this.state.sp--];
+                        op1 = this.state.stack[this.state.sp--];
+                        this.state.stack[++this.state.sp] = op1 <= op2 ? 1 : 0;
                         break;
                     }
                     default: {
@@ -24965,6 +26497,10 @@ var karel = (function (exports, bootstrap) {
                             });
                         }
                         this.state.error = ErrorType.INVALIDOPCODE;
+                        this.state.errorData = {
+                            type: ErrorType.INSTRUCTION,
+                            instruction: OpCodeID[this.program[this.state.pc * 3]]
+                        };
                         return false;
                     }
                 }
@@ -25020,6 +26556,8 @@ var karel = (function (exports, bootstrap) {
         ERROR_MAPPING["WORLDUNDERFLOW"] = "ZUMBADOR INVALIDO";
         ERROR_MAPPING["STACK"] = "STACK OVERFLOW";
         ERROR_MAPPING["INSTRUCTION"] = "LIMITE DE INSTRUCCIONES";
+        ERROR_MAPPING["STACKMEMORY"] = "LIMITE DE MEMORIA DEL STACK";
+        ERROR_MAPPING["CALLSIZE"] = "LIMITE DE LONGITUD DE LLAMADA";
     })(ERROR_MAPPING || (ERROR_MAPPING = {}));
     class World {
         constructor(w, h) {
@@ -25141,6 +26679,8 @@ var karel = (function (exports, bootstrap) {
             this.maxKarelBeepers = -1;
             this.maxBeepers = -1;
             this.maxStackSize = 65000;
+            this.maxStackMemory = 65000;
+            this.maxCallSize = 5;
             this.worldName = 'mundo_0';
             this.programName = 'p1';
             this.preValidators = [];
@@ -25330,7 +26870,8 @@ var karel = (function (exports, bootstrap) {
             this.setDumps(dumpFlag, !this.getDumps(dumpFlag));
         }
         load(doc) {
-            this.clear();
+            const self = this;
+            self.clear();
             let rules = {
                 mundo: function (mundo) {
                     let alto = mundo.getAttribute('alto');
@@ -25343,13 +26884,17 @@ var karel = (function (exports, bootstrap) {
                     if (!alto || !ancho) {
                         return;
                     }
-                    this.resize(ancho, alto);
+                    self.resize(ancho, alto);
                 },
                 condiciones: function (condiciones) {
-                    this.maxInstructions =
+                    self.maxInstructions =
                         parseInt(condiciones.getAttribute('instruccionesMaximasAEjecutar'), 10) || 10000000;
-                    this.maxStackSize =
+                    self.maxStackSize =
                         parseInt(condiciones.getAttribute('longitudStack'), 10) || 65000;
+                    self.maxStackMemory =
+                        parseInt(condiciones.getAttribute('memoriaStack'), 10) || 65000;
+                    self.maxCallSize =
+                        parseInt(condiciones.getAttribute('llamadaMaxima'), 10) || 5;
                 },
                 comando: function (comando) {
                     let name = comando.getAttribute('nombre');
@@ -25358,16 +26903,16 @@ var karel = (function (exports, bootstrap) {
                         return;
                     }
                     if (name == 'AVANZA') {
-                        this.maxMove = val;
+                        self.maxMove = val;
                     }
                     else if (name == 'GIRA_IZQUIERDA') {
-                        this.maxTurnLeft = val;
+                        self.maxTurnLeft = val;
                     }
                     else if (name == 'COGE_ZUMBADOR') {
-                        this.maxPickBuzzer = val;
+                        self.maxPickBuzzer = val;
                     }
                     else if (name == 'DEJA_ZUMBADOR') {
-                        this.maxLeaveBuzzer = val;
+                        self.maxLeaveBuzzer = val;
                     }
                 },
                 monton: function (monton) {
@@ -25382,7 +26927,7 @@ var karel = (function (exports, bootstrap) {
                         if (isNaN(zumbadores))
                             zumbadores = 0;
                     }
-                    this.setBuzzers(i, j, zumbadores);
+                    self.setBuzzers(i, j, zumbadores);
                 },
                 pared: function (pared) {
                     let i = parseInt(pared.getAttribute('y1'), 10) + 1;
@@ -25390,27 +26935,27 @@ var karel = (function (exports, bootstrap) {
                     if (pared.getAttribute('x2')) {
                         let j2 = parseInt(pared.getAttribute('x2'), 10) + 1;
                         if (j2 > j) {
-                            this.addWall(i, j, 3);
+                            self.addWall(i, j, 3);
                         }
                         else {
-                            this.addWall(i, j2, 3);
+                            self.addWall(i, j2, 3);
                         }
                     }
                     else if (pared.getAttribute('y2')) {
                         let i2 = parseInt(pared.getAttribute('y2'), 10) + 1;
                         if (i2 > i) {
-                            this.addWall(i, j, 0);
+                            self.addWall(i, j, 0);
                         }
                         else {
-                            this.addWall(i2, j, 0);
+                            self.addWall(i2, j, 0);
                         }
                     }
                 },
                 despliega: function (despliega) {
-                    this.dumps[despliega.getAttribute('tipo').toLowerCase()] = true;
+                    self.dumps[despliega.getAttribute('tipo').toLowerCase()] = true;
                 },
                 posicionDump: function (dump) {
-                    this.dumpCells.push([
+                    self.dumpCells.push([
                         parseInt(dump.getAttribute('y'), 10),
                         parseInt(dump.getAttribute('x'), 10),
                     ]);
@@ -25428,48 +26973,46 @@ var karel = (function (exports, bootstrap) {
                     //     src = validador.firstChild.nodeValue;
                     // }
                     // if (validador.getAttribute('tipo') == 'post') {
-                    //     this.postValidators.push(src);
+                    //     self.postValidators.push(src);
                     // } else {
-                    //     this.preValidators.push(src);
+                    //     self.preValidators.push(src);
                     // }
                 },
                 programa: function (programa) {
                     let xKarel = parseInt(programa.getAttribute('xKarel') || programa.getAttribute('xkarel'), 10);
                     let yKarel = parseInt(programa.getAttribute('yKarel') || programa.getAttribute('ykarel'), 10);
-                    this.di = this.h / 2 - yKarel;
-                    this.dj = this.w / 2 - xKarel;
-                    this.rotate(programa.getAttribute('direccionKarel') ||
+                    self.rotate(programa.getAttribute('direccionKarel') ||
                         programa.getAttribute('direccionkarel'));
-                    this.worldName =
+                    self.worldName =
                         programa.getAttribute('mundoDeEjecucion') ||
                             programa.getAttribute('mundodeejecucion');
-                    this.programName = programa.getAttribute('nombre');
-                    this.move(yKarel, xKarel);
+                    self.programName = programa.getAttribute('nombre');
+                    self.move(yKarel, xKarel);
                     let bagBuzzers = programa.getAttribute('mochilaKarel') ||
                         programa.getAttribute('mochilakarel') ||
                         0;
                     if (bagBuzzers == 'INFINITO') {
-                        this.setBagBuzzers(-1);
+                        self.setBagBuzzers(-1);
                     }
                     else {
-                        this.setBagBuzzers(parseInt(bagBuzzers));
+                        self.setBagBuzzers(parseInt(bagBuzzers));
                     }
                 },
             };
             function traverse(node) {
                 let type = node.nodeName;
                 if (rules.hasOwnProperty(type)) {
-                    rules[type].bind(this)(node);
+                    rules[type](node);
                 }
                 for (let i = 0; i < node.childNodes.length; i++) {
                     if (node.childNodes.item(i).nodeType ===
                         (node.ELEMENT_NODE || Node.ELEMENT_NODE)) {
-                        traverse.bind(this)(node.childNodes.item(i));
+                        traverse(node.childNodes.item(i));
                     }
                 }
             }
-            traverse.bind(this)(doc);
-            this.reset();
+            traverse(doc);
+            self.reset();
         }
         /**
          * Recursively converts a js object into an XML string
@@ -25539,7 +27082,10 @@ var karel = (function (exports, bootstrap) {
                     '#attributes': {
                         instruccionesMaximasAEjecutar: this.maxInstructions,
                         longitudStack: this.maxStackSize,
+                        memoriaStack: this.maxStackMemory,
+                        llamadaMaxima: this.maxCallSize,
                     },
+                    comando: []
                 },
                 mundos: {
                     mundo: {
@@ -25560,8 +27106,8 @@ var karel = (function (exports, bootstrap) {
                             nombre: this.programName,
                             ruta: '{$2$}',
                             mundoDeEjecucion: this.worldName,
-                            xKarel: targetState === "start" ? this.start_i : this.j,
-                            yKarel: targetState === "start" ? this.start_j : this.i,
+                            xKarel: targetState === "start" ? this.start_j : this.j,
+                            yKarel: targetState === "start" ? this.start_i : this.i,
                             direccionKarel: ['OESTE', 'NORTE', 'ESTE', 'SUR'][targetState === "start" ? this.startOrientation : this.orientation],
                             mochilaKarel: this.bagBuzzers == -1 ? 'INFINITO' : (targetState === "start" ? this.startBagBuzzers : this.bagBuzzers),
                         },
@@ -25582,6 +27128,38 @@ var karel = (function (exports, bootstrap) {
                         });
                     }
                 }
+            }
+            if (this.maxMove !== -1) {
+                result.condiciones.comando.push({
+                    '#attributes': {
+                        nombre: "AVANZA",
+                        maximoNumeroDeEjecuciones: this.maxMove
+                    }
+                });
+            }
+            if (this.maxTurnLeft !== -1) {
+                result.condiciones.comando.push({
+                    '#attributes': {
+                        nombre: "GIRA_IZQUIERDA",
+                        maximoNumeroDeEjecuciones: this.maxTurnLeft
+                    }
+                });
+            }
+            if (this.maxLeaveBuzzer !== -1) {
+                result.condiciones.comando.push({
+                    '#attributes': {
+                        nombre: "DEJA_ZUMBADOR",
+                        maximoNumeroDeEjecuciones: this.maxLeaveBuzzer
+                    }
+                });
+            }
+            if (this.maxPickBuzzer !== -1) {
+                result.condiciones.comando.push({
+                    '#attributes': {
+                        nombre: "COGE_ZUMBADOR",
+                        maximoNumeroDeEjecuciones: this.maxPickBuzzer
+                    }
+                });
             }
             for (let i = 1; i <= this.h; i++) {
                 for (let j = 1; j <= this.w; j++) {
@@ -25740,9 +27318,9 @@ var karel = (function (exports, bootstrap) {
             this.dirty = true;
         }
         rotate(orientation) {
-            let orientations = ['ESTE', 'NORTE', 'OESTE', 'SUR'];
+            let orientations = ['OESTE', 'NORTE', 'ESTE', 'SUR'];
             if (!orientation) {
-                orientation = orientations[(this.orientation + 1) % 4];
+                orientation = orientations[(this.orientation + 3) % 4]; // +3 to make the turn to the left
             }
             this.orientation = this.startOrientation = Math.max(0, orientations.indexOf(orientation));
             this.dirty = true;
@@ -29368,13 +30946,21 @@ var karel = (function (exports, bootstrap) {
         getCallInfo(evt) {
             const karelController = KarelController.GetInstance();
             let runtime = karelController.GetRuntime();
-            const onclick = `karel.MoveEditorCursorToLine(${evt.line + 1})`;
+            const onclick = `karel.MoveEditorCursorToLine(${evt.details.line + 1})`;
+            let params = "";
+            if (evt.details.params.length > 0) {
+                const len = evt.details.params.length;
+                params += `${evt.details.params[len - 1]}`;
+                for (let i = len - 2; i >= 0; i--) {
+                    params += `, ${evt.details.params[i]}`;
+                }
+            }
             return `<span class="text-info">${runtime.state.stackSize}</span> - ` +
-                evt.function +
+                evt.details.function +
                 ' (' +
-                `<span class="text-primary"><b>${evt.param}</b></span>` +
+                `<span class="text-primary"><b>${params}</b></span>` +
                 `) <a href="#" class="badge bg-primary text-decoration-none" onclick="${onclick}"> Desde línea ` +
-                (evt.line + 1) +
+                (evt.details.line + 1) +
                 '</a>';
         }
         OnStackChanges() {
