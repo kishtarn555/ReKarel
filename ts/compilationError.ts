@@ -1,3 +1,4 @@
+import { CompilationError } from "@rekarel/core";
 
 
 function jumpable(line:number, column:number | null) {
@@ -114,6 +115,50 @@ const ERROR_TOKENS = {
   };
 
 
+function decodeKnownError(status:CompilationError.ErrorStatus): string {
+    if (status.error === CompilationError.Errors.UNDEFINED_FUNCTION) {
+        return `La función <b>${status.functionName}</b> no está definida`;
+    }
+    if (status.error === CompilationError.Errors.FUNCTION_REDEFINITION) {
+        return `La función <b>${status.functionName}</b> ya fue definida previamente`;
+    }
+    if (status.error === CompilationError.Errors.PROTOTYPE_REDEFINITION) {
+        return `El prototipo <b>${status.prototypeName}</b> ya fue definido previamente`;
+    }
+    if (status.error === CompilationError.Errors.UNKNOWN_VARIABLE) {
+        return `El parámetro o variable <b>${status.variable}</b> no está definido`;
+    }
+    if (status.error === CompilationError.Errors.PROTOTYPE_PARAMETERS_MISS_MATCH) {
+        return `El prototipo de <b>${status.functionName}</b> no concuerda con su definición.`
+        + `<br> El prototipo tiene ${status.prototypeParamCount} parámetros, pero su definición tiene ${status.functionParamCount}`;
+    }
+    if (status.error === CompilationError.Errors.PROTOTYPE_TYPE_MISS_MATCH) {
+        return `El prototipo de <b>${status.functionName}</b> no concuerda con su definición.`
+        + `<br> El prototipo es de tipo ${status.prototypeType}, pero su definición es ${status.functionType}`;
+    }
+    if (status.error === CompilationError.Errors.TOO_FEW_PARAMS_IN_CALL) {
+        return `Se llamó a <b>${status.funcName}</b> con menos parámetros de los necesarios.`
+        + `<br> La llamada tiene ${status.actualParams}, pero su definición necesita ${status.expectedParams}`;
+    }
+    if (status.error === CompilationError.Errors.TOO_MANY_PARAMS_IN_CALL) {
+        return `Se llamó a <b>${status.functionName}</b> con menos parámetros de los necesarios.`
+        + `<br> La llamada tiene ${status.actualParams}, pero su definición necesita ${status.expectedParams}`;
+    }
+    if (status.error === CompilationError.Errors.CALL_TYPE) {
+        return `Se llamó a <b>${status.funcName}</b> en un lugar donde se esperaba un tipo ${status.expectedCallType}, pero la función es de tipo ${status.functionType}.`;
+    }
+    if (status.error === CompilationError.Errors.COMPARISON_TYPE) {
+        return `Se intento comparar un tipo <b>${status.leftType}</b> contra un tipo ${status.rightType}. Solo se pueden comparar los mismos tipos`;
+    }
+    if (status.error === CompilationError.Errors.FUNCTION_ILLEGAL_NAME) {
+        return `La función no se puede llamar como una variable global: ${status.functionName}`;
+    }
+    if (status.error === CompilationError.Errors.TYPE_ERROR) {
+        return `No se puede utilizar el tipo ${status.actualType} donde se requiere un tipo ${status.expectedType}`;
+    }
+
+}
+
 export function decodeError(e, lan : "java"|"pascal"|"ruby"|"none") : string {
     if (lan === "ruby" || lan === "none") {
         return "Error de compilación, no se puede reconocer el lenguaje";
@@ -124,33 +169,17 @@ export function decodeError(e, lan : "java"|"pascal"|"ruby"|"none") : string {
     if (status == null) {
         return "Error de compilación";
     }
+    const errorString = `${e}`;
     let message = `Error de compilación en  la ${jumpable(status.line+1,status.loc?.first_column )}\n<br>\n<div class="card"><div class="card-body">`
     if (status.expected) {        
         let expectations = status.expected.map((x=>ERROR_TOKENS[lan][x.replace(/^'+/,"").replace(/'+$/,"") ]))        
         message += `Se encontró "${status.text}" cuando se esperaba ${ expectations.join(", ")}`
-    } else {
-        let errorString = `${e}`;
-        if (errorString.includes("Undefined function")) {
-            message += `La función <b>${status.text}</b> no esta definida`;
-        } else if (errorString.includes("Unrecognized text")) {
-            message += `Se encontro un token ilegal`;
-        } else if (errorString.includes("Function redefinition")) {
-            message += `La función <b>${status.text}</b> ya fue definida previamente`;
-        } else if (errorString.includes("Prototype redefinition")) {
-            message += `El prototipo <b>${status.text}</b> ya fue definido previamente`;
-        } else if (errorString.includes("Unknown variable")) {
-            message += `El parámetro <b>${status.text}</b> no está definido`;
-        } else if (errorString.includes("Function parameter mismatch")) {
-            if (status.parameters=== 2) {
-                message += `La función <b>${status.text}</b> no acepta parámetro `;
-            } else {
-                message += `La función <b>${status.text}</b> esperaba un parámetro `;
-            }
-        } else if (errorString.includes("Prototype parameter mismatch")) {
-            message += `La función <b>${status.text}</b> tiene un número distinto de parámetros que su prototipo `;
-        } else {
-            message += "Error desconocido"
-        }
+    } else if (status.error != null) {
+        message += decodeKnownError(status);
+    } else if (errorString.includes("Unrecognized text")) {
+        message += "Se encontró un token ilegal";
+    } else {        
+        message += "Error desconocido"
     }
     message+="</div></div>"
     return message;

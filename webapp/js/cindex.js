@@ -29391,6 +29391,186 @@ var karel = (function (exports, bootstrap) {
         }
     }
 
+    function jumpable(line, column) {
+        let c = column;
+        if (column == null) {
+            c = 0;
+        }
+        const onclick = `karel.MoveEditorCursorToLine(${line}, ${c})`;
+        return `<a class="text-decoration-underline" href="#" title="Haz clic para ir al error" onclick="${onclick}">línea ${line}</a>`;
+    }
+    const ERROR_TOKENS = {
+        pascal: {
+            BEGINPROG: '"iniciar-programa"',
+            BEGINEXEC: '"inicia-ejecución"',
+            ENDEXEC: '"termina-ejecución"',
+            ENDPROG: '"finalizar-programa"',
+            DEF: '"define-nueva-instrucción"',
+            PROTO: '"define-prototipo-instrucción"',
+            RET: '"sal-de-instrucción"',
+            AS: '"como"',
+            HALT: '"apágate"',
+            LEFT: '"gira-izquierda"',
+            FORWARD: '"avanza"',
+            PICKBUZZER: '"coge-zumbador"',
+            LEAVEBUZZER: '"deja-zumbador"',
+            BEGIN: '"inicio"',
+            END: '"fin"',
+            THEN: '"entonces"',
+            WHILE: '"mientras"',
+            DO: '"hacer"',
+            REPEAT: '"repetir"',
+            TIMES: '"veces"',
+            DEC: '"precede"',
+            INC: '"sucede"',
+            IFZ: '"si-es-cero"',
+            IFNFWALL: '"frente-libre"',
+            IFFWALL: '"frente-bloqueado"',
+            IFNLWALL: '"izquierda-libre"',
+            IFLWALL: '"izquierda-bloqueada"',
+            IFNRWALL: '"derecha-libre"',
+            IFRWALL: '"derecha-bloqueada"',
+            IFWBUZZER: '"junto-a-zumbador"',
+            IFNWBUZZER: '"no-junto-a-zumbador"',
+            IFBBUZZER: '"algún-zumbador-en-la-mochila"',
+            IFNBBUZZER: '"ningún-zumbador-en-la-mochila"',
+            IFN: '"orientado-al-norte"',
+            IFS: '"orientado-al-sur"',
+            IFE: '"orientado-al-este"',
+            IFW: '"orientado-al-oeste"',
+            IFNN: '"no-orientado-al-norte"',
+            IFNS: '"no-orientado-al-sur"',
+            IFNE: '"no-orientado-al-este"',
+            IFNW: '"no-orientado-al-oeste"',
+            ELSE: '"si-no"',
+            IF: '"si"',
+            NOT: '"no"',
+            OR: '"o"',
+            AND: '"y"',
+            '(': '"("',
+            ')': '")"',
+            ';': '";"',
+            NUM: 'un número',
+            VAR: 'un nombre',
+            EOF: 'el final del programa',
+        },
+        java: {
+            CLASS: '"class"',
+            PROG: '"program"',
+            DEF: '"define"',
+            RET: '"return"',
+            HALT: '"turnoff"',
+            LEFT: '"turnleft"',
+            FORWARD: '"move"',
+            PICKBUZZER: '"pickbeeper"',
+            LEAVEBUZZER: '"putbeeper"',
+            WHILE: '"while"',
+            REPEAT: '"iterate"',
+            DEC: '"pred"',
+            INC: '"succ"',
+            IFZ: '"iszero"',
+            IFNFWALL: '"frontIsClear"',
+            IFFWALL: '"frontIsBlocked"',
+            IFNLWALL: '"leftIsClear"',
+            IFLWALL: '"leftIsBlocked"',
+            IFNRWALL: '"rightIsClear"',
+            IFRWALL: '"rightIsBlocked"',
+            IFWBUZZER: '"nextToABeeper"',
+            IFNWBUZZER: '"notNextToABeeper"',
+            IFBBUZZER: '"anyBeepersInBeeperBag"',
+            IFNBBUZZER: '"noBeepersInBeeperBag"',
+            IFN: '"facingNorth"',
+            IFS: '"facingSouth"',
+            IFE: '"facingEast"',
+            IFW: '"facingWest"',
+            IFNN: '"notFacingNorth"',
+            IFNS: '"notFacingSouth"',
+            IFNE: '"notFacingEast"',
+            IFNW: '"notFacingWest"',
+            ELSE: '"else"',
+            IF: '"if"',
+            NOT: '"!"',
+            OR: '"||"',
+            AND: '"&&"',
+            '(': '"("',
+            ')': '")"',
+            BEGIN: '"{"',
+            END: '"}"',
+            ';': '";"',
+            NUM: 'un número',
+            VAR: 'un nombre',
+            EOF: 'el final del programa',
+        },
+    };
+    function decodeKnownError(status) {
+        if (status.error === CompilationError.Errors.UNDEFINED_FUNCTION) {
+            return `La función <b>${status.functionName}</b> no está definida`;
+        }
+        if (status.error === CompilationError.Errors.FUNCTION_REDEFINITION) {
+            return `La función <b>${status.functionName}</b> ya fue definida previamente`;
+        }
+        if (status.error === CompilationError.Errors.PROTOTYPE_REDEFINITION) {
+            return `El prototipo <b>${status.prototypeName}</b> ya fue definido previamente`;
+        }
+        if (status.error === CompilationError.Errors.UNKNOWN_VARIABLE) {
+            return `El parámetro o variable <b>${status.variable}</b> no está definido`;
+        }
+        if (status.error === CompilationError.Errors.PROTOTYPE_PARAMETERS_MISS_MATCH) {
+            return `El prototipo de <b>${status.functionName}</b> no concuerda con su definición.`
+                + `<br> El prototipo tiene ${status.prototypeParamCount} parámetros, pero su definición tiene ${status.functionParamCount}`;
+        }
+        if (status.error === CompilationError.Errors.PROTOTYPE_TYPE_MISS_MATCH) {
+            return `El prototipo de <b>${status.functionName}</b> no concuerda con su definición.`
+                + `<br> El prototipo es de tipo ${status.prototypeType}, pero su definición es ${status.functionType}`;
+        }
+        if (status.error === CompilationError.Errors.TOO_FEW_PARAMS_IN_CALL) {
+            return `Se llamó a <b>${status.funcName}</b> con menos parámetros de los necesarios.`
+                + `<br> La llamada tiene ${status.actualParams}, pero su definición necesita ${status.expectedParams}`;
+        }
+        if (status.error === CompilationError.Errors.TOO_MANY_PARAMS_IN_CALL) {
+            return `Se llamó a <b>${status.functionName}</b> con menos parámetros de los necesarios.`
+                + `<br> La llamada tiene ${status.actualParams}, pero su definición necesita ${status.expectedParams}`;
+        }
+        if (status.error === CompilationError.Errors.CALL_TYPE) {
+            return `Se llamó a <b>${status.funcName}</b> en un lugar donde se esperaba un tipo ${status.expectedCallType}, pero la función es de tipo ${status.functionType}.`;
+        }
+        if (status.error === CompilationError.Errors.COMPARISON_TYPE) {
+            return `Se intento comparar un tipo <b>${status.leftType}</b> contra un tipo ${status.rightType}. Solo se pueden comparar los mismos tipos`;
+        }
+        if (status.error === CompilationError.Errors.FUNCTION_ILLEGAL_NAME) {
+            return `La función no se puede llamar como una variable global: ${status.functionName}`;
+        }
+    }
+    function decodeError(e, lan) {
+        var _a;
+        if (lan === "ruby" || lan === "none") {
+            return "Error de compilación, no se puede reconocer el lenguaje";
+        }
+        let status = e.hash;
+        console.log(JSON.stringify(e));
+        console.log(e);
+        if (status == null) {
+            return "Error de compilación";
+        }
+        const errorString = `${e}`;
+        let message = `Error de compilación en  la ${jumpable(status.line + 1, (_a = status.loc) === null || _a === void 0 ? void 0 : _a.first_column)}\n<br>\n<div class="card"><div class="card-body">`;
+        if (status.expected) {
+            let expectations = status.expected.map((x => ERROR_TOKENS[lan][x.replace(/^'+/, "").replace(/'+$/, "")]));
+            message += `Se encontró "${status.text}" cuando se esperaba ${expectations.join(", ")}`;
+        }
+        else if (status.error != null) {
+            message += decodeKnownError(status);
+        }
+        else if (errorString.includes("Unrecognized text")) {
+            message += "Se encontró un token ilegal";
+        }
+        else {
+            message += "Error desconocido";
+        }
+        message += "</div></div>";
+        return message;
+    }
+
     var __awaiter = (undefined && undefined.__awaiter) || function (thisArg, _arguments, P, generator) {
         function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
         return new (P || (P = Promise))(function (resolve, reject) {
@@ -29762,168 +29942,6 @@ var karel = (function (exports, bootstrap) {
         BreakPointMessage(line) {
             this.SendMessage(`🔴 ${line}) Breakpoint `, "info");
         }
-    }
-    const ERROR_TOKENS = {
-        pascal: {
-            BEGINPROG: '"iniciar-programa"',
-            BEGINEXEC: '"inicia-ejecución"',
-            ENDEXEC: '"termina-ejecución"',
-            ENDPROG: '"finalizar-programa"',
-            DEF: '"define-nueva-instrucción"',
-            PROTO: '"define-prototipo-instrucción"',
-            RET: '"sal-de-instrucción"',
-            AS: '"como"',
-            HALT: '"apágate"',
-            LEFT: '"gira-izquierda"',
-            FORWARD: '"avanza"',
-            PICKBUZZER: '"coge-zumbador"',
-            LEAVEBUZZER: '"deja-zumbador"',
-            BEGIN: '"inicio"',
-            END: '"fin"',
-            THEN: '"entonces"',
-            WHILE: '"mientras"',
-            DO: '"hacer"',
-            REPEAT: '"repetir"',
-            TIMES: '"veces"',
-            DEC: '"precede"',
-            INC: '"sucede"',
-            IFZ: '"si-es-cero"',
-            IFNFWALL: '"frente-libre"',
-            IFFWALL: '"frente-bloqueado"',
-            IFNLWALL: '"izquierda-libre"',
-            IFLWALL: '"izquierda-bloqueada"',
-            IFNRWALL: '"derecha-libre"',
-            IFRWALL: '"derecha-bloqueada"',
-            IFWBUZZER: '"junto-a-zumbador"',
-            IFNWBUZZER: '"no-junto-a-zumbador"',
-            IFBBUZZER: '"algún-zumbador-en-la-mochila"',
-            IFNBBUZZER: '"ningún-zumbador-en-la-mochila"',
-            IFN: '"orientado-al-norte"',
-            IFS: '"orientado-al-sur"',
-            IFE: '"orientado-al-este"',
-            IFW: '"orientado-al-oeste"',
-            IFNN: '"no-orientado-al-norte"',
-            IFNS: '"no-orientado-al-sur"',
-            IFNE: '"no-orientado-al-este"',
-            IFNW: '"no-orientado-al-oeste"',
-            ELSE: '"si-no"',
-            IF: '"si"',
-            NOT: '"no"',
-            OR: '"o"',
-            AND: '"y"',
-            '(': '"("',
-            ')': '")"',
-            ';': '";"',
-            NUM: 'un número',
-            VAR: 'un nombre',
-            EOF: 'el final del programa',
-        },
-        java: {
-            CLASS: '"class"',
-            PROG: '"program"',
-            DEF: '"define"',
-            RET: '"return"',
-            HALT: '"turnoff"',
-            LEFT: '"turnleft"',
-            FORWARD: '"move"',
-            PICKBUZZER: '"pickbeeper"',
-            LEAVEBUZZER: '"putbeeper"',
-            WHILE: '"while"',
-            REPEAT: '"iterate"',
-            DEC: '"pred"',
-            INC: '"succ"',
-            IFZ: '"iszero"',
-            IFNFWALL: '"frontIsClear"',
-            IFFWALL: '"frontIsBlocked"',
-            IFNLWALL: '"leftIsClear"',
-            IFLWALL: '"leftIsBlocked"',
-            IFNRWALL: '"rightIsClear"',
-            IFRWALL: '"rightIsBlocked"',
-            IFWBUZZER: '"nextToABeeper"',
-            IFNWBUZZER: '"notNextToABeeper"',
-            IFBBUZZER: '"anyBeepersInBeeperBag"',
-            IFNBBUZZER: '"noBeepersInBeeperBag"',
-            IFN: '"facingNorth"',
-            IFS: '"facingSouth"',
-            IFE: '"facingEast"',
-            IFW: '"facingWest"',
-            IFNN: '"notFacingNorth"',
-            IFNS: '"notFacingSouth"',
-            IFNE: '"notFacingEast"',
-            IFNW: '"notFacingWest"',
-            ELSE: '"else"',
-            IF: '"if"',
-            NOT: '"!"',
-            OR: '"||"',
-            AND: '"&&"',
-            '(': '"("',
-            ')': '")"',
-            BEGIN: '"{"',
-            END: '"}"',
-            ';': '";"',
-            NUM: 'un número',
-            VAR: 'un nombre',
-            EOF: 'el final del programa',
-        },
-    };
-    function jumpable(line, column) {
-        let c = column;
-        if (column == null) {
-            c = 0;
-        }
-        const onclick = `karel.MoveEditorCursorToLine(${line}, ${c})`;
-        return `<a class="text-decoration-underline" href="#" title="Haz clic para ir al error" onclick="${onclick}">línea ${line}</a>`;
-    }
-    function decodeError(e, lan) {
-        var _a;
-        if (lan === "ruby" || lan === "none") {
-            return "Error de compilación, no se puede reconocer el lenguaje";
-        }
-        let status = e.hash;
-        console.log(JSON.stringify(e));
-        console.log(e);
-        if (status == null) {
-            return "Error de compilación";
-        }
-        let message = `Error de compilación en  la ${jumpable(status.line + 1, (_a = status.loc) === null || _a === void 0 ? void 0 : _a.first_column)}\n<br>\n<div class="card"><div class="card-body">`;
-        if (status.expected) {
-            let expectations = status.expected.map((x => ERROR_TOKENS[lan][x.replace(/^'+/, "").replace(/'+$/, "")]));
-            message += `Se encontró "${status.text}" cuando se esperaba ${expectations.join(", ")}`;
-        }
-        else {
-            let errorString = `${e}`;
-            if (errorString.includes("Undefined function")) {
-                message += `La función <b>${status.text}</b> no esta definida`;
-            }
-            else if (errorString.includes("Unrecognized text")) {
-                message += `Se encontro un token ilegal`;
-            }
-            else if (errorString.includes("Function redefinition")) {
-                message += `La función <b>${status.text}</b> ya fue definida previamente`;
-            }
-            else if (errorString.includes("Prototype redefinition")) {
-                message += `El prototipo <b>${status.text}</b> ya fue definido previamente`;
-            }
-            else if (errorString.includes("Unknown variable")) {
-                message += `El parámetro <b>${status.text}</b> no está definido`;
-            }
-            else if (errorString.includes("Function parameter mismatch")) {
-                if (status.parameters === 2) {
-                    message += `La función <b>${status.text}</b> no acepta parámetro `;
-                }
-                else {
-                    message += `La función <b>${status.text}</b> esperaba un parámetro `;
-                }
-            }
-            else if (errorString.includes("Prototype parameter mismatch")) {
-                message += `La función <b>${status.text}</b> tiene un número distinto de parámetros que su prototipo `;
-            }
-            else {
-                message += "Error desconocido";
-            }
-        }
-        message += "</div></div>";
-        return message;
     }
 
     class SelectionWaffle {
