@@ -362,6 +362,8 @@ HookUpCommonUI(
             countTurns:$("#countTurns"),
             maxInstructions:$("#maxInstructions"),
             maxStackSize:$("#maxStack"),
+            stackMemory:$("#stackMemory"),
+            maxCallParam:$("#maxCallParam"),
             maxMove:$("#maxMove"),
             maxTurnLeft:$("#maxTurnLeft"),
             maxPickBuzzer:$("#maxPickBuzzer"),

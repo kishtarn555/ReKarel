@@ -18,6 +18,8 @@ export type EvaluatorData = {
 
     maxInstructions:JQuery,
     maxStackSize:JQuery,
+    stackMemory: JQuery,
+    maxCallParam: JQuery,
     maxMove:JQuery,
     maxTurnLeft:JQuery,
     maxPickBuzzer:JQuery,
@@ -41,6 +43,8 @@ function getData(ui:EvaluatorData) {
 
     ui.maxInstructions.val(kcInstance.world.maxInstructions);
     ui.maxStackSize.val(kcInstance.world.maxStackSize);
+    ui.stackMemory.val(kcInstance.world.maxStackMemory);
+    ui.maxCallParam.val(kcInstance.world.maxCallSize);
     ui.maxMove.val(kcInstance.world.maxMove);
     ui.maxTurnLeft.val(kcInstance.world.maxTurnLeft);
     ui.maxPickBuzzer.val(kcInstance.world.maxPickBuzzer);
@@ -74,10 +78,16 @@ function setData(ui: EvaluatorData) {
     const maxTurnLeft = parseInt(`${ui.maxTurnLeft.val()}`);
     const maxPickBuzzer = parseInt(`${ui.maxPickBuzzer.val()}`);
     const maxLeaveBuzzer = parseInt(`${ui.maxLeaveBuzzer.val()}`);
+    const stackMemory = parseInt(`${ui.stackMemory.val()}`);
+    const maxCallParam = parseInt(`${ui.maxCallParam.val()}`);
     if (validateMax(maxInstructions))
         kcInstance.world.maxInstructions = maxInstructions as number;    
     if (validateMax(maxStackSize))
         kcInstance.world.maxStackSize = maxStackSize as number;
+    if (validateMax(stackMemory))
+        kcInstance.world.maxStackMemory = stackMemory as number;    
+    if (validateMax(maxCallParam))
+        kcInstance.world.maxCallSize = maxCallParam as number;
     if (validateMax(maxMove,-1))
         kcInstance.world.maxMove = maxMove as number;    
     if (validateMax(maxTurnLeft,-1))

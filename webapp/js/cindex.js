@@ -32335,6 +32335,8 @@ var karel = (function (exports, bootstrap) {
         ui.countPuts.prop("checked", kcInstance.world.getDumps(DumpTypes.DUMP_LEAVE_BUZZER));
         ui.maxInstructions.val(kcInstance.world.maxInstructions);
         ui.maxStackSize.val(kcInstance.world.maxStackSize);
+        ui.stackMemory.val(kcInstance.world.maxStackMemory);
+        ui.maxCallParam.val(kcInstance.world.maxCallSize);
         ui.maxMove.val(kcInstance.world.maxMove);
         ui.maxTurnLeft.val(kcInstance.world.maxTurnLeft);
         ui.maxPickBuzzer.val(kcInstance.world.maxPickBuzzer);
@@ -32361,10 +32363,16 @@ var karel = (function (exports, bootstrap) {
         const maxTurnLeft = parseInt(`${ui.maxTurnLeft.val()}`);
         const maxPickBuzzer = parseInt(`${ui.maxPickBuzzer.val()}`);
         const maxLeaveBuzzer = parseInt(`${ui.maxLeaveBuzzer.val()}`);
+        const stackMemory = parseInt(`${ui.stackMemory.val()}`);
+        const maxCallParam = parseInt(`${ui.maxCallParam.val()}`);
         if (validateMax(maxInstructions))
             kcInstance.world.maxInstructions = maxInstructions;
         if (validateMax(maxStackSize))
             kcInstance.world.maxStackSize = maxStackSize;
+        if (validateMax(stackMemory))
+            kcInstance.world.maxStackMemory = stackMemory;
+        if (validateMax(maxCallParam))
+            kcInstance.world.maxCallSize = maxCallParam;
         if (validateMax(maxMove, -1))
             kcInstance.world.maxMove = maxMove;
         if (validateMax(maxTurnLeft, -1))
@@ -32871,6 +32879,8 @@ var karel = (function (exports, bootstrap) {
             countTurns: $("#countTurns"),
             maxInstructions: $("#maxInstructions"),
             maxStackSize: $("#maxStack"),
+            stackMemory: $("#stackMemory"),
+            maxCallParam: $("#maxCallParam"),
             maxMove: $("#maxMove"),
             maxTurnLeft: $("#maxTurnLeft"),
             maxPickBuzzer: $("#maxPickBuzzer"),
