@@ -116,8 +116,12 @@ const ERROR_TOKENS = {
 
 
 function decodeKnownError(status:CompilationError.ErrorStatus): string {
-    if (status.error === CompilationError.Errors.UNDEFINED_FUNCTION) {
-        return `La función <b>${status.functionName}</b> no está definida`;
+    
+    if (status.error === CompilationError.Errors.CALL_TYPE) {
+        return `Se llamó a <b>${status.funcName}</b> en un lugar donde se esperaba un tipo ${status.expectedCallType}, pero la función es de tipo ${status.functionType}.`;
+    }
+    if (status.error === CompilationError.Errors.COMPARISON_TYPE) {
+        return `Se intento comparar un tipo <b>${status.leftType}</b> contra un tipo ${status.rightType}. Solo se pueden comparar los mismos tipos`;
     }
     if (status.error === CompilationError.Errors.FUNCTION_REDEFINITION) {
         return `La función <b>${status.functionName}</b> ya fue definida previamente`;
@@ -125,9 +129,7 @@ function decodeKnownError(status:CompilationError.ErrorStatus): string {
     if (status.error === CompilationError.Errors.PROTOTYPE_REDEFINITION) {
         return `El prototipo <b>${status.prototypeName}</b> ya fue definido previamente`;
     }
-    if (status.error === CompilationError.Errors.UNKNOWN_VARIABLE) {
-        return `El parámetro o variable <b>${status.variable}</b> no está definido`;
-    }
+    
     if (status.error === CompilationError.Errors.PROTOTYPE_PARAMETERS_MISS_MATCH) {
         return `El prototipo de <b>${status.functionName}</b> no concuerda con su definición.`
         + `<br> El prototipo tiene ${status.prototypeParamCount} parámetros, pero su definición tiene ${status.functionParamCount}`;
@@ -144,17 +146,17 @@ function decodeKnownError(status:CompilationError.ErrorStatus): string {
         return `Se llamó a <b>${status.functionName}</b> con menos parámetros de los necesarios.`
         + `<br> La llamada tiene ${status.actualParams}, pero su definición necesita ${status.expectedParams}`;
     }
-    if (status.error === CompilationError.Errors.CALL_TYPE) {
-        return `Se llamó a <b>${status.funcName}</b> en un lugar donde se esperaba un tipo ${status.expectedCallType}, pero la función es de tipo ${status.functionType}.`;
-    }
-    if (status.error === CompilationError.Errors.COMPARISON_TYPE) {
-        return `Se intento comparar un tipo <b>${status.leftType}</b> contra un tipo ${status.rightType}. Solo se pueden comparar los mismos tipos`;
-    }
     if (status.error === CompilationError.Errors.FUNCTION_ILLEGAL_NAME) {
         return `La función no se puede llamar como una variable global: ${status.functionName}`;
     }
     if (status.error === CompilationError.Errors.TYPE_ERROR) {
         return `No se puede utilizar el tipo ${status.actualType} donde se requiere un tipo ${status.expectedType}`;
+    }
+    if (status.error === CompilationError.Errors.UNDEFINED_FUNCTION) {
+        return `La función <b>${status.functionName}</b> no está definida`;
+    }
+    if (status.error === CompilationError.Errors.UNKNOWN_VARIABLE) {
+        return `El parámetro o variable <b>${status.variable}</b> no está definido`;
     }
 
 }
