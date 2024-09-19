@@ -29707,6 +29707,7 @@ var karel = (function (exports, bootstrap) {
         if (status.error === CompilationError.Errors.VOID_COMPARISON) {
             return `No se pueden comparar dos expresiones de tipo VOID.`;
         }
+        return `Error de compilación desconocido:  ${JSON.stringify(status)}`;
     }
     function decodeError(e, lan) {
         var _a;
