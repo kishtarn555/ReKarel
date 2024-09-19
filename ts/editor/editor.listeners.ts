@@ -1,7 +1,7 @@
 import { EditorView } from "codemirror";
 import { KarelController } from "../KarelController";
 import { getEditors } from "./editorsInstances";
-import { HighlightKarelLine } from "./editor.highlightLine";
+import { HighlightKarelInstruction } from "./editor.highlightLine";
 
 
 
@@ -10,13 +10,14 @@ export function RegisterHighlightListeners() {
     const controller = KarelController.GetInstance();
     controller.RegisterStepController((_, state)=> {
         const line = controller.GetRuntime().state.line + 1;
+        const column = controller.GetRuntime().state.column;
         const codeLine = editor.state.doc.line(line)
-        HighlightKarelLine(editor, line);
+        HighlightKarelInstruction(editor, line, column);
         editor.dispatch({     
             effects:EditorView.scrollIntoView(codeLine.from)
         });
     })
     controller.RegisterResetObserver((_)=> {
-        HighlightKarelLine(editor, -1);
+        HighlightKarelInstruction(editor, -1, -1);
     })
   }

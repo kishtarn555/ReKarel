@@ -11,7 +11,7 @@ import { kpascal } from "./pascalCodeMirror"
 import {defaultHighlightStyle, syntaxHighlighting, foldGutter, bracketMatching, indentUnit, indentOnInput} from "@codemirror/language"
 import { closeBrackets } from "@codemirror/autocomplete"
 import { classicHighlight } from "./themes/classicHighlight"
-import { highlightKarelActiveLine } from "./editor.highlightLine"
+import { highlightKarelActiveInstruction } from "./editor.highlightLine"
 import { breakpointGutter } from "./editor.breakpoint"
 import {searchKeymap, highlightSelectionMatches} from "@codemirror/search"
 
@@ -31,7 +31,7 @@ function createEditors() : Array<EditorView> {
       theme.of(classicHighlight.extensions),
       syntaxHighlighting(defaultHighlightStyle, {fallback:true}),
       breakpointGutter,
-      highlightKarelActiveLine(),
+      highlightKarelActiveInstruction(),
       
       history(),
       drawSelection(),
