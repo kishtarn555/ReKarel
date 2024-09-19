@@ -23099,7 +23099,9 @@ var karel = (function (exports, bootstrap) {
           this.$ = {
             left: $$[$0-2], 
             right: $$[$0], 
-            operation: "EQ", 
+            operation: "EQ",
+            loc: _$[$0-1],
+            totalLoc: this._$,
             dataType:"BOOL"
           };
         
@@ -25256,26 +25258,29 @@ var karel = (function (exports, bootstrap) {
     var CompilationError;
     (function (CompilationError) {
         (function (Errors) {
-            Errors[Errors["CALL_TYPE"] = 0] = "CALL_TYPE";
-            Errors[Errors["COMPARISON_TYPE"] = 1] = "COMPARISON_TYPE";
-            Errors[Errors["FUNCTION_ILLEGAL_NAME"] = 2] = "FUNCTION_ILLEGAL_NAME";
-            Errors[Errors["FUNCTION_REDEFINITION"] = 3] = "FUNCTION_REDEFINITION";
-            Errors[Errors["ILLEGAL_BREAK"] = 4] = "ILLEGAL_BREAK";
-            Errors[Errors["ILLEGAL_CONTINUE"] = 5] = "ILLEGAL_CONTINUE";
-            Errors[Errors["NO_EXPLICIT_RETURN"] = 6] = "NO_EXPLICIT_RETURN";
-            Errors[Errors["PARAMETER_ILLEGAL_NAME"] = 7] = "PARAMETER_ILLEGAL_NAME";
-            Errors[Errors["PROTOTYPE_PARAMETERS_MISS_MATCH"] = 8] = "PROTOTYPE_PARAMETERS_MISS_MATCH";
-            Errors[Errors["PROTOTYPE_TYPE_MISS_MATCH"] = 9] = "PROTOTYPE_TYPE_MISS_MATCH";
-            Errors[Errors["PROTOTYPE_REDEFINITION"] = 10] = "PROTOTYPE_REDEFINITION";
-            Errors[Errors["RETURN_TYPE"] = 11] = "RETURN_TYPE";
-            Errors[Errors["TOO_FEW_PARAMS_IN_CALL"] = 12] = "TOO_FEW_PARAMS_IN_CALL";
-            Errors[Errors["TOO_MANY_PARAMS_IN_CALL"] = 13] = "TOO_MANY_PARAMS_IN_CALL";
-            Errors[Errors["TYPE_ERROR"] = 14] = "TYPE_ERROR";
-            Errors[Errors["UNDEFINED_FUNCTION"] = 15] = "UNDEFINED_FUNCTION";
-            Errors[Errors["UNDEFINED_FUNCTION_OR_VARIABLE"] = 16] = "UNDEFINED_FUNCTION_OR_VARIABLE";
-            Errors[Errors["UNKNOWN_MODULE"] = 17] = "UNKNOWN_MODULE";
-            Errors[Errors["UNKNOWN_PACKAGE"] = 18] = "UNKNOWN_PACKAGE";
-            Errors[Errors["UNKNOWN_VARIABLE"] = 19] = "UNKNOWN_VARIABLE";
+            Errors[Errors["BINARY_OPERATOR_TYPE_ERROR"] = 0] = "BINARY_OPERATOR_TYPE_ERROR";
+            Errors[Errors["CALL_TYPE"] = 1] = "CALL_TYPE";
+            Errors[Errors["COMPARISON_TYPE"] = 2] = "COMPARISON_TYPE";
+            Errors[Errors["FUNCTION_ILLEGAL_NAME"] = 3] = "FUNCTION_ILLEGAL_NAME";
+            Errors[Errors["FUNCTION_REDEFINITION"] = 4] = "FUNCTION_REDEFINITION";
+            Errors[Errors["ILLEGAL_BREAK"] = 5] = "ILLEGAL_BREAK";
+            Errors[Errors["ILLEGAL_CONTINUE"] = 6] = "ILLEGAL_CONTINUE";
+            Errors[Errors["NO_EXPLICIT_RETURN"] = 7] = "NO_EXPLICIT_RETURN";
+            Errors[Errors["PARAMETER_ILLEGAL_NAME"] = 8] = "PARAMETER_ILLEGAL_NAME";
+            Errors[Errors["PROTOTYPE_PARAMETERS_MISS_MATCH"] = 9] = "PROTOTYPE_PARAMETERS_MISS_MATCH";
+            Errors[Errors["PROTOTYPE_TYPE_MISS_MATCH"] = 10] = "PROTOTYPE_TYPE_MISS_MATCH";
+            Errors[Errors["PROTOTYPE_REDEFINITION"] = 11] = "PROTOTYPE_REDEFINITION";
+            Errors[Errors["RETURN_TYPE"] = 12] = "RETURN_TYPE";
+            Errors[Errors["TOO_FEW_PARAMS_IN_CALL"] = 13] = "TOO_FEW_PARAMS_IN_CALL";
+            Errors[Errors["TOO_MANY_PARAMS_IN_CALL"] = 14] = "TOO_MANY_PARAMS_IN_CALL";
+            Errors[Errors["TYPE_ERROR"] = 15] = "TYPE_ERROR";
+            Errors[Errors["UNDEFINED_FUNCTION"] = 16] = "UNDEFINED_FUNCTION";
+            Errors[Errors["UNDEFINED_FUNCTION_OR_VARIABLE"] = 17] = "UNDEFINED_FUNCTION_OR_VARIABLE";
+            Errors[Errors["UNARY_OPERATOR_TYPE_ERROR"] = 18] = "UNARY_OPERATOR_TYPE_ERROR";
+            Errors[Errors["UNKNOWN_MODULE"] = 19] = "UNKNOWN_MODULE";
+            Errors[Errors["UNKNOWN_PACKAGE"] = 20] = "UNKNOWN_PACKAGE";
+            Errors[Errors["UNKNOWN_VARIABLE"] = 21] = "UNKNOWN_VARIABLE";
+            Errors[Errors["VOID_COMPARISON"] = 22] = "VOID_COMPARISON";
         })(CompilationError.Errors || (CompilationError.Errors = {}));
     })(CompilationError || (CompilationError = {}));
 
@@ -25304,20 +25309,24 @@ var karel = (function (exports, bootstrap) {
             const rightType = resolveTerm(tree.right, definitions, scope, target, tags, yy);
             if (leftType !== "BOOL") {
                 yy.parser.parseError(`${tree.operation} operator uses booleans terms only, left is of type: ${leftType}`, {
-                    error: CompilationError.Errors.TYPE_ERROR,
+                    error: CompilationError.Errors.BINARY_OPERATOR_TYPE_ERROR,
+                    operator: tree.operation,
                     loc: tree.loc,
                     line: tree.loc.first_line - 1,
                     expectedType: "BOOL",
-                    actualType: leftType
+                    actualType: leftType,
+                    direction: "LEFT"
                 });
             }
             if (rightType !== "BOOL") {
                 yy.parser.parseError(`${tree.operation} operator uses booleans terms only, right is of type: ${rightType}`, {
-                    error: CompilationError.Errors.TYPE_ERROR,
+                    error: CompilationError.Errors.BINARY_OPERATOR_TYPE_ERROR,
+                    operator: tree.operation,
                     loc: tree.loc,
                     line: tree.loc.first_line - 1,
                     expectedType: "BOOL",
-                    actualType: rightType
+                    actualType: rightType,
+                    direction: "RIGHT"
                 });
             }
             target.push([tree.operation]);
@@ -25335,6 +25344,15 @@ var karel = (function (exports, bootstrap) {
                     rightType: rightType
                 });
             }
+            if (leftType === "VOID") {
+                yy.parser.parseError(`An equality comparison cannot be performed on VOID`, {
+                    error: CompilationError.Errors.VOID_COMPARISON,
+                    loc: tree.loc,
+                    line: tree.loc.first_line - 1,
+                    leftType: leftType,
+                    rightType: rightType
+                });
+            }
             target.push([tree.operation]);
             return tree.dataType;
         }
@@ -25343,17 +25361,21 @@ var karel = (function (exports, bootstrap) {
             const rightType = resolveTerm(tree.right, definitions, scope, target, tags, yy);
             if (leftType !== "INT") {
                 yy.parser.parseError(`${tree.operation} operator uses integer terms only, left is of type: ${leftType}`, {
-                    error: CompilationError.Errors.TYPE_ERROR,
+                    error: CompilationError.Errors.BINARY_OPERATOR_TYPE_ERROR,
                     loc: tree.loc,
+                    operator: tree.operation,
                     line: tree.loc.first_line - 1,
+                    direction: "LEFT",
                     expectedType: "INT",
                     actualType: leftType
                 });
             }
             if (rightType !== "INT") {
                 yy.parser.parseError(`${tree.operation} operator uses integer terms only, right is of type: ${rightType}`, {
-                    error: CompilationError.Errors.TYPE_ERROR,
+                    error: CompilationError.Errors.BINARY_OPERATOR_TYPE_ERROR,
                     loc: tree.loc,
+                    operator: tree.operation,
+                    direction: "RIGHT",
                     line: tree.loc.first_line - 1,
                     expectedType: "INT",
                     actualType: rightType
@@ -25366,8 +25388,9 @@ var karel = (function (exports, bootstrap) {
             const termType = resolveTerm(tree.term, definitions, scope, target, tags, yy);
             if (termType !== "BOOL") {
                 yy.parser.parseError(`${tree.operation} operator uses a boolean terms only, but tried to negate a term of type: ${termType}`, {
-                    error: CompilationError.Errors.TYPE_ERROR,
+                    error: CompilationError.Errors.UNARY_OPERATOR_TYPE_ERROR,
                     loc: tree.loc,
+                    operator: tree.operation,
                     line: tree.loc.first_line - 1,
                     expectedType: "BOOL",
                     actualType: termType
@@ -26144,7 +26167,11 @@ var karel = (function (exports, bootstrap) {
             this.reset();
         }
         start() {
-            this.eventController.fireEvent('start', this, { target: this, world: this.world });
+            this.eventController.fireEvent('start', this, {
+                type: "start",
+                target: this,
+                world: this.world
+            });
         }
         reset() {
             this.state = {
@@ -26169,6 +26196,7 @@ var karel = (function (exports, bootstrap) {
             };
             if (this.debug) {
                 this.eventController.fireEvent('debug', this, {
+                    type: "debug",
                     target: this,
                     message: JSON.stringify(this.rawOpcodes),
                     debugType: 'program',
@@ -26186,7 +26214,11 @@ var karel = (function (exports, bootstrap) {
                 }
                 finally {
                     if (!this.state.running) {
-                        this.eventController.fireEvent('stop', this, { target: this, world: this.world });
+                        this.eventController.fireEvent('stop', this, {
+                            type: "stop",
+                            target: this,
+                            world: this.world,
+                        });
                     }
                 }
             }
@@ -26213,6 +26245,7 @@ var karel = (function (exports, bootstrap) {
             try {
                 if (this.debug) {
                     this.eventController.fireEvent('debug', this, {
+                        type: "debug",
                         target: this,
                         message: JSON.stringify(this.program[3 * this.state.pc] +
                             ' ' +
@@ -26423,6 +26456,7 @@ var karel = (function (exports, bootstrap) {
                         }
                         else if (!this.disableStackEvents) {
                             this.eventController.fireEvent('call', this, {
+                                type: "call",
                                 function: fname,
                                 params: this.state.stack.subarray(this.state.fp - paramCount, this.state.fp),
                                 line: this.state.line,
@@ -26444,17 +26478,20 @@ var karel = (function (exports, bootstrap) {
                         this.state.stackMemory -= Math.max(1, paramCount);
                         ;
                         if (!this.disableStackEvents) {
-                            let param = this.state.stack[this.state.fp + 3];
+                            let params = this.state.stack.subarray(0, 0);
                             let fname = "N/A";
                             let line = -2;
                             if (this.state.stackSize >= 1) {
                                 let npc = this.state.stack[this.state.fp + 2]; //Get the function name from the function that called me
                                 fname = this.functionNames[this.program[3 * npc + 2]];
                                 line = this.program[3 * (npc + 1) + 1]; //Get line. A call always is LINE -> LOAD PARAM -> CALL -> LINE
+                                paramCount = this.state.stack[this.state.fp + 3];
+                                params = this.state.stack.subarray(this.state.fp - paramCount, this.state.fp);
                             }
                             this.eventController.fireEvent('return', this, {
+                                type: "return",
                                 target: this,
-                                param: param,
+                                params: params,
                                 function: fname,
                                 line: line,
                                 returnValue: this.state.ret
@@ -26491,6 +26528,7 @@ var karel = (function (exports, bootstrap) {
                         this.state.running = false;
                         if (this.debug) {
                             this.eventController.fireEvent('debug', this, {
+                                type: "debug",
                                 target: this,
                                 message: 'Missing opcode ' + this.rawOpcodes[this.state.pc][0],
                                 debugType: 'opcode',
@@ -26520,6 +26558,7 @@ var karel = (function (exports, bootstrap) {
                         running: this.state.running,
                     };
                     this.eventController.fireEvent('debug', this, {
+                        type: "debug",
                         target: this,
                         message: JSON.stringify(copy),
                         debugType: 'state',
@@ -32973,10 +33012,12 @@ var karel = (function (exports, bootstrap) {
         StartSettings(DesktopUI);
         RestoreSession();
     });
+    const GetKarelController = KarelController.GetInstance;
     function MoveEditorCursorToLine(line, column = 0) {
         SelectLine(desktopEditor, line, column);
     }
 
+    exports.GetKarelController = GetKarelController;
     exports.MoveEditorCursorToLine = MoveEditorCursorToLine;
 
     return exports;
