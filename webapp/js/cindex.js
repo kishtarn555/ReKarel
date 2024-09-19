@@ -20820,13 +20820,6 @@ var karel = (function (exports, bootstrap) {
     const karelLineFacet = Facet.define({
         combine: values => values.length ? Math.min(...values) : -1
     });
-    function highlightKarelActiveLine() {
-        return [
-            karelLineTheme,
-            highlightedLine.of(karelLineFacet.of(-1)),
-            lineHighlighting
-        ];
-    }
     const lineHighlight = Decoration.line({
         attributes: { class: "cm-karelLine" }
     });
@@ -20850,9 +20843,64 @@ var karel = (function (exports, bootstrap) {
     }, {
         decorations: v => v.decorations
     });
-    function HighlightKarelLine(editor, line) {
+    let executionCursor = new Compartment;
+    const karelColumnFacet = Facet.define({
+        combine: values => values.length ? Math.min(...values) : -1
+    });
+    class CursorWidget extends WidgetType {
+        constructor() { super(); }
+        eq(other) { return true; }
+        toDOM() {
+            let wrap = document.createElement("small");
+            wrap.setAttribute("aria-hidden", "true");
+            wrap.className = "cm-execution-cursor";
+            let icon = wrap.appendChild(document.createElement("i"));
+            icon.classList.add("bi");
+            icon.classList.add("bi-caret-right-fill");
+            return wrap;
+        }
+        ignoreEvent() { return true; }
+    }
+    function cursor(view) {
+        let line = view.state.facet(karelLineFacet);
+        let column = view.state.facet(karelColumnFacet);
+        if (column === -1 || line === -1)
+            return Decoration.none;
+        const deco = Decoration.widget({
+            widget: new CursorWidget(),
+            side: -1
+        });
+        return Decoration.set([
+            deco.range(view.state.doc.line(line).from + column)
+        ]);
+    }
+    const columnCursorPlugin = ViewPlugin.fromClass(class {
+        constructor(view) {
+            this.decorations = Decoration.none;
+        }
+        update(update) {
+            if (update.startState.facet(karelColumnFacet) !== update.state.facet(karelColumnFacet)
+                || update.startState.facet(karelLineFacet) !== update.state.facet(karelLineFacet))
+                this.decorations = cursor(update.view);
+        }
+    }, {
+        decorations: v => v.decorations,
+    });
+    function highlightKarelActiveInstruction() {
+        return [
+            karelLineTheme,
+            highlightedLine.of(karelLineFacet.of(-1)),
+            executionCursor.of(karelColumnFacet.of(-1)),
+            lineHighlighting,
+            columnCursorPlugin
+        ];
+    }
+    function HighlightKarelInstruction(editor, line, column) {
         editor.dispatch({
-            effects: highlightedLine.reconfigure(karelLineFacet.of(line))
+            effects: [
+                highlightedLine.reconfigure(karelLineFacet.of(line)),
+                executionCursor.reconfigure(karelColumnFacet.of(column))
+            ]
         });
     }
 
@@ -22138,7 +22186,7 @@ var karel = (function (exports, bootstrap) {
                 theme.of(classicHighlight.extensions),
                 syntaxHighlighting(defaultHighlightStyle, { fallback: true }),
                 breakpointGutter,
-                highlightKarelActiveLine(),
+                highlightKarelActiveInstruction(),
                 history(),
                 drawSelection(),
                 lineNumbers(),
@@ -29575,11 +29623,11 @@ var karel = (function (exports, bootstrap) {
         }
         if (status.error === CompilationError.Errors.ILLEGAL_BREAK) {
             const breakName = lan === "java" ? "break" : "rompe";
-            return `No se puede usar la instruccion <b>${breakName}</b> en este lugar`;
+            return `No se puede usar la instrucción <b>${breakName}</b> en este lugar`;
         }
         if (status.error === CompilationError.Errors.ILLEGAL_CONTINUE) {
             const continueName = lan === "java" ? "continue" : "continua";
-            return `No se puede usar la instruccion <b>${continueName}</b> en este lugar`;
+            return `No se puede usar la instrucción <b>${continueName}</b> en este lugar`;
         }
         if (status.error === CompilationError.Errors.NO_EXPLICIT_RETURN) {
             return `La función ${status.functionName} es de tipo ${status.returnType}, pero no siempre retorna un valor`;
@@ -32582,14 +32630,15 @@ var karel = (function (exports, bootstrap) {
         const controller = KarelController.GetInstance();
         controller.RegisterStepController((_, state) => {
             const line = controller.GetRuntime().state.line + 1;
+            const column = controller.GetRuntime().state.column;
             const codeLine = editor.state.doc.line(line);
-            HighlightKarelLine(editor, line);
+            HighlightKarelInstruction(editor, line, column);
             editor.dispatch({
                 effects: EditorView.scrollIntoView(codeLine.from)
             });
         });
         controller.RegisterResetObserver((_) => {
-            HighlightKarelLine(editor, -1);
+            HighlightKarelInstruction(editor, -1, -1);
         });
     }
 
