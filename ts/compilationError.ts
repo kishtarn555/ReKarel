@@ -114,29 +114,67 @@ const ERROR_TOKENS = {
     },
   };
 
+  const operatorsJava : Record<string, string> = {
+    "AND" : "&#38;&#38;",
+    "OR" : "||",
+    "LT" : "<",
+    "LTE" : "<=",
+    "NOT" : "!",
+  }
 
-function decodeKnownError(status:CompilationError.ErrorStatus): string {
-    
+  const operatorsPascal : Record<string, string>  = {
+    "AND" : "y",
+    "OR" : "o",
+    "LT" : "<",
+    "LTE" : "<=",
+    "NOT" : "no",
+  }
+
+function decodeKnownError(status:CompilationError.ErrorStatus, lan : "java"|"pascal"): string {
+    if (status.error === CompilationError.Errors.BINARY_OPERATOR_TYPE_ERROR) {
+        const direction = status.direction === "LEFT" ? "izquierdo":"derecho";
+        const operator = lan === "java" ? operatorsJava[status.operator] : operatorsPascal[status.operator];
+        return `Para el operador <b>${operator}</b> no puede utilizar un termino ${direction} de tipo ${status.actualType}, necesita ${status.expectedType}.`;        
+    }
     if (status.error === CompilationError.Errors.CALL_TYPE) {
         return `Se llamó a <b>${status.funcName}</b> en un lugar donde se esperaba un tipo ${status.expectedCallType}, pero la función es de tipo ${status.functionType}.`;
     }
     if (status.error === CompilationError.Errors.COMPARISON_TYPE) {
-        return `Se intento comparar un tipo <b>${status.leftType}</b> contra un tipo ${status.rightType}. Solo se pueden comparar los mismos tipos`;
+        return `Se intento comparar un tipo <b>${status.leftType}</b> contra un tipo <b>${status.rightType}</b> . Solo se pueden comparar los mismos tipos`;
+    }
+    if (status.error === CompilationError.Errors.FUNCTION_ILLEGAL_NAME) {
+        return `La función no se puede llamar como una variable global: ${status.functionName}`;
     }
     if (status.error === CompilationError.Errors.FUNCTION_REDEFINITION) {
         return `La función <b>${status.functionName}</b> ya fue definida previamente`;
     }
-    if (status.error === CompilationError.Errors.PROTOTYPE_REDEFINITION) {
-        return `El prototipo <b>${status.prototypeName}</b> ya fue definido previamente`;
+    if (status.error === CompilationError.Errors.ILLEGAL_BREAK) {
+        const breakName = lan === "java"? "break": "rompe";
+        return `No se puede usar la instrucción <b>${breakName}</b> en este lugar`;
     }
-    
+    if (status.error === CompilationError.Errors.ILLEGAL_CONTINUE) {
+        const continueName = lan === "java"? "continue": "continua";
+        return `No se puede usar la instrucción <b>${continueName}</b> en este lugar`;
+    }
+    if (status.error === CompilationError.Errors.NO_EXPLICIT_RETURN) {
+        return `La función ${status.functionName} es de tipo ${status.returnType}, pero no siempre retorna un valor`;
+    }
+    if (status.error === CompilationError.Errors.PARAMETER_ILLEGAL_NAME) {
+        return `No se puede llamar a un parámetro <b>${status.parameterName}</b> porque ya esta siendo usado por otra función o variable global`;
+    }    
     if (status.error === CompilationError.Errors.PROTOTYPE_PARAMETERS_MISS_MATCH) {
         return `El prototipo de <b>${status.functionName}</b> no concuerda con su definición.`
         + `<br> El prototipo tiene ${status.prototypeParamCount} parámetros, pero su definición tiene ${status.functionParamCount}`;
     }
+    if (status.error === CompilationError.Errors.PROTOTYPE_REDEFINITION) {
+        return `El prototipo <b>${status.prototypeName}</b> ya fue definido previamente`;
+    }
     if (status.error === CompilationError.Errors.PROTOTYPE_TYPE_MISS_MATCH) {
         return `El prototipo de <b>${status.functionName}</b> no concuerda con su definición.`
         + `<br> El prototipo es de tipo ${status.prototypeType}, pero su definición es ${status.functionType}`;
+    }
+    if (status.error === CompilationError.Errors.RETURN_TYPE) {
+        return `No se puede retornar un tipo  <b>${status.actualType}</b>, porque la función es de tipo ${status.expectedType}`;
     }
     if (status.error === CompilationError.Errors.TOO_FEW_PARAMS_IN_CALL) {
         return `Se llamó a <b>${status.funcName}</b> con menos parámetros de los necesarios.`
@@ -146,17 +184,27 @@ function decodeKnownError(status:CompilationError.ErrorStatus): string {
         return `Se llamó a <b>${status.functionName}</b> con menos parámetros de los necesarios.`
         + `<br> La llamada tiene ${status.actualParams}, pero su definición necesita ${status.expectedParams}`;
     }
-    if (status.error === CompilationError.Errors.FUNCTION_ILLEGAL_NAME) {
-        return `La función no se puede llamar como una variable global: ${status.functionName}`;
-    }
     if (status.error === CompilationError.Errors.TYPE_ERROR) {
         return `No se puede utilizar el tipo ${status.actualType} donde se requiere un tipo ${status.expectedType}`;
+    } 
+    if (status.error === CompilationError.Errors.UNARY_OPERATOR_TYPE_ERROR) {
+        const operator = lan === "java" ? operatorsJava[status.operator] : operatorsPascal[status.operator];
+        return `Para el operador <b>${operator}</b> no puede utilizar un termino de tipo ${status.actualType}, necesita ${status.expectedType}.`;
     }
     if (status.error === CompilationError.Errors.UNDEFINED_FUNCTION) {
         return `La función <b>${status.functionName}</b> no está definida`;
+    }    
+    if (status.error === CompilationError.Errors.UNKNOWN_MODULE) {
+        return `No se reconoce el módulo <b>${status.module}</b> en la importación de ${status.full}`;
+    }    
+    if (status.error === CompilationError.Errors.UNKNOWN_PACKAGE) {
+        return `No se reconoce el paquete <b>${status.package}</b> en la importación de ${status.full}`;
     }
     if (status.error === CompilationError.Errors.UNKNOWN_VARIABLE) {
         return `El parámetro o variable <b>${status.variable}</b> no está definido`;
+    }    
+    if (status.error === CompilationError.Errors.VOID_COMPARISON) {
+        return `No se pueden comparar dos expresiones de tipo VOID.`;
     }
 
 }
@@ -177,7 +225,7 @@ export function decodeError(e, lan : "java"|"pascal"|"ruby"|"none") : string {
         let expectations = status.expected.map((x=>ERROR_TOKENS[lan][x.replace(/^'+/,"").replace(/'+$/,"") ]))        
         message += `Se encontró "${status.text}" cuando se esperaba ${ expectations.join(", ")}`
     } else if (status.error != null) {
-        message += decodeKnownError(status);
+        message += decodeKnownError(status, lan);
     } else if (errorString.includes("Unrecognized text")) {
         message += "Se encontró un token ilegal";
     } else {        
