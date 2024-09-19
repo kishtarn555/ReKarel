@@ -29660,6 +29660,9 @@ var karel = (function (exports, bootstrap) {
         if (status.error === CompilationError.Errors.PARAMETER_ILLEGAL_NAME) {
             return `No se puede llamar a un parámetro <b>${status.parameterName}</b> porque ya esta siendo usado por otra función o variable global`;
         }
+        if (status.error === CompilationError.Errors.PARAMETER_REDEFINITION) {
+            return `El parámetro <b>${status.parameterName}</b> ya fue definido`;
+        }
         if (status.error === CompilationError.Errors.PROTOTYPE_PARAMETERS_MISS_MATCH) {
             return `El prototipo de <b>${status.functionName}</b> no concuerda con su definición.`
                 + `<br> El prototipo tiene ${status.prototypeParamCount} parámetros, pero su definición tiene ${status.functionParamCount}`;
