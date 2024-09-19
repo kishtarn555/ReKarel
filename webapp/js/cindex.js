@@ -22886,7 +22886,7 @@ var karel = (function (exports, bootstrap) {
           this.$ = [{
             name: $$[$0-3], 
             code: [
-              locToIR(_$[$0-2]),
+              locToIR(_$[$0-3]),
               ...$$[$0],
               ['RET', '__DEFAULT', _$[$0-4]],
             ],  
@@ -22904,7 +22904,7 @@ var karel = (function (exports, bootstrap) {
           this._$.last_column = _$[$0-3].last_column;
         	let result = [
             
-              locToIR(_$[$0-3]),
+              locToIR(_$[$0-4]),
               ...$$[$0],
               ['RET', '__DEFAULT', _$[$0-5]]
           ];
@@ -25315,20 +25315,21 @@ var karel = (function (exports, bootstrap) {
             Errors[Errors["ILLEGAL_CONTINUE"] = 6] = "ILLEGAL_CONTINUE";
             Errors[Errors["NO_EXPLICIT_RETURN"] = 7] = "NO_EXPLICIT_RETURN";
             Errors[Errors["PARAMETER_ILLEGAL_NAME"] = 8] = "PARAMETER_ILLEGAL_NAME";
-            Errors[Errors["PROTOTYPE_PARAMETERS_MISS_MATCH"] = 9] = "PROTOTYPE_PARAMETERS_MISS_MATCH";
-            Errors[Errors["PROTOTYPE_TYPE_MISS_MATCH"] = 10] = "PROTOTYPE_TYPE_MISS_MATCH";
-            Errors[Errors["PROTOTYPE_REDEFINITION"] = 11] = "PROTOTYPE_REDEFINITION";
-            Errors[Errors["RETURN_TYPE"] = 12] = "RETURN_TYPE";
-            Errors[Errors["TOO_FEW_PARAMS_IN_CALL"] = 13] = "TOO_FEW_PARAMS_IN_CALL";
-            Errors[Errors["TOO_MANY_PARAMS_IN_CALL"] = 14] = "TOO_MANY_PARAMS_IN_CALL";
-            Errors[Errors["TYPE_ERROR"] = 15] = "TYPE_ERROR";
-            Errors[Errors["UNDEFINED_FUNCTION"] = 16] = "UNDEFINED_FUNCTION";
-            Errors[Errors["UNDEFINED_FUNCTION_OR_VARIABLE"] = 17] = "UNDEFINED_FUNCTION_OR_VARIABLE";
-            Errors[Errors["UNARY_OPERATOR_TYPE_ERROR"] = 18] = "UNARY_OPERATOR_TYPE_ERROR";
-            Errors[Errors["UNKNOWN_MODULE"] = 19] = "UNKNOWN_MODULE";
-            Errors[Errors["UNKNOWN_PACKAGE"] = 20] = "UNKNOWN_PACKAGE";
-            Errors[Errors["UNKNOWN_VARIABLE"] = 21] = "UNKNOWN_VARIABLE";
-            Errors[Errors["VOID_COMPARISON"] = 22] = "VOID_COMPARISON";
+            Errors[Errors["PARAMETER_REDEFINITION"] = 9] = "PARAMETER_REDEFINITION";
+            Errors[Errors["PROTOTYPE_PARAMETERS_MISS_MATCH"] = 10] = "PROTOTYPE_PARAMETERS_MISS_MATCH";
+            Errors[Errors["PROTOTYPE_TYPE_MISS_MATCH"] = 11] = "PROTOTYPE_TYPE_MISS_MATCH";
+            Errors[Errors["PROTOTYPE_REDEFINITION"] = 12] = "PROTOTYPE_REDEFINITION";
+            Errors[Errors["RETURN_TYPE"] = 13] = "RETURN_TYPE";
+            Errors[Errors["TOO_FEW_PARAMS_IN_CALL"] = 14] = "TOO_FEW_PARAMS_IN_CALL";
+            Errors[Errors["TOO_MANY_PARAMS_IN_CALL"] = 15] = "TOO_MANY_PARAMS_IN_CALL";
+            Errors[Errors["TYPE_ERROR"] = 16] = "TYPE_ERROR";
+            Errors[Errors["UNDEFINED_FUNCTION"] = 17] = "UNDEFINED_FUNCTION";
+            Errors[Errors["UNDEFINED_FUNCTION_OR_VARIABLE"] = 18] = "UNDEFINED_FUNCTION_OR_VARIABLE";
+            Errors[Errors["UNARY_OPERATOR_TYPE_ERROR"] = 19] = "UNARY_OPERATOR_TYPE_ERROR";
+            Errors[Errors["UNKNOWN_MODULE"] = 20] = "UNKNOWN_MODULE";
+            Errors[Errors["UNKNOWN_PACKAGE"] = 21] = "UNKNOWN_PACKAGE";
+            Errors[Errors["UNKNOWN_VARIABLE"] = 22] = "UNKNOWN_VARIABLE";
+            Errors[Errors["VOID_COMPARISON"] = 23] = "VOID_COMPARISON";
         })(CompilationError.Errors || (CompilationError.Errors = {}));
     })(CompilationError || (CompilationError = {}));
 
@@ -25476,7 +25477,7 @@ var karel = (function (exports, bootstrap) {
         }
         if (data.couldBeFunction) {
             //Resolve as an parameterless call
-            target.push(["LOAD", 0]); //FIXME: Don't forget to remove me after you change how variables work!
+            target.push(["LOAD", 0]); // Load 0 parameters
             if (!definitions.hasFunction(data.target)) {
                 yy.parser.parseError("Undefined function or variable: " + data.target, {
                     error: CompilationError.Errors.UNDEFINED_FUNCTION,
@@ -25485,6 +25486,7 @@ var karel = (function (exports, bootstrap) {
                     loc: data.loc
                 });
             }
+            target.push(["LINE", data.loc.first_line - 1, data.loc.first_column]);
             target.push([
                 "CALL",
                 {
@@ -25494,6 +25496,7 @@ var karel = (function (exports, bootstrap) {
                     params: [],
                 }
             ]);
+            target.push(["LINE", data.loc.first_line - 1, data.loc.first_column]);
             target.push(["LRET"]);
             return;
         }
@@ -25843,6 +25846,28 @@ var karel = (function (exports, bootstrap) {
                     }
                 }
             }
+        }
+        //Validate parameters
+        for (const func of data.functions) {
+            func.params.forEach((param, idx) => {
+                if (definitionTable.hasVar(param.name) || definitionTable.hasFunction(param.name)) {
+                    yy.parser.parseError(`Cannot name parameter ${param.name} as it is already used by a variable or function`, {
+                        error: CompilationError.Errors.PARAMETER_ILLEGAL_NAME,
+                        line: param.loc.first_line - 1,
+                        loc: param.loc,
+                        parameterName: param.name
+                    });
+                }
+                const first = func.params.findIndex(p => p.name === param.name);
+                if (first !== idx) {
+                    yy.parser.parseError(`Parameter ${param.name} was already declared in the function`, {
+                        error: CompilationError.Errors.PARAMETER_REDEFINITION,
+                        line: param.loc.first_line - 1,
+                        loc: param.loc,
+                        parameterName: param.name
+                    });
+                }
+            });
         }
         return true;
     }
