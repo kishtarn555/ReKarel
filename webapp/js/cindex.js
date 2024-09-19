@@ -31112,6 +31112,7 @@ var karel = (function (exports, bootstrap) {
     class CallStack {
         constructor(data) {
             this.panel = data.panel;
+            this.lastReturn = data.lastReturn;
             KarelController.GetInstance().RegisterNewWorldObserver((a, _, newInstance) => { if (newInstance)
                 this.OnStackChanges(); });
             this.OnStackChanges();
@@ -31167,6 +31168,10 @@ var karel = (function (exports, bootstrap) {
                 this.panel.prepend('<div class="well well-small">' + this.getCallInfo(evt) + '</div>');
             });
             runtime.eventController.addEventListener('return', evt => {
+                if (evt.details.type === "return")
+                    this.lastReturn.text(`Último valor retornado: ${evt.details.returnValue}`);
+                else
+                    this.lastReturn.text(`(ERROR INTERNO) Último valor retornado: ${runtime.state.ret}`);
                 if (runtime.state.stackSize > MAX_STACK_SIZE) {
                     this.panel.find('>:first-child').html(this.getCollapsedHTML(evt));
                     return;
@@ -31178,6 +31183,7 @@ var karel = (function (exports, bootstrap) {
             });
         }
         clearStack() {
+            this.lastReturn.text("");
             this.panel.empty();
         }
         slowMode(limit) {
@@ -32930,7 +32936,8 @@ var karel = (function (exports, bootstrap) {
             consoleMessageCount: $("#consoleMessageCount"),
         },
         callStack: {
-            panel: $("#stackPanel")
+            panel: $("#stackPanel"),
+            lastReturn: $("#lastReturn")
         },
     }, karelController);
     new MobileUI({
