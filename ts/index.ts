@@ -214,7 +214,7 @@ let DesktopUI = new DesktopController(
             consoleMessageCount:$("#consoleMessageCount"),
         },
         callStack: {
-            panel : $("#pilaTab")
+            panel : $("#stackPanel")
         },
     },
     karelController

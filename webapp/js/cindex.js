@@ -32930,7 +32930,7 @@ var karel = (function (exports, bootstrap) {
             consoleMessageCount: $("#consoleMessageCount"),
         },
         callStack: {
-            panel: $("#pilaTab")
+            panel: $("#stackPanel")
         },
     }, karelController);
     new MobileUI({
