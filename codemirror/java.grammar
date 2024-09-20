@@ -12,7 +12,12 @@ inner {
 }
 
 Function {
-    DefineType Identifier "("Identifier?")" Block 
+    DefineType Identifier "("FunctionParams?")" Block 
+}
+
+FunctionParams {
+    FunctionParams comma Identifier
+    | Identifier
 }
 
 main {
