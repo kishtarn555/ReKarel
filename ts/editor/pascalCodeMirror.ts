@@ -84,8 +84,6 @@ const pascalLanguage = LRLanguage.define({
 
 
   import {completeFromList} from "@codemirror/autocomplete"
-import { BuiltIn, IfStatement, IterateStatement, Prototipo, WhileStatement } from "../../webapp/js/lezer_pascal.terms";
-import { Define } from "../../webapp/js/lezer_java.terms";
 
   const pascalCompletion = pascalLanguage.data.of({
     autocomplete: completeFromList([

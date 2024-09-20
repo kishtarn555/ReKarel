@@ -10,7 +10,7 @@ let javaWithContext = javaparser.configure({
     props: [
         styleTags({
             Class: t.keyword,
-            Define: t.definitionKeyword,
+            DefineType: t.definitionKeyword,
             ProgramClass: t.className,
             ProgramMain: t.definitionKeyword,
             Comment: t.comment,
@@ -33,6 +33,10 @@ let javaWithContext = javaparser.configure({
             End: t.brace,
             Succ: t.operator,
             Pred: t.operator,
+            Continue: t.controlKeyword,
+            Break: t.controlKeyword,
+            Return: t.controlKeyword,
+            Import: t.keyword
 
         }),
         indentNodeProp.add({
@@ -65,6 +69,7 @@ const javaLanguage = LRLanguage.define({
 
 
 import { completeKarelJava } from "./completionJava";
+import { Continue, Import } from "../../webapp/js/lezer_java.terms";
 
   const javaCompletion = javaLanguage.data.of({
     autocomplete: completeKarelJava
