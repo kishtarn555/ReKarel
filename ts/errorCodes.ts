@@ -7,12 +7,18 @@ export const ERRORCODES = {
     STACK: 'La pila de karel se ha desbordado!',
 };
 
-export function decodeRuntimeError(error: string, maxInstructions:number, stackSize:number ):string {
+interface executionLimits {
+    maxInstructions: number
+    stackSize: number
+    callMaxParam: number
+    stackMemory: number
+}
+export function decodeRuntimeError(error: string, limits:executionLimits):string {
     if (error === "INSTRUCTION") {
-        return `Karel ha superado el límite de ${maxInstructions.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")} instrucciones!`
+        return `Karel ha superado el límite de ${limits.maxInstructions.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")} instrucciones!`
     }
     if (error === "STACK") {
-        return `La pila de karel se ha desbordado! El tamaño de la pila es de ${stackSize.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}`
+        return `La pila de karel se ha desbordado! El tamaño de la pila es de ${limits.stackSize.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}`
     }
     if (error in ERRORCODES) {
         return ERRORCODES[error];

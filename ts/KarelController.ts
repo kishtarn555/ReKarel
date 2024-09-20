@@ -435,7 +435,16 @@ class KarelController {
     private EndMessage() {
         let state = this.GetRuntime().state;
         if (state.error) {
-            this.SendMessage(decodeRuntimeError(state.error, this.world.maxInstructions, this.world.maxStackSize), "error");            
+            this.SendMessage(
+                decodeRuntimeError(
+                    state.error, {
+                        maxInstructions:this.world.maxInstructions, 
+                        stackSize: this.world.maxStackSize,
+                        callMaxParam: this.world.maxCallSize,
+                        stackMemory: this.world.maxStackMemory
+                    }), 
+                "error"
+            );            
             this.endedOnError = true;
             return;
         }
