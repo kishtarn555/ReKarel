@@ -41,9 +41,13 @@ expression {
 }
 
 call {
-    (BuiltIn | Identifier) "("NumericTerm?")"
+    (BuiltIn | Identifier) "("CallParams?")"
 }
 
+CallParams {
+    CallParams comma NumericTerm
+    | NumericTerm
+}
 
 BuiltIn {
     @specialize<Identifier, "move"> |
