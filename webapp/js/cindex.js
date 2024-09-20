@@ -29214,14 +29214,28 @@ var karel = (function (exports, bootstrap) {
         INSTRUCTION: 'Karel ha superado el límite de instrucciones!',
         STACK: 'La pila de karel se ha desbordado!',
     };
-    function decodeRuntimeError(error, maxInstructions, stackSize) {
+    function decodeRuntimeError(error, limits) {
         if (error === "INSTRUCTION") {
-            return `Karel ha superado el límite de ${maxInstructions.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")} instrucciones!`;
+            return `Karel ha superado el límite de ${limits.maxInstructions.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")} instrucciones!`;
         }
         if (error === "STACK") {
-            return `La pila de karel se ha desbordado! El tamaño de la pila es de ${stackSize.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}`;
+            return `La pila de karel se ha desbordado! El tamaño de la pila es de ${limits.stackSize.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}`;
         }
-        return ERRORCODES[error];
+        if (error === "CALLMEMORY") {
+            return `Límite de parámetros superados.`
+                + `<br>Solo puedes llamar con a lo más ${limits.callMaxParam.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}`;
+        }
+        if (error === "STACKMEMORY") {
+            return `El límite de memoria del stack a sido superado.`
+                + `<br>Limite de memoria: ${limits.stackMemory.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}`
+                + `<br>El costo de una función es igual al mayor entre uno y la cantidad de parámetros que usa.`;
+        }
+        if (error in ERRORCODES) {
+            return ERRORCODES[error];
+        }
+        else {
+            return `Karel tubo un error de ejecución desconocido: ${error}`;
+        }
     }
 
     const DefaultWRStyle = {
@@ -30094,7 +30108,12 @@ var karel = (function (exports, bootstrap) {
         EndMessage() {
             let state = this.GetRuntime().state;
             if (state.error) {
-                this.SendMessage(decodeRuntimeError(state.error, this.world.maxInstructions, this.world.maxStackSize), "error");
+                this.SendMessage(decodeRuntimeError(state.error, {
+                    maxInstructions: this.world.maxInstructions,
+                    stackSize: this.world.maxStackSize,
+                    callMaxParam: this.world.maxCallSize,
+                    stackMemory: this.world.maxStackMemory
+                }), "error");
                 this.endedOnError = true;
                 return;
             }
