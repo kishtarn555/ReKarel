@@ -14,5 +14,9 @@ export function decodeRuntimeError(error: string, maxInstructions:number, stackS
     if (error === "STACK") {
         return `La pila de karel se ha desbordado! El tamaño de la pila es de ${stackSize.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}`
     }
-    return ERRORCODES[error];
+    if (error in ERRORCODES) {
+        return ERRORCODES[error];
+    } else {
+        return `Karel tubo un error de ejecución desconocido: ${error}`
+    }
 }
