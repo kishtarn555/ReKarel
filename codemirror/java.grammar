@@ -29,7 +29,7 @@ InnerBlock {
 }
 
 expression {
-    call | Block | WhileStatement | IterateStatement | IfStatement | Continue | Break
+    call | Block | WhileStatement | IterateStatement | IfStatement | Continue | Break | ReturnStatement
 }
 
 call {
@@ -55,6 +55,12 @@ WhileStatement {
 IterateStatement {
     Iterate "(" numberStatement ")" expression
 }
+
+ReturnStatement {
+    Return ( "(" ")" )?
+}
+
+Return { @specialize<Identifier, "return"> }
 
 @precedence {
     binaryLogic @left,

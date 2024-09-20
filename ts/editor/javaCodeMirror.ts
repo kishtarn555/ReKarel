@@ -35,6 +35,7 @@ let javaWithContext = javaparser.configure({
             Pred: t.operator,
             Continue: t.controlKeyword,
             Break: t.controlKeyword,
+            Return: t.controlKeyword,
 
         }),
         indentNodeProp.add({

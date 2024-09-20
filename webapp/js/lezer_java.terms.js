@@ -31,5 +31,7 @@ export const
   Else = 30,
   Continue = 31,
   Break = 32,
-  End = 33,
-  ProgramMain = 34
+  ReturnStatement = 33,
+  Return = 34,
+  End = 35,
+  ProgramMain = 36
