@@ -29,7 +29,7 @@ InnerBlock {
 }
 
 expression {
-    call | Block | WhileStatement | IterateStatement | IfStatement
+    call | Block | WhileStatement | IterateStatement | IfStatement | Continue | Break
 }
 
 call {
@@ -89,6 +89,9 @@ And { "&&" }
 Not { "!" }
 
 clause { IFZ | BoolFunc ("(" ")")? | Identifier | "(" booleanStatement ")"}
+
+Continue { @specialize<Identifier, "continue"> }
+Break { @specialize<Identifier, "break"> }
 
 BoolFunc {
     @specialize<Identifier, "nextToABeeper"> |

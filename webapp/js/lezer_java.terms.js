@@ -29,5 +29,7 @@ export const
   IfStatement = 28,
   If = 29,
   Else = 30,
-  End = 31,
-  ProgramMain = 32
+  Continue = 31,
+  Break = 32,
+  End = 33,
+  ProgramMain = 34
