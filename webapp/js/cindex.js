@@ -29221,6 +29221,10 @@ var karel = (function (exports, bootstrap) {
         if (error === "STACK") {
             return `La pila de karel se ha desbordado! El tamaño de la pila es de ${limits.stackSize.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}`;
         }
+        if (error === "STACKMEMORY") {
+            return `Límite de parámetros superados.`
+                + `<br>Solo puedes llamar con a lo más ${limits.callMaxParam.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}`;
+        }
         if (error in ERRORCODES) {
             return ERRORCODES[error];
         }
