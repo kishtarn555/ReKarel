@@ -86,6 +86,7 @@ IterateStatement {
 
 ReturnStatement {
     Return ( "(" ")" )?
+    | Return term
 }
 
 Return { @specialize<Identifier, "return"> }
