@@ -3,14 +3,17 @@ import { KarelController } from "../KarelController";
 
 export type CallStackUI = {
     panel:JQuery
+    lastReturn: JQuery
 }
 
 let MAX_STACK_SIZE = 650;
 
 export class CallStack {
     panel:JQuery
+    lastReturn: JQuery
     constructor(data:CallStackUI ) {
         this.panel = data.panel;
+        this.lastReturn = data.lastReturn;
 
         KarelController.GetInstance().RegisterNewWorldObserver((a,_, newInstance)=> {if (newInstance) this.OnStackChanges();});
         this.OnStackChanges();
@@ -77,7 +80,11 @@ export class CallStack {
               '<div class="well well-small">' + this.getCallInfo(evt)+'</div>',
             );
           });
-          runtime.eventController.addEventListener('return', evt=> {
+          runtime.eventController.addEventListener('return', evt=> {            
+            if (evt.details.type === "return")
+              this.lastReturn.text(`Último valor retornado: ${evt.details.returnValue}`);
+            else
+              this.lastReturn.text(`(ERROR INTERNO) Último valor retornado: ${runtime.state.ret}`);
             if (runtime.state.stackSize > MAX_STACK_SIZE) {
               this.panel.find('>:first-child').html(this.getCollapsedHTML(evt));
               return;
@@ -89,6 +96,7 @@ export class CallStack {
           });
     }
     private clearStack() {
+      this.lastReturn.text("");
         var arreglo = this.panel.empty();
     }
 
