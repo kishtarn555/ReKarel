@@ -36,6 +36,7 @@ let javaWithContext = javaparser.configure({
             Continue: t.controlKeyword,
             Break: t.controlKeyword,
             Return: t.controlKeyword,
+            Import: t.keyword
 
         }),
         indentNodeProp.add({
@@ -68,7 +69,7 @@ const javaLanguage = LRLanguage.define({
 
 
 import { completeKarelJava } from "./completionJava";
-import { Continue } from "../../webapp/js/lezer_java.terms";
+import { Continue, Import } from "../../webapp/js/lezer_java.terms";
 
   const javaCompletion = javaLanguage.data.of({
     autocomplete: completeKarelJava

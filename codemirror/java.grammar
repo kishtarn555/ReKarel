@@ -1,6 +1,17 @@
 @top Script  {
-    Class ProgramClass ScriptBlock
+   ImportList? Class ProgramClass ScriptBlock
 }
+
+
+ImportList {
+    ImportList ImportStatement 
+    | ImportStatement
+}
+
+ImportStatement {
+    Import Identifier "." Identifier ";"
+}
+
 
 
 ScriptBlock {
@@ -186,7 +197,7 @@ Iterate { @specialize<Identifier, "iterate"> }
   LT { "<" }
   LTE { "<=" }
   COMP { "==" }
-  
+  Import { "import" }
   comma { "," }
   start { "{" }
   end { "}" }
