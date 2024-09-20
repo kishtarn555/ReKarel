@@ -29,7 +29,15 @@ InnerBlock {
 }
 
 expression {
-    call | Block | WhileStatement | IterateStatement | IfStatement | Continue | Break | ReturnStatement
+    call ";" 
+    | Block 
+    | WhileStatement 
+    | IterateStatement 
+    | IfStatement 
+    | Continue ";"
+    | Break  ";"
+    | ReturnStatement ";"
+    |  ";"
 }
 
 call {
@@ -162,6 +170,7 @@ Iterate { @specialize<Identifier, "iterate"> }
   comma { "," }
   start { "{" }
   end { "}" }
+  
 
 
 }
