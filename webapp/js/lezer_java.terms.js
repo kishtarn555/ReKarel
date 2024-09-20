@@ -8,7 +8,7 @@ export const
   ScriptBlock = 6,
   Start = 7,
   Function = 8,
-  Define = 9,
+  DefineType = 9,
   Identifier = 10,
   Block = 11,
   InnerBlock = 12,

@@ -20299,7 +20299,7 @@ var karel = (function (exports, bootstrap) {
         states: "-nO]QPOOPbOPOOOgQPOOPlOSO'#C^POOO)C>w)C>wOOQO'#Ca'#CaOwQPOOPOOO'#C}'#C}P|OSO,58xPOOO,58x,58xOOQO'#Cc'#CcO!XQPO'#CbQOQPOOPOOO-E6{-E6{POOO1G.d1G.dO!aQQO'#CdOOQO'#DO'#DOO!XQPO'#DZOOQO'#C|'#C|O!fQPO'#EXOOQO'#DZ'#DZO!kQPO,58|O!pQPO,59OOOQO-E6|-E6|OOQO,59u,59uO!uQPO,5:sOOQO'#C{'#C{OOQO1G.h1G.hO!zQQO1G.jOwQPO1G0_OwQPO7+$UO#SQPO7+$UO#yQQO'#CgOOQO7+%y7+%yOOQO<<Gp<<GpOwQPO<<GpOOQO'#Ci'#CiO$QQPO'#D_OOQO'#Cn'#CnO$VQPO'#CmOOQO'#Cw'#CwO$[QPO'#CvOOQO'#Cy'#CyO$VQPO'#CxOOQO'#D^'#D^OOQO'#DP'#DPO$aQQO'#ChO!kQPO,59ROOQOAN=[AN=[O$hQQO,59yO$yQQO'#CoO#XQQO,59XO&aQQO,59bO#XQQO,59dOOQO-E6}-E6}OOQO1G.m1G.mOOQO'#Ck'#CkOOQO'#Cl'#ClO&oQPO'#DfOOQO'#De'#DeOOQO1G/e1G/eO&tQPO1G/eOOQO'#Cq'#CqO&yQPO'#CpOOQO'#Cr'#CrOOQO'#Dk'#DkO'OQPO'#DkO$yQQO'#DkOOQO'#Cu'#CuOOQO'#Dj'#DjO'^QPO,59ZO$yQQO'#DjOOQO1G.s1G.sO'iQPO1G.|O'nQQO1G/OO&aQQO,5:QOOQO7+%P7+%PO&aQQO,59[O(fQPO,5:VO(kQPO,5:VOOQO'#Cs'#CsOOQO'#Ct'#CtOOQO'#EP'#EPO$yQQO,5:UOOQO1G.u1G.uO(vQPO,5:UO#XQQO7+$hOOQO'#Cz'#CzO#XQQO7+$jO)RQPO1G/lO)WQPO1G.vOOQO1G/q1G/qOOQO1G/p1G/pOOQO<<HS<<HSOOQO<<HU<<HUOOQO7+%W7+%WOOQO7+$b7+$b",
         stateData: ")]~OvOSPOSwPQ~OSQO~OwRO~O{TO~OxVOyVOzXO~O|YO~OxVOyVOz^O~OX_O{bO~OYfO~O!OiO~O!zjO~O!OlO~O!PmO~OYoO!PnO~O!PsO~OYuO|YO!StO!TtO!UtO!VtO!WtO!]vO!wxO!xzO~O!z[P~P#XO!O!RO~O!O!SO~O!O!UO~O!z[X~P#XOY!]O^!]O!P!^O!Z!YO![!ZO~OY!cO!O!eO!`!`O!a!bO!b!bO!c!bO!d!bO!e!bO!f!bO!g!bO!h!bO!i!bO!j!bO!k!bO!l!bO!m!bO!n!bO!o!bO!p!bO!q!bO!r!bO!v!fO~OY!]O^!]O!Z!YO![!ZO~O!O!mO~O!P!nO~O!O!oO~O!O!pO!P!_X!t!_X!u!_X~O!P!vO!t!rO!u!sO~O!P!xO~O!y!yOYli|li!Sli!Tli!Uli!Vli!Wli!]li!wli!xli!zli~O!P!}O~O!P!}O!t!rO!u!sO~O!t!rO!u!sO!P!^a~O!P#RO~O!P#SO~O",
         goto: "'x!|PP!}PP#Q#T#W#fPP#j#{$OP$W$W$^$f$n$t$z%Q%W%W%]$^%c$^%k%s%v%|&Q&W&^PPPPPPPPP&dPP&g$^PPPPP&w'TPPP'Z'gPPPPPPPPPPPPPPPPPPP'mPPPPPPP'rRSPRUQR[UQZUcpmnps!O!T!V!x!zT`ZaQqmQrn[|p!O!T!V!x!zR!QsR!Pp]up!O!T!V!x!zX![!R!U!m!o]|p!O!T!V!x!z]wp!O!T!V!x!zQ!TwR!V{X!c!S!e!i!uX!a!S!e!i!uX!d!S!e!i!uV!t!h!q!wX!i!S!e!i!u]yp!O!T!V!x!z]{p!O!T!V!x!zR!z!lQkeR!X!PTcZaQWRR]WQaZRgaQ!OpR!W!OReZS}p!OQ!j!TQ!l!VQ#P!xR#Q!zQ!_!RQ!k!UQ!{!mR!|!oX!]!R!U!m!oQ!h!SQ!q!eQ!w!iR#O!uX!g!S!e!i!uV!u!h!q!wQdZRha",
-        nodeNames: "⚠ Comment BlockComment Script Class ProgramClass ScriptBlock Start Function Define Identifier Block InnerBlock BuiltIn Number Succ Pred WhileStatement While BooleanHeader IFZ Ifzero BoolFunc Or And Not IterateStatement Iterate IfStatement If Else End ProgramMain",
+        nodeNames: "⚠ Comment BlockComment Script Class ProgramClass ScriptBlock Start Function DefineType Identifier Block InnerBlock BuiltIn Number Succ Pred WhileStatement While BooleanHeader IFZ Ifzero BoolFunc Or And Not IterateStatement Iterate IfStatement If Else End ProgramMain",
         maxTerm: 89,
         nodeProps: [
             ["closedBy", 7, "End"],
@@ -20307,7 +20307,7 @@ var karel = (function (exports, bootstrap) {
         ],
         skippedNodes: [0, 1, 2, 33],
         repeatNodeCount: 3,
-        tokenData: "0U~RlX^!ypq!yqr#nvw#sxy$Oyz$T!P!Q$Y!Q![%P!c!}%X#T#V%X#V#W%j#W#X'z#X#d%X#d#e*v#e#j%X#j#k.W#k#o%X#o#p/o#p#q/t#q#r0P#y#z!y$f$g!y#BY#BZ!y$IS$I_!y$I|$JO!y$JT$JU!y$KV$KW!y&FU&FV!y~#OYv~X^!ypq!y#y#z!y$f$g!y#BY#BZ!y$IS$I_!y$I|$JO!y$JT$JU!y$KV$KW!y&FU&FV!y~#sO!v~~#vPvw#y~$OO!u~~$TO!O~~$YO!P~~$]Qz{$c!P!Q$h~$hOw~~$mSP~OY$hZ;'S$h;'S;=`$y<%lO$h~$|P;=`<%l$h~%UP^~!Q![%PS%^SYS!Q![%X!c!}%X#R#S%X#T#o%XU%oUYS!Q![%X!c!}%X#R#S%X#T#`%X#`#a&R#a#o%XU&WTYS!Q![%X!c!}%X#R#S%X#T#U&g#U#o%XU&lUYS!Q![%X!c!}%X#R#S%X#T#g%X#g#h'O#h#o%XU'TUYS!Q![%X!c!}%X#R#S%X#T#g%X#g#h'g#h#o%XU'nSSQYS!Q![%X!c!}%X#R#S%X#T#o%XU(PUYS!Q![%X!c!}%X#R#S%X#T#X%X#X#Y(c#Y#o%XU(hUYS!Q![%X!c!}%X#R#S%X#T#Y%X#Y#Z(z#Z#o%XU)PUYS!Q![%X!c!}%X#R#S%X#T#]%X#]#^)c#^#o%XU)hUYS!Q![%X!c!}%X#R#S%X#T#b%X#b#c)z#c#o%XU*PUYS!Q![%X!c!}%X#R#S%X#T#X%X#X#Y*c#Y#o%XU*jSXQYS!Q![%X!c!}%X#R#S%X#T#o%XU*{UYS!Q![%X!c!}%X#R#S%X#T#f%X#f#g+_#g#o%XU+dUYS!Q![%X!c!}%X#R#S%X#T#c%X#c#d+v#d#o%XU+{UYS!Q![%X!c!}%X#R#S%X#T#Z%X#Z#[,_#[#o%XU,dUYS!Q![%X!c!}%X#R#S%X#T#f%X#f#g,v#g#o%XU,{TYS!Q![%X!c!}%X#R#S%X#T#U-[#U#o%XU-aUYS!Q![%X!c!}%X#R#S%X#T#a%X#a#b-s#b#o%XU-zSYS{Q!Q![%X!c!}%X#R#S%X#T#o%XU.]UYS!Q![%X!c!}%X#R#S%X#T#c%X#c#d.o#d#o%XU.tUYS!Q![%X!c!}%X#R#S%X#T#]%X#]#^/W#^#o%XU/]UYS!Q![%X!c!}%X#R#S%X#T#W%X#W#X*c#X#o%X~/tO|~~/wP#p#q/z~0PO!t~~0UO!z~",
+        tokenData: "2v~RoX^#Spq#Sqr#wvw#|xy$Xyz$^!P!Q$c!Q![%Y!c!}%b#T#U%b#U#V%s#V#W'o#W#X*P#X#]%b#]#^,h#^#d%b#d#e-h#e#j%b#j#k0x#k#o%b#o#p2a#p#q2f#q#r2q#y#z#S$f$g#S#BY#BZ#S$IS$I_#S$I|$JO#S$JT$JU#S$KV$KW#S&FU&FV#S~#XYv~X^#Spq#S#y#z#S$f$g#S#BY#BZ#S$IS$I_#S$I|$JO#S$JT$JU#S$KV$KW#S&FU&FV#S~#|O!v~~$PPvw$S~$XO!u~~$^O!O~~$cO!P~~$fQz{$l!P!Q$q~$qOw~~$vSP~OY$qZ;'S$q;'S;=`%S<%lO$q~%VP;=`<%l$q~%_P^~!Q![%YS%gSYS!Q![%b!c!}%b#R#S%b#T#o%bU%xUYS!Q![%b!c!}%b#R#S%b#T#c%b#c#d&[#d#o%bU&aUYS!Q![%b!c!}%b#R#S%b#T#c%b#c#d&s#d#o%bU&xUYS!Q![%b!c!}%b#R#S%b#T#`%b#`#a'[#a#o%bU'cSXQYS!Q![%b!c!}%b#R#S%b#T#o%bU'tUYS!Q![%b!c!}%b#R#S%b#T#`%b#`#a(W#a#o%bU(]TYS!Q![%b!c!}%b#R#S%b#T#U(l#U#o%bU(qUYS!Q![%b!c!}%b#R#S%b#T#g%b#g#h)T#h#o%bU)YUYS!Q![%b!c!}%b#R#S%b#T#g%b#g#h)l#h#o%bU)sSSQYS!Q![%b!c!}%b#R#S%b#T#o%bU*UUYS!Q![%b!c!}%b#R#S%b#T#X%b#X#Y*h#Y#o%bU*mUYS!Q![%b!c!}%b#R#S%b#T#Y%b#Y#Z+P#Z#o%bU+UUYS!Q![%b!c!}%b#R#S%b#T#]%b#]#^+h#^#o%bU+mUYS!Q![%b!c!}%b#R#S%b#T#b%b#b#c,P#c#o%bU,UUYS!Q![%b!c!}%b#R#S%b#T#X%b#X#Y'[#Y#o%bU,mUYS!Q![%b!c!}%b#R#S%b#T#b%b#b#c-P#c#o%bU-UUYS!Q![%b!c!}%b#R#S%b#T#h%b#h#i'[#i#o%bU-mUYS!Q![%b!c!}%b#R#S%b#T#f%b#f#g.P#g#o%bU.UUYS!Q![%b!c!}%b#R#S%b#T#c%b#c#d.h#d#o%bU.mUYS!Q![%b!c!}%b#R#S%b#T#Z%b#Z#[/P#[#o%bU/UUYS!Q![%b!c!}%b#R#S%b#T#f%b#f#g/h#g#o%bU/mTYS!Q![%b!c!}%b#R#S%b#T#U/|#U#o%bU0RUYS!Q![%b!c!}%b#R#S%b#T#a%b#a#b0e#b#o%bU0lSYS{Q!Q![%b!c!}%b#R#S%b#T#o%bU0}UYS!Q![%b!c!}%b#R#S%b#T#c%b#c#d1a#d#o%bU1fUYS!Q![%b!c!}%b#R#S%b#T#]%b#]#^1x#^#o%bU1}UYS!Q![%b!c!}%b#R#S%b#T#W%b#W#X'[#X#o%b~2fO|~~2iP#p#q2l~2qO!t~~2vO!z~",
         tokenizers: [1, 2, new LocalTokenGroup("j~RQYZXz{^~^Oy~~aP!P!Qd~iOz~~", 25, 40)],
         topRules: { "Script": [0, 3] },
         specialized: [{ term: 10, get: value => spec_Identifier$1[value] || -1 }],
@@ -20370,7 +20370,7 @@ var karel = (function (exports, bootstrap) {
         props: [
             styleTags({
                 Class: tags.keyword,
-                Define: tags.definitionKeyword,
+                DefineType: tags.definitionKeyword,
                 ProgramClass: tags.className,
                 ProgramMain: tags.definitionKeyword,
                 Comment: tags.comment,
@@ -22964,20 +22964,20 @@ var karel = (function (exports, bootstrap) {
     break;
     case 37:
      this.$ = [
-          locToIR(_$[$0-2]),
           ['RET', {
             term: { operation: "ATOM", instructions:[["LOAD", 0]], dataType:"VOID" },
             loc: _$[$0-2]
-          }]
+          }],
+          locToIR(_$[$0-2])
         ]; 
     break;
     case 38:
      this.$ = [
-          locToIR(_$[$0]),
           ['RET', {
             term: { operation: "ATOM", instructions:[["LOAD", 0]], dataType:"VOID" },
             loc: _$[$0]
-          }]
+          }],      
+          locToIR(_$[$0])
         ]; 
     break;
     case 39:
@@ -24240,20 +24240,20 @@ var karel = (function (exports, bootstrap) {
     break;
     case 42:
      this.$ = [
-          locToIR(_$[$0]),
           ['RET', {
             term: { operation: "ATOM", instructions:[["LOAD", 0]], dataType:"VOID" },
             loc: _$[$0]
-          }]
+          }],
+          locToIR(_$[$0])
         ]; 
     break;
     case 43:
      this.$ = [
-          locToIR(_$[$0-1]),
           ['RET', {
             term: $$[$0],
             loc: _$[$0-1]
-          }]
+          }],
+          locToIR(_$[$0-1])
         ]; 
     break;
     case 44:
@@ -25508,11 +25508,11 @@ var karel = (function (exports, bootstrap) {
         });
     }
     function resolveCall(data, definitions, scope, target, tags, yy) {
-        target.push(["LINE", data.nameLoc.first_line - 1, data.nameLoc.first_column]);
         for (const parameter of data.params) {
             resolveTerm(parameter, definitions, scope, target, tags, yy);
         }
         target.push(["LOAD", data.params.length]);
+        target.push(["LINE", data.nameLoc.first_line - 1, data.nameLoc.first_column]);
         if (!definitions.hasFunction(data.target)) {
             yy.parser.parseError("Undefined function: " + data.target, {
                 error: CompilationError.Errors.UNDEFINED_FUNCTION,

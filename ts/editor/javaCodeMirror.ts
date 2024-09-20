@@ -10,7 +10,7 @@ let javaWithContext = javaparser.configure({
     props: [
         styleTags({
             Class: t.keyword,
-            Define: t.definitionKeyword,
+            DefineType: t.definitionKeyword,
             ProgramClass: t.className,
             ProgramMain: t.definitionKeyword,
             Comment: t.comment,
