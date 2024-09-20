@@ -22869,7 +22869,7 @@ var karel = (function (exports, bootstrap) {
      this.$ = $$[$0]; 
     break;
     case 8:
-     this.$ = [[$$[$0-1]]]; 
+     this.$ = [[$$[$0-1], _$[$0-1]]]; 
     break;
     case 9:
 
@@ -23107,12 +23107,14 @@ var karel = (function (exports, bootstrap) {
      
           const repeatEnd = UniqueTag('rend');
           const repeatLoop = UniqueTag('rloop');
+          const continueLoop = UniqueTag('rcontinue');
           this.$ = [[
             "REPEAT",
             {
               line:       locToIR(_$[$0-4]),
               loopCount:  $$[$0-2][0],
               repeatTag:  repeatLoop,
+              continueTag: continueLoop,
               endTag:     repeatEnd,
               instructions: $$[$0]
             }
@@ -24106,7 +24108,7 @@ var karel = (function (exports, bootstrap) {
      this.$ = $$[$0]; 
     break;
     case 7:
-     this.$ = [[$$[$0-1]]]; 
+     this.$ = [[$$[$0-1], _$[$0-1]]]; 
     break;
     case 8:
 
@@ -24367,13 +24369,15 @@ var karel = (function (exports, bootstrap) {
      
           const repeatEnd = UniqueTag('rend');
           const repeatLoop = UniqueTag('rloop');
+          const continueLoop = UniqueTag('rcontinue');
           this.$ = [[
             "REPEAT",
             {
-              line:       locToIR(_$[$0-3]),
-              loopCount:  $$[$0-2][0],
-              repeatTag:  repeatLoop,
-              endTag:     repeatEnd,
+              line:        locToIR(_$[$0-3]),
+              loopCount:   $$[$0-2][0],
+              repeatTag:   repeatLoop,
+              endTag:      repeatEnd,
+              continueTag: continueLoop,
               instructions: $$[$0]
             }
           ]]; 
@@ -25457,8 +25461,8 @@ var karel = (function (exports, bootstrap) {
             if (termType !== tree.dataType) {
                 yy.parser.parseError(`Expected a term of type ${tree.dataType}, but got ${termType}`, {
                     error: CompilationError.Errors.TYPE_ERROR,
-                    loc: tree.loc,
-                    line: tree.loc.first_line - 1,
+                    loc: tree.totalLoc,
+                    line: tree.totalLoc.first_line - 1,
                     expectedType: tree.dataType,
                     actualType: termType
                 });
@@ -25557,11 +25561,12 @@ var karel = (function (exports, bootstrap) {
             ['NOT'],
             ['TJZ', data.endTag]
         ], definitions, scope, target, tags, yy);
-        const loopScope = scope.withContinueBreakTarget(data.repeatTag, data.endTag);
+        const loopScope = scope.withContinueBreakTarget(data.continueTag, data.endTag);
         // Add loop body
         resolveListWithASTs(data.instructions, definitions, loopScope, target, tags, yy);
         // Add loop end logic
         resolveListWithASTs([
+            ['TAG', data.continueTag],
             ['DEC', 1],
             ['TJMP', data.repeatTag],
             ['TAG', data.endTag],
