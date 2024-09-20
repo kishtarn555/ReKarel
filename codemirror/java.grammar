@@ -41,7 +41,7 @@ expression {
 }
 
 call {
-    (BuiltIn | Identifier) "("numberStatement?")"
+    (BuiltIn | Identifier) "("NumericTerm?")"
 }
 
 
@@ -54,14 +54,14 @@ BuiltIn {
 }
 
 BooleanHeader {
-     "(" booleanStatement ")"
+     "(" BooleanTerm ")"
 }
 WhileStatement {
     While BooleanHeader expression
 }
 
 IterateStatement {
-    Iterate "(" numberStatement ")" expression
+    Iterate "(" NumericTerm ")" expression
 }
 
 ReturnStatement {
@@ -90,19 +90,33 @@ elseStatement {
 
 
 
-booleanStatement {
-    clause |  booleanStatement !binaryLogic binaryOperator booleanStatement  | Not booleanStatement 
+term {
+    term !binaryLogic binaryOperator term
+    | Not term
+    | "(" term ")"
+    | clause 
 }
 
 binaryOperator {
-    Or | And
+    Or | And | LT | LTE | COMP
 }
 
-Or { "||" }
-And { "&&" }
-Not { "!" }
 
-clause { IFZ | BoolFunc ("(" ")")? | Identifier | "(" booleanStatement ")"}
+clause { IFZ | BoolFunc ("(" ")")? | Identifier | numeric | call }
+
+
+numeric {
+    Number | numberFunction
+}
+
+BooleanTerm { term }
+NumericTerm { term }
+
+numberFunction {(Succ | Pred)"(" NumericTerm ( comma Number )? ")" }
+
+Succ { @specialize<Identifier, "succ"> }
+Pred { @specialize<Identifier, "pred"> }
+
 
 Continue { @specialize<Identifier, "continue"> }
 Break { @specialize<Identifier, "break"> }
@@ -129,18 +143,8 @@ BoolFunc {
 }
 
 IFZ {
-    Ifzero { @specialize<Identifier, "iszero">  } "(" numberStatement ")"
+    Ifzero { @specialize<Identifier, "iszero">  } "(" NumericTerm ")"
 }
-
-numberStatement {
-    Number | Identifier | numberFunction
-}
-
-
-numberFunction {(Succ | Pred)"(" numberStatement ")" }
-
-Succ { @specialize<Identifier, "succ"> }
-Pred { @specialize<Identifier, "pred"> }
 
 Start[closedBy="End"] {
     start
@@ -167,6 +171,13 @@ Iterate { @specialize<Identifier, "iterate"> }
   Identifier { $[a-zA-Z]$[a-zA-Z0-9_]*}
   Number { $[0-9]+ }
   DefineType { "define"|"void"|"int"|"bool" }
+  Or { "||" }
+  And { "&&" }
+  Not { "!" }
+  LT { "<" }
+  LTE { "<=" }
+  COMP { "==" }
+  
   comma { "," }
   start { "{" }
   end { "}" }
