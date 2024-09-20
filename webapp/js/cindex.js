@@ -29225,6 +29225,11 @@ var karel = (function (exports, bootstrap) {
             return `Límite de parámetros superados.`
                 + `<br>Solo puedes llamar con a lo más ${limits.callMaxParam.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}`;
         }
+        if (error === "CALLMEMORY") {
+            return `El límite de memoria del stack a sido superado.`
+                + `<br>Limite de memoria: ${limits.stackMemory.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}`
+                + `<br>El costo de una función es igual al mayor entre uno y la cantidad de parámetros que usa.`;
+        }
         if (error in ERRORCODES) {
             return ERRORCODES[error];
         }
