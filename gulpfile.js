@@ -12,7 +12,7 @@ const mainPathDist = "webapp/"
 
 const docs = [
     "html/docs/index.html",
-    "html/docs/java/ayuda-java.html",
+    "html/docs/java/index.html",
     "html/docs/rekarel/migrar.html",
 ];
 
