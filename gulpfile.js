@@ -11,7 +11,7 @@ const rekarelDocsPath = "html/docs/rekarel/ayuda-rekarel.html"
 const mainPathDist = "webapp/"
 
 const docs = [
-    "html/docs/home.html",
+    "html/docs/index.html",
     "html/docs/java/ayuda-java.html",
 ];
 
