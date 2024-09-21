@@ -57,6 +57,10 @@ function SetNavBar(links) {
     for (let i =0; i < links.length; i++) {
         const el = removeExtension(links[i]);
         if (i == links.length - 1) {
+            const tail = current.find(`[data-crumb="${el}"]`);
+            if (tail.length >0) {                
+                bootstrap.Collapse.getOrCreateInstance(tail[0]).show();
+            }
             current = current.find(`[data-end-crumb="${el}"]`);
             current.addClass("border");
             current.addClass("bg-primary-subtle");
