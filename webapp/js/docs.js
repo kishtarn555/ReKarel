@@ -6,7 +6,6 @@
  * @param {string} res 
  */
 function removeExtension(res) {
-    res = res.replace(/#/g, '');
     if (res.endsWith(".html")) {
         return res.slice(0, -5);
     }
@@ -43,12 +42,35 @@ function setBreadcrumbs(links) {
     });
 }
 
+/**
+ * 
+ * @param {string[]} links
+ */
+function SetNavBar(links) {
+    if (links.length === 0 || links[0]==="") {
+        $("#intro_nav").addClass("bg-primary-subtle");
+        $("#intro_nav").addClass("border");
+        $("#intro_nav").addClass("");
+        return;
+    }
+    let current = $("#nav_list");
+    links.forEach((el, _)=> {
+        el = removeExtension(el);
+        current = current.find(`[data-crumb="${el}"]`);
+        if (current.length===0) return;
+        current.addClass("border")
+        current.addClass("bg-primary-subtle")
+
+    })
+}
+
 function getPath() {
-    const url = window.location.href;
+    const url = window.location.href.replace(/#/g, '');;
     const parts = url.split('/');
     const docsIndex = parts.indexOf('docs');
     return parts.slice(docsIndex + 1);
 }
 setBreadcrumbs(getPath());
+SetNavBar(getPath());
 
 })();
