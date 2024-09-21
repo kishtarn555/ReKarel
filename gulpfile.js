@@ -10,6 +10,13 @@ const javaPath = "html/docs/java/ayuda-java.html"
 const rekarelDocsPath = "html/docs/rekarel/ayuda-rekarel.html"
 const mainPathDist = "webapp/"
 
+const docs = [
+    "html/docs/home.html",
+    "html/docs/java/ayuda-java.html",
+];
+
+const docsDist = "webapp/docs"
+
 gulp.task('bundle-html', ()=> {
     return gulp.src([mainPath])
     .pipe(
@@ -21,6 +28,17 @@ gulp.task('bundle-html', ()=> {
     
 })
 
+
+gulp.task('bundle-docs', ()=> {
+    return gulp.src(docs, { base: 'html/docs' })
+    .pipe(
+        fileInclude({
+            prefix: '@@',
+            basepath: '@file'
+        }))
+    .pipe(gulp.dest(docsDist))
+    
+})
 
 gulp.task('bundle-pascal', ()=> {
     return gulp.src([pascalPath])
@@ -149,5 +167,5 @@ gulp.task('copy-license', () => {
         .pipe(gulp.dest(`${paths.build}`));
 });
 
- gulp.task('default', gulp.series('bundle-html', 'bundle-pascal', 'bundle-java', 'bundle-rekarel'));
+ gulp.task('default', gulp.series('bundle-html', 'bundle-pascal', 'bundle-rekarel', 'bundle-docs'));
  gulp.task('build', gulp.series('clean', 'copy-html', 'copy-js', 'copy-img', 'copy-css','copy-license'));
