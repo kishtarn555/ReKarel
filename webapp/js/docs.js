@@ -54,21 +54,30 @@ function SetNavBar(links) {
         return;
     }
     let current = $("#nav_list");
-    links.forEach((el, _)=> {
-        el = removeExtension(el);
+    for (let i =0; i < links.length; i++) {
+        const el = removeExtension(links[i]);
+        if (i == links.length - 1) {
+            current = current.find(`[data-end-crumb="${el}"]`);
+            current.addClass("border");
+            current.addClass("bg-primary-subtle");
+            continue;
+        }
+        const head = current.find(`[data-end-crumb="${el}"]`)
         current = current.find(`[data-crumb="${el}"]`);
-        if (current.length===0) return;
-        current.addClass("border")
-        current.addClass("bg-primary-subtle")
-
-    })
+        if (current.length===0) 
+            return;
+        head.addClass("nav-active-head")
+        head.addClass("bg-body-tertiary")
+        head.addClass("border")
+        bootstrap.Collapse.getOrCreateInstance(current[0]).show();
+    }
 }
 
 function getPath() {
     const url = window.location.href.replace(/#/g, '');;
     const parts = url.split('/');
     const docsIndex = parts.indexOf('docs');
-    return parts.slice(docsIndex + 1);
+    return parts.slice(docsIndex + 1).filter(element => element !== "");
 }
 setBreadcrumbs(getPath());
 SetNavBar(getPath());
