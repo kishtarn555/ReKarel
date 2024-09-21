@@ -6,6 +6,7 @@
  * @param {string} res 
  */
 function removeExtension(res) {
+    res = res.replace(/#/g, '');
     if (res.endsWith(".html")) {
         return res.slice(0, -5);
     }
@@ -23,23 +24,25 @@ function capitalize(str) {
  * @param {string[]} links
  */
 function setBreadcrumbs(links) {
-    const breadcrumb = document.getElementById("breadcrumb");
-    if (breadcrumb == null) 
-        return;
-    let url = "webapp/docs/";
-    links.forEach((el, idx)=> {
+    const $breadcrumb = $("#breadcrumb");
+
+    let url = "/webapp/docs/";
+    links.forEach((el, idx) => {
         url += `${el}/`;
-        const li = document.createElement("li");
-        li.className="breadcrumb-item";
-        const a = document.createElement("a");
-        a.innerText = 
-            capitalize(removeExtension(el));
-        a.className = "link-body-emphasis text-decoration-none";
-        a.setAttribute("href", url);
-        li.appendChild(a);
-        breadcrumb.appendChild(li);
+        
+        // Create elements with jQuery
+        const $li = $("<li>").addClass("breadcrumb-item");
+        const $a = $("<a>")
+            .text(capitalize(removeExtension(el)))
+            .addClass("link-body-emphasis text-decoration-none")
+            .attr("href", url);
+        
+        // Append anchor to list item and list item to breadcrumb
+        $li.append($a);
+        $breadcrumb.append($li);
     });
 }
+
 function getPath() {
     const url = window.location.href;
     const parts = url.split('/');
