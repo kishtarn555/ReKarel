@@ -37,6 +37,11 @@ gulp.task('bundle-docs', ()=> {
     .pipe(gulp.dest(docsDist))
     
 })
+gulp.task('clean-docs', ()=> {
+    return gulp.src(docsDist, {allowEmpty: true})    
+        .pipe(clean());
+    
+})
 
 
 
@@ -131,5 +136,5 @@ gulp.task('copy-license', () => {
         .pipe(gulp.dest(`${paths.build}`));
 });
 
- gulp.task('default', gulp.series('bundle-html', 'bundle-docs'));
+ gulp.task('default', gulp.series('bundle-html', 'clean-docs', 'bundle-docs'));
  gulp.task('build', gulp.series('clean', 'copy-html', 'copy-js', 'copy-img', 'copy-css','copy-license'));
