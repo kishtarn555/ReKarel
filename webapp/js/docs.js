@@ -58,7 +58,7 @@ function SetNavBar(links) {
         const el = removeExtension(links[i]);
         if (i == links.length - 1) {
             const tail = current.find(`[data-crumb="${el}"]`);
-            if (tail.length >0) {                
+            if (tail.length >0 && tail.hasClass("collapse")) {                
                 bootstrap.Collapse.getOrCreateInstance(tail[0]).show();
             }
             current = current.find(`[data-end-crumb="${el}"]`);
@@ -73,7 +73,8 @@ function SetNavBar(links) {
         head.addClass("nav-active-head")
         head.addClass("bg-body-tertiary")
         head.addClass("border")
-        bootstrap.Collapse.getOrCreateInstance(current[0]).show();
+        if (current.hasClass("collapse"))
+            bootstrap.Collapse.getOrCreateInstance(current[0]).show();
     }
 }
 
