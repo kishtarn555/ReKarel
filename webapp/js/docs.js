@@ -89,4 +89,48 @@ function getPath() {
 setBreadcrumbs(getPath());
 SetNavBar(getPath());
 
+function setTheme(theme) {
+    $(document.body).attr("data-bs-theme", theme);
+    if (localStorage) {
+        localStorage.setItem("docs:theme", theme);
+    }
+    if (theme === "dark") {
+        $("#dayLightSet").prop("checked", true);
+        $("#dayLightIcon").removeClass("bi-brightness-high-fill");
+        $("#dayLightIcon").addClass("bi-moon-fill");
+    } else {        
+        $("#dayLightSet").prop("checked", false);
+        $("#dayLightIcon").addClass("bi-brightness-high-fill");
+        $("#dayLightIcon").removeClass("bi-moon-fill");
+    }
+}
+
+// Daylight
+$("#dayLightSet").on("change", ()=> {
+    if ($("#dayLightSet").prop("checked")) {
+        setTheme("dark");
+    } else {
+        setTheme("light");
+    }
+});
+
+if (localStorage) {
+    const theme = localStorage.getItem("docs:theme");
+    if (theme) {        
+        setTheme(theme); 
+    } else {
+        if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+            setTheme("dark"); 
+        } else {
+            setTheme("light");
+        }
+    }
+} else if (window.matchMedia) {
+    if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        setTheme("dark"); 
+    } else {
+        setTheme("light");
+    }
+}
+
 })();
