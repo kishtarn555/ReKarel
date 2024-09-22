@@ -1,0 +1,25 @@
+@@include("../header.html")
+<h1>Iterate</h1>
+<p>La sentencia <span class="text-info">iterate</span> permite a Karel repetir una instrucción o bloque múltiples veces.</p>
+
+<p>A continuación se muestra la estructura de la sentencia iterate. Lo que hace, es repetir una instrucción el número de veces indicado.</p>
+
+<div class="border p-2">
+    <span class="text-primary-emphasis">iterate</span> (<span class="text-warning-emphasis">NÚMERO</span>)
+        <br>
+    <pre style="display: inline;">    </pre><span class="text-info-emphasis">INSTRUCCION</span>
+</div>
+
+<p>Por ejemplo, un código que avance 14 veces se vería de la siguiente manera</p>
+
+<div class="border p-2">
+    <span class="text-primary-emphasis">iterate</span> (<span class="text-warning-emphasis">14</span>) 
+        <span class="text-danger-emphasis">{</span>
+        <br>
+        <pre style="display: inline;">    </pre><span class="text-info-emphasis">move</span>();
+        <br>
+        <span class="text-danger-emphasis">}</span>
+</div>
+
+<p>La sentencia iterate también acepta parámetros en vez de un número. Puedes leer más al respecto sobre los parámetros <a href="#" onclick="showNav('v-pills-parametros')" class="text-info">aquí</a></p>
+@@include("../footer.html")

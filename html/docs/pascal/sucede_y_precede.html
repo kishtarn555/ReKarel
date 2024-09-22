@@ -1,0 +1,87 @@
+@@include("../header.html")
+<h1>Sucede</h1>
+
+
+<p>El operador sucede recibe un valor numérico y calcula ese valor más uno.</p>
+
+<p>Por ejemplo, el siguiente código deja 5 zumbadores, porque 4 + 1 = 5</p>
+
+<div class="border p-2">
+    <span class="text-primary-emphasis">repetir</span> sucede(<span class="text-warning-emphasis">4</span>) <span
+        class="text-primary-emphasis">veces</span>
+        <br>
+        <span class="text-danger-emphasis">inicio</span>
+        <br>
+        <pre style="display: inline;">    </pre><span class="text-info-emphasis">deja-zumbador;</span>
+        <br>
+        <span class="text-danger-emphasis">fin;</span>
+</div>
+
+
+<p>También se puede cambiar con parámetros. Una cosa importante a notar, el operador <b>nunca</b> modifica el valor de un parámetro. </p>
+
+<p>Por ejemplo, el código de abajo produce la siguiente imagen:</p>
+
+<div class="text-center mb-3">
+    <img src="./img/help_sucede.png" alt="" class="img-thumbnail">
+</div>
+
+<div class="border p-2">
+    <span class="text-danger-emphasis">iniciar-programa</span><br>
+    <pre style="display: inline;">    </pre><span class="text-primary-emphasis">define-nueva-instruccion</span> deja(<span class="text-warning-emphasis">n</span>) <span class="text-primary-emphasis">como</span><br>
+    <pre style="display: inline;">    </pre><span class="text-danger-emphasis">inicio</span><br>
+    <pre style="display: inline;">        </pre><span class="text-primary-emphasis">repetir</span> <span class="text-warning-emphasis">n</span> <span class="text-primary-emphasis">veces</span><br>
+    <pre style="display: inline;">            </pre>deja-zumbador;<br>
+    <pre style="display: inline;">    </pre><span class="text-danger-emphasis">fin</span>;<br>
+    <br>
+    <pre style="display: inline;">    </pre><span class="text-primary-emphasis">define-nueva-instruccion</span> funcion(<span class="text-warning-emphasis">n</span>) <span class="text-primary-emphasis">como</span><br>
+    <pre style="display: inline;">    </pre><span class="text-danger-emphasis">inicio</span><br>
+    <pre style="display: inline;">        </pre>deja(<span class="text-warning-emphasis">n</span>);<br>
+    <pre style="display: inline;">        </pre>avanza;<br>
+    <pre style="display: inline;">        </pre>deja(sucede(<span class="text-warning-emphasis">n</span>));<br>
+    <pre style="display: inline;">        </pre>avanza;<br>
+    <pre style="display: inline;">        </pre>deja(<span class="text-warning-emphasis">n</span>);<br>
+    <pre style="display: inline;">    </pre><span class="text-danger-emphasis">fin</span>;<br>
+    <br>
+    <pre style="display: inline;">    </pre><span class="text-danger-emphasis">inicia-ejecucion</span><br>
+    <pre style="display: inline;">        </pre>funcion(<span class="text-warning-emphasis">5</span>);<br>
+    <pre style="display: inline;">        </pre>apagate;<br>
+    <pre style="display: inline;">    </pre><span class="text-danger-emphasis">termina-ejecucion</span><br>
+    <span class="text-danger-emphasis">finalizar-programa</span>
+</div>
+
+<h1>Precede</h1>
+
+<p>El operador precede recibe un valor numérico y calcula ese valor menos uno.</p>
+
+<p>Un ejemplo abajo:</p>
+
+
+<div class="text-center mb-3">
+    <img src="./img/help_precede.png" alt="" class="img-thumbnail">
+</div>
+
+<div class="border p-2">
+    <span class="text-danger-emphasis">iniciar-programa</span><br>
+    <pre style="display: inline;">    </pre><span class="text-primary-emphasis">define-nueva-instruccion</span> deja(<span class="text-warning-emphasis">n</span>) <span class="text-primary-emphasis">como</span><br>
+    <pre style="display: inline;">    </pre><span class="text-danger-emphasis">inicio</span><br>
+    <pre style="display: inline;">        </pre><span class="text-primary-emphasis">repetir</span> <span class="text-warning-emphasis">n</span> <span class="text-primary-emphasis">veces</span><br>
+    <pre style="display: inline;">            </pre>deja-zumbador;<br>
+    <pre style="display: inline;">    </pre><span class="text-danger-emphasis">fin</span>;<br>
+    <br>
+    <pre style="display: inline;">    </pre><span class="text-primary-emphasis">define-nueva-instruccion</span> funcion(<span class="text-warning-emphasis">n</span>) <span class="text-primary-emphasis">como</span><br>
+    <pre style="display: inline;">    </pre><span class="text-danger-emphasis">inicio</span><br>
+    <pre style="display: inline;">        </pre>deja(<span class="text-warning-emphasis">n</span>);<br>
+    <pre style="display: inline;">        </pre>avanza;<br>
+    <pre style="display: inline;">        </pre>deja(precede(precede(<span class="text-warning-emphasis">n</span>)));<br>
+    <pre style="display: inline;">        </pre>avanza;<br>
+    <pre style="display: inline;">        </pre>deja(precede(<span class="text-warning-emphasis">n</span>));<br>
+    <pre style="display: inline;">    </pre><span class="text-danger-emphasis">fin</span>;<br>
+    <br>
+    <pre style="display: inline;">    </pre><span class="text-danger-emphasis">inicia-ejecucion</span><br>
+    <pre style="display: inline;">        </pre>funcion(<span class="text-warning-emphasis">5</span>);<br>
+    <pre style="display: inline;">        </pre>apagate;<br>
+    <pre style="display: inline;">    </pre><span class="text-danger-emphasis">termina-ejecucion</span><br>
+    <span class="text-danger-emphasis">finalizar-programa</span>
+</div>
+@@include("../footer.html")

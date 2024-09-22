@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Documentación</title>
+    <link rel="shortcut icon" href="/webapp/img/karel-up.svg" type="image/x-icon">
+    <link rel="stylesheet" href="/webapp/css/docsStyle.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <!-- TODO: Move this into a stylesheet -->
+</head>
+
+<body data-bs-theme="light">
+    <div class="sticky-top shadow-sm bg-body-tertiary">
+        <nav class="navbar">
+            <div class="container-md">
+                <a class="navbar-brand" href="/webapp/docs">Documentación ReKarel</a>
+                <div class="d-inline ms-auto me-2 form-check form-switch">
+                    <label class="form-check-label" for="dayLightSet">
+                        <i class="bi bi-brightness-high-fill" id="dayLightIcon"></i>
+                        <span class="visually-hidden">Modo claro o oscuro</span>
+                    </label>
+                    <input class="form-check-input" type="checkbox" role="switch" id="dayLightSet" title="Intercambiar el modo oscuro y claro">
+                </div>
+                <button class="navbar-toggler" type="button" data-bs-toggle="offcanvas"
+                    data-bs-target="#offcanvasNavbar" aria-controls="offcanvasNavbar" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasNavbar"
+                    aria-labelledby="offcanvasNavbarLabel">
+                    <div class="offcanvas-header">
+                        <h5 class="offcanvas-title" id="offcanvasNavbarLabel">Navegación</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+                    </div>
+                    <div class="offcanvas-body ps-0 pe-0" id="nav_list">
+                        <ul class="navbar-nav justify-content-end flex-grow-1">
+                            <li class="nav-item" id="intro_nav">
+                                <a class="nav-link active ps-3 pe-3" aria-current="page"
+                                    href="/webapp/docs/">Introducción</a>
+                            </li>
+                            <!-- #region rekarel-->
+                            <li class="nav-item" data-end-crumb="rekarel">
+                                <a class="nav-link active ps-3 pe-3" aria-current="page"
+                                    href="/webapp/docs/rekarel/">ReKarel</a>
+                            </li>
+                            <li class="nav-item">
+                                <div class="collapse bg-secondary-subtle" data-crumb="rekarel">
+                                    <ul class="dropdown-menu d-block bg-secondary-subtle border-0 rounded-0">
+                                        <li data-end-crumb="atajos"><a class="dropdown-item ps-3 pe-3"
+                                                href="/webapp/docs/rekarel/atajos.html">Atajos de teclado</a></li>
+                                        <li>
+                                            <hr class="dropdown-divider">
+                                        </li>
+                                        <li data-end-crumb="migrar">
+                                            <a class="dropdown-item ps-3 pe-3"
+                                                href="/webapp/docs/rekarel/migrar.html">Migrar desde Karel.js</a>
+                                        </li>
+                                        <li data-end-crumb="comparativa">
+                                            <a class="dropdown-item ps-3 pe-3"
+                                                href="/webapp/docs/rekarel/comparativa.html">Comparativa con
+                                                Karel.js</a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </li>
+                            <!-- #endregion -->
+                            <!-- #region Java-->
+                            <li class="nav-item" data-end-crumb="java">
+                                <a class="nav-link active ps-3 pe-3" aria-current="page"
+                                    href="/webapp/docs/java/">Java</a>
+                            </li>
+                            <li class="nav-item">
+                                <div class="collapse bg-secondary-subtle" data-crumb="java">
+                                    <ul class="dropdown-menu d-block bg-secondary-subtle border-0 rounded-0">
+                                        <li data-end-crumb="instrucciones"><a class="dropdown-item ps-3 pe-3"
+                                                href="/webapp/docs/java/instrucciones.html">Instrucciones</a>
+                                        </li>
+                                        <li data-end-crumb="sentencia_if"><a class="dropdown-item ps-3 pe-3"
+                                                href="/webapp/docs/java/sentencia_if.html">Sentencia if</a>
+                                        </li>
+                                        <li data-end-crumb="condiciones"><a class="dropdown-item ps-3 pe-3"
+                                                href="/webapp/docs/java/condiciones.html">Condiciones</a>
+                                        </li>
+                                        <li data-end-crumb="operador_logico"><a class="dropdown-item ps-3 pe-3"
+                                                href="/webapp/docs/java/operador_logico.html">Operador lógico</a>
+                                        </li>
+                                        <li data-end-crumb="operador_comparativo"><a class="dropdown-item ps-3 pe-3"
+                                                href="/webapp/docs/java/operador_comparativo.html">Operador
+                                                comparativo</a>
+                                        </li>
+                                        <li data-end-crumb="sentencia_iterate"><a class="dropdown-item ps-3 pe-3"
+                                                href="/webapp/docs/java/sentencia_iterate.html">Sentencia iterate</a>
+                                        </li>
+                                        <li data-end-crumb="sentencia_while"><a class="dropdown-item ps-3 pe-3"
+                                                href="/webapp/docs/java/sentencia_while.html">Sentencia while</a>
+                                        </li>
+                                        <li data-end-crumb="funciones"><a class="dropdown-item ps-3 pe-3"
+                                                href="/webapp/docs/java/funciones.html">Funciones</a>
+                                        </li>
+                                        <li data-end-crumb="parametros"><a class="dropdown-item ps-3 pe-3"
+                                                href="/webapp/docs/java/parametros.html">Parámetros</a>
+                                        </li>
+                                        <li data-end-crumb="succ_y_pred"><a class="dropdown-item ps-3 pe-3"
+                                                href="/webapp/docs/java/succ_y_pred.html">Succ y pred</a>
+                                        </li>
+                                        <li data-end-crumb="globales"><a class="dropdown-item ps-3 pe-3"
+                                                href="/webapp/docs/java/globales.html">Globales</a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </li>
+                            <!-- #endregion -->
+                             <!-- #region Pascal-->
+                            <li class="nav-item" data-end-crumb="pascal">
+                                <a class="nav-link active ps-3 pe-3" aria-current="page"
+                                    href="/webapp/docs/pascal/">Pascal</a>
+                            </li>
+                            <li class="nav-item">
+                                <div class="collapse bg-secondary-subtle" data-crumb="pascal">
+                                    <ul class="dropdown-menu d-block bg-secondary-subtle border-0 rounded-0">
+                                        <li data-end-crumb="instrucciones"><a class="dropdown-item ps-3 pe-3"
+                                                href="/webapp/docs/pascal/instrucciones.html">Instrucciones</a>
+                                        </li>
+                                        <li data-end-crumb="sentencia_si"><a class="dropdown-item ps-3 pe-3"
+                                                href="/webapp/docs/pascal/sentencia_si.html">Sentencia si</a>
+                                        </li>
+                                        <li data-end-crumb="condiciones"><a class="dropdown-item ps-3 pe-3"
+                                                href="/webapp/docs/pascal/condiciones.html">Condiciones</a>
+                                        </li>
+                                        <li data-end-crumb="operador_logico"><a class="dropdown-item ps-3 pe-3"
+                                                href="/webapp/docs/pascal/operador_logico.html">Operador lógico</a>
+                                        </li>
+                                        <li data-end-crumb="operador_comparativo"><a class="dropdown-item ps-3 pe-3"
+                                                href="/webapp/docs/pascal/operador_comparativo.html">Operador
+                                                comparativo</a>
+                                        </li>
+                                        <li data-end-crumb="sentencia_repetir"><a class="dropdown-item ps-3 pe-3"
+                                                href="/webapp/docs/pascal/sentencia_repetir.html">Sentencia repetir</a>
+                                        </li>
+                                        <li data-end-crumb="sentencia_mientras"><a class="dropdown-item ps-3 pe-3"
+                                                href="/webapp/docs/pascal/sentencia_mientras.html">Sentencia mientras</a>
+                                        </li>
+                                        <li data-end-crumb="funciones"><a class="dropdown-item ps-3 pe-3"
+                                                href="/webapp/docs/pascal/funciones.html">Funciones</a>
+                                        </li>
+                                        <li data-end-crumb="parametros"><a class="dropdown-item ps-3 pe-3"
+                                                href="/webapp/docs/pascal/parametros.html">Parámetros</a>
+                                        </li>
+                                        <li data-end-crumb="sucede_y_precede"><a class="dropdown-item ps-3 pe-3"
+                                                href="/webapp/docs/pascal/sucede_y_precede.html">Sucede y precede</a>
+                                        </li>
+                                        <li data-end-crumb="globales"><a class="dropdown-item ps-3 pe-3"
+                                                href="/webapp/docs/pascal/globales.html">Globales</a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </li>
+                            <!-- #endregion -->
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </nav>
+        <nav aria-label="breadcrumb" class="bg-body-secondary">
+            <div class="container-md">
+                <ol class="breadcrumb breadcrumb-chevron p-2 pb-1 pt-1" id="breadcrumb">
+                    <li class="breadcrumb-item">
+                        <a href="/webapp/docs/" class="link-body-emphasis text-decoration-none"><i
+                                class="bi bi-house-door-fill"></i></a>
+                    </li>
+                </ol>
+            </div>
+        </nav>
+    </div>
+
+    <div class="container pt-4">
+<h1>Sucede</h1>
+
+
+<p>El operador sucede recibe un valor numérico y calcula ese valor más uno.</p>
+
+<p>Por ejemplo, el siguiente código deja 5 zumbadores, porque 4 + 1 = 5</p>
+
+<div class="border p-2">
+    <span class="text-primary-emphasis">repetir</span> sucede(<span class="text-warning-emphasis">4</span>) <span
+        class="text-primary-emphasis">veces</span>
+        <br>
+        <span class="text-danger-emphasis">inicio</span>
+        <br>
+        <pre style="display: inline;">    </pre><span class="text-info-emphasis">deja-zumbador;</span>
+        <br>
+        <span class="text-danger-emphasis">fin;</span>
+</div>
+
+
+<p>También se puede cambiar con parámetros. Una cosa importante a notar, el operador <b>nunca</b> modifica el valor de un parámetro. </p>
+
+<p>Por ejemplo, el código de abajo produce la siguiente imagen:</p>
+
+<div class="text-center mb-3">
+    <img src="./img/help_sucede.png" alt="" class="img-thumbnail">
+</div>
+
+<div class="border p-2">
+    <span class="text-danger-emphasis">iniciar-programa</span><br>
+    <pre style="display: inline;">    </pre><span class="text-primary-emphasis">define-nueva-instruccion</span> deja(<span class="text-warning-emphasis">n</span>) <span class="text-primary-emphasis">como</span><br>
+    <pre style="display: inline;">    </pre><span class="text-danger-emphasis">inicio</span><br>
+    <pre style="display: inline;">        </pre><span class="text-primary-emphasis">repetir</span> <span class="text-warning-emphasis">n</span> <span class="text-primary-emphasis">veces</span><br>
+    <pre style="display: inline;">            </pre>deja-zumbador;<br>
+    <pre style="display: inline;">    </pre><span class="text-danger-emphasis">fin</span>;<br>
+    <br>
+    <pre style="display: inline;">    </pre><span class="text-primary-emphasis">define-nueva-instruccion</span> funcion(<span class="text-warning-emphasis">n</span>) <span class="text-primary-emphasis">como</span><br>
+    <pre style="display: inline;">    </pre><span class="text-danger-emphasis">inicio</span><br>
+    <pre style="display: inline;">        </pre>deja(<span class="text-warning-emphasis">n</span>);<br>
+    <pre style="display: inline;">        </pre>avanza;<br>
+    <pre style="display: inline;">        </pre>deja(sucede(<span class="text-warning-emphasis">n</span>));<br>
+    <pre style="display: inline;">        </pre>avanza;<br>
+    <pre style="display: inline;">        </pre>deja(<span class="text-warning-emphasis">n</span>);<br>
+    <pre style="display: inline;">    </pre><span class="text-danger-emphasis">fin</span>;<br>
+    <br>
+    <pre style="display: inline;">    </pre><span class="text-danger-emphasis">inicia-ejecucion</span><br>
+    <pre style="display: inline;">        </pre>funcion(<span class="text-warning-emphasis">5</span>);<br>
+    <pre style="display: inline;">        </pre>apagate;<br>
+    <pre style="display: inline;">    </pre><span class="text-danger-emphasis">termina-ejecucion</span><br>
+    <span class="text-danger-emphasis">finalizar-programa</span>
+</div>
+
+<h1>Precede</h1>
+
+<p>El operador precede recibe un valor numérico y calcula ese valor menos uno.</p>
+
+<p>Un ejemplo abajo:</p>
+
+
+<div class="text-center mb-3">
+    <img src="./img/help_precede.png" alt="" class="img-thumbnail">
+</div>
+
+<div class="border p-2">
+    <span class="text-danger-emphasis">iniciar-programa</span><br>
+    <pre style="display: inline;">    </pre><span class="text-primary-emphasis">define-nueva-instruccion</span> deja(<span class="text-warning-emphasis">n</span>) <span class="text-primary-emphasis">como</span><br>
+    <pre style="display: inline;">    </pre><span class="text-danger-emphasis">inicio</span><br>
+    <pre style="display: inline;">        </pre><span class="text-primary-emphasis">repetir</span> <span class="text-warning-emphasis">n</span> <span class="text-primary-emphasis">veces</span><br>
+    <pre style="display: inline;">            </pre>deja-zumbador;<br>
+    <pre style="display: inline;">    </pre><span class="text-danger-emphasis">fin</span>;<br>
+    <br>
+    <pre style="display: inline;">    </pre><span class="text-primary-emphasis">define-nueva-instruccion</span> funcion(<span class="text-warning-emphasis">n</span>) <span class="text-primary-emphasis">como</span><br>
+    <pre style="display: inline;">    </pre><span class="text-danger-emphasis">inicio</span><br>
+    <pre style="display: inline;">        </pre>deja(<span class="text-warning-emphasis">n</span>);<br>
+    <pre style="display: inline;">        </pre>avanza;<br>
+    <pre style="display: inline;">        </pre>deja(precede(precede(<span class="text-warning-emphasis">n</span>)));<br>
+    <pre style="display: inline;">        </pre>avanza;<br>
+    <pre style="display: inline;">        </pre>deja(precede(<span class="text-warning-emphasis">n</span>));<br>
+    <pre style="display: inline;">    </pre><span class="text-danger-emphasis">fin</span>;<br>
+    <br>
+    <pre style="display: inline;">    </pre><span class="text-danger-emphasis">inicia-ejecucion</span><br>
+    <pre style="display: inline;">        </pre>funcion(<span class="text-warning-emphasis">5</span>);<br>
+    <pre style="display: inline;">        </pre>apagate;<br>
+    <pre style="display: inline;">    </pre><span class="text-danger-emphasis">termina-ejecucion</span><br>
+    <span class="text-danger-emphasis">finalizar-programa</span>
+</div>
+        </div>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+        <script src="/webapp/js/docs.js?v=1"></script>
+    </body>
+</html>

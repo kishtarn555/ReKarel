@@ -5,10 +5,16 @@ import insert  from 'gulp-insert'
 import clean  from 'gulp-clean'
 
 const mainPath = "html/index.html"
-const pascalPath = "html/docs/pascal/ayuda-pascal.html"
-const javaPath = "html/docs/java/ayuda-java.html"
-const rekarelDocsPath = "html/docs/rekarel/ayuda-rekarel.html"
 const mainPathDist = "webapp/"
+
+const docs = [
+    "html/docs/index.html",
+    "html/docs/java/*.html",
+    "html/docs/pascal/*.html",
+    "html/docs/rekarel/*.html",
+];
+
+const docsDist = "webapp/docs"
 
 gulp.task('bundle-html', ()=> {
     return gulp.src([mainPath])
@@ -22,40 +28,22 @@ gulp.task('bundle-html', ()=> {
 })
 
 
-gulp.task('bundle-pascal', ()=> {
-    return gulp.src([pascalPath])
+gulp.task('bundle-docs', ()=> {
+    return gulp.src(docs, { base: 'html/docs' })
     .pipe(
         fileInclude({
             prefix: '@@',
             basepath: '@file'
         }))
-    .pipe(gulp.dest(mainPathDist))
+    .pipe(gulp.dest(docsDist))
+    
+})
+gulp.task('clean-docs', ()=> {
+    return gulp.src(docsDist, {allowEmpty: true})    
+        .pipe(clean());
     
 })
 
-
-gulp.task('bundle-java', ()=> {
-    return gulp.src([javaPath])
-    .pipe(
-        fileInclude({
-            prefix: '@@',
-            basepath: '@file'
-        }))
-    .pipe(gulp.dest(mainPathDist))
-    
-})
-
-
-gulp.task('bundle-rekarel', ()=> {
-    return gulp.src([rekarelDocsPath])
-    .pipe(
-        fileInclude({
-            prefix: '@@',
-            basepath: '@file'
-        }))
-    .pipe(gulp.dest(mainPathDist))
-    
-})
 
 
 gulp.task('process-jison-java', ()=> {
@@ -149,5 +137,5 @@ gulp.task('copy-license', () => {
         .pipe(gulp.dest(`${paths.build}`));
 });
 
- gulp.task('default', gulp.series('bundle-html', 'bundle-pascal', 'bundle-java', 'bundle-rekarel'));
+ gulp.task('default', gulp.series('bundle-html', 'clean-docs', 'bundle-docs'));
  gulp.task('build', gulp.series('clean', 'copy-html', 'copy-js', 'copy-img', 'copy-css','copy-license'));
