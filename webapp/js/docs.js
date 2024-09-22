@@ -13,10 +13,12 @@ function removeExtension(res) {
 }
 
 
-function capitalize(str) {
+function beautify(str) {
     if (str === "rekarel") return "ReKarel";
     if (str.length === 0) return str;
-    return str.charAt(0).toUpperCase() + str.slice(1);
+    str = str.replace("_", " ");
+    str = str.charAt(0).toUpperCase() + str.slice(1);
+    return str;
 }
 /**
  * 
@@ -32,7 +34,7 @@ function setBreadcrumbs(links) {
         // Create elements with jQuery
         const $li = $("<li>").addClass("breadcrumb-item");
         const $a = $("<a>")
-            .text(capitalize(removeExtension(el)))
+            .text(beautify(removeExtension(el)))
             .addClass("link-body-emphasis text-decoration-none")
             .attr("href", url);
         
