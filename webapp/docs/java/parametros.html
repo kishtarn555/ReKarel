@@ -1,0 +1,83 @@
+<h2>Parámetros</h2>
+<p>Un parámetro es una variable numérica que una función puede recibir.</p>
+
+<p>Para permitir que una función reciba un parámetro, después de su nombre escribimos el parámetro entre paréntesis el nombre del parámetro</p>
+
+<div class="border ms-2 p-2 mb-4">
+    <span class="text-primary-emphasis">define</span> <span>NOMBRE (<span class="text-warning-emphasis">parametro</span>)</span>
+    <span class="text-danger-emphasis"> {</span>
+        <br>
+        <pre style="display: inline;">    </pre><span class="text-info-emphasis">INSTRUCCION</span><br>
+    <span class="text-danger-emphasis">}</span>
+</div>
+
+<p>Ahora podemos llamar a la función y pasar un valor numérico a la llamada, para eso, escribimos el valor al momento de hacer una llamada entre paréntesis, por ejemplo:</p>
+
+
+
+<div class="border ms-2 p-2 mb-4">
+    <span class="text-primary-emphasis">define</span> <span>gira (<span class="text-warning-emphasis">n</span>)</span>
+    <span class="text-danger-emphasis"> {</span>
+    <br>
+        <pre style="display: inline;">    </pre><span class="text-primary-emphasis">iterate</span> (<span class="text-warning-emphasis">n</span>) <span
+        class="text-danger-emphasis">{</span>
+        <br>
+        <pre style="display: inline;">        </pre><span class="text-info-emphasis">turnleft</span>();
+        <br>
+        <pre style="display: inline;">    </pre><span class="text-danger-emphasis">}</span>    
+    <br>
+    <span class="text-danger-emphasis">}</span>
+    <br>
+    <br>    
+    <span class="text-danger-emphasis">program</span>()<span class="text-danger-emphasis"> {</span>  <br>
+    <pre style="display: inline;">    </pre><span class="text-success-emphasis">{ Llama a la funcion gira, y pasa el valor de 3. }</span> <br>
+    <pre style="display: inline;">    </pre>gira(<span class="text-warning-emphasis">3</span>);    <br>
+    <pre style="display: inline;">    </pre><span class="text-info-emphasis">turnoff</span>();   <br>
+    <span class="text-danger-emphasis">}</span>
+</div>
+
+<h3>Ejemplo</h3>
+
+<p>Un código que toma todos los zumbadores de la imagen puede ser el siguiente:</p>
+
+<div class="text-center mb-3">
+<img src="./img/help_maze.png" alt="" class="img-thumbnail">
+</div>
+
+
+<div class="border ms-2 p-2 mb-4">
+    <span class="text-primary-emphasis">define</span> <span>gira (<span class="text-warning-emphasis">n</span>)</span>
+    <span class="text-danger-emphasis"> {</span>
+    <br>
+        <pre style="display: inline;">    </pre><span class="text-primary-emphasis">iterate</span> (<span class="text-warning-emphasis">n</span>)
+        <br>
+        <pre style="display: inline;">        </pre><span class="text-info-emphasis">turnleft</span>();
+    <br>
+    <span class="text-danger-emphasis">}</span>
+    <br>
+    <br>    
+    <span class="text-primary-emphasis">define</span> <span>daPasos (<span class="text-warning-emphasis">n</span>)</span>
+    <span class="text-danger-emphasis"> {</span>
+    <br>
+        <pre style="display: inline;">    </pre><span class="text-primary-emphasis">iterate</span> (<span class="text-warning-emphasis">n</span>)
+        <br>
+        <pre style="display: inline;">        </pre><span class="text-info-emphasis">move</span>();
+    <br>
+    <span class="text-danger-emphasis">}</span>
+    <br>
+    <br>
+    <span class="text-danger-emphasis">program ()</span> <span class="text-danger-emphasis"> {</span> <br>
+    <pre style="display: inline;">    </pre>daPasos(<span class="text-warning-emphasis">2</span>);    <br>
+    <pre style="display: inline;">    </pre>pickbeeper(); <br>
+    <pre style="display: inline;">    </pre>gira(<span class="text-warning-emphasis">3</span>); <br>
+    <pre style="display: inline;">    </pre>daPasos(<span class="text-warning-emphasis">2</span>); <br>
+    <pre style="display: inline;">    </pre>gira(<span class="text-warning-emphasis">1</span>); <br>
+    <pre style="display: inline;">    </pre>daPasos(<span class="text-warning-emphasis">1</span>); <br>
+    <pre style="display: inline;">    </pre>pickbeeper(); <br>
+    <pre style="display: inline;">    </pre>gira(<span class="text-warning-emphasis">2</span>); <br>
+    <pre style="display: inline;">    </pre>daPasos(<span class="text-warning-emphasis">3</span>); <br>
+    <pre style="display: inline;">    </pre>pickbeeper(); <br>
+    <span class="text-danger-emphasis">}</span>
+</div>
+
+

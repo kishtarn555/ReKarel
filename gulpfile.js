@@ -9,7 +9,7 @@ const mainPathDist = "webapp/"
 
 const docs = [
     "html/docs/index.html",
-    "html/docs/java/index.html",
+    "html/docs/java/*.html",
     "html/docs/rekarel/*.html",
 ];
 
