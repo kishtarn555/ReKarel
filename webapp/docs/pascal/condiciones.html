@@ -177,29 +177,105 @@
     </div>
 
     <div class="container pt-4">
-<h1>Iterate</h1>
-<p>La sentencia <span class="text-info">iterate</span> permite a Karel repetir una instrucción o bloque múltiples veces.</p>
-
-<p>A continuación se muestra la estructura de la sentencia iterate. Lo que hace, es repetir una instrucción el número de veces indicado.</p>
-
-<div class="border p-2">
-    <span class="text-primary-emphasis">iterate</span> (<span class="text-warning-emphasis">NÚMERO</span>)
-        <br>
-    <pre style="display: inline;">    </pre><span class="text-info-emphasis">INSTRUCCION</span>
+<h1>Condiciones que Karel puede revisar</h1>
+<p>Aquí hay una lista de las condiciones que Karel puede revisar</p>
+<table class="table table-dark table-striped">
+    <tr>
+        <th>Condicion</th>
+        <th>Descripción</th>
+    </tr>
+    <tr>
+        <td>frente-libre</td>
+        <td>Verdadero si no hay pared enfrente de Karel</td>
+    </tr>
+    <tr>
+        <td>izquierda-libre</td>
+        <td>Verdadero si no hay pared a la izquierda de Karel</td>
+    </tr>
+    <tr>
+        <td>derecha-libre</td>
+        <td>Verdadero si no hay pared a la derecha de Karel</td>
+    </tr>
+    <tr>
+        <td>frente-bloqueado</td>
+        <td>Verdadero si sí hay pared enfrente de Karel</td>
+    </tr>
+    <tr>
+        <td>izquierda-bloqueada</td>
+        <td>Verdadero si sí hay pared a la izquierda de Karel</td>
+    </tr>
+    <tr>
+        <td>derecha-bloqueada</td>
+        <td>Verdadero si sí hay pared a la derecha de Karel</td>
+    </tr>
+    <tr>
+        <td>junto-a-zumbador</td>
+        <td>Verdadero si en la casilla donde Karel está al menos un zumbador</td>
+    </tr>
+    <tr>
+        <td>no-junto-a-zumbador</td>
+        <td>Verdadero si en la casilla donde Karel no hay ningún zumbador</td>
+    </tr>
+    <tr>
+        <td>orientado-al-norte</td>
+        <td>Verdadero si Karel esta orientado al norte (arriba).</td>
+    </tr>
+    <tr>
+        <td>orientado-al-este</td>
+        <td>Verdadero si Karel esta orientado al este (derecha).</td>
+    </tr>
+    <tr>
+        <td>orientado-al-sur</td>
+        <td>Verdadero si Karel esta orientado al sur (abajo).</td>
+    </tr>
+    <tr>
+        <td>orientado-al-oeste</td>
+        <td>Verdadero si Karel esta orientado al oeste (izquierda).</td>
+    </tr>
+    <tr>
+        <td>no-orientado-al-norte</td>
+        <td>Verdadero si Karel esta orientado en cualquier dirección <b>excepto</b> el norte.</td>
+    </tr>
+    <tr>
+        <td>no-orientado-al-este</td>
+        <td>Verdadero si Karel esta orientado en cualquier dirección <b>excepto</b> el este.</td>
+    </tr>
+    <tr>
+        <td>no-orientado-al-sur</td>
+        <td>Verdadero si Karel esta orientado en cualquier dirección <b>excepto</b> el sur.</td>
+    </tr>
+    <tr>
+        <td>no-orientado-al-oeste</td>
+        <td>Verdadero si Karel esta orientado en cualquier dirección <b>excepto</b> el oeste.</td>
+    </tr>
+</table>
+<h2>Si es cero</h2>
+<p>Otra condicion que podemos revisar es: <b>si-es-cero</b>, esta recibe un parametro. La condicipon
+    se verdadera cuando el valor que recibe es cero.</p>
+<h5>Ejemplo 1</h5>
+<div class="border ms-2 p-2 mb-4">
+    <span class="text-primary-emphasis">si</span> <span class="text-warning-emphasis">si-es-cero(0)</span> <span
+        class="text-primary-emphasis">entonces</span>
+    <br>
+    <pre style="display: inline;">    </pre><span class="text-info-emphasis">avanza;</span>
 </div>
-
-<p>Por ejemplo, un código que avance 14 veces se vería de la siguiente manera</p>
-
-<div class="border p-2">
-    <span class="text-primary-emphasis">iterate</span> (<span class="text-warning-emphasis">14</span>) 
-        <span class="text-danger-emphasis">{</span>
-        <br>
-        <pre style="display: inline;">    </pre><span class="text-info-emphasis">move</span>();
-        <br>
-        <span class="text-danger-emphasis">}</span>
+<h5>Ejemplo 2</h5>
+<p>Una funcion que solo avanza si recibe 0 de argumento</p>
+<div class="border ms-2 p-2 mb-4">
+    <span class="text-primary-emphasis">define-nueva-instruccion</span> <span>funcion (n)</span>
+    <span class="text-primary-emphasis">como</span>
+    <br>
+    <span class="text-danger-emphasis">inicio</span>
+    <br>
+    <pre style="display: inline;">    </pre>
+    <span class="text-primary-emphasis">si</span>
+    <span class="text-warning-emphasis">si-es-cero(<span class="text-info">n</span>)</span>
+    <span class="text-primary-emphasis">entonces</span>
+    <br>
+    <pre style="display: inline;">        </pre><span class="text-info-emphasis">avanza;</span>
+    <br>
+    <span class="text-danger-emphasis">fin;</span>
 </div>
-
-<p>La sentencia iterate también acepta parámetros en vez de un número. Puedes leer más al respecto sobre los parámetros <a href="#" onclick="showNav('v-pills-parametros')" class="text-info">aquí</a></p>
         </div>
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>

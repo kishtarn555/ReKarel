@@ -177,29 +177,91 @@
     </div>
 
     <div class="container pt-4">
-<h1>Iterate</h1>
-<p>La sentencia <span class="text-info">iterate</span> permite a Karel repetir una instrucción o bloque múltiples veces.</p>
+<h1>Sucede</h1>
 
-<p>A continuación se muestra la estructura de la sentencia iterate. Lo que hace, es repetir una instrucción el número de veces indicado.</p>
 
-<div class="border p-2">
-    <span class="text-primary-emphasis">iterate</span> (<span class="text-warning-emphasis">NÚMERO</span>)
-        <br>
-    <pre style="display: inline;">    </pre><span class="text-info-emphasis">INSTRUCCION</span>
-</div>
+<p>El operador sucede recibe un valor numérico y calcula ese valor más uno.</p>
 
-<p>Por ejemplo, un código que avance 14 veces se vería de la siguiente manera</p>
+<p>Por ejemplo, el siguiente código deja 5 zumbadores, porque 4 + 1 = 5</p>
 
 <div class="border p-2">
-    <span class="text-primary-emphasis">iterate</span> (<span class="text-warning-emphasis">14</span>) 
-        <span class="text-danger-emphasis">{</span>
+    <span class="text-primary-emphasis">repetir</span> sucede(<span class="text-warning-emphasis">4</span>) <span
+        class="text-primary-emphasis">veces</span>
         <br>
-        <pre style="display: inline;">    </pre><span class="text-info-emphasis">move</span>();
+        <span class="text-danger-emphasis">inicio</span>
         <br>
-        <span class="text-danger-emphasis">}</span>
+        <pre style="display: inline;">    </pre><span class="text-info-emphasis">deja-zumbador;</span>
+        <br>
+        <span class="text-danger-emphasis">fin;</span>
 </div>
 
-<p>La sentencia iterate también acepta parámetros en vez de un número. Puedes leer más al respecto sobre los parámetros <a href="#" onclick="showNav('v-pills-parametros')" class="text-info">aquí</a></p>
+
+<p>También se puede cambiar con parámetros. Una cosa importante a notar, el operador <b>nunca</b> modifica el valor de un parámetro. </p>
+
+<p>Por ejemplo, el código de abajo produce la siguiente imagen:</p>
+
+<div class="text-center mb-3">
+    <img src="./img/help_sucede.png" alt="" class="img-thumbnail">
+</div>
+
+<div class="border p-2">
+    <span class="text-danger-emphasis">iniciar-programa</span><br>
+    <pre style="display: inline;">    </pre><span class="text-primary-emphasis">define-nueva-instruccion</span> deja(<span class="text-warning-emphasis">n</span>) <span class="text-primary-emphasis">como</span><br>
+    <pre style="display: inline;">    </pre><span class="text-danger-emphasis">inicio</span><br>
+    <pre style="display: inline;">        </pre><span class="text-primary-emphasis">repetir</span> <span class="text-warning-emphasis">n</span> <span class="text-primary-emphasis">veces</span><br>
+    <pre style="display: inline;">            </pre>deja-zumbador;<br>
+    <pre style="display: inline;">    </pre><span class="text-danger-emphasis">fin</span>;<br>
+    <br>
+    <pre style="display: inline;">    </pre><span class="text-primary-emphasis">define-nueva-instruccion</span> funcion(<span class="text-warning-emphasis">n</span>) <span class="text-primary-emphasis">como</span><br>
+    <pre style="display: inline;">    </pre><span class="text-danger-emphasis">inicio</span><br>
+    <pre style="display: inline;">        </pre>deja(<span class="text-warning-emphasis">n</span>);<br>
+    <pre style="display: inline;">        </pre>avanza;<br>
+    <pre style="display: inline;">        </pre>deja(sucede(<span class="text-warning-emphasis">n</span>));<br>
+    <pre style="display: inline;">        </pre>avanza;<br>
+    <pre style="display: inline;">        </pre>deja(<span class="text-warning-emphasis">n</span>);<br>
+    <pre style="display: inline;">    </pre><span class="text-danger-emphasis">fin</span>;<br>
+    <br>
+    <pre style="display: inline;">    </pre><span class="text-danger-emphasis">inicia-ejecucion</span><br>
+    <pre style="display: inline;">        </pre>funcion(<span class="text-warning-emphasis">5</span>);<br>
+    <pre style="display: inline;">        </pre>apagate;<br>
+    <pre style="display: inline;">    </pre><span class="text-danger-emphasis">termina-ejecucion</span><br>
+    <span class="text-danger-emphasis">finalizar-programa</span>
+</div>
+
+<h1>Precede</h1>
+
+<p>El operador precede recibe un valor numérico y calcula ese valor menos uno.</p>
+
+<p>Un ejemplo abajo:</p>
+
+
+<div class="text-center mb-3">
+    <img src="./img/help_precede.png" alt="" class="img-thumbnail">
+</div>
+
+<div class="border p-2">
+    <span class="text-danger-emphasis">iniciar-programa</span><br>
+    <pre style="display: inline;">    </pre><span class="text-primary-emphasis">define-nueva-instruccion</span> deja(<span class="text-warning-emphasis">n</span>) <span class="text-primary-emphasis">como</span><br>
+    <pre style="display: inline;">    </pre><span class="text-danger-emphasis">inicio</span><br>
+    <pre style="display: inline;">        </pre><span class="text-primary-emphasis">repetir</span> <span class="text-warning-emphasis">n</span> <span class="text-primary-emphasis">veces</span><br>
+    <pre style="display: inline;">            </pre>deja-zumbador;<br>
+    <pre style="display: inline;">    </pre><span class="text-danger-emphasis">fin</span>;<br>
+    <br>
+    <pre style="display: inline;">    </pre><span class="text-primary-emphasis">define-nueva-instruccion</span> funcion(<span class="text-warning-emphasis">n</span>) <span class="text-primary-emphasis">como</span><br>
+    <pre style="display: inline;">    </pre><span class="text-danger-emphasis">inicio</span><br>
+    <pre style="display: inline;">        </pre>deja(<span class="text-warning-emphasis">n</span>);<br>
+    <pre style="display: inline;">        </pre>avanza;<br>
+    <pre style="display: inline;">        </pre>deja(precede(precede(<span class="text-warning-emphasis">n</span>)));<br>
+    <pre style="display: inline;">        </pre>avanza;<br>
+    <pre style="display: inline;">        </pre>deja(precede(<span class="text-warning-emphasis">n</span>));<br>
+    <pre style="display: inline;">    </pre><span class="text-danger-emphasis">fin</span>;<br>
+    <br>
+    <pre style="display: inline;">    </pre><span class="text-danger-emphasis">inicia-ejecucion</span><br>
+    <pre style="display: inline;">        </pre>funcion(<span class="text-warning-emphasis">5</span>);<br>
+    <pre style="display: inline;">        </pre>apagate;<br>
+    <pre style="display: inline;">    </pre><span class="text-danger-emphasis">termina-ejecucion</span><br>
+    <span class="text-danger-emphasis">finalizar-programa</span>
+</div>
         </div>
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
