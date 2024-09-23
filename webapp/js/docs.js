@@ -133,4 +133,35 @@ if (localStorage) {
     }
 }
 
+
+function buildTableOfContents() {
+    const table = $("#toc");
+    const anchors = $("[data-toc]");
+    const uls = [table]
+    anchors.each(function() {
+        const target = $(this);
+        if (target.attr("data-toc-depth") > uls.length) {
+            //Generate a nested ul
+            const li_ul = $("<li>");
+            const ul = $("<ul>");
+            li_ul.append(ul);
+            uls[uls.length - 1].append(li_ul);
+            uls.push(ul);
+        }
+        while (target.attr("data-toc-depth") < uls.length) {
+            uls.pop();
+        }
+        const li = $("<li>");
+
+        const a = $("<a>")
+            .attr("href", "#"+target.attr("id"))
+            .text(target.attr("data-toc"));
+        li.append(a);
+        uls[uls.length - 1].append(li)
+    })
+}
+
+buildTableOfContents();
+
+
 })();
