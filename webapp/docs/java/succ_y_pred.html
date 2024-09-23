@@ -279,14 +279,20 @@
 <h1>Segundo parámetro</h1>
 
 <span class="badge text-bg-info rounded-pill">Desde ReKarel 2.0.0</span>
-<p>Ambos, sucede y precede pueden recibir un segundo parámetro para especificar cuanto tienen que sumar o restar. Este segundo parámetro debe ser un número, no puede ser una variable, parámetro, etc.</p>
+<p>Ambos, sucede y precede pueden recibir un segundo parámetro para especificar cuanto tienen que sumar o restar.</p>
 
-<p>Veamos dos ejemplos</p>
+<p>Veamos dos ejemplos válidos:</p>
 <ul>
-    <li>succ(<span class="text-warning-emphasis">n</span>,<span class="text-warning-emphasis">3</span>) Calcula n + 3</li>
-    <li>pred(<span class="text-warning-emphasis">4</span>,<span class="text-warning-emphasis">8</span>) Calcula 4 - 8</li>
+    <li>succ(<span class="text-warning-emphasis">n</span>, <span class="text-warning-emphasis">3</span>) Calcula n + 3</li>
+    <li>pred(<span class="text-warning-emphasis">4</span>, <span class="text-warning-emphasis">8</span>) Calcula 4 - 8</li>
 </ul>
 
+<p>Este segundo parámetro debe ser un número, no puede ser una variable, parámetro, etc. Por lo tanto, los siguientes ejemplos no són validos:</p>
+<ul></ul>
+    <li>succ(<span class="text-warning-emphasis">n</span>, <span class="text-warning-emphasis">n</span>) <i class="bi bi-x text-danger h5"></i></li>
+    <li>pred(<span class="text-warning-emphasis">4</span>, <span class="text-warning-emphasis">floorBeepers</span>) <i class="bi bi-x text-danger h5"></i></li>
+    <li>pred(<span class="text-warning-emphasis">4</span>, succ(<span class="text-warning-emphasis">3</span>)) <i class="bi bi-x text-danger h5"></i></li>
+</ul>
 
 
 
