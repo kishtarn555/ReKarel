@@ -18,3 +18,8 @@
 .toc-container {
     top: 8rem
 }
+
+[data-toc] {
+    top: -7rem;
+    position:absolute;
+}
