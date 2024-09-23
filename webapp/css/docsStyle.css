@@ -16,8 +16,29 @@
 }
 
 .toc-container {
-    top: 8rem
+    top: 8rem;    
+    max-height: calc(100vh - 9rem);
+    overflow-y: auto;
 }
+
+.toc-container ul {
+    list-style: none
+}
+
+.toc-container a {
+    text-decoration: none;
+    color: var(--bs-body-color)
+}
+
+.toc-container a {
+    text-decoration: none;
+    color: var(--bs-body-color)
+}
+.toc-container a:hover {
+    text-decoration: underline;
+    color: var(--bs-body-color)
+}
+
 
 [data-toc] {
     top: -7rem;
