@@ -81,7 +81,7 @@ function SetNavBar(links) {
 }
 
 function getPath() {
-    const url = window.location.href.replace(/#/g, '');;
+    const url = window.location.href.replace(/#.*/g, '');;
     const parts = url.split('/');
     const docsIndex = parts.indexOf('docs');
     return parts.slice(docsIndex + 1).filter(element => element !== "");
