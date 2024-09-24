@@ -16,7 +16,7 @@ function removeExtension(res) {
 function beautify(str) {
     if (str === "rekarel") return "ReKarel";
     if (str.length === 0) return str;
-    str = str.replace("_", " ");
+    str = str.replace(/_/g, " ");
     str = str.charAt(0).toUpperCase() + str.slice(1);
     return str;
 }
