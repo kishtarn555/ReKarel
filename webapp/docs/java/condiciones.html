@@ -91,6 +91,9 @@
                                                 href="/webapp/docs/java/operador_comparativo.html">Operador
                                                 comparativo</a>
                                         </li>
+                                        <li data-end-crumb="jerarquia"><a class="dropdown-item ps-3 pe-3"
+                                                href="/webapp/docs/java/jerarquia.html">Jerarquía de operaciones</a>
+                                        </li>
                                         <li data-end-crumb="sentencia_iterate"><a class="dropdown-item ps-3 pe-3"
                                                 href="/webapp/docs/java/sentencia_iterate.html">Sentencia iterate</a>
                                         </li>
@@ -137,6 +140,9 @@
                                                 href="/webapp/docs/pascal/operador_comparativo.html">Operador
                                                 comparativo</a>
                                         </li>
+                                        <li data-end-crumb="jerarquia"><a class="dropdown-item ps-3 pe-3"
+                                                href="/webapp/docs/pascal/jerarquia.html">Jerarquía de operaciones</a>
+                                        </li>
                                         <li data-end-crumb="sentencia_repetir"><a class="dropdown-item ps-3 pe-3"
                                                 href="/webapp/docs/pascal/sentencia_repetir.html">Sentencia repetir</a>
                                         </li>
@@ -176,9 +182,9 @@
         </nav>
     </div>
 
-    <div class="container-xxl pt-4">
+    <div class="container-xl pt-4">
         <div class="row">
-            <div class="col-12 col-lg-4 col-xl-3 ">
+            <div class="col-12 col-lg-2 ">
                 <div class="position-sticky bottom-0 toc-container">
                     <span class="h4">Contenido</span>
                     <nav>
@@ -186,7 +192,11 @@
                     </nav>
                 </div>
             </div>
-            <div class="col-12 col-lg-8 col-xl-9">
+            <div class="col-12 col-lg-9 col-xl-10">
+
+<div class="position-relative visually-hidden">
+    <a href="#" tabindex="-1" class="visually-hidden" id="condiciones" data-toc="Condiciones" data-toc-depth="1"></a>
+</div>
 <h1>Condiciones que Karel puede revisar</h1>
 <p>Aquí hay una lista de las condiciones que Karel puede revisar</p>
 <table class="table table-dark table-striped">
@@ -259,17 +269,27 @@
         <td>Verdadero si Karel esta orientado en cualquier dirección <b>excepto</b> el oeste.</td>
     </tr>
 </table>
+
+<div class="position-relative visually-hidden">
+    <a href="#" tabindex="-1" class="visually-hidden" id="es_cero" data-toc="Si es cero (iszero)" data-toc-depth="1"></a>
+</div>
+
 <h2>Si es cero (iszero)</h2>
-<p>Otra condicion que podemos revisar es: <b>iszero</b>, esta recibe un parametro. La condicipon
+
+<div class="alert alert-warning"><b>Nota:</b> Esta condición se mantiene para maximizar la retro compatibilidad y es considerada <b>obsoleta</b>, pues se recomienda usar <a href="operador_comparativo.html">comparadores</a>.</div>
+<p>Otra condición que podemos revisar es: <b>iszero</b>, esta recibe un parámetro. La condición
     se verdadera cuando el valor que recibe es cero.</p>
+
 <h5>Ejemplo 1</h5>
+<p>La condición de abajo se determinará como cierta, y Karel avanzará un paso.</p>
 <div class="border ms-2 p-2 mb-4">
     <span class="text-primary-emphasis">if</span> (<span class="text-warning-emphasis">iszero</span>(<span class="text-info-emphasis">0</span>)) 
     <br>
     <pre style="display: inline;">    </pre><span class="text-info-emphasis">move</span>();
 </div>
+
 <h5>Ejemplo 2</h5>
-<p>Una funcion que solo avanza si recibe 0 de argumento</p>
+<p>Una función que solo avanza si recibe 0 de argumento</p>
 <div class="border ms-2 p-2 mb-4">
     <span class="text-primary-emphasis">define</span> <span>funcion (n)</span> <span class="text-danger-emphasis">{</span>
     <br>
@@ -277,18 +297,42 @@
     <span class="text-primary-emphasis">if</span>
     (<span class="text-warning-emphasis">iszero(<span class="text-info">n</span>)</span>)
     <br>
-    <pre style="display: inline;">        </pre><span class="text-info-emphasis">avanza;</span>
+    <pre style="display: inline;">        </pre><span class="text-info-emphasis">move</span>();
     <br>
     <span class="text-danger-emphasis">}</span>
 </div>
-                </div>
-            </div>
-            <hr>
-            <div class="row mb-4">
-                <div class="col text-center"><a href="/webapp/" class="h5">Ir al IDE</a></div>
-                <div class="col text-center"><a href="https://github.com/kishtarn555/ReKarel" class="h5"><i class="bi bi-github"></i>Repositorio</a></div>
-            </div>
 
+<div class="position-relative visually-hidden">
+    <a href="#" tabindex="-1" class="visually-hidden" id="otras" data-toc="Otras condiciones" data-toc-depth="1"></a>
+</div>
+<h2>Otras condiciones</h2>
+<span class="badge text-bg-info rounded-pill" title="Esta funcionalidad esta disponible desde ReKarel Java 2.0.0">
+    Desde ReKarel 2.0.0
+</span>
+<p>También hay otras condiciones que Karel puede comprobar, cada una tiene las cuales son descritas brevemente a continuación.</p>
+
+<h3>Globales</h3>
+<span class="badge text-bg-secondary rounded-pill" title="Requiere importar rekarel.globals">
+    import rekarel.globals
+</span>
+<p>Si importas rekarel.globals, puedes usar las condiciones <span class="text-info-emphasis">true</span> y <span class="text-info-emphasis">false</span>, la primera siempre es verdadera y la segunda siempre falsa.</p>
+
+<p>Lee más acerca de las globales <a href="globales.html">aquí</a>.</p>
+
+<h3>Comparaciones</h3>
+<p>Puedes utilizar la comparación "igual que" <span class="text-bg-secondary rounded">==</span>, "menor que" <span class="text-bg-secondary rounded">&lt;</span> o "menor igual que" <span class="text-bg-secondary rounded">&lt;=</span></p>
+
+
+<p>Lee más acerca de las comparaciones <a href="operador_comparativo.html">aquí</a>.</p>
+
+                
+                    <hr class="mt-4 mb-2">
+                    <div class="row mb-4">
+                        <div class="col text-center"><a href="/webapp/" class="h5">Ir al IDE</a></div>
+                        <div class="col text-center"><a href="https://github.com/kishtarn555/ReKarel" class="h5"><i class="bi bi-github"></i>Repositorio</a></div>
+                    </div>
+                </div>                
+            </div>
         </div>
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>

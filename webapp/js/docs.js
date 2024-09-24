@@ -16,7 +16,7 @@ function removeExtension(res) {
 function beautify(str) {
     if (str === "rekarel") return "ReKarel";
     if (str.length === 0) return str;
-    str = str.replace("_", " ");
+    str = str.replace(/_/g, " ");
     str = str.charAt(0).toUpperCase() + str.slice(1);
     return str;
 }
@@ -81,7 +81,7 @@ function SetNavBar(links) {
 }
 
 function getPath() {
-    const url = window.location.href.replace(/#/g, '');;
+    const url = window.location.href.replace(/#.*/g, '');;
     const parts = url.split('/');
     const docsIndex = parts.indexOf('docs');
     return parts.slice(docsIndex + 1).filter(element => element !== "");

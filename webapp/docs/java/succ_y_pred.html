@@ -91,6 +91,9 @@
                                                 href="/webapp/docs/java/operador_comparativo.html">Operador
                                                 comparativo</a>
                                         </li>
+                                        <li data-end-crumb="jerarquia"><a class="dropdown-item ps-3 pe-3"
+                                                href="/webapp/docs/java/jerarquia.html">Jerarquía de operaciones</a>
+                                        </li>
                                         <li data-end-crumb="sentencia_iterate"><a class="dropdown-item ps-3 pe-3"
                                                 href="/webapp/docs/java/sentencia_iterate.html">Sentencia iterate</a>
                                         </li>
@@ -137,6 +140,9 @@
                                                 href="/webapp/docs/pascal/operador_comparativo.html">Operador
                                                 comparativo</a>
                                         </li>
+                                        <li data-end-crumb="jerarquia"><a class="dropdown-item ps-3 pe-3"
+                                                href="/webapp/docs/pascal/jerarquia.html">Jerarquía de operaciones</a>
+                                        </li>
                                         <li data-end-crumb="sentencia_repetir"><a class="dropdown-item ps-3 pe-3"
                                                 href="/webapp/docs/pascal/sentencia_repetir.html">Sentencia repetir</a>
                                         </li>
@@ -176,9 +182,9 @@
         </nav>
     </div>
 
-    <div class="container-xxl pt-4">
+    <div class="container-xl pt-4">
         <div class="row">
-            <div class="col-12 col-lg-4 col-xl-3 ">
+            <div class="col-12 col-lg-2 ">
                 <div class="position-sticky bottom-0 toc-container">
                     <span class="h4">Contenido</span>
                     <nav>
@@ -186,11 +192,15 @@
                     </nav>
                 </div>
             </div>
-            <div class="col-12 col-lg-8 col-xl-9">
+            <div class="col-12 col-lg-9 col-xl-10">
+
+<div class="position-relative visually-hidden">
+    <a href="#" tabindex="-1" class="visually-hidden" id="sucede" data-toc="Sucede (Succ)" data-toc-depth="1"></a>
+</div>
 <h1>Sucede</h1>
 
 
-<p>El operador succ recibe un valor numérico y calcula ese valor más uno.</p>
+<p>El operador <b>succ</b> recibe un valor numérico y calcula ese valor más uno.</p>
 
 <p>Por ejemplo, el siguiente código deja 5 zumbadores, porque 4 + 1 = 5</p>
 
@@ -206,7 +216,7 @@
 <p>Por ejemplo, el código de abajo produce la siguiente imagen:</p>
 
 <div class="text-center mb-3">
-    <img src="./img/help_sucede.png" alt="" class="img-thumbnail">
+    <img src="/webapp/img/help_sucede.png" alt="" class="img-thumbnail">
 </div>
 
 <div class="border p-2">
@@ -231,15 +241,18 @@
     <span class="text-danger-emphasis">}</span>
 </div>
 
+<div class="position-relative visually-hidden">
+    <a href="#" tabindex="-1" class="visually-hidden" id="precede" data-toc="Precede (Pred)" data-toc-depth="1"></a>
+</div>
 <h1>Precede</h1>
 
-<p>El operador precede recibe un valor numérico y calcula ese valor menos uno.</p>
+<p>El operador <b>pred</b> recibe un valor numérico y calcula ese valor menos uno.</p>
 
 <p>Un ejemplo abajo:</p>
 
 
 <div class="text-center mb-3">
-    <img src="./img/help_precede.png" alt="" class="img-thumbnail">
+    <img src="/webapp/img/help_precede.png" alt="" class="img-thumbnail">
 </div>
 
 <div class="border p-2">
@@ -263,14 +276,43 @@
     <pre style="display: inline;">    </pre><span class="text-danger-emphasis">}</span><br>
     <span class="text-danger-emphasis">}</span>
 </div>
-                </div>
-            </div>
-            <hr>
-            <div class="row mb-4">
-                <div class="col text-center"><a href="/webapp/" class="h5">Ir al IDE</a></div>
-                <div class="col text-center"><a href="https://github.com/kishtarn555/ReKarel" class="h5"><i class="bi bi-github"></i>Repositorio</a></div>
-            </div>
 
+
+
+<div class="position-relative visually-hidden">
+    <a href="#" tabindex="-1" class="visually-hidden" id="literal" data-toc="Segundo parámetro" data-toc-depth="1"></a>
+</div>
+<h1>Segundo parámetro</h1>
+
+<span class="badge text-bg-info rounded-pill" title="Esta funcionalidad esta disponible desde ReKarel Java 2.0.0">
+    Desde ReKarel 2.0.0
+</span>
+<p>Ambos, sucede y precede pueden recibir un segundo parámetro para especificar cuanto tienen que sumar o restar.</p>
+
+<p>Veamos dos ejemplos válidos:</p>
+<ul>
+    <li>succ(<span class="text-warning-emphasis">n</span>, <span class="text-warning-emphasis">3</span>) Calcula n + 3</li>
+    <li>pred(<span class="text-warning-emphasis">4</span>, <span class="text-warning-emphasis">8</span>) Calcula 4 - 8</li>
+</ul>
+
+<p>Este segundo parámetro debe ser un número, no puede ser una variable, parámetro, etc. Por lo tanto, los siguientes ejemplos no són validos:</p>
+<ul></ul>
+    <li>succ(<span class="text-warning-emphasis">n</span>, <span class="text-warning-emphasis">n</span>) <i class="bi bi-x text-danger h5"></i></li>
+    <li>pred(<span class="text-warning-emphasis">4</span>, <span class="text-warning-emphasis">floorBeepers</span>) <i class="bi bi-x text-danger h5"></i></li>
+    <li>pred(<span class="text-warning-emphasis">4</span>, succ(<span class="text-warning-emphasis">3</span>)) <i class="bi bi-x text-danger h5"></i></li>
+</ul>
+
+
+
+
+                
+                    <hr class="mt-4 mb-2">
+                    <div class="row mb-4">
+                        <div class="col text-center"><a href="/webapp/" class="h5">Ir al IDE</a></div>
+                        <div class="col text-center"><a href="https://github.com/kishtarn555/ReKarel" class="h5"><i class="bi bi-github"></i>Repositorio</a></div>
+                    </div>
+                </div>                
+            </div>
         </div>
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>

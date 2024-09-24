@@ -12,6 +12,8 @@ const docs = [
     "html/docs/java/*.html",
     "html/docs/pascal/*.html",
     "html/docs/rekarel/*.html",
+    "html/docs/java_tutorial/*.html",
+    "html/docs/pascal_tutorial/*.html",
 ];
 
 const docsDist = "webapp/docs"
