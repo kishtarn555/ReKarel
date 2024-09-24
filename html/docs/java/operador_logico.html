@@ -53,6 +53,40 @@
 </table>
 
 <div class="position-relative visually-hidden">
+    <a href="#" tabindex="-1" class="visually-hidden" id="and_shortcircuit" data-toc="Cortocircuito" data-toc-depth="2"></a>
+</div>
+<h3>Evaluación de cortocircuito</h3>
+<p>El operador && emplea evaluación de cortocircuito, es decir, si el primer termino da falso, ya no se evalúa el segundo.</p>
+
+<p>Veamos un ejemplo:</p>
+<div class="border p-2">
+<pre>
+<span class="text-danger-emphasis">import</span> rekarel.globals;
+<span class="text-danger-emphasis">class</span> program {
+    <span class="text-primary-emphasis">bool</span> dejaVerdadero() {
+        putbeeper();
+        <span class="text-primary-emphasis">return</span> true;
+    }
+    <span class="text-primary-emphasis">bool</span> dejaFalso() {
+        putbeeper();
+        <span class="text-primary-emphasis">return</span> false;
+    }
+    <span class="text-primary-emphasis">program</span> () {
+        <span class="text-primary-emphasis">if</span> (dejaFalso() <span style="color:#77a1d5">&&</span> dejaVerdadero()) {
+            move();
+        }
+    }
+}
+</pre>
+</div>
+
+<p>Produce el siguiente efecto (ve como nunca se llamó a la función <em>dejaVerdadero</em>):</p>
+
+<div class="text-center mb-3">
+    <img src="/webapp/img/docs/logic/and_shortcircuit.png" alt="Deja un solo zumbador" class="img-thumbnail">
+</div>
+
+<div class="position-relative visually-hidden">
     <a href="#" tabindex="-1" class="visually-hidden" id="or" data-toc="Operador o (||)" data-toc-depth="1"></a>
 </div>
 <h2>Operador o (||)</h2>
@@ -97,6 +131,40 @@
         <td>Verdadero, <b>sí</b> se ejecuta el condicional</td>
     </tr>
 </table>
+
+<div class="position-relative visually-hidden">
+    <a href="#" tabindex="-1" class="visually-hidden" id="or_shortcircuit" data-toc="Cortocircuito" data-toc-depth="2"></a>
+</div>
+<h3>Evaluación de cortocircuito</h3>
+<p>El operador || emplea evaluación de cortocircuito, es decir, si el primer termino da verdadero, ya no se evalúa el segundo.</p>
+
+<p>Veamos un ejemplo:</p>
+<div class="border p-2">
+<pre>
+<span class="text-danger-emphasis">import</span> rekarel.globals;
+<span class="text-danger-emphasis">class</span> program {
+    <span class="text-primary-emphasis">bool</span> dejaVerdadero() {
+        putbeeper();
+        <span class="text-primary-emphasis">return</span> true;
+    }
+    <span class="text-primary-emphasis">bool</span> dejaFalso() {
+        putbeeper();
+        <span class="text-primary-emphasis">return</span> false;
+    }
+    <span class="text-primary-emphasis">program</span> () {
+        <span class="text-primary-emphasis">if</span> (dejaVerdadero() <span style="color:#77a1d5">||</span> dejaFalso()) {
+            move();
+        }
+    }
+}
+</pre>
+</div>
+
+<p>Produce el siguiente efecto (ve como nunca se llamó a la función <em>dejaFalso</em>):</p>
+
+<div class="text-center mb-3">
+    <img src="/webapp/img/docs/logic/or_shortcircuit.png" alt="Deja un solo zumbador" class="img-thumbnail">
+</div>
 
 <div class="position-relative visually-hidden">
     <a href="#" tabindex="-1" class="visually-hidden" id="not" data-toc="Operador no (!)" data-toc-depth="1"></a>
