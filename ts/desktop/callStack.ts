@@ -45,8 +45,8 @@ export class CallStack {
       let params = "";
       if (evt.details.params.length > 0) {
         const len = evt.details.params.length;
-        params+= `${evt.details.params[len - 1]}`;
-        for (let i =  len -2; i >= 0; i--) {
+        params+= `${evt.details.params[0]}`;
+        for (let i =  1; i < len; i++) {
           params += `, ${evt.details.params[i]}`;
         }
       }
