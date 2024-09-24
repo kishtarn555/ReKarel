@@ -24,8 +24,14 @@
 .toc-container ul {
     list-style: none
 }
+.toc-container ul li {
+    margin-bottom: 5px;
+    margin-top: 5px;
+}
 
 .toc-container a {
+    border-left: 5px solid var(--bs-secondary-color);
+    padding-left: 5px;
     text-decoration: none;
     color: var(--bs-body-color)
 }
