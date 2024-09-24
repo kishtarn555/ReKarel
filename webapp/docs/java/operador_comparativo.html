@@ -197,298 +197,119 @@
 <div class="position-relative visually-hidden">
     <a href="#" tabindex="-1" class="visually-hidden" id="inicio" data-toc="Inicio" data-toc-depth="1"></a>
 </div>
-<h1>Operadores lógicos</h1>
-<p>Karel dispone de varios operadores lógicos que puede utilizar para la creación de condiciones más avanzadas</p>
-
-<div class="position-relative visually-hidden">
-    <a href="#" tabindex="-1" class="visually-hidden" id="and" data-toc="Operador y (&&)" data-toc-depth="1"></a>
-</div>
-<h2>Operador y (&&)</h2>
-<p>El operador y, que se escribe como <span class="text-primary-emphasis">&&</span>, junta combina dos condiciones en una que es cierta solo
-    cuando ambas lo sean.</p>
-
-
-<p>Por ejemplo, si tenemos el siguiente pseudo-código, entonces la condicional se comportará de acuerdo a la tabla de
-    abajo</p>
-
-<div class="border p-2">
-    <span class="text-primary-emphasis">if</span> (<span class="text-warning-emphasis">condicion1</span> <span
-        style="color:#77a1d5">&&</span> <span class="text-warning-emphasis">condicion2</span>)
-    <br>
-    <pre style="display: inline;">    </pre><span class="text-info-emphasis">INSTRUCCION</span>
-</div>
-
-<table class="table table-dark table-striped">
-    <tr>
-        <th>Condicion1</th>
-        <th>Condicion2</th>
-        <th>Condicion1 <span style="color:#77a1d5">&&</span> Condicion2</th>
-    </tr>
-    <tr>
-        <td>Falso</td>
-        <td>Falso</td>
-        <td>Falso, <b>no</b> se ejecuta el condicional</td>
-    </tr>
-    <tr>
-        <td>Falso</td>
-        <td>Verdadero</td>
-        <td>Falso, <b>no</b> se ejecuta el condicional</td>
-    </tr>
-    <tr>
-        <td>Verdadero</td>
-        <td>Falso</td>
-        <td>Falso, <b>no</b> se ejecuta el condicional</td>
-    </tr>
-    <tr>
-        <td>Verdadero</td>
-        <td>Verdadero</td>
-        <td>Verdadero, <b>sí</b> se ejecuta el condicional</td>
-    </tr>
-</table>
-
-<div class="position-relative visually-hidden">
-    <a href="#" tabindex="-1" class="visually-hidden" id="and_shortcircuit" data-toc="Cortocircuito" data-toc-depth="2"></a>
-</div>
-<h3>Evaluación de cortocircuito</h3>
-<p>El operador && emplea evaluación de cortocircuito, es decir, si el primer termino da falso, ya no se evalúa el segundo.</p>
-
-<p>Veamos un ejemplo:</p>
-<div class="border p-2">
-<pre>
-<span class="text-danger-emphasis">import</span> rekarel.globals;
-<span class="text-danger-emphasis">class</span> program {
-    <span class="text-primary-emphasis">bool</span> dejaVerdadero() {
-        putbeeper();
-        <span class="text-primary-emphasis">return</span> true;
-    }
-    <span class="text-primary-emphasis">bool</span> dejaFalso() {
-        putbeeper();
-        <span class="text-primary-emphasis">return</span> false;
-    }
-    <span class="text-primary-emphasis">program</span> () {
-        <span class="text-primary-emphasis">if</span> (dejaFalso() <span style="color:#77a1d5">&&</span> dejaVerdadero()) {
-            move();
-        }
-    }
-}
-</pre>
-</div>
-
-<p>Produce el siguiente efecto (ve como nunca se llamó a la función <em>dejaVerdadero</em>):</p>
-
-<div class="text-center mb-3">
-    <img src="/webapp/img/docs/logic/and_shortcircuit.png" alt="Deja un solo zumbador" class="img-thumbnail">
-</div>
-
-<div class="position-relative visually-hidden">
-    <a href="#" tabindex="-1" class="visually-hidden" id="or" data-toc="Operador o (||)" data-toc-depth="1"></a>
-</div>
-<h2>Operador o (||)</h2>
-<p>El operador o, que se escribe <span class="text-primary-emphasis">||</span>, junta combina dos condiciones en una que es cierta al menos
-    una de ellas lo sean.</p>
-
-
-<p>Por ejemplo, si tenemos el siguiente pseudo-código, entonces la condicional se comportará de acuerdo a la tabla de
-    abajo</p>
-
-<div class="border p-2">
-    <span class="text-primary-emphasis">if</span> (<span class="text-warning-emphasis">condicion1</span> <span
-        style="color:#77a1d5">||</span> <span class="text-warning-emphasis">condicion2</span>)
-    <br>
-    <pre style="display: inline;">    </pre><span class="text-info-emphasis">INSTRUCCION</span>
-</div>
-
-<table class="table table-dark table-striped">
-    <tr>
-        <th>Condicion1</th>
-        <th>Condicion2</th>
-        <th>Condicion1 <span style="color:#77a1d5">||</span> Condicion2</th>
-    </tr>
-    <tr>
-        <td>Falso</td>
-        <td>Falso</td>
-        <td>Falso, <b>no</b> se ejecuta el condicional</td>
-    </tr>
-    <tr>
-        <td>Falso</td>
-        <td>Verdadero</td>
-        <td>Verdadero, <b>sí</b> se ejecuta el condicional</td>
-    </tr>
-    <tr>
-        <td>Verdadero</td>
-        <td>Falso</td>
-        <td>Verdadero, <b>sí</b> se ejecuta el condicional</td>
-    </tr>
-    <tr>
-        <td>Verdadero</td>
-        <td>Verdadero</td>
-        <td>Verdadero, <b>sí</b> se ejecuta el condicional</td>
-    </tr>
-</table>
-
-<div class="position-relative visually-hidden">
-    <a href="#" tabindex="-1" class="visually-hidden" id="or_shortcircuit" data-toc="Cortocircuito" data-toc-depth="2"></a>
-</div>
-<h3>Evaluación de cortocircuito</h3>
-<p>El operador || emplea evaluación de cortocircuito, es decir, si el primer termino da verdadero, ya no se evalúa el segundo.</p>
-
-<p>Veamos un ejemplo:</p>
-<div class="border p-2">
-<pre>
-<span class="text-danger-emphasis">import</span> rekarel.globals;
-<span class="text-danger-emphasis">class</span> program {
-    <span class="text-primary-emphasis">bool</span> dejaVerdadero() {
-        putbeeper();
-        <span class="text-primary-emphasis">return</span> true;
-    }
-    <span class="text-primary-emphasis">bool</span> dejaFalso() {
-        putbeeper();
-        <span class="text-primary-emphasis">return</span> false;
-    }
-    <span class="text-primary-emphasis">program</span> () {
-        <span class="text-primary-emphasis">if</span> (dejaVerdadero() <span style="color:#77a1d5">||</span> dejaFalso()) {
-            move();
-        }
-    }
-}
-</pre>
-</div>
-
-<p>Produce el siguiente efecto (ve como nunca se llamó a la función <em>dejaFalso</em>):</p>
-
-<div class="text-center mb-3">
-    <img src="/webapp/img/docs/logic/or_shortcircuit.png" alt="Deja un solo zumbador" class="img-thumbnail">
-</div>
-
-<div class="position-relative visually-hidden">
-    <a href="#" tabindex="-1" class="visually-hidden" id="igualdad" data-toc="Igual que (==)" data-toc-depth="1"></a>
-</div>
-<h2>Igual que (==)</h2>
+<h1>Operadores de comparación</h1>
 <span class="badge text-bg-info rounded-pill" title="Esta funcionalidad esta disponible desde ReKarel Java 2.0.0">
     Desde ReKarel 2.0.0
 </span>
 
+<p>Karel cuenta con tres operadores de comparaciones que le permite comparar valores en condicionales.</p>
+
+<div class="position-relative visually-hidden">
+    <a href="#" tabindex="-1" class="visually-hidden" id="menor_que" data-toc="Menor que (&lt;)" data-toc-depth="1"></a>
+</div>
+<h2>Menor que (&lt;)</h2>
+
+<p>El operador menor que <span class="text-bg-secondary border rounded ps-1 pe-1 text-nowrap">&lt;</span> permite comparar dos cantidades numéricas. Obtiene cierto si la primera cantidad es menor que la segunda.</p>
+
+<p>Veamos unos ejemplos</p>
+
+<code class="text-body" >
+<pre class="border p-2">
+<span class="text-success-emphasis">// Verdadero, ejecuta el move</span>
+<span class="text-primary-emphasis">if</span> (<span class="text-warning-emphasis">3</span> <span style="color:#77a1d5">&lt;</span> <span class="text-warning-emphasis">5</span>) {
+    <span class="text-info-emphasis">move</span>();
+}
+
+<span class="text-success-emphasis">// Falso, no ejecuta el move</span>
+<span class="text-primary-emphasis">if</span> (<span class="text-warning-emphasis">6</span> <span style="color:#77a1d5">&lt;</span> <span class="text-warning-emphasis">2</span>) {
+    <span class="text-info-emphasis">move</span>();
+}
+
+<span class="text-success-emphasis">// Falso, no ejecuta el move</span>
+<span class="text-primary-emphasis">if</span> (<span class="text-warning-emphasis">4</span> <span style="color:#77a1d5">&lt;</span> <span class="text-warning-emphasis">4</span>) {
+    <span class="text-info-emphasis">move</span>();
+}
+
+<span class="text-success-emphasis">// Se pueden usar valores numericos mas complejos</span>
+<span class="text-success-emphasis">// Revisa que la cantidad de zumbadores en el suelo sea menor que el parametro n + 4</span>
+<span class="text-primary-emphasis">if</span> (<span class="text-warning-emphasis">beeperFloors</span> <span style="color:#77a1d5">&lt;</span> succ(<span class="text-warning-emphasis">n</span>, <span class="text-warning-emphasis">4</span>)) {
+    <span class="text-info-emphasis">move</span>();
+}
+</pre>
+</code>
+
+
+<div class="position-relative visually-hidden">
+    <a href="#" tabindex="-1" class="visually-hidden" id="menor_igual_que" data-toc="Menor o igual que (&lt;=)" data-toc-depth="1"></a>
+</div>
+<h2>Menor o igual que (&lt;=)</h2>
+
+<p>El operador menor o igual que que <span class="text-bg-secondary border rounded ps-1 pe-1 text-nowrap">&lt;=</span> permite comparar dos cantidades numéricas. Obtiene cierto si la primera cantidad es menor que la segunda o también si tienen el mismo valor.</p>
+
+<p>Veamos unos ejemplos</p>
+
+<code class="text-body" >
+<pre class="border p-2">
+<span class="text-success-emphasis">// Verdadero, ejecuta el move</span>
+<span class="text-primary-emphasis">if</span> (<span class="text-warning-emphasis">3</span> <span style="color:#77a1d5">&lt;=</span> <span class="text-warning-emphasis">5</span>) {
+    <span class="text-info-emphasis">move</span>();
+}
+
+<span class="text-success-emphasis">// Falso, no ejecuta el move</span>
+<span class="text-primary-emphasis">if</span> (<span class="text-warning-emphasis">6</span> <span style="color:#77a1d5">&lt;=</span> <span class="text-warning-emphasis">2</span>) {
+    <span class="text-info-emphasis">move</span>();
+}
+
+<span class="text-success-emphasis">// Verdadero, ejecuta el move</span>
+<span class="text-primary-emphasis">if</span> (<span class="text-warning-emphasis">4</span> <span style="color:#77a1d5">&lt;=</span> <span class="text-warning-emphasis">4</span>) {
+    <span class="text-info-emphasis">move</span>();
+}
+
+<span class="text-success-emphasis">// Se pueden usar valores numericos mas complejos</span>
+<span class="text-success-emphasis">// Revisa que la cantidad de zumbadores en el suelo sea menor o igual que el parametro n + 4</span>
+<span class="text-primary-emphasis">if</span> (<span class="text-warning-emphasis">beeperFloors</span> <span style="color:#77a1d5">&lt;=</span> succ(<span class="text-warning-emphasis">n</span>, <span class="text-warning-emphasis">4</span>)) {
+    <span class="text-info-emphasis">move</span>();
+}
+</pre>
+</code>
+
+
+<div class="position-relative visually-hidden">
+    <a href="#" tabindex="-1" class="visually-hidden" id="igual_que" data-toc="Igual que (==)" data-toc-depth="1"></a>
+</div>
+<h2>Igual que (==)</h2>
 <div class="alert alert-info">
-    El operador igual que también funciona con cantidades enteras, si estás buscando información de esto puedes leer más <a href="operador_comparativo.html#igual_que">aquí</a>.
+    El operador igual que también funciona con condiciones, si estás buscando información de esto puedes leer más <a href="operador_logico.html#igualdad">aquí</a>.
 </div>
 
-<p>El operador igual que, que se escribe <span class="text-primary-emphasis">==</span>, combina dos condiciones en una que es cierta si ambas condiciones son verdaderas o ambas son falsas.</p>
+<p>El operador igual que que <span class="text-bg-secondary border rounded ps-1 pe-1 text-nowrap">==</span> permite comparar dos valores. Obtiene cierto si el primer valor es igual que el segundo valor.</p>
+
+<p>Al igual que los otros dos operadores de comparación, este puede comparar cantidades contra cantidades, pero también condiciones contra condiciones. Los dos valores deben ser del mismo tipo, no puede comparar cantidades contra condiciones</p>
+
+<p>Veamos unos ejemplos numéricos:</p>
+
+<code class="text-body" >
+<pre class="border p-2">
+<span class="text-success-emphasis">// Verdadero, ejecuta el move</span>
+<span class="text-primary-emphasis">if</span> (<span class="text-warning-emphasis">3</span> <span style="color:#77a1d5">==</span> <span class="text-warning-emphasis">3</span>) {
+    <span class="text-info-emphasis">move</span>();
+}
+
+<span class="text-success-emphasis">// Falso, no ejecuta el move</span>
+<span class="text-primary-emphasis">if</span> (<span class="text-warning-emphasis">6</span> <span style="color:#77a1d5">==</span> <span class="text-warning-emphasis">2</span>) {
+    <span class="text-info-emphasis">move</span>();
+}
+
+<span class="text-success-emphasis">// Se pueden usar valores numéricos mas complejos</span>
+<span class="text-success-emphasis">// Revisa que la cantidad de zumbadores en el suelo sea igual que el parametro n + 4</span>
+<span class="text-primary-emphasis">if</span> (<span class="text-warning-emphasis">beeperFloors</span> <span style="color:#77a1d5">==</span> succ(<span class="text-warning-emphasis">n</span>, <span class="text-warning-emphasis">4</span>)) {
+    <span class="text-info-emphasis">move</span>();
+}
+
+</pre>
+</code>
 
 
-<p>Por ejemplo, si tenemos el siguiente pseudo-código, entonces la condicional se comportará de acuerdo a la tabla de
-    abajo</p>
-<div class="border p-2">
-    <span class="text-primary-emphasis">if</span> (<span class="text-warning-emphasis">condicion1</span> <span
-        style="color:#77a1d5">==</span> <span class="text-warning-emphasis">condicion2</span>)
-    <br>
-    <pre style="display: inline;">    </pre><span class="text-info-emphasis">INSTRUCCION</span>
-</div>
-
-<table class="table table-dark table-striped">
-    <tr>
-        <th>Condicion1</th>
-        <th>Condicion2</th>
-        <th>Condicion1 <span style="color:#77a1d5">==</span> Condicion2</th>
-    </tr>
-    <tr>
-        <td>Falso</td>
-        <td>Falso</td>
-        <td>Verdadero, <b>sí</b> se ejecuta el condicional</td>
-    </tr>
-    <tr>
-        <td>Falso</td>
-        <td>Verdadero</td>
-        <td>Falso, <b>no</b> se ejecuta el condicional</td>
-    </tr>
-    <tr>
-        <td>Verdadero</td>
-        <td>Falso</td>
-        <td>Falso, <b>no</b> se ejecuta el condicional</td>
-    </tr>
-    <tr>
-        <td>Verdadero</td>
-        <td>Verdadero</td>
-        <td>Verdadero, <b>sí</b> se ejecuta el condicional</td>
-    </tr>
-</table>
-
-<div class="position-relative visually-hidden">
-    <a href="#" tabindex="-1" class="visually-hidden" id="not" data-toc="Operador no (!)" data-toc-depth="1"></a>
-</div>
-<h2>Operador no (!)</h2>
-<p>El operador no, que se escribe <span class="text-primary-emphasis">!</span>, niega la condición que aparezca después de este</p>
-
-
-<p>Por ejemplo, si tenemos el siguiente pseudo-código, entonces la condicional se comportará de acuerdo a la tabla de
-    abajo</p>
-
-<div class="border p-2">
-    <span class="text-primary-emphasis">if</span> (<span style="color:#77a1d5">!</span><span
-        class="text-warning-emphasis">condicion</span>)
-    <br>
-    <pre style="display: inline;">    </pre><span class="text-info-emphasis">INSTRUCCION</span>
-</div>
-
-<table class="table table-dark table-striped">
-    <tr>
-        <th>Condicion</th>
-        <th><span style="color:#77a1d5">no</span> Condicion</th>
-    </tr>
-    <tr>
-        <td>Falso</td>
-        <td>Verdadero, <b>sí</b> se ejecuta el condicional</td>
-    </tr>
-    <tr>
-        <td>Verdadero</td>
-        <td>Falso, <b>no</b> se ejecuta el condicional</td>
-    </tr>
-</table>
-
-<div class="position-relative visually-hidden">
-    <a href="#" tabindex="-1" class="visually-hidden" id="parenthesis" data-toc="Paréntesis" data-toc-depth="1"></a>
-</div>
-<h2>Paréntesis</h2>
-<p>Se pueden utilizar paréntesis para cambiar el orden de los operadores o aclarar la condición</p>
-
-<p>Por ejemplo, podemos hacer una condicion que se ejecute unicamente cuando exactamente una de dos condiciones sea cierta. Podemos lograr esto revisando que se cumpla al menos una de las condiciones y que no se cumplan ambas, lo cual en código se ve de la siguiente manera:</p>
-
-<div class="border p-2">
-    <span class="text-primary-emphasis">if</span> ((<span class="text-warning-emphasis">condicion1</span> <span
-        style="color:#77a1d5">||</span> <span class="text-warning-emphasis">condicion2</span>) <span
-        style="color:#77a1d5">&&</span> <span
-        style="color:#77a1d5">!</span>(<span class="text-warning-emphasis">condicion1</span> <span
-        style="color:#77a1d5">&&</span> <span class="text-warning-emphasis">condicion2</span>)) 
-    <br>
-    <pre style="display: inline;">    </pre><span class="text-info-emphasis">INSTRUCCION</span>
-</div>
-
-<table class="table table-dark table-striped">
-    <tr>
-        <th>Condicion1</th>
-        <th>Condicion2</th>
-        <th>Resultado</th>
-    </tr>
-    <tr>
-        <td>Falso</td>
-        <td>Falso</td>
-        <td>Falso, <b>no</b> se ejecuta el condicional</td>
-    </tr>
-    <tr>
-        <td>Falso</td>
-        <td>Verdadero</td>
-        <td>Verdadero, <b>sí</b> se ejecuta el condicional</td>
-    </tr>
-    <tr>
-        <td>Verdadero</td>
-        <td>Falso</td>
-        <td>Verdadero, <b>sí</b> se ejecuta el condicional</td>
-    </tr>
-    <tr>
-        <td>Verdadero</td>
-        <td>Verdadero</td>
-        <td>Falso, <b>no</b> se ejecuta el condicional</td>
-    </tr>
-</table>
                 
                     <hr class="mt-4 mb-2">
                     <div class="row mb-4">
