@@ -27,7 +27,7 @@ function beautify(str) {
 function setBreadcrumbs(links) {
     const $breadcrumb = $("#breadcrumb");
 
-    let url = "/webapp/docs";
+    let url = $('body').attr('data-root');
     links.forEach((el, idx) => {
         url += `/${el}`;
         
