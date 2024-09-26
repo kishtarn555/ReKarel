@@ -31,7 +31,7 @@ let javaWithContext = javaparser.configure({
             LT: t.operator,
             LTE: t.operator,
             COMP: t.operator,
-            BuiltIn: t.constant(t.variableName),
+            BuiltIn: t.function(t.variableName),
             Start: t.brace,
             End: t.brace,
             Succ: t.operator,
@@ -39,7 +39,9 @@ let javaWithContext = javaparser.configure({
             Continue: t.controlKeyword,
             Break: t.controlKeyword,
             Return: t.controlKeyword,
-            Import: t.keyword
+            Import: t.keyword,
+            Globals: t.constant(t.variableName),
+            Modules: t.constant(t.variableName)
 
         }),
         indentNodeProp.add({

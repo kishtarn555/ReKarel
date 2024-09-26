@@ -20391,7 +20391,7 @@ var karel = (function (exports, bootstrap) {
                 LT: tags.operator,
                 LTE: tags.operator,
                 COMP: tags.operator,
-                BuiltIn: tags.constant(tags.variableName),
+                BuiltIn: tags.function(tags.variableName),
                 Start: tags.brace,
                 End: tags.brace,
                 Succ: tags.operator,
@@ -20399,7 +20399,9 @@ var karel = (function (exports, bootstrap) {
                 Continue: tags.controlKeyword,
                 Break: tags.controlKeyword,
                 Return: tags.controlKeyword,
-                Import: tags.keyword
+                Import: tags.keyword,
+                Globals: tags.constant(tags.variableName),
+                Modules: tags.constant(tags.variableName)
             }),
             indentNodeProp.add({
                 Script: (_) => 0,
@@ -20737,13 +20739,15 @@ var karel = (function (exports, bootstrap) {
                 COMP: tags.operator,
                 BlockComment: tags.blockComment,
                 BlockComment2: tags.blockComment,
-                BuiltIn: tags.constant(tags.variableName),
+                BuiltIn: tags.function(tags.variableName),
                 Succ: tags.operator,
                 Pred: tags.operator,
                 Continue: tags.controlKeyword,
                 Break: tags.controlKeyword,
                 Return: tags.controlKeyword,
-                Import: tags.keyword
+                Import: tags.keyword,
+                Globals: tags.constant(tags.variableName),
+                Modules: tags.constant(tags.variableName)
             }),
             indentNodeProp.add({
                 Function: continuedIndent({ except: /^\s*(inicio\b)/ }),
@@ -20822,7 +20826,7 @@ var karel = (function (exports, bootstrap) {
             { tag: tags.operator, color: "rgb(104, 118, 135)" },
             { tag: tags.blockComment, color: "rgb(104, 118, 135)", fontStyle: "italic" },
             { tag: tags.comment, color: "rgb(104, 118, 135)", fontStyle: "italic" },
-            { tag: tags.constant(tags.variableName), color: "rgb(49, 132, 149)" },
+            { tag: tags.function(tags.variableName), color: "rgb(49, 132, 149)" },
         ]))
     };
 
@@ -32040,7 +32044,7 @@ var karel = (function (exports, bootstrap) {
                 { tag: tags.brace, color: "#FFD700" },
                 { tag: tags.blockComment, color: "#6A9955", fontStyle: "italic" },
                 { tag: tags.comment, color: "#6A9955", fontStyle: "italic" },
-                { tag: tags.constant(tags.variableName), color: "#DCDCAA" },
+                { tag: tags.function(tags.variableName), color: "#DCDCAA" },
             ])),
             EditorView.theme({
                 '&.cm-focused .cm-selectionBackground, ::selection': {
@@ -32066,7 +32070,7 @@ var karel = (function (exports, bootstrap) {
                 { tag: tags.brace, color: "#0431FA" },
                 { tag: tags.blockComment, color: "#008000", fontStyle: "italic" },
                 { tag: tags.comment, color: "#008000", fontStyle: "italic" },
-                { tag: tags.constant(tags.variableName), color: "#795E26" },
+                { tag: tags.function(tags.variableName), color: "#795E26" },
             ])),
             EditorView.theme({
                 '&.cm-focused .cm-selectionBackground, ::selection': {
@@ -32091,7 +32095,7 @@ var karel = (function (exports, bootstrap) {
                 { tag: tags.operator, color: "#77a1d5" },
                 { tag: tags.blockComment, color: "#a0b6b6", fontStyle: "italic" },
                 { tag: tags.comment, color: "#a0b6b6", fontStyle: "italic" },
-                { tag: tags.constant(tags.variableName), color: "#9CDCFE" },
+                { tag: tags.function(tags.variableName), color: "#9CDCFE" },
             ])),
             EditorView.theme({
                 '&.cm-focused .cm-selectionBackground, ::selection': {
@@ -32115,7 +32119,7 @@ var karel = (function (exports, bootstrap) {
                 { tag: tags.number, color: "#FF00FF" },
                 { tag: tags.operator, color: "#00FFFF" },
                 { tag: tags.brace, color: "#00FFFF" },
-                { tag: tags.constant(tags.variableName), color: "#00FFFF" },
+                { tag: tags.function(tags.variableName), color: "#00FFFF" },
             ])),
             EditorView.theme({
                 '&.cm-focused .cm-selectionBackground, ::selection': {
@@ -32141,7 +32145,7 @@ var karel = (function (exports, bootstrap) {
                 { tag: tags.operator, color: "#77a1d5" },
                 { tag: tags.blockComment, color: "#75b798", fontStyle: "italic" },
                 { tag: tags.comment, color: "#75b798", fontStyle: "italic" },
-                { tag: tags.constant(tags.variableName), color: "#6edff6" },
+                { tag: tags.function(tags.variableName), color: "#6edff6" },
             ])),
             EditorView.theme({
                 '&.cm-focused .cm-selectionBackground, ::selection': {
@@ -32166,7 +32170,7 @@ var karel = (function (exports, bootstrap) {
                 { tag: tags.operator, color: "#77a1d5" },
                 { tag: tags.blockComment, color: "#198754", fontStyle: "italic" },
                 { tag: tags.comment, color: "#198754", fontStyle: "italic" },
-                { tag: tags.constant(tags.variableName), color: "#24a7db" },
+                { tag: tags.function(tags.variableName), color: "#24a7db" },
             ])),
         ]
     };
@@ -32186,7 +32190,7 @@ var karel = (function (exports, bootstrap) {
                 { tag: tags.operator, color: "#3f9c4f" },
                 { tag: tags.blockComment, color: "#973d1a", fontStyle: "italic" },
                 { tag: tags.comment, color: "#973d1a", fontStyle: "italic" },
-                { tag: tags.constant(tags.variableName), color: "#1f34a1" },
+                { tag: tags.function(tags.variableName), color: "#1f34a1" },
             ])),
             EditorView.theme({
                 '&.cm-focused .cm-selectionBackground, ::selection': {

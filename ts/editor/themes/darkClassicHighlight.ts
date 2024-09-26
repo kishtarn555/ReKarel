@@ -20,7 +20,7 @@ export const darkClassicHighlight: EditorTheme = {
       { tag: tags.operator, color: "#77a1d5" },
       { tag: tags.blockComment, color: "#a0b6b6", fontStyle: "italic" },
       { tag: tags.comment, color: "#a0b6b6", fontStyle: "italic" },
-      { tag: tags.constant(tags.variableName), color: "#9CDCFE" },
+      { tag: tags.function(tags.variableName), color: "#9CDCFE" },
     ])),
     EditorView.theme({
       '&.cm-focused .cm-selectionBackground, ::selection' : {

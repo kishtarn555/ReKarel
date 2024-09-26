@@ -23,7 +23,7 @@ export const DarkCodeTheme: EditorTheme = {
         { tag: tags.brace, color: "#FFD700" },
         { tag: tags.blockComment, color: "#6A9955", fontStyle: "italic" },
         { tag: tags.comment, color: "#6A9955", fontStyle: "italic" },
-        { tag: tags.constant(tags.variableName), color: "#DCDCAA" },
+        { tag: tags.function(tags.variableName), color: "#DCDCAA" },
       ])),
       EditorView.theme({
         '&.cm-focused .cm-selectionBackground, ::selection' : {
@@ -51,7 +51,7 @@ export const DarkCodeTheme: EditorTheme = {
         { tag: tags.brace, color: "#0431FA" },
         { tag: tags.blockComment, color: "#008000", fontStyle: "italic" },
         { tag: tags.comment, color: "#008000", fontStyle: "italic" },
-        { tag: tags.constant(tags.variableName), color: "#795E26" },
+        { tag: tags.function(tags.variableName), color: "#795E26" },
       ])),
       EditorView.theme({
         '&.cm-focused .cm-selectionBackground, ::selection' : {
