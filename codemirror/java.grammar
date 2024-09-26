@@ -9,10 +9,8 @@ ImportList {
 }
 
 ImportStatement {
-    Import Identifier "." Identifier ";"
+    Import (Identifier | Modules) "." (Identifier | Modules) ";"
 }
-
-
 
 ScriptBlock {
     Start inner End
@@ -123,7 +121,7 @@ binaryOperator {
 }
 
 
-clause { IFZ | BoolFunc ("(" ")")? | Identifier | numeric | call }
+clause { IFZ | BoolFunc ("(" ")")? | (Identifier | Globals) | numeric | call }
 
 
 numeric {
@@ -183,6 +181,19 @@ While { @specialize<Identifier, "while"> }
 If { @specialize<Identifier, "if"> }
 Else { @specialize<Identifier, "else"> }
 Iterate { @specialize<Identifier, "iterate"> }
+
+Globals {
+    @specialize<Identifier, "true">
+    | @specialize<Identifier, "false">
+    | @specialize<Identifier, "floorBeepers">
+    | @specialize<Identifier, "beeperBag">
+}
+
+Modules {    
+    @specialize<Identifier, "rekarel">
+    | @specialize<Identifier, "globals">
+}
+
 
 @tokens {
   space { @whitespace+ }

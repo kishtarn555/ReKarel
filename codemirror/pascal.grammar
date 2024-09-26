@@ -7,7 +7,7 @@ ImportList {
 }
 
 ImportStatement {
-    Import Identifier "." Identifier ";"
+    Import (Identifier| Modules) "." (Identifier| Modules) ";"
 }
 
 functionList {
@@ -138,7 +138,7 @@ term {
     | clause 
 }
 
-clause { IFZ | BoolFunc | Identifier | numeric | parameteredCall }
+clause { IFZ | BoolFunc | (Identifier | Globals) | numeric | parameteredCall }
 
 
 numeric {
@@ -218,6 +218,19 @@ Continue {
 }
 Break { @specialize<Identifier, "rompe"> }
 Return { @specialize<Identifier, "regresa"> | @specialize<Identifier, "sal-de-instruccion"> }
+
+Globals {
+    @specialize<Identifier, "verdadero">
+    | @specialize<Identifier, "falso">
+    | @specialize<Identifier, "zumbadores-del-piso">
+    | @specialize<Identifier, "mochila">
+}
+
+Modules {
+    
+    @specialize<Identifier, "rekarel">
+    | @specialize<Identifier, "globales">
+}
 
 @tokens {
     space { @whitespace+ }
