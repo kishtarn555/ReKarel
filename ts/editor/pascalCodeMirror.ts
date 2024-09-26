@@ -12,8 +12,8 @@ let pascalWithContext = pascalparser.configure({
         styleTags({
             StartProgram: t.keyword,
             EndProgram: t.keyword,
-            Define: t.definitionKeyword,
-            Prototipo: t.definitionKeyword,
+            DefineType: t.definitionKeyword,
+            PrototipoType: t.definitionKeyword,
             As: t.controlKeyword,
             StartExecution: t.moduleKeyword,
             EndExecution: t.moduleKeyword,
@@ -42,7 +42,11 @@ let pascalWithContext = pascalparser.configure({
             BlockComment2:t.blockComment,
             BuiltIn: t.constant(t.variableName),
             Succ: t.operator,
-            Pred: t.operator
+            Pred: t.operator,
+            Continue: t.controlKeyword,
+            Break: t.controlKeyword,
+            Return: t.controlKeyword,
+            Import: t.keyword
         }),
         indentNodeProp.add({
             Function: continuedIndent({except:/^\s*(inicio\b)/}),
@@ -84,6 +88,7 @@ const pascalLanguage = LRLanguage.define({
 
 
   import {completeFromList} from "@codemirror/autocomplete"
+import { Continue, Return } from "../../webapp/js/lezer_java.terms";
 
   const pascalCompletion = pascalLanguage.data.of({
     autocomplete: completeFromList([
