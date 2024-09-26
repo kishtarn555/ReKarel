@@ -32071,8 +32071,8 @@ var karel = (function (exports, bootstrap) {
                 { tag: tags.brace, color: "#0431FA" },
                 { tag: tags.blockComment, color: "#008000", fontStyle: "italic" },
                 { tag: tags.comment, color: "#008000", fontStyle: "italic" },
-                { tag: tags.function(tags.variableName), color: "#795E26l" },
-                { tag: tags.constant(tags.variableName), color: "#004AC2", fontStyle: "bold" },
+                { tag: tags.function(tags.variableName), color: "#795E26" },
+                { tag: tags.constant(tags.variableName), color: "#004AC2" },
             ])),
             EditorView.theme({
                 '&.cm-focused .cm-selectionBackground, ::selection': {
