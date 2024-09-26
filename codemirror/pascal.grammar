@@ -1,7 +1,13 @@
-
-
 @top Script {
-    StartProgram functionList?   Execution EndProgram
+    ImportList? StartProgram functionList?   Execution EndProgram
+}
+
+ImportList {
+    ImportStatement+
+}
+
+ImportStatement {
+    Import Identifier "." Identifier ";"
 }
 
 functionList {
@@ -10,11 +16,17 @@ functionList {
 
 
 Function {
-    Define Identifier As expression | Define Identifier "(" Identifier ")"As expression ";"
+    DefineType Identifier As expression | DefineType Identifier "(" FunctionParams ")" As expression ";"
 }
 
 Prototype {
-    Prototipo Identifier ";"
+    PrototipoType Identifier ";"  |  PrototipoType Identifier "(" FunctionParams ")" ";"    
+}
+
+
+FunctionParams {
+    FunctionParams comma Identifier
+    | Identifier
 }
 
 Execution {
@@ -23,17 +35,17 @@ Execution {
 
 
 WhileStatement {
-    While boolStatement Do
+    While BooleanTerm Do
     expression
 }
 
 IterateStatement {
-    Iterate  numberStatement  Times
+    Iterate  NumericTerm  Times
     expression
 }
 
 IfStatement {
-    If boolStatement Then expression (!sino Else expression)?
+    If BooleanTerm Then expression (!sino Else expression)?
     
 }
 
@@ -42,8 +54,14 @@ Block {
 }
 
 expression {
-    call |  WhileStatement | IterateStatement | IfStatement |
-    Block
+    call
+    |  WhileStatement
+    | IterateStatement
+    | IfStatement 
+    | Block
+    | Continue
+    | Break
+    | ReturnStatement
 }
 
 expressionList {
@@ -56,22 +74,29 @@ genExpr {
 
 
 call {
-    BuiltIn | Identifier | Identifier "(" numberStatement ")"
+    BuiltIn | Identifier | parameteredCall
 }
 
-numberStatement { Number | Identifier| numberFunction }
+parameteredCall {
+    Identifier "(" CallParams ")"
+}
 
-numberFunction {(Succ | Pred)"(" numberStatement ")" }
+CallParams {
+    NumericTerm (comma NumericTerm)*
+}
+
+
+BooleanTerm { term }
+NumericTerm { term }
+
 
 Succ { @specialize<Identifier, "sucede"> }
 Pred { @specialize<Identifier, "precede"> }
 
 @precedence { sino,binaryLogic @left}
 
-boolStatement { clause | boolStatement !binaryLogic binaryOperator boolStatement  | Not boolStatement }
-clause { IFZ | BoolFunc | "(" boolStatement ")"}
 IFZ {
-    Ifzero "(" numberStatement ")"
+    Ifzero "(" NumericTerm ")"
 }
 
 BuiltIn {
@@ -103,7 +128,24 @@ BoolFunc {
     @specialize<Identifier, "ningun-zumbador-en-la-mochila">
 }
 
-binaryOperator {Or | And}
+binaryOperator { Or | And | LTE | LT | COMP }
+
+
+term {
+    term !binaryLogic binaryOperator term
+    | Not term
+    | "(" term ")"
+    | clause 
+}
+
+clause { IFZ | BoolFunc | Identifier | numeric | parameteredCall }
+
+
+numeric {
+    Number | numberFunction
+}
+
+numberFunction {(Succ | Pred)"(" NumericTerm ( comma Number )? ")" }
 
 Begin[closedBy="End"] {
     start
@@ -113,7 +155,7 @@ End[openedBy="Begin"] {
     end
 }
 
-
+ReturnStatement { Return term?}
 
 While { @specialize<Identifier, "mientras"> }
 Do { @specialize<Identifier, "hacer"> }
@@ -127,19 +169,63 @@ start { @specialize<Identifier, "inicio"> }
 end { @specialize<Identifier, "fin"> }
 StartProgram { @specialize<Identifier, "iniciar-programa"> }
 EndProgram { @specialize<Identifier, "finalizar-programa"> }
-StartExecution { @specialize<Identifier, "inicia-ejecucion"> }
-EndExecution { @specialize<Identifier, "termina-ejecucion"> }
-Ifzero { @specialize<Identifier, "si-es-cero"> }
-Define { @specialize<Identifier, "define-nueva-instruccion"> }
-Prototipo { @specialize<Identifier, "define-prototipo-instruccion"> }
+StartExecution { 
+    @specialize<Identifier, "inicia-ejecucion"> 
+    | @specialize<Identifier, "inicia-ejecución"> 
+}
+EndExecution { 
+    @specialize<Identifier, "termina-ejecucion">
+    | @specialize<Identifier, "termina-ejecución">
+ }
+Ifzero { 
+    @specialize<Identifier, "si-es-cero">
+    |  @specialize<Identifier, "es-cero">
+ }
+DefineType { 
+    @specialize<Identifier, "define-nueva-instruccion">
+    | @specialize<Identifier, "define-instruccion-entera">  
+    | @specialize<Identifier, "define-instruccion-booleana">  
+    | @specialize<Identifier, "define-condicion">  
+    | @specialize<Identifier, "define">  
 
-And { @specialize<Identifier, "y"> }
+    | @specialize<Identifier, "define-nueva-instrucción">
+    | @specialize<Identifier, "define-instrucción-entera">  
+    | @specialize<Identifier, "define-instrucción-booleana">  
+    | @specialize<Identifier, "define-condición">  
+}
+PrototipoType { 
+    @specialize<Identifier, "define-prototipo-instruccion"> 
+    | @specialize<Identifier, "define-prototipo-entero"> 
+    | @specialize<Identifier, "define-prototipo-booleano"> 
+
+    | @specialize<Identifier, "define-prototipo-instrucción"> 
+}
+
+And { 
+    @specialize<Identifier, "y">
+    | @specialize<Identifier, "e">
+ }
 Not { @specialize<Identifier, "no"> }
-Or { @specialize<Identifier, "o"> }
+Or { 
+    @specialize<Identifier, "o">
+    | @specialize<Identifier, "u">
+}
+
+Import { @specialize<Identifier, "usa"> }
+Continue { 
+    @specialize<Identifier, "continua"> 
+    | @specialize<Identifier, "continúa"> 
+}
+Break { @specialize<Identifier, "rompe"> }
+Return { @specialize<Identifier, "regresa"> | @specialize<Identifier, "sal-de-instruccion"> }
 
 @tokens {
     space { @whitespace+ }
     Identifier { $[A-Za-zÀ-ÖØ-öø-ÿ_]$[A-Za-zÀ-ÖØ-öø-ÿ0-9_-]*}
+    comma { "," }
+    LT { "<" }
+    LTE { "<=" }
+    COMP { "==" }
     Number { $[0-9]+}
 }
 
