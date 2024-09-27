@@ -31642,6 +31642,7 @@ var karel = (function (exports, bootstrap) {
             this.ResizeCanvas();
             this.worldController.FocusOrigin();
             this.ConnectConsole();
+            this.worldController.FocusKarel();
         }
         OnKarelControllerStateChange(sender, state) {
             if (state === "running") {
