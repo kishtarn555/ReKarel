@@ -513,6 +513,29 @@ class WorldViewController {
         this.Update();
     }
 
+    AppendUnitToBeepers(amount: number) {
+        const history = KarelController.GetInstance().GetHistory();
+        const op = history.StartOperation(); 
+        this.selection.forEach(
+            (r, c)=> {
+                let beepers = this.karelController.world.buzzers(r, c);
+                let nextBeepers = beepers*10+amount;
+                if (beepers === -1) {
+                    // Skip infinity beepers
+                    return;
+                }
+                op.addCommit({
+                    forward: ()=> this.karelController.world.setBuzzers(r, c, nextBeepers),
+                    backward: ()=> this.karelController.world.setBuzzers(r, c, beepers),
+                });
+                this.karelController.world.setBuzzers(r,c, nextBeepers);
+            }
+        );
+        
+        history.EndOperation();
+        this.Update();
+    }
+
     SetCellEvaluation(state:boolean) {
         const world = this.karelController.world;
         let rmin = Math.min(this.selection.r, this.selection.r + (this.selection.rows - 1)*this.selection.dr);

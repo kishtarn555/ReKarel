@@ -290,6 +290,15 @@ class DesktopController {
         const ctrl:hotkeyMod = {shift:"yes", ctrl:"yes", alt:"no"};
         const shift:hotkeyMod = {shift:"yes", ctrl:"no", alt:"no"};
         const alt:hotkeyMod = {shift:"no", ctrl:"no", alt:"no"};
+        const beeper:hotkeyMod = {shift:"optional", ctrl:"no", alt:"optional"};
+
+        let placeBeepers = (n: number) => {
+            if (!e.altKey) {
+                this.worldController.SetBeepers(n);
+            } else {  
+                this.worldController.AppendUnitToBeepers(n);
+            }
+        }
 
         let hotkeys = new Map<number, [hotkeyMod,()=>void][]>([
             [71,[[basic, ()=>{this.worldController.ToggleKarelPosition(true);}]]],
@@ -301,36 +310,36 @@ class DesktopController {
                     this.worldController.SetRandomBeepers(AppVars.randomBeeperMinimum,AppVars.randomBeeperMaximum);                
                 }]]
             ],
-            [81,[[basic,()=>{this.worldController.ChangeBeepers(-1);}]]],
-            [69,[[basic, ()=>{this.worldController.ChangeBeepers(1);}]]],
-            [48,[[basic, ()=>{this.worldController.SetBeepers(0);}]]],
-            [49,[[basic, ()=>{this.worldController.SetBeepers(1);}]]],
-            [50,[[basic, ()=>{this.worldController.SetBeepers(2);}]]],
-            [51,[[basic, ()=>{this.worldController.SetBeepers(3);}]]],
-            [52,[[basic, ()=>{this.worldController.SetBeepers(4);}]]],
-            [53,[[basic, ()=>{this.worldController.SetBeepers(5);}]]],
-            [54,[[basic, ()=>{this.worldController.SetBeepers(6);}]]],
-            [55,[[basic, ()=>{this.worldController.SetBeepers(7);}]]],
-            [56,[[basic, ()=>{this.worldController.SetBeepers(8);}]]],
-            [57,[[basic, ()=>{this.worldController.SetBeepers(9);}]]],
-            [67,[[basic, ()=>{$("#desktopSetAmmount").trigger("click")}]]], // FIXME
-            [87,[[basic, ()=>{this.worldController.ToggleWall("north");}]]],
-            [68,[[basic, ()=>{this.worldController.ToggleWall("east");}]]],
-            [83,[[basic, ()=>{this.worldController.ToggleWall("south");}]]],
-            [65,[[basic, ()=>{this.worldController.ToggleWall("west");}]]],
-            [88,[[basic, ()=>{this.worldController.ToggleWall("outer");}]]],
-            [37,[[basic, ()=>{this.worldController.MoveSelection(0,-1, e.shiftKey);}]] ],
-            [38,[[basic, ()=>{this.worldController.MoveSelection(1, 0, e.shiftKey);}]]],
-            [39,[[basic, ()=>{this.worldController.MoveSelection(0, 1, e.shiftKey);}]]],
-            [40,[[basic, ()=>{this.worldController.MoveSelection(-1, 0, e.shiftKey);}]]],
-            [84,[[basic, ()=>{this.worldController.SetBeepers(-1);}]]],
-            [86,[[basic, ()=>{this.worldController.SetCellEvaluation(false);}]]],
-            [8, [[basic, ()=>{this.worldController.RemoveEverything();}]]],
-            [46,[[basic, ()=>{this.worldController.RemoveEverything();}]]],
-            [89,[[ctrl, ()=>{this.worldController.Redo();}]]],
-            [90,[
-                [ctrl, ()=>{this.worldController.Undo();}],
-                [basic, ()=>{this.worldController.SetCellEvaluation(true);}]
+            [81, [[basic,()=>{this.worldController.ChangeBeepers(-1);}]]],
+            [69, [[basic, ()=>{this.worldController.ChangeBeepers(1);}]]],
+            [48, [[beeper, ()=>{placeBeepers(0);}]]],
+            [49, [[beeper, ()=>{placeBeepers(1);}]]],
+            [50, [[beeper, ()=>{placeBeepers(2);}]]],
+            [51, [[beeper, ()=>{placeBeepers(3);}]]],
+            [52, [[beeper, ()=>{placeBeepers(4);}]]],
+            [53, [[beeper, ()=>{placeBeepers(5);}]]],
+            [54, [[beeper, ()=>{placeBeepers(6);}]]],
+            [55, [[beeper, ()=>{placeBeepers(7);}]]],
+            [56, [[beeper, ()=>{placeBeepers(8);}]]],
+            [57, [[beeper, ()=>{placeBeepers(9);}]]],
+            [67, [[basic, ()=>{$("#desktopSetAmmount").trigger("click")}]]], // FIXME
+            [87, [[basic, ()=>{this.worldController.ToggleWall("north");}]]],
+            [68, [[basic, ()=>{this.worldController.ToggleWall("east");}]]],
+            [83, [[basic, ()=>{this.worldController.ToggleWall("south");}]]],
+            [65, [[basic, ()=>{this.worldController.ToggleWall("west");}]]],
+            [88, [[basic, ()=>{this.worldController.ToggleWall("outer");}]]],
+            [37, [[basic, ()=>{this.worldController.MoveSelection(0,-1, e.shiftKey);}]] ],
+            [38, [[basic, ()=>{this.worldController.MoveSelection(1, 0, e.shiftKey);}]]],
+            [39, [[basic, ()=>{this.worldController.MoveSelection(0, 1, e.shiftKey);}]]],
+            [40, [[basic, ()=>{this.worldController.MoveSelection(-1, 0, e.shiftKey);}]]],
+            [84, [[basic, ()=>{this.worldController.SetBeepers(-1);}]]],
+            [86, [[basic, ()=>{this.worldController.SetCellEvaluation(false);}]]],
+            [8,  [[basic, ()=>{this.worldController.RemoveEverything();}]]],
+            [46, [[basic, ()=>{this.worldController.RemoveEverything();}]]],
+            [89, [[ctrl, ()=>{this.worldController.Redo();}]]],
+            [90, [
+                 [ctrl, ()=>{this.worldController.Undo();}],
+                 [basic, ()=>{this.worldController.SetCellEvaluation(true);}]
             ]],
             
         ]);
