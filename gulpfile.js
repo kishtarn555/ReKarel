@@ -3,6 +3,7 @@ import fileInclude from "gulp-file-include"
 import replace from 'gulp-replace'
 import insert  from 'gulp-insert'
 import clean  from 'gulp-clean'
+import * as manifest from './package.json'  with { type: "json" }
 
 const mainPath = "html/index.html"
 const mainPathDist = "webapp/"
@@ -23,7 +24,11 @@ gulp.task('bundle-html', ()=> {
     .pipe(
         fileInclude({
             prefix: '@@',
-            basepath: '@file'
+            basepath: '@file',
+            context: {
+                shortVersion: manifest.default.version.replace(/[\.\-]/g,"_"),
+                longVersion: manifest.default.version
+            }
         }))
     .pipe(gulp.dest(mainPathDist))
     
