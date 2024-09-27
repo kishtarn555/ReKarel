@@ -22257,6 +22257,7 @@ var karel = (function (exports, bootstrap) {
             });
         }
     }
+    const onEditorTextSet = [];
     function SetText(editor, message) {
         let transaction = editor.state.update({
             changes: {
@@ -22266,6 +22267,9 @@ var karel = (function (exports, bootstrap) {
             }
         });
         editor.dispatch(transaction);
+        for (const callback of onEditorTextSet) {
+            callback();
+        }
     }
     function SetEditorTheme(extension, editor) {
         try {

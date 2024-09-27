@@ -89,6 +89,10 @@ function setLanguage(editor:EditorView, lan:"java"|"pascal") {
   }
 }
 
+const onEditorTextSet: (()=>void)[]=[];
+export function RegisterEditorTextSetListener(callback: ()=>void) {
+  onEditorTextSet.push(callback);
+}
 
 function SetText(editor: EditorView, message:string) {
   let transaction = editor.state.update({
@@ -99,6 +103,9 @@ function SetText(editor: EditorView, message:string) {
       }
   })
   editor.dispatch(transaction);
+  for (const callback of onEditorTextSet) {
+    callback();
+  }
 }
 
 
