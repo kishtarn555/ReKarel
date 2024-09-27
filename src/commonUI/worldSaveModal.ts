@@ -10,36 +10,42 @@ export type WorldSaveModal = {
     outputBtn:string, 
 } 
 
-let defaultFileName = "world.in"
+let defaultFileName = "mundo"
 
-function setWorldData(data:string, textBox:string, btn: string) {
+function setWorldData(data:string, textBox:string, btn: string, success:boolean) {
     $(textBox).val(data)
     let blob = new Blob([data], { type: 'text/plain'});
-    $(btn).attr("href", window.URL.createObjectURL(blob));
+    const targetBtn = $(btn);
+    targetBtn.attr("href", window.URL.createObjectURL(blob));
+    if (!success) {
+        targetBtn.attr("aria-disabled", "true")
+            .addClass("btn-secondary") 
+            .removeClass("btn-primary") 
+            .addClass("disabled");
+    }else {
+        targetBtn.removeAttr("aria-disabled")
+            .removeClass("btn-secondary") 
+            .addClass("btn-primary") 
+            .removeClass("disabled");
+    }
 
 }
 
 function setInputWorld(modal:WorldSaveModal, karelController: KarelController) {
-    defaultFileName = "world.in";
-    const filename = $(modal.nameField).val() as string;
-    $(modal.nameField).val(filename.replace(/\.out$/, ".in"));
-    setFileNameLink(modal);
-
     const input = karelController.world.save("start");
-    setWorldData(input, modal.worldDataIn, modal.inputBtn);
+    setWorldData(input, modal.worldDataIn, modal.inputBtn, true);
 }
 
 
 function setOutputWorld(modal:WorldSaveModal, karelController: KarelController) {
-    defaultFileName = "world.out";
     const filename = $(modal.nameField).val() as string;
-    $(modal.nameField).val(filename.replace(/\.in$/, ".out"));
-    setFileNameLink(modal);
     let result = KarelController.GetInstance().Compile(false);
     let output;
+    let success=false;
     $(modal.worldDataOut).val("Procesando...");
     if (result == null) {
         output = "ERROR DE COMPILACION";
+        setWorldData(output, modal.worldDataOut, modal.outputBtn, success);
     } else {
         
         KarelController.GetInstance().RunTillEnd(false).then(()=> {
@@ -47,8 +53,9 @@ function setOutputWorld(modal:WorldSaveModal, karelController: KarelController) 
                 output = "ERROR DE EJECUCION"
             } else {
                 output = karelController.world.output();
+                success = true;
             }
-            setWorldData(output, modal.worldDataOut, modal.outputBtn);
+            setWorldData(output, modal.worldDataOut, modal.outputBtn, success);
         })
     }
 }
@@ -63,14 +70,31 @@ function setFileNameLink(modal: WorldSaveModal) {
         $(modal.wrongNameWaring).attr("hidden", "");
     }
     
-    $(modal.inputBtn).attr("download", newFilename+".in");
-    $(modal.outputBtn).attr("download", newFilename+".out");
+    $(modal.inputBtn)
+        .attr("download", newFilename+".in")
+        .text("Descargar "+newFilename+".in");
+    $(modal.outputBtn)
+        .attr("download", newFilename+".out")
+        .text("Descargar "+newFilename+".out");
 }
 
 export function HookWorldSaveModal(modal:WorldSaveModal, karelController:KarelController) {
     $(modal.modal).on("show.bs.modal", ()=>{
-        setInputWorld(modal,karelController) 
-        setOutputWorld(modal,karelController) 
+        //Disable buttons until they're enabled after processing the worlds
+        $(modal.outputBtn)
+            .addClass("disabled") 
+            .addClass("btn-secondary") 
+            .removeClass("btn-primary") 
+            .attr("aria-disabled","true");
+        $(modal.inputBtn)
+            .addClass("disabled") 
+            .addClass("btn-secondary") 
+            .removeClass("btn-primary") 
+            .attr("aria-disabled","true");
+        setFileNameLink(modal);
+        setInputWorld(modal,karelController);
+        setOutputWorld(modal,karelController);
+        
     });
     
 
