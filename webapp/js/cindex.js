@@ -31712,7 +31712,7 @@ var karel = (function (exports, bootstrap) {
             }
             const overrideShift = new Set([37, 38, 39, 40]);
             const basic = { shift: "optional", ctrl: "no", alt: "no" };
-            const ctrl = { shift: "yes", ctrl: "yes", alt: "no" };
+            const ctrl = { shift: "no", ctrl: "yes", alt: "no" };
             const altBasic = { shift: "optional", ctrl: "no", alt: "yes" };
             const beeper = { shift: "optional", ctrl: "no", alt: "optional" };
             let placeBeepers = (n) => {

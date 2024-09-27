@@ -287,7 +287,7 @@ class DesktopController {
         type keyMod = "yes" | "no" | "optional";
         type hotkeyMod = {shift:keyMod, ctrl: keyMod, alt: keyMod};
         const basic:hotkeyMod = {shift:"optional", ctrl:"no", alt:"no"};
-        const ctrl:hotkeyMod = {shift:"yes", ctrl:"yes", alt:"no"};
+        const ctrl:hotkeyMod = {shift:"no", ctrl:"yes", alt:"no"};
         const shift:hotkeyMod = {shift:"yes", ctrl:"no", alt:"no"};
         const altBasic:hotkeyMod = {shift:"optional", ctrl:"no", alt:"yes"};
         const beeper:hotkeyMod = {shift:"optional", ctrl:"no", alt:"optional"};
