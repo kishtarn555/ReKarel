@@ -1,7 +1,7 @@
 import commonjs from '@rollup/plugin-commonjs';
 import nodeResolve from '@rollup/plugin-node-resolve';
 export default {
-    input: 'dist/ts/index.js',
+    input: 'dist/index.js',
     external: ['bootstrap'],
     output: {
       file: 'webapp/js/cindex.js',

@@ -1057,7 +1057,7 @@ class WorldViewController {
     private OnNewWorld(caller: KarelController, world:World) {
         this.Select(1,1,1,1); 
         this.Update();
-        this.FocusOrigin();
+        this.FocusKarel();
         this.UpdateScrollElements();
 
     }

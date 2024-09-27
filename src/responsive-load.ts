@@ -26,20 +26,20 @@ function SetResponsiveness() {
 
 function SetDesktopView() {
     mode = "desktop";
-    previousResponsiveMode = "desktop";
     clearAllDisplayClasses("#phoneView");
     clearAllDisplayClasses("#desktopView");
     hideElement("#phoneView");
-    MovePanels("desktop")
+    MovePanels("desktop");
+    previousResponsiveMode = "desktop";
     
 }
 function SetPhoneView() {
     mode = "mobile";
-    previousResponsiveMode = "mobile";
     clearAllDisplayClasses("#phoneView");
     clearAllDisplayClasses("#desktopView");
     hideElement("#desktopView");
-    MovePanels("mobile")
+    MovePanels("mobile");
+    previousResponsiveMode = "mobile";
 
 }
 
@@ -48,7 +48,6 @@ const worldPane = $("#worldPane");
 const worldContainer = $("#worldContainer");
 
 function MovePanels(target:"mobile"|"desktop") {
-
     const editor = getEditors()[0];
     const dom = $(editor.dom);
     dom.detach();
@@ -65,6 +64,7 @@ function MovePanels(target:"mobile"|"desktop") {
         $("#desktopWorldSlot").prepend(worldPane);
     }
     DesktopController.GetInstance().ResizeCanvas();
+    DesktopController.GetInstance().worldController.FocusKarel();
 }
 
 let previousResponsiveMode:"desktop"|"mobile" = "desktop";

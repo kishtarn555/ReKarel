@@ -31105,7 +31105,7 @@ var karel = (function (exports, bootstrap) {
         OnNewWorld(caller, world) {
             this.Select(1, 1, 1, 1);
             this.Update();
-            this.FocusOrigin();
+            this.FocusKarel();
             this.UpdateScrollElements();
         }
         NotifyBeeperBagUpdate(amount) {
@@ -31640,9 +31640,8 @@ var karel = (function (exports, bootstrap) {
             this.controlbar.Init();
             this.ConnectToolbar();
             this.ResizeCanvas();
-            this.worldController.FocusOrigin();
-            this.ConnectConsole();
             this.worldController.FocusKarel();
+            this.ConnectConsole();
         }
         OnKarelControllerStateChange(sender, state) {
             if (state === "running") {
@@ -32363,19 +32362,19 @@ var karel = (function (exports, bootstrap) {
     }
     function SetDesktopView() {
         mode = "desktop";
-        previousResponsiveMode = "desktop";
         clearAllDisplayClasses("#phoneView");
         clearAllDisplayClasses("#desktopView");
         hideElement$1("#phoneView");
         MovePanels("desktop");
+        previousResponsiveMode = "desktop";
     }
     function SetPhoneView() {
         mode = "mobile";
-        previousResponsiveMode = "mobile";
         clearAllDisplayClasses("#phoneView");
         clearAllDisplayClasses("#desktopView");
         hideElement$1("#desktopView");
         MovePanels("mobile");
+        previousResponsiveMode = "mobile";
     }
     const statePanel = $("#stateConsole");
     const worldPane = $("#worldPane");
@@ -32397,6 +32396,7 @@ var karel = (function (exports, bootstrap) {
             $("#desktopWorldSlot").prepend(worldPane);
         }
         DesktopController.GetInstance().ResizeCanvas();
+        DesktopController.GetInstance().worldController.FocusKarel();
     }
     let previousResponsiveMode = "desktop";
     let phoneView = $("#phoneView");
