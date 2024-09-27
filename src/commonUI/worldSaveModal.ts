@@ -13,16 +13,19 @@ export type WorldSaveModal = {
 let defaultFileName = "mundo"
 
 function setWorldData(data:string, textBox:string, btn: string, success:boolean) {
-    $(textBox).val(data)
+    const targetText = $(textBox);
+    targetText.val(data);
     let blob = new Blob([data], { type: 'text/plain'});
     const targetBtn = $(btn);
     targetBtn.attr("href", window.URL.createObjectURL(blob));
     if (!success) {
+        targetText.addClass("bg-danger-subtle");
         targetBtn.attr("aria-disabled", "true")
             .addClass("btn-secondary") 
             .removeClass("btn-primary") 
             .addClass("disabled");
-    }else {
+    }else {        
+        targetText.removeClass("bg-danger-subtle");
         targetBtn.removeAttr("aria-disabled")
             .removeClass("btn-secondary") 
             .addClass("btn-primary") 
