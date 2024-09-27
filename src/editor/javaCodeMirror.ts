@@ -1,4 +1,4 @@
-import { parser as javaparser } from "../../webapp/js/lezer_java";
+import { parser as javaparser } from "../js/lezer_java";
 import {LanguageSupport} from "@codemirror/language"
 
 
@@ -74,7 +74,6 @@ const javaLanguage = LRLanguage.define({
 
 
 import { completeKarelJava } from "./completionJava";
-import { Continue, Import } from "../../webapp/js/lezer_java.terms";
 
   const javaCompletion = javaLanguage.data.of({
     autocomplete: completeKarelJava

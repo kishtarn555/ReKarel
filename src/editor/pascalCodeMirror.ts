@@ -1,4 +1,4 @@
-import { parser as pascalparser } from "../../webapp/js/lezer_pascal";
+import { parser as pascalparser } from "../js/lezer_pascal";
 import {LanguageSupport} from "@codemirror/language"
 
 
