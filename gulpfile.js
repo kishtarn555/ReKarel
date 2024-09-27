@@ -34,6 +34,26 @@ gulp.task('bundle-html', ()=> {
     .pipe(gulp.dest(mainPathDist))
     
 })
+// Task to copy images
+gulp.task('bundle-images', function () {
+    return gulp.src('resources/img/**/*', {encoding:false})
+      .pipe(gulp.dest('webapp/img'));
+  });
+  
+  // Task to copy CSS
+  gulp.task('bundle-css', function () {
+    return gulp.src('resources/css/**/*')
+      .pipe(gulp.dest('webapp/css'));
+  });
+  
+  // Task to copy JavaScript
+  gulp.task('bundle-js', function () {
+    return gulp.src('resources/js/**/*')
+      .pipe(gulp.dest('webapp/js'));
+  });
+  
+  // Default task to run all copy tasks
+  gulp.task('bundle-resources', gulp.parallel('bundle-images', 'bundle-css', 'bundle-js'));
 
 
 gulp.task('bundle-docs', ()=> {
@@ -145,5 +165,5 @@ gulp.task('copy-license', () => {
         .pipe(gulp.dest(`${paths.build}`));
 });
 
- gulp.task('default', gulp.series('bundle-html', 'clean-docs', 'bundle-docs'));
+ gulp.task('default', gulp.series('bundle-html', 'clean-docs', 'bundle-docs', 'bundle-resources'));
  gulp.task('build', gulp.series('clean', 'copy-html', 'copy-js', 'copy-img', 'copy-css','copy-license'));
