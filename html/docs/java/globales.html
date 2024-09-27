@@ -58,26 +58,32 @@
 <span class="text-danger-emphasis">class</span> program <span class="text-danger-emphasis">{</span>
     <span class="text-primary-emphasis">program</span> () <span class="text-danger-emphasis">{</span>
         <span class="text-success-emphasis">// Deja todos los zumbadores de la mochila</span>
-        <span class="text-primary-emphasis">iterate</span> (<span class="text-warning-emphasis">beeperBag</span>) 
-            <span class="text-info-emphasis">putbeeper</span>();            
+        <span class="text-primary-emphasis">iterate</span> (<span class="text-warning-emphasis">beeperBag</span>)
+            <span class="text-info-emphasis">putbeeper</span>();
         <span class="text-success-emphasis">// Nunca se ejecuta, por lo que no hay un error de ejecución</span>
-        <span class="text-primary-emphasis">if</span> (<span class="text-warning-emphasis">false</span>) 
-            <span class="text-info-emphasis">putbeeper</span>();            
-        <span class="text-info-emphasis">move</span>();    
-        <span class="text-success-emphasis">// Gira tantas veces como zumbadores en el piso</span>        
-        <span class="text-primary-emphasis">iterate</span> (<span class="text-warning-emphasis">floorBeepers</span>) 
-            <span class="text-info-emphasis">turnleft</span>();        
-        <span class="text-info-emphasis">turnoff</span>();    
-        <span class="text-success-emphasis">//Este ciclo se ejecuta siempre, hasta que no sea detenido desde adentro con un break o similar</span>               
+        <span class="text-primary-emphasis">if</span> (<span class="text-warning-emphasis">false</span>)
+            <span class="text-info-emphasis">putbeeper</span>();
+        <span class="text-info-emphasis">move</span>();
+        <span class="text-success-emphasis">// Gira tantas veces como zumbadores en el piso</span>
+        <span class="text-primary-emphasis">iterate</span> (<span class="text-warning-emphasis">floorBeepers</span>)
+            <span class="text-info-emphasis">turnleft</span>();
+        <span class="text-info-emphasis">move</span>();
+        <span class="text-success-emphasis">//Este ciclo se ejecuta siempre, hasta que no sea detenido desde adentro con un break o similar</span>
         <span class="text-primary-emphasis">while</span> (<span class="text-warning-emphasis">true</span>) <span class="text-danger-emphasis">{</span>
             <span class="text-primary-emphasis">if</span>(<span class="text-warning-emphasis">nextToABeeper</span>) <span class="text-danger-emphasis">{</span>
                 <span class="text-primary-emphasis">break</span>;
             <span class="text-danger-emphasis">}</span>
             <span class="text-info-emphasis">move</span>();
         <span class="text-danger-emphasis">}</span>
+        <span class="text-info-emphasis">turnoff</span>();
     <span class="text-danger-emphasis">}</span>
 <span class="text-danger-emphasis">}</span>
 </pre>
 </code>
+
+
+<div class="text-center mb-3">
+    <img src="@@webRoot/../img/docs/globals/example.png" alt="Deja un solo zumbador" class="img-thumbnail">
+</div>
 
 @@include("../footer.html")
