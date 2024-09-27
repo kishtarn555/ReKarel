@@ -36,7 +36,7 @@ gulp.task('bundle-html', ()=> {
 })
 // Task to copy images
 gulp.task('bundle-images', function () {
-    return gulp.src('resources/img/**/*')
+    return gulp.src('resources/img/**/*', {encoding:false})
       .pipe(gulp.dest('webapp/img'));
   });
   
