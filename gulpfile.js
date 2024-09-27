@@ -27,7 +27,8 @@ gulp.task('bundle-html', ()=> {
             basepath: '@file',
             context: {
                 shortVersion: manifest.default.version.replace(/[\.\-]/g,"_"),
-                longVersion: manifest.default.version
+                longVersion: manifest.default.version,
+                coreVersion: manifest.default.dependencies["@rekarel/core"].replace(/^\^/, "")
             }
         }))
     .pipe(gulp.dest(mainPathDist))
