@@ -2,9 +2,8 @@ import {EditorState} from "@codemirror/state"
 import {defaultKeymap, historyKeymap, history} from "@codemirror/commands"
 import {drawSelection, keymap, lineNumbers, highlightActiveLine, rectangularSelection, crosshairCursor} from "@codemirror/view"
 import {indentWithTab} from "@codemirror/commands"
-import {undo, redo} from "@codemirror/commands"
 import {EditorView} from "@codemirror/view"
-import {Transaction, Annotation, Compartment, Extension} from "@codemirror/state"
+import {Compartment, Extension} from "@codemirror/state"
 import { kjava } from "./javaCodeMirror"
 import { kpascal } from "./pascalCodeMirror"
 
@@ -90,6 +89,10 @@ function setLanguage(editor:EditorView, lan:"java"|"pascal") {
   }
 }
 
+const onEditorTextSet: (()=>void)[]=[];
+export function RegisterEditorTextSetListener(callback: ()=>void) {
+  onEditorTextSet.push(callback);
+}
 
 function SetText(editor: EditorView, message:string) {
   let transaction = editor.state.update({
@@ -100,6 +103,9 @@ function SetText(editor: EditorView, message:string) {
       }
   })
   editor.dispatch(transaction);
+  for (const callback of onEditorTextSet) {
+    callback();
+  }
 }
 
 
