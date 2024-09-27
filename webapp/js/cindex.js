@@ -20827,6 +20827,7 @@ var karel = (function (exports, bootstrap) {
             { tag: tags.blockComment, color: "rgb(104, 118, 135)", fontStyle: "italic" },
             { tag: tags.comment, color: "rgb(104, 118, 135)", fontStyle: "italic" },
             { tag: tags.function(tags.variableName), color: "rgb(49, 132, 149)" },
+            { tag: tags.constant(tags.variableName), color: "#060bbd" },
         ]))
     };
 
@@ -32098,6 +32099,7 @@ var karel = (function (exports, bootstrap) {
                 { tag: tags.blockComment, color: "#a0b6b6", fontStyle: "italic" },
                 { tag: tags.comment, color: "#a0b6b6", fontStyle: "italic" },
                 { tag: tags.function(tags.variableName), color: "#9CDCFE" },
+                { tag: tags.constant(tags.variableName), color: "#80e9ed" },
             ])),
             EditorView.theme({
                 '&.cm-focused .cm-selectionBackground, ::selection': {

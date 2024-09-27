@@ -21,6 +21,7 @@ export const darkClassicHighlight: EditorTheme = {
       { tag: tags.blockComment, color: "#a0b6b6", fontStyle: "italic" },
       { tag: tags.comment, color: "#a0b6b6", fontStyle: "italic" },
       { tag: tags.function(tags.variableName), color: "#9CDCFE" },
+      { tag: tags.constant(tags.variableName), color: "#80e9ed" },
     ])),
     EditorView.theme({
       '&.cm-focused .cm-selectionBackground, ::selection' : {
