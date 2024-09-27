@@ -3,7 +3,7 @@ import bootstrap from 'bootstrap';
 import { WorldRenderer, WRStyle } from '../worldRenderer';
 import { WorldViewController, Gizmos } from "../worldViewController/worldViewController";
 import { ControllerState, KarelController } from '../KarelController';
-import { freezeEditors, unfreezeEditors } from '../editor/editor';
+import { freezeEditors, RegisterEditorTextSetListener, unfreezeEditors } from '../editor/editor';
 import { ContextMenuData, DesktopContextMenu } from './contextMenu';
 import { CallStack, CallStackUI } from './callStack';
 import { ConsoleTab, KarelConsole } from './console';
@@ -198,6 +198,10 @@ class DesktopController {
         this.ResizeCanvas();
         this.worldController.FocusKarel();
         this.ConnectConsole();
+
+        RegisterEditorTextSetListener(()=> {
+            this.karelController.Reset();
+        })
     }
 
     private OnKarelControllerStateChange(sender: KarelController, state: ControllerState) {

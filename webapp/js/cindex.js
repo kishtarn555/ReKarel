@@ -22258,6 +22258,9 @@ var karel = (function (exports, bootstrap) {
         }
     }
     const onEditorTextSet = [];
+    function RegisterEditorTextSetListener(callback) {
+        onEditorTextSet.push(callback);
+    }
     function SetText(editor, message) {
         let transaction = editor.state.update({
             changes: {
@@ -31646,6 +31649,9 @@ var karel = (function (exports, bootstrap) {
             this.ResizeCanvas();
             this.worldController.FocusKarel();
             this.ConnectConsole();
+            RegisterEditorTextSetListener(() => {
+                this.karelController.Reset();
+            });
         }
         OnKarelControllerStateChange(sender, state) {
             if (state === "running") {
