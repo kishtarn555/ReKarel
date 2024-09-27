@@ -19,6 +19,7 @@ export const OMIHighlight: EditorTheme = {
         { tag: tags.number, color: "#FF00FF" },
         { tag: tags.operator, color: "#00FFFF" },
         { tag: tags.brace, color: "#00FFFF" },
+        { tag: tags.function(tags.variableName), color: "#00FFFF" },
         { tag: tags.constant(tags.variableName), color: "#00FFFF" },
       ])),
       EditorView.theme({

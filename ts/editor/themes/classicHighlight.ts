@@ -19,6 +19,7 @@ export const classicHighlight: EditorTheme = {
     { tag: tags.operator, color: "rgb(104, 118, 135)" },
     { tag: tags.blockComment, color: "rgb(104, 118, 135)", fontStyle: "italic" },
     { tag: tags.comment, color: "rgb(104, 118, 135)", fontStyle: "italic" },
-    { tag: tags.constant(tags.variableName), color: "rgb(49, 132, 149)" },
+    { tag: tags.function(tags.variableName), color: "rgb(49, 132, 149)" },
+    { tag: tags.constant(tags.variableName), color: "#060bbd" },
   ]))
 };

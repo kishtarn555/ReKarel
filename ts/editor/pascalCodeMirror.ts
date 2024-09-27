@@ -5,6 +5,7 @@ import {LanguageSupport} from "@codemirror/language"
 import {foldNodeProp, foldInside, indentNodeProp} from "@codemirror/language"
 import {styleTags, tags as t} from "@lezer/highlight"
 import {LRLanguage, continuedIndent, delimitedIndent, TreeIndentContext} from "@codemirror/language"
+import {completeFromList} from "@codemirror/autocomplete"
 
 
 let pascalWithContext = pascalparser.configure({
@@ -43,13 +44,16 @@ let pascalWithContext = pascalparser.configure({
             COMP : t.operator,
             BlockComment:t.blockComment,
             BlockComment2:t.blockComment,
-            BuiltIn: t.constant(t.variableName),
+            BuiltIn: t.function(t.variableName),
             Succ: t.operator,
             Pred: t.operator,
             Continue: t.controlKeyword,
             Break: t.controlKeyword,
             Return: t.controlKeyword,
-            Import: t.keyword
+            Import: t.keyword,
+            Globals: t.constant(t.variableName),
+            Modules: t.constant(t.variableName)
+
         }),
         indentNodeProp.add({
             Function: continuedIndent({except:/^\s*(inicio\b)/}),
@@ -89,9 +93,6 @@ const pascalLanguage = LRLanguage.define({
     }
   })
 
-
-  import {completeFromList} from "@codemirror/autocomplete"
-import { Continue, Return } from "../../webapp/js/lezer_java.terms";
 
   const pascalCompletion = pascalLanguage.data.of({
     autocomplete: completeFromList([
