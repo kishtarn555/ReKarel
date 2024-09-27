@@ -29829,6 +29829,9 @@ var karel = (function (exports, bootstrap) {
         GetHistory() {
             return this.history;
         }
+        GetDebugData() {
+            return this.debugData;
+        }
         // SetDesktopController(desktopController: WorldViewController) {
         //     this.desktopController = desktopController;
         //     this.desktopController.SetWorld(this.world);
@@ -29845,7 +29848,7 @@ var karel = (function (exports, bootstrap) {
             let response = null;
             try {
                 clearUnderlineError(mainEditor);
-                response = compile(code);
+                response = compile(code, true);
                 //TODO: expand message       
                 if (notifyOnSuccess)
                     this.SendMessage("Programa compilado correctamente", "info");
@@ -29861,7 +29864,8 @@ var karel = (function (exports, bootstrap) {
                 this.NotifyCompile(false, language);
                 return null;
             }
-            return response;
+            this.debugData = response[1];
+            return response[0];
         }
         // FIXME This is code from karel.js that I'm not even sure if it's ever executed by the web app.
         validatorCallbacks(message) {
