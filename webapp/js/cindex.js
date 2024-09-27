@@ -25150,74 +25150,78 @@ var karel = (function (exports, bootstrap) {
     case 18: return 34; 
     case 19: return 31; 
     case 20: return 31; 
-    case 21: return 51; 
-    case 22: return 51; 
+    case 21: return 31; 
+    case 22: return 31; 
     case 23: return 51; 
-    case 24: return 26; 
-    case 25: return 41; 
-    case 26: return 41; 
-    case 27: return 38; 
-    case 28: return 37; 
-    case 29: return 39; 
-    case 30: return 40; 
-    case 31: return 42; 
-    case 32: return 43; 
-    case 33: return 49; 
-    case 34: return 50; 
-    case 35: return 57; 
-    case 36: return 59; 
-    case 37: return 60; 
-    case 38: return 61; 
-    case 39: return 63; 
-    case 40: return 94; 
-    case 41: return 93; 
-    case 42: return 71; 
-    case 43: return 74; 
-    case 44: return 75; 
-    case 45: return 76; 
-    case 46: return 77; 
-    case 47: return 78; 
-    case 48: return 79; 
-    case 49: return 80; 
-    case 50: return 81; 
-    case 51: return 82; 
-    case 52: return 82; 
-    case 53: return 83; 
-    case 54: return 83; 
-    case 55: return 85; 
-    case 56: return 87; 
-    case 57: return 86; 
-    case 58: return 84; 
-    case 59: return 89; 
-    case 60: return 91; 
-    case 61: return 90; 
-    case 62: return 88; 
-    case 63: return 58; 
-    case 64: return 58; 
-    case 65: return 55; 
-    case 66: return 69; 
-    case 67: return 64; 
-    case 68: return 64; 
-    case 69: return 65; 
-    case 70: return 65; 
-    case 71: return 22; 
-    case 72: return 24; 
-    case 73: return 15; 
-    case 74: return 17; 
-    case 75: return 29; 
-    case 76: return 18; 
-    case 77: return 66; 
-    case 78: return 68; 
-    case 79: return 67; 
-    case 80: return 95; 
-    case 81: return 16; 
-    case 82: return 11; 
-    case 83:console.log(yy_.yytext);
+    case 24: return 51; 
+    case 25: return 51; 
+    case 26: return 26; 
+    case 27: return 41; 
+    case 28: return 41; 
+    case 29: return 38; 
+    case 30: return 37; 
+    case 31: return 39; 
+    case 32: return 40; 
+    case 33: return 42; 
+    case 34: return 42; 
+    case 35: return 43; 
+    case 36: return 49; 
+    case 37: return 50; 
+    case 38: return 57; 
+    case 39: return 59; 
+    case 40: return 60; 
+    case 41: return 61; 
+    case 42: return 63; 
+    case 43: return 94; 
+    case 44: return 93; 
+    case 45: return 71; 
+    case 46: return 71; 
+    case 47: return 74; 
+    case 48: return 75; 
+    case 49: return 76; 
+    case 50: return 77; 
+    case 51: return 78; 
+    case 52: return 79; 
+    case 53: return 80; 
+    case 54: return 81; 
+    case 55: return 82; 
+    case 56: return 82; 
+    case 57: return 83; 
+    case 58: return 83; 
+    case 59: return 85; 
+    case 60: return 87; 
+    case 61: return 86; 
+    case 62: return 84; 
+    case 63: return 89; 
+    case 64: return 91; 
+    case 65: return 90; 
+    case 66: return 88; 
+    case 67: return 58; 
+    case 68: return 58; 
+    case 69: return 55; 
+    case 70: return 69; 
+    case 71: return 64; 
+    case 72: return 64; 
+    case 73: return 65; 
+    case 74: return 65; 
+    case 75: return 22; 
+    case 76: return 24; 
+    case 77: return 15; 
+    case 78: return 17; 
+    case 79: return 29; 
+    case 80: return 18; 
+    case 81: return 66; 
+    case 82: return 68; 
+    case 83: return 67; 
+    case 84: return 95; 
+    case 85: return 16; 
+    case 86: return 11; 
+    case 87:console.log(yy_.yytext);
     break;
     }
     },
-    rules: [/^(?:\s+)/,/^(?:\{[^}]*\})/,/^(?:\(\*(?:[^*]|\*(?!\)))*\*\))/,/^(?:iniciar-programa)/,/^(?:inicia-ejecucion)/,/^(?:inicia-ejecución)/,/^(?:termina-ejecucion)/,/^(?:termina-ejecución)/,/^(?:finalizar-programa)/,/^(?:define-nueva-instruccion)/,/^(?:define-nueva-instrucción)/,/^(?:define)/,/^(?:usa)/,/^(?:define-prototipo-instruccion)/,/^(?:define-prototipo-instrucción)/,/^(?:define-prototipo-entero)/,/^(?:define-instrucción-entera)/,/^(?:define-instruccion-entera)/,/^(?:define-prototipo-booleano)/,/^(?:define-instrucción-booleana)/,/^(?:define-instruccion-booleana)/,/^(?:sal-de-instruccion)/,/^(?:sal-de-instrucción)/,/^(?:regresa)/,/^(?:como)/,/^(?:apagate)/,/^(?:apágate)/,/^(?:gira-izquierda)/,/^(?:avanza)/,/^(?:coge-zumbador)/,/^(?:deja-zumbador)/,/^(?:continua)/,/^(?:rompe)/,/^(?:inicio)/,/^(?:fin)/,/^(?:entonces)/,/^(?:mientras)/,/^(?:hacer)/,/^(?:repetir)/,/^(?:veces)/,/^(?:precede)/,/^(?:sucede)/,/^(?:si-es-cero)/,/^(?:frente-libre)/,/^(?:frente-bloqueado)/,/^(?:izquierda-libre)/,/^(?:izquierda-bloqueada)/,/^(?:derecha-libre)/,/^(?:derecha-bloqueada)/,/^(?:junto-a-zumbador)/,/^(?:no-junto-a-zumbador)/,/^(?:algun-zumbador-en-la-mochila)/,/^(?:algún-zumbador-en-la-mochila)/,/^(?:ningun-zumbador-en-la-mochila)/,/^(?:ningún-zumbador-en-la-mochila)/,/^(?:orientado-al-norte)/,/^(?:orientado-al-sur)/,/^(?:orientado-al-este)/,/^(?:orientado-al-oeste)/,/^(?:no-orientado-al-norte)/,/^(?:no-orientado-al-sur)/,/^(?:no-orientado-al-este)/,/^(?:no-orientado-al-oeste)/,/^(?:sino)/,/^(?:si-no)/,/^(?:si)/,/^(?:no)/,/^(?:o)/,/^(?:u)/,/^(?:y)/,/^(?:e)/,/^(?:\()/,/^(?:\))/,/^(?:;)/,/^(?:\.)/,/^(?:,)/,/^(?:\*)/,/^(?:==)/,/^(?:<=)/,/^(?:<)/,/^(?:[0-9]+)/,/^(?:[A-Za-zÀ-ÖØ-öø-ÿ_][A-Za-zÀ-ÖØ-öø-ÿ0-9_-]*)/,/^(?:$)/,/^(?:.)/],
-    conditions: {"INITIAL":{"rules":[0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,67,68,69,70,71,72,73,74,75,76,77,78,79,80,81,82,83],"inclusive":true}}
+    rules: [/^(?:\s+)/,/^(?:\{[^}]*\})/,/^(?:\(\*(?:[^*]|\*(?!\)))*\*\))/,/^(?:iniciar-programa)/,/^(?:inicia-ejecucion)/,/^(?:inicia-ejecución)/,/^(?:termina-ejecucion)/,/^(?:termina-ejecución)/,/^(?:finalizar-programa)/,/^(?:define-nueva-instruccion)/,/^(?:define-nueva-instrucción)/,/^(?:define)/,/^(?:usa)/,/^(?:define-prototipo-instruccion)/,/^(?:define-prototipo-instrucción)/,/^(?:define-prototipo-entero)/,/^(?:define-instrucción-entera)/,/^(?:define-instruccion-entera)/,/^(?:define-prototipo-booleano)/,/^(?:define-instrucción-booleana)/,/^(?:define-instruccion-booleana)/,/^(?:define-condicion)/,/^(?:define-condición)/,/^(?:sal-de-instruccion)/,/^(?:sal-de-instrucción)/,/^(?:regresa)/,/^(?:como)/,/^(?:apagate)/,/^(?:apágate)/,/^(?:gira-izquierda)/,/^(?:avanza)/,/^(?:coge-zumbador)/,/^(?:deja-zumbador)/,/^(?:continua)/,/^(?:continúa)/,/^(?:rompe)/,/^(?:inicio)/,/^(?:fin)/,/^(?:entonces)/,/^(?:mientras)/,/^(?:hacer)/,/^(?:repetir)/,/^(?:veces)/,/^(?:precede)/,/^(?:sucede)/,/^(?:si-es-cero)/,/^(?:es-cero)/,/^(?:frente-libre)/,/^(?:frente-bloqueado)/,/^(?:izquierda-libre)/,/^(?:izquierda-bloqueada)/,/^(?:derecha-libre)/,/^(?:derecha-bloqueada)/,/^(?:junto-a-zumbador)/,/^(?:no-junto-a-zumbador)/,/^(?:algun-zumbador-en-la-mochila)/,/^(?:algún-zumbador-en-la-mochila)/,/^(?:ningun-zumbador-en-la-mochila)/,/^(?:ningún-zumbador-en-la-mochila)/,/^(?:orientado-al-norte)/,/^(?:orientado-al-sur)/,/^(?:orientado-al-este)/,/^(?:orientado-al-oeste)/,/^(?:no-orientado-al-norte)/,/^(?:no-orientado-al-sur)/,/^(?:no-orientado-al-este)/,/^(?:no-orientado-al-oeste)/,/^(?:sino)/,/^(?:si-no)/,/^(?:si)/,/^(?:no)/,/^(?:o)/,/^(?:u)/,/^(?:y)/,/^(?:e)/,/^(?:\()/,/^(?:\))/,/^(?:;)/,/^(?:\.)/,/^(?:,)/,/^(?:\*)/,/^(?:==)/,/^(?:<=)/,/^(?:<)/,/^(?:[0-9]+)/,/^(?:[A-Za-zÀ-ÖØ-öø-ÿ_][A-Za-zÀ-ÖØ-öø-ÿ0-9_-]*)/,/^(?:$)/,/^(?:.)/],
+    conditions: {"INITIAL":{"rules":[0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,67,68,69,70,71,72,73,74,75,76,77,78,79,80,81,82,83,84,85,86,87],"inclusive":true}}
     });
     return lexer;
     })();
@@ -25514,27 +25518,12 @@ var karel = (function (exports, bootstrap) {
             return;
         }
         if (data.couldBeFunction) {
-            //Resolve as an parameterless call
-            target.push(["LOAD", 0]); // Load 0 parameters
-            if (!definitions.hasFunction(data.target)) {
-                yy.parser.parseError("Undefined function or variable: " + data.target, {
-                    error: CompilationError.Errors.UNDEFINED_FUNCTION,
-                    functionName: data.target,
-                    line: data.loc.first_line - 1,
-                    loc: data.loc
-                });
-            }
-            target.push(["LINE", data.loc.first_line - 1, data.loc.first_column]);
-            target.push([
-                "CALL",
-                {
-                    target: data.target,
-                    nameLoc: data.loc,
-                    expectedType: data.expectedType,
-                    params: [],
-                }
-            ]);
-            target.push(["LINE", data.loc.first_line - 1, data.loc.first_column]);
+            resolveCall({
+                nameLoc: data.loc,
+                params: [],
+                target: data.target,
+                expectedType: data.expectedType,
+            }, definitions, scope, target, {}, yy);
             target.push(["LRET"]);
             return;
         }
@@ -25561,7 +25550,11 @@ var karel = (function (exports, bootstrap) {
             return null;
         }
         target.push(["CALL", data]);
-        target.push(["LINE", data.nameLoc.first_line - 1, data.nameLoc.first_column]);
+        target.push([
+            "LINE",
+            data.nameLoc.first_line - 1,
+            data.nameLoc.first_column + data.target.length
+        ]);
     }
     function resolveReturn(data, definitions, scope, target, tags, yy) {
         const retType = resolveTerm(data.term, definitions, scope, target, tags, yy);
@@ -25773,6 +25766,9 @@ var karel = (function (exports, bootstrap) {
         expectedReturn: "VOID",
         parameters: []
     });
+
+    class DebugData {
+    }
 
     /**
      * Checks that functions calls are valid, not defined multiple times and prototypes match
@@ -25995,8 +25991,9 @@ var karel = (function (exports, bootstrap) {
             return instruction;
         });
     }
-    function generateOpcodesFromIR(data) {
+    function generateOpcodesFromIR(data, exportDebug) {
         const definitions = new DefinitionTable(data.variablesCanBeFunctions);
+        const debugData = new DebugData();
         // Step 1 - Populate global definitions, and check for repeated definitions
         loadPackages(data, definitions);
         if (!validateAndGetFunctionDefinitions(data, definitions))
@@ -26076,6 +26073,10 @@ var karel = (function (exports, bootstrap) {
             }
             program.push(instruction);
         }
+        if (exportDebug) {
+            debugData.definitions = definitions;
+            return [program, debugData];
+        }
         return program;
     }
 
@@ -26119,7 +26120,7 @@ var karel = (function (exports, bootstrap) {
         }
         return 'unknown';
     }
-    function compile(code) {
+    function compile(code, exportDebug = false) {
         let lang = detectLanguage(code);
         let compiler = null;
         switch (lang) {
@@ -26132,16 +26133,16 @@ var karel = (function (exports, bootstrap) {
             default:
                 return null;
         }
-        const result = compiler(code);
+        const result = compiler(code, exportDebug);
         return result;
     }
-    function javaCompiler(code) {
+    function javaCompiler(code, exportDebug = false) {
         const IR = javaParser(code);
-        return generateOpcodesFromIR(IR);
+        return generateOpcodesFromIR(IR, exportDebug);
     }
-    function pascalCompiler(code) {
+    function pascalCompiler(code, exportDebug = false) {
         const IR = pascalParser(code);
-        return generateOpcodesFromIR(IR);
+        return generateOpcodesFromIR(IR, exportDebug);
     }
 
     class KarelRuntimeEvent extends Event {
@@ -26353,7 +26354,7 @@ var karel = (function (exports, bootstrap) {
             let rot;
             let di = [0, 1, 0, -1];
             let dj = [-1, 0, 1, 0];
-            let paramCount, newSP, op1, op2, fname;
+            let paramCount, newSP, op1, op2, fname, params, line, fromFName, npc;
             try {
                 if (this.debug) {
                     this.eventController.fireEvent('debug', this, {
@@ -26590,11 +26591,12 @@ var karel = (function (exports, bootstrap) {
                         this.state.stackMemory -= Math.max(1, paramCount);
                         ;
                         if (!this.disableStackEvents) {
-                            let params = this.state.stack.subarray(0, 0);
-                            let fname = "N/A";
-                            let line = -2;
+                            params = this.state.stack.subarray(0, 0);
+                            fromFName = this.functionNames[this.program[3 * this.state.pc + 2]];
+                            fname = "N/A";
+                            line = -2;
                             if (this.state.stackSize >= 1) {
-                                let npc = this.state.stack[this.state.fp + 2]; //Get the function name from the function that called me
+                                npc = this.state.stack[this.state.fp + 2]; //Get the function name from the function that called me
                                 fname = this.functionNames[this.program[3 * npc + 2]];
                                 line = this.program[3 * (npc + 1) + 1]; //Get line. A call always is LINE -> LOAD PARAM -> CALL -> LINE
                                 paramCount = this.state.stack[this.state.fp + 3];
@@ -26605,6 +26607,7 @@ var karel = (function (exports, bootstrap) {
                                 target: this,
                                 params: params,
                                 function: fname,
+                                fromFunction: fromFName,
                                 line: line,
                                 returnValue: this.state.ret
                             });
