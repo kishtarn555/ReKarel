@@ -30263,6 +30263,13 @@ var karel = (function (exports, bootstrap) {
                 c: this.c + (this.cols - 1) * this.dc,
             };
         }
+        forEach(callback) {
+            for (let i = 0; i < this.rows; i++) {
+                for (let j = 0; j < this.cols; j++) {
+                    callback((this.r + i * this.dr), (this.c + j * this.dc));
+                }
+            }
+        }
     }
 
     class WorldViewController {
@@ -30655,6 +30662,25 @@ var karel = (function (exports, bootstrap) {
                     this.karelController.world.setBuzzers(i, j, amount);
                 }
             }
+            history.EndOperation();
+            this.Update();
+        }
+        AppendUnitToBeepers(amount) {
+            const history = KarelController.GetInstance().GetHistory();
+            const op = history.StartOperation();
+            this.selection.forEach((r, c) => {
+                let beepers = this.karelController.world.buzzers(r, c);
+                let nextBeepers = beepers * 10 + amount;
+                if (beepers === -1) {
+                    // Skip infinity beepers
+                    return;
+                }
+                op.addCommit({
+                    forward: () => this.karelController.world.setBuzzers(r, c, nextBeepers),
+                    backward: () => this.karelController.world.setBuzzers(r, c, beepers),
+                });
+                this.karelController.world.setBuzzers(r, c, nextBeepers);
+            });
             history.EndOperation();
             this.Update();
         }
@@ -31666,8 +31692,17 @@ var karel = (function (exports, bootstrap) {
                 return;
             }
             const overrideShift = new Set([37, 38, 39, 40]);
-            const basic = { shift: "optional", ctrl: "no" };
-            const ctrl = { shift: "no", ctrl: "yes" };
+            const basic = { shift: "optional", ctrl: "no", alt: "no" };
+            const ctrl = { shift: "yes", ctrl: "yes", alt: "no" };
+            const beeper = { shift: "optional", ctrl: "no", alt: "optional" };
+            let placeBeepers = (n) => {
+                if (!e.altKey) {
+                    this.worldController.SetBeepers(n);
+                }
+                else {
+                    this.worldController.AppendUnitToBeepers(n);
+                }
+            };
             let hotkeys = new Map([
                 [71, [[basic, () => { this.worldController.ToggleKarelPosition(true); }]]],
                 [80, [[basic, () => { this.worldController.ToggleKarelPosition(false); }]]],
@@ -31680,16 +31715,26 @@ var karel = (function (exports, bootstrap) {
                 ],
                 [81, [[basic, () => { this.worldController.ChangeBeepers(-1); }]]],
                 [69, [[basic, () => { this.worldController.ChangeBeepers(1); }]]],
-                [48, [[basic, () => { this.worldController.SetBeepers(0); }]]],
-                [49, [[basic, () => { this.worldController.SetBeepers(1); }]]],
-                [50, [[basic, () => { this.worldController.SetBeepers(2); }]]],
-                [51, [[basic, () => { this.worldController.SetBeepers(3); }]]],
-                [52, [[basic, () => { this.worldController.SetBeepers(4); }]]],
-                [53, [[basic, () => { this.worldController.SetBeepers(5); }]]],
-                [54, [[basic, () => { this.worldController.SetBeepers(6); }]]],
-                [55, [[basic, () => { this.worldController.SetBeepers(7); }]]],
-                [56, [[basic, () => { this.worldController.SetBeepers(8); }]]],
-                [57, [[basic, () => { this.worldController.SetBeepers(9); }]]],
+                [48, [[beeper, () => { placeBeepers(0); }]]],
+                [49, [[beeper, () => { placeBeepers(1); }]]],
+                [50, [[beeper, () => { placeBeepers(2); }]]],
+                [51, [[beeper, () => { placeBeepers(3); }]]],
+                [52, [[beeper, () => { placeBeepers(4); }]]],
+                [53, [[beeper, () => { placeBeepers(5); }]]],
+                [54, [[beeper, () => { placeBeepers(6); }]]],
+                [55, [[beeper, () => { placeBeepers(7); }]]],
+                [56, [[beeper, () => { placeBeepers(8); }]]],
+                [57, [[beeper, () => { placeBeepers(9); }]]],
+                [96, [[beeper, () => { placeBeepers(0); }]]],
+                [97, [[beeper, () => { placeBeepers(1); }]]],
+                [98, [[beeper, () => { placeBeepers(2); }]]],
+                [99, [[beeper, () => { placeBeepers(3); }]]],
+                [100, [[beeper, () => { placeBeepers(4); }]]],
+                [101, [[beeper, () => { placeBeepers(5); }]]],
+                [102, [[beeper, () => { placeBeepers(6); }]]],
+                [103, [[beeper, () => { placeBeepers(7); }]]],
+                [104, [[beeper, () => { placeBeepers(8); }]]],
+                [105, [[beeper, () => { placeBeepers(9); }]]],
                 [67, [[basic, () => { $("#desktopSetAmmount").trigger("click"); }]]],
                 [87, [[basic, () => { this.worldController.ToggleWall("north"); }]]],
                 [68, [[basic, () => { this.worldController.ToggleWall("east"); }]]],
@@ -31726,6 +31771,10 @@ var karel = (function (exports, bootstrap) {
                 if (option[0].ctrl === "yes" && !e.ctrlKey)
                     continue;
                 if (option[0].ctrl === "no" && e.ctrlKey)
+                    continue;
+                if (option[0].alt === "yes" && !e.altKey)
+                    continue;
+                if (option[0].alt === "no" && e.altKey)
                     continue;
                 if (option[0].shift === "yes" && !e.shiftKey)
                     continue;

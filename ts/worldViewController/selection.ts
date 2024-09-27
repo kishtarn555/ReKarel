@@ -51,6 +51,17 @@ export class CellSelection {
             c: this.c + (this.cols-1)*this.dc, 
         }
     }
+
+    forEach(callback:((r:number, c:number)=>void)) {
+        for (let i = 0; i < this.rows; i++) {
+            for (let j =0; j < this.cols; j++) {
+                callback(
+                    (this.r + i * this.dr),
+                    (this.c + j * this.dc),
+                )
+            }
+        }
+    }
 }
 
 
