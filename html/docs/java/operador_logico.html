@@ -17,12 +17,14 @@
 <p>Por ejemplo, si tenemos el siguiente pseudo-código, entonces la condicional se comportará de acuerdo a la tabla de
     abajo</p>
 
-<div class="border p-2">
-    <span class="text-primary-emphasis">if</span> (<span class="text-warning-emphasis">condicion1</span> <span
-        style="color:#77a1d5">&&</span> <span class="text-warning-emphasis">condicion2</span>)
-    <br>
-    <pre style="display: inline;">    </pre><span class="text-info-emphasis">INSTRUCCION</span>
-</div>
+
+<code class="text-body">
+<pre class="border p-2">
+<span class="text-primary-emphasis">if</span> (<span class="text-warning-emphasis">condicion1</span> <span
+ style="color:#77a1d5">&&</span> <span class="text-warning-emphasis">condicion2</span>)
+    <span class="text-info-emphasis">INSTRUCCION</span>
+</pre>
+</code>
 
 <table class="table table-dark table-striped">
     <tr>
@@ -59,8 +61,8 @@
 <p>El operador && emplea evaluación de cortocircuito, es decir, si el primer termino da falso, ya no se evalúa el segundo.</p>
 
 <p>Veamos un ejemplo:</p>
-<div class="border p-2">
-<pre>
+<code class="text-body">
+<pre class="border p-2">
 <span class="text-danger-emphasis">import</span> rekarel.globals;
 <span class="text-danger-emphasis">class</span> program {
     <span class="text-primary-emphasis">bool</span> dejaVerdadero() {
@@ -78,7 +80,7 @@
     }
 }
 </pre>
-</div>
+</code>
 
 <p>Produce el siguiente efecto (ve como nunca se llamó a la función <em>dejaVerdadero</em>):</p>
 
@@ -97,12 +99,13 @@
 <p>Por ejemplo, si tenemos el siguiente pseudo-código, entonces la condicional se comportará de acuerdo a la tabla de
     abajo</p>
 
-<div class="border p-2">
-    <span class="text-primary-emphasis">if</span> (<span class="text-warning-emphasis">condicion1</span> <span
-        style="color:#77a1d5">||</span> <span class="text-warning-emphasis">condicion2</span>)
-    <br>
-    <pre style="display: inline;">    </pre><span class="text-info-emphasis">INSTRUCCION</span>
-</div>
+<code class="text-body">
+<pre class="border p-2">
+<span class="text-primary-emphasis">if</span> (<span class="text-warning-emphasis">condicion1</span> <span
+    style="color:#77a1d5">||</span> <span class="text-warning-emphasis">condicion2</span>)
+    <span class="text-info-emphasis">INSTRUCCION</span>
+</pre>
+</code>
 
 <table class="table table-dark table-striped">
     <tr>
@@ -139,8 +142,8 @@
 <p>El operador || emplea evaluación de cortocircuito, es decir, si el primer termino da verdadero, ya no se evalúa el segundo.</p>
 
 <p>Veamos un ejemplo:</p>
-<div class="border p-2">
-<pre>
+<code class="text-body">
+<pre class="border p-2">
 <span class="text-danger-emphasis">import</span> rekarel.globals;
 <span class="text-danger-emphasis">class</span> program {
     <span class="text-primary-emphasis">bool</span> dejaVerdadero() {
@@ -158,7 +161,7 @@
     }
 }
 </pre>
-</div>
+</code>
 
 <p>Produce el siguiente efecto (ve como nunca se llamó a la función <em>dejaFalso</em>):</p>
 
@@ -183,12 +186,13 @@
 
 <p>Por ejemplo, si tenemos el siguiente pseudo-código, entonces la condicional se comportará de acuerdo a la tabla de
     abajo</p>
-<div class="border p-2">
-    <span class="text-primary-emphasis">if</span> (<span class="text-warning-emphasis">condicion1</span> <span
-        style="color:#77a1d5">==</span> <span class="text-warning-emphasis">condicion2</span>)
-    <br>
-    <pre style="display: inline;">    </pre><span class="text-info-emphasis">INSTRUCCION</span>
-</div>
+<code class="text-body">
+<pre class="border p-2">
+<span class="text-primary-emphasis">if</span> (<span class="text-warning-emphasis">condicion1</span> <span
+    style="color:#77a1d5">==</span> <span class="text-warning-emphasis">condicion2</span>)
+    <span class="text-info-emphasis">INSTRUCCION</span>
+</pre>
+</code>
 
 <table class="table table-dark table-striped">
     <tr>
@@ -228,12 +232,13 @@
 <p>Por ejemplo, si tenemos el siguiente pseudo-código, entonces la condicional se comportará de acuerdo a la tabla de
     abajo</p>
 
-<div class="border p-2">
-    <span class="text-primary-emphasis">if</span> (<span style="color:#77a1d5">!</span><span
-        class="text-warning-emphasis">condicion</span>)
-    <br>
-    <pre style="display: inline;">    </pre><span class="text-info-emphasis">INSTRUCCION</span>
-</div>
+<code class="text-body">
+<pre class="border p-2">
+<span class="text-primary-emphasis">if</span> (<span style="color:#77a1d5">!</span><span
+    class="text-warning-emphasis">condicion</span>)
+    <span class="text-info-emphasis">INSTRUCCION</span>
+</pre>
+</code>
 
 <table class="table table-dark table-striped">
     <tr>
@@ -258,15 +263,16 @@
 
 <p>Por ejemplo, podemos hacer una condicion que se ejecute unicamente cuando exactamente una de dos condiciones sea cierta. Podemos lograr esto revisando que se cumpla al menos una de las condiciones y que no se cumplan ambas, lo cual en código se ve de la siguiente manera:</p>
 
-<div class="border p-2">
-    <span class="text-primary-emphasis">if</span> ((<span class="text-warning-emphasis">condicion1</span> <span
-        style="color:#77a1d5">||</span> <span class="text-warning-emphasis">condicion2</span>) <span
-        style="color:#77a1d5">&&</span> <span
-        style="color:#77a1d5">!</span>(<span class="text-warning-emphasis">condicion1</span> <span
-        style="color:#77a1d5">&&</span> <span class="text-warning-emphasis">condicion2</span>)) 
-    <br>
-    <pre style="display: inline;">    </pre><span class="text-info-emphasis">INSTRUCCION</span>
-</div>
+<code class="text-body">
+<pre class="border p-2">
+<span class="text-primary-emphasis">if</span> ((<span class="text-warning-emphasis">condicion1</span> <span
+    style="color:#77a1d5">||</span> <span class="text-warning-emphasis">condicion2</span>) <span
+    style="color:#77a1d5">&&</span> <span
+    style="color:#77a1d5">!</span>(<span class="text-warning-emphasis">condicion1</span> <span
+    style="color:#77a1d5">&&</span> <span class="text-warning-emphasis">condicion2</span>)) 
+    <span class="text-info-emphasis">INSTRUCCION</span>
+</pre>
+</code>
 
 <table class="table table-dark table-striped">
     <tr>
