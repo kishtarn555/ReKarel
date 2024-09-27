@@ -20,6 +20,7 @@ export const SepiaTheme: EditorTheme = {
         { tag: tags.blockComment, color: "#973d1a", fontStyle: "italic" },
         { tag: tags.comment, color: "#973d1a", fontStyle: "italic" },
         { tag: tags.function(tags.variableName), color: "#1f34a1" },
+        { tag: tags.constant(tags.variableName), color: "#a1789a" },
       ])),
       EditorView.theme({
         '&.cm-focused .cm-selectionBackground, ::selection' : {
