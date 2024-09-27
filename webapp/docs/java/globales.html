@@ -196,59 +196,93 @@
                 </div>
             </div>
             <div class="col-12 col-lg-9 col-xl-10">
-<h1>Condicionales If</h1>
-<p>Las condicionales permiten a Karel ejecutar cierto código dependiendo de una condición.</p>
 
-<h2>Condicional sencillo</h2>
-<p>El primer condicional es el sencillo, este ejecuta una <span class="text-info-emphasis">INSTRUCCION</span>
-    dependiendo si se cumple una <span class="text-warning-emphasis">CONDICION</span>. Si la condición no se cumple, la
-    instrucción
-    es simplemente saltada.</p>
-<div class="border p-2">
-    <span class="text-primary-emphasis">if</span> (<span class="text-warning-emphasis">CONDICION</span>)
-    <br>
-    <pre style="display: inline;">    </pre><span class="text-info-emphasis">INSTRUCCION</span>
+<div class="position-relative visually-hidden">
+    <a href="#" tabindex="-1" class="visually-hidden" id="inicio" data-toc="Inicio" data-toc-depth="1"></a>
 </div>
-<p>Por ejemplo, el siguiente código solo avanza si enfrente de Karel no hay una pared, si el frente
-    de Karel esta libre:</p>
-<div class="border p-2">
+<h1>Globales</h1>
+<a class="badge text-bg-secondary rounded-pill text-decoration-none" title="Requiere importar rekarel.globals"
+    href="import.html">
+    import rekarel.globals
+</a>
+<span class="badge text-bg-info rounded-pill" title="Esta funcionalidad esta disponible desde ReKarel Java 2.0.0">
+    Desde ReKarel 2.0.0
+</span>
 
-    <span class="text-primary-emphasis">if</span> (<span class="text-warning-emphasis">frontIsClear</span>)
-    <br>
-    <pre style="display: inline;">    </pre><span class="text-info-emphasis">avanza;</span>
+<p><a href="import.html">Importando</a> la librería <em class="text-warning-emphasis">rekarel.globals</em>, uno puede obtener acceso a varias globales
+    descritas abajo.</p>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Nombre</th>
+            <th>Tipo</th>
+            <th>Descripción</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>beeperBag</td>
+            <td>Numérica</td>
+            <td>Igual a la cantidad de zumbadores en la mochila de Karel.</td>
+        </tr>
+        <tr>
+            <td>floorBeepers</td>
+            <td>Numérica</td>
+            <td>Igual a la cantidad de zumbadores en la casilla donde se encuentra Karel.</td>
+        </tr>
+        <tr>
+            <td>true</td>
+            <td>Condición</td>
+            <td>Siempre es verdadera.</td>
+        </tr>
+        <tr>
+            <td>false</td>
+            <td>Condición</td>
+            <td>Siempre es falsa.</td>
+        </tr>
+    </tbody>
+</table>
+
+<div class="position-relative visually-hidden">
+    <a href="#" tabindex="-1" class="visually-hidden" id="ejemplo" data-toc="Ejemplo" data-toc-depth="1"></a>
 </div>
-<p>Puedes revisar la lista completa de condiciones completa <a class="text-info" href="#"
-        onclick="showNav('v-pills-conditions')">aquí</a></p>
+<h2>Ejemplo</h2>
 
-<h2>Else</h2>
-<p>Podemos hacer que la sentencia ejecute una instrucción si se cumple la condicion y si no, que
-    ejecute otra. Esto lo hacemo usando el else</p>
-<div class="border p-2">
-    <span class="text-primary-emphasis">if</span> (<span class="text-warning-emphasis">CONDICION</span>)
-    <br>
-    <pre style="display: inline;">    </pre><span class="text-info-emphasis">INSTRUCCION</span>
-    <br>
-    <span class="text-primary-emphasis">else</span>
-    <br>
-    <pre style="display: inline;">    </pre><span class="text-info-emphasis">INSTRUCCION</span>
-</div>
-<p>Por ejemplo, el siguiente código solo avanza si enfrente de Karel no hay una pared, si no da
-    media vuelta:</p>
-<div class="border p-2">
-
-    <span class="text-primary-emphasis">if</span> (<span class="text-warning-emphasis">frontIsClear</span> )
-    <br>
-    <pre style="display: inline;">    </pre><span class="text-info-emphasis">move</span>();
-    <br>
-    <span class="text-primary-emphasis">else</span>
-    <span class="text-danger-emphasis"> {</span>
-    <br>
-    <pre style="display: inline;">    </pre><span class="text-info-emphasis">turnleft</span>();
-    <br>
-    <pre style="display: inline;">    </pre><span class="text-info-emphasis">turnleft</span>();
-    <br>
+<code class="text-body">
+<pre class="border p-2">
+<span class="text-danger-emphasis">import</span> <span class="text-warning-emphasis">rekarel</span>.<span class="text-warning-emphasis">globals</span>;
+<span class="text-danger-emphasis">class</span> program <span class="text-danger-emphasis">{</span>
+    <span class="text-primary-emphasis">program</span> () <span class="text-danger-emphasis">{</span>
+        <span class="text-success-emphasis">// Deja todos los zumbadores de la mochila</span>
+        <span class="text-primary-emphasis">iterate</span> (<span class="text-warning-emphasis">beeperBag</span>)
+            <span class="text-info-emphasis">putbeeper</span>();
+        <span class="text-success-emphasis">// Nunca se ejecuta, por lo que no hay un error de ejecución</span>
+        <span class="text-primary-emphasis">if</span> (<span class="text-warning-emphasis">false</span>)
+            <span class="text-info-emphasis">putbeeper</span>();
+        <span class="text-info-emphasis">move</span>();
+        <span class="text-success-emphasis">// Gira tantas veces como zumbadores en el piso</span>
+        <span class="text-primary-emphasis">iterate</span> (<span class="text-warning-emphasis">floorBeepers</span>)
+            <span class="text-info-emphasis">turnleft</span>();
+        <span class="text-info-emphasis">move</span>();
+        <span class="text-success-emphasis">//Este ciclo se ejecuta siempre, hasta que no sea detenido desde adentro con un break o similar</span>
+        <span class="text-primary-emphasis">while</span> (<span class="text-warning-emphasis">true</span>) <span class="text-danger-emphasis">{</span>
+            <span class="text-primary-emphasis">if</span>(<span class="text-warning-emphasis">nextToABeeper</span>) <span class="text-danger-emphasis">{</span>
+                <span class="text-primary-emphasis">break</span>;
+            <span class="text-danger-emphasis">}</span>
+            <span class="text-info-emphasis">move</span>();
+        <span class="text-danger-emphasis">}</span>
+        <span class="text-info-emphasis">turnoff</span>();
     <span class="text-danger-emphasis">}</span>
+<span class="text-danger-emphasis">}</span>
+</pre>
+</code>
+
+
+<div class="text-center mb-3">
+    <img src="../../img/docs/globals/example.png" alt="Deja un solo zumbador" class="img-thumbnail">
 </div>
+
                 
                     <hr class="mt-4 mb-2">
                     <div class="row mb-4">
