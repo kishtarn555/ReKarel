@@ -30684,6 +30684,25 @@ var karel = (function (exports, bootstrap) {
             history.EndOperation();
             this.Update();
         }
+        DivideBeepers(divider) {
+            const history = KarelController.GetInstance().GetHistory();
+            const op = history.StartOperation();
+            this.selection.forEach((r, c) => {
+                let beepers = this.karelController.world.buzzers(r, c);
+                if (beepers === -1) {
+                    // Skip infinity beepers
+                    return;
+                }
+                let nextBeepers = Math.trunc(beepers / divider);
+                op.addCommit({
+                    forward: () => this.karelController.world.setBuzzers(r, c, nextBeepers),
+                    backward: () => this.karelController.world.setBuzzers(r, c, beepers),
+                });
+                this.karelController.world.setBuzzers(r, c, nextBeepers);
+            });
+            history.EndOperation();
+            this.Update();
+        }
         SetCellEvaluation(state) {
             const world = this.karelController.world;
             let rmin = Math.min(this.selection.r, this.selection.r + (this.selection.rows - 1) * this.selection.dr);
@@ -31694,6 +31713,7 @@ var karel = (function (exports, bootstrap) {
             const overrideShift = new Set([37, 38, 39, 40]);
             const basic = { shift: "optional", ctrl: "no", alt: "no" };
             const ctrl = { shift: "yes", ctrl: "yes", alt: "no" };
+            const altBasic = { shift: "optional", ctrl: "no", alt: "yes" };
             const beeper = { shift: "optional", ctrl: "no", alt: "optional" };
             let placeBeepers = (n) => {
                 if (!e.altKey) {
@@ -31747,7 +31767,11 @@ var karel = (function (exports, bootstrap) {
                 [40, [[basic, () => { this.worldController.MoveSelection(-1, 0, e.shiftKey); }]]],
                 [84, [[basic, () => { this.worldController.SetBeepers(-1); }]]],
                 [86, [[basic, () => { this.worldController.SetCellEvaluation(false); }]]],
-                [8, [[basic, () => { this.worldController.RemoveEverything(); }]]],
+                [8, [
+                        [basic, () => { this.worldController.RemoveEverything(); }],
+                        [altBasic, () => { this.worldController.DivideBeepers(10); }]
+                    ]
+                ],
                 [46, [[basic, () => { this.worldController.RemoveEverything(); }]]],
                 [89, [[ctrl, () => { this.worldController.Redo(); }]]],
                 [90, [

@@ -289,7 +289,7 @@ class DesktopController {
         const basic:hotkeyMod = {shift:"optional", ctrl:"no", alt:"no"};
         const ctrl:hotkeyMod = {shift:"yes", ctrl:"yes", alt:"no"};
         const shift:hotkeyMod = {shift:"yes", ctrl:"no", alt:"no"};
-        const alt:hotkeyMod = {shift:"no", ctrl:"no", alt:"no"};
+        const altBasic:hotkeyMod = {shift:"optional", ctrl:"no", alt:"yes"};
         const beeper:hotkeyMod = {shift:"optional", ctrl:"no", alt:"optional"};
 
         let placeBeepers = (n: number) => {
@@ -344,12 +344,16 @@ class DesktopController {
             [40, [[basic, ()=>{this.worldController.MoveSelection(-1, 0, e.shiftKey);}]]],
             [84, [[basic, ()=>{this.worldController.SetBeepers(-1);}]]],
             [86, [[basic, ()=>{this.worldController.SetCellEvaluation(false);}]]],
-            [8,  [[basic, ()=>{this.worldController.RemoveEverything();}]]],
+            [8,  [
+                    [basic, ()=>{this.worldController.RemoveEverything();}],
+                    [altBasic, () => {this.worldController.DivideBeepers(10); }]
+                ]
+            ],
             [46, [[basic, ()=>{this.worldController.RemoveEverything();}]]],
             [89, [[ctrl, ()=>{this.worldController.Redo();}]]],
             [90, [
-                 [ctrl, ()=>{this.worldController.Undo();}],
-                 [basic, ()=>{this.worldController.SetCellEvaluation(true);}]
+                    [ctrl, ()=>{this.worldController.Undo();}],
+                    [basic, ()=>{this.worldController.SetCellEvaluation(true);}]
             ]],
             
         ]);
