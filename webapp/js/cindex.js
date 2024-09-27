@@ -31666,8 +31666,8 @@ var karel = (function (exports, bootstrap) {
                 return;
             }
             const overrideShift = new Set([37, 38, 39, 40]);
-            const basic = { shift: "optional", ctrl: "no" };
-            const ctrl = { shift: "no", ctrl: "yes" };
+            const basic = { shift: "optional", ctrl: "no", alt: "no" };
+            const ctrl = { shift: "yes", ctrl: "yes", alt: "no" };
             let hotkeys = new Map([
                 [71, [[basic, () => { this.worldController.ToggleKarelPosition(true); }]]],
                 [80, [[basic, () => { this.worldController.ToggleKarelPosition(false); }]]],
@@ -31726,6 +31726,10 @@ var karel = (function (exports, bootstrap) {
                 if (option[0].ctrl === "yes" && !e.ctrlKey)
                     continue;
                 if (option[0].ctrl === "no" && e.ctrlKey)
+                    continue;
+                if (option[0].alt === "yes" && !e.altKey)
+                    continue;
+                if (option[0].alt === "no" && e.altKey)
                     continue;
                 if (option[0].shift === "yes" && !e.shiftKey)
                     continue;

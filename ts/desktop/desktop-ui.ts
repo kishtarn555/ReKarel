@@ -285,10 +285,11 @@ class DesktopController {
         }
         const overrideShift = new Set<number>([37, 38, 39, 40]);
         type keyMod = "yes" | "no" | "optional";
-        type hotkeyMod = {shift:keyMod, ctrl: keyMod};
-        const basic:hotkeyMod = {shift:"optional", ctrl:"no"};
-        const ctrl:hotkeyMod = {shift:"no", ctrl:"yes"};
-        const shift:hotkeyMod = {shift:"yes", ctrl:"no"};
+        type hotkeyMod = {shift:keyMod, ctrl: keyMod, alt: keyMod};
+        const basic:hotkeyMod = {shift:"optional", ctrl:"no", alt:"no"};
+        const ctrl:hotkeyMod = {shift:"yes", ctrl:"yes", alt:"no"};
+        const shift:hotkeyMod = {shift:"yes", ctrl:"no", alt:"no"};
+        const alt:hotkeyMod = {shift:"no", ctrl:"no", alt:"no"};
 
         let hotkeys = new Map<number, [hotkeyMod,()=>void][]>([
             [71,[[basic, ()=>{this.worldController.ToggleKarelPosition(true);}]]],
@@ -350,7 +351,9 @@ class DesktopController {
         for (let option of options) {
             if (option[0].ctrl === "yes" && !e.ctrlKey) continue;
             if (option[0].ctrl === "no" && e.ctrlKey) continue;
-
+            
+            if (option[0].alt === "yes" && !e.altKey) continue;
+            if (option[0].alt === "no" && e.altKey) continue;
             
             if (option[0].shift === "yes" && !e.shiftKey) continue;
             if (option[0].shift === "no" && e.shiftKey) continue;
