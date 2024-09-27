@@ -32007,28 +32007,27 @@ var karel = (function (exports, bootstrap) {
     }
 
     let defaultFileName = "world.in";
-    function setWorldData(data, modal) {
-        $(modal.worldData).val(data);
+    function setWorldData(data, textBox, btn) {
+        $(textBox).val(data);
         let blob = new Blob([data], { type: 'text/plain' });
-        $(modal.confirmBtn).attr("href", window.URL.createObjectURL(blob));
+        $(btn).attr("href", window.URL.createObjectURL(blob));
     }
     function setInputWorld(modal, karelController) {
         defaultFileName = "world.in";
-        const filename = $(modal.inputField).val();
-        $(modal.inputField).val(filename.replace(/\.out$/, ".in"));
+        const filename = $(modal.nameField).val();
+        $(modal.nameField).val(filename.replace(/\.out$/, ".in"));
         setFileNameLink(modal);
         const input = karelController.world.save("start");
-        $(modal.worldData).val(input);
-        setWorldData(input, modal);
+        setWorldData(input, modal.worldDataIn, modal.inputBtn);
     }
     function setOutputWorld(modal, karelController) {
         defaultFileName = "world.out";
-        const filename = $(modal.inputField).val();
-        $(modal.inputField).val(filename.replace(/\.in$/, ".out"));
+        const filename = $(modal.nameField).val();
+        $(modal.nameField).val(filename.replace(/\.in$/, ".out"));
         setFileNameLink(modal);
         let result = KarelController.GetInstance().Compile(false);
         let output;
-        $(modal.worldData).val("Procesando...");
+        $(modal.worldDataOut).val("Procesando...");
         if (result == null) {
             output = "ERROR DE COMPILACION";
         }
@@ -32040,27 +32039,29 @@ var karel = (function (exports, bootstrap) {
                 else {
                     output = karelController.world.output();
                 }
-                $(modal.worldData).val(output);
-                setWorldData(output, modal);
+                setWorldData(output, modal.worldDataOut, modal.outputBtn);
             });
         }
     }
     const fileRegex = /^[a-zA-Z0-9._]+$/;
     function setFileNameLink(modal) {
-        let newFilename = $(modal.inputField).val();
+        let newFilename = $(modal.nameField).val();
         if (!fileRegex.test(newFilename)) {
-            $(modal.wrongWorldWaring).removeAttr("hidden");
+            $(modal.wrongNameWaring).removeAttr("hidden");
             newFilename = defaultFileName;
         }
         else {
-            $(modal.wrongWorldWaring).attr("hidden", "");
+            $(modal.wrongNameWaring).attr("hidden", "");
         }
-        $(modal.confirmBtn).attr("download", newFilename);
+        $(modal.inputBtn).attr("download", newFilename + ".in");
+        $(modal.outputBtn).attr("download", newFilename + ".out");
     }
     function HookWorldSaveModal(modal, karelController) {
-        $(modal.inputBtn).on("click", () => setInputWorld(modal, karelController));
-        $(modal.outputBtn).on("click", () => setOutputWorld(modal, karelController));
-        $(modal.inputField).on("change", () => { setFileNameLink(modal); });
+        $(modal.modal).on("show.bs.modal", () => {
+            setInputWorld(modal, karelController);
+            setOutputWorld(modal, karelController);
+        });
+        $(modal.nameField).on("change", () => { setFileNameLink(modal); });
     }
 
     function getCode(editor) {
@@ -33297,12 +33298,13 @@ var karel = (function (exports, bootstrap) {
             inputField: "#beeperCountInput",
         },
         wordSaveModal: {
+            modal: "#downloadWorldModal",
             inputBtn: "#downloadWorldIn",
             outputBtn: "#downloadWorldOut",
-            confirmBtn: "#saveWorldBtn",
-            inputField: "#worldName",
-            worldData: "#worldData",
-            wrongWorldWaring: "#wrongWorldName",
+            nameField: "#worldName",
+            worldDataIn: "#worldDataIn",
+            worldDataOut: "#worldDataOut",
+            wrongNameWaring: "#wrongWorldName",
         },
         navbar: {
             openCode: "#openCodeBtn",
