@@ -22,6 +22,7 @@ export const ReKarelHighlight: EditorTheme = {
         { tag: tags.blockComment, color: "#75b798", fontStyle: "italic" },
         { tag: tags.comment, color: "#75b798", fontStyle: "italic" },
         { tag: tags.function(tags.variableName), color: "#6edff6" },
+        { tag: tags.constant(tags.variableName), color: "#ffda6a" },
       ])),
       EditorView.theme({
         '&.cm-focused .cm-selectionBackground, ::selection' : {
@@ -52,6 +53,7 @@ export const LightReKarelHighlight: EditorTheme = {
         { tag: tags.blockComment, color: "#198754", fontStyle: "italic" },
         { tag: tags.comment, color: "#198754", fontStyle: "italic" },
         { tag: tags.function(tags.variableName), color: "#24a7db" },
+        { tag: tags.constant(tags.variableName), color: "#ff9c07" },
       ])),
       
     ]
