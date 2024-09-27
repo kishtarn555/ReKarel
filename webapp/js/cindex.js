@@ -31105,7 +31105,7 @@ var karel = (function (exports, bootstrap) {
         OnNewWorld(caller, world) {
             this.Select(1, 1, 1, 1);
             this.Update();
-            this.FocusOrigin();
+            this.FocusKarel();
             this.UpdateScrollElements();
         }
         NotifyBeeperBagUpdate(amount) {
@@ -31640,7 +31640,7 @@ var karel = (function (exports, bootstrap) {
             this.controlbar.Init();
             this.ConnectToolbar();
             this.ResizeCanvas();
-            this.worldController.FocusOrigin();
+            this.worldController.FocusKarel();
             this.ConnectConsole();
         }
         OnKarelControllerStateChange(sender, state) {

@@ -196,7 +196,7 @@ class DesktopController {
         this.ConnectToolbar();        
         
         this.ResizeCanvas();
-        this.worldController.FocusOrigin();
+        this.worldController.FocusKarel();
         this.ConnectConsole();
     }
 
