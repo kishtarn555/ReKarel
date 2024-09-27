@@ -81,10 +81,25 @@ export class CallStack {
             );
           });
           runtime.eventController.addEventListener('return', evt=> {            
-            if (evt.details.type === "return")
-              this.lastReturn.text(`Último valor retornado: ${evt.details.returnValue}`);
-            else
+            if (evt.details.type === "return") {
+              const returnType = karelController
+                .GetDebugData()
+                .definitions
+                .getFunction(evt.details.fromFunction)
+                .returnType;
+              if (returnType === "VOID") {
+                this.lastReturn.text("La última función no regresa ningún valor.");
+              } else if (returnType === "INT") {
+                this.lastReturn.text(`Último valor retornado: ${evt.details.returnValue}`);
+              } else if (returnType === "BOOL") {
+                this.lastReturn.text(`Último valor retornado: ${evt.details.returnValue === 0? "falso":"verdadero"}`);
+              } else {
+                this.lastReturn.text(`Último valor retornado: (tipo desconocido) ${evt.details.returnValue}`);
+
+              }
+            } else {
               this.lastReturn.text(`(ERROR INTERNO) Último valor retornado: ${runtime.state.ret}`);
+            }
             if (runtime.state.stackSize > MAX_STACK_SIZE) {
               this.panel.find('>:first-child').html(this.getCollapsedHTML(evt));
               return;
