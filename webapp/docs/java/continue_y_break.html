@@ -197,80 +197,77 @@
 <div class="position-relative visually-hidden">
     <a href="#" tabindex="-1" class="visually-hidden" id="inicio" data-toc="Inicio" data-toc-depth="1"></a>
 </div>
-<h1>Documentación de ReKarel Java</h1>
+<h1>Sentencia continue y break</h1>
+<span class="badge text-bg-info rounded-pill" title="Esta funcionalidad esta disponible desde ReKarel Java 2.0.0">
+    Desde ReKarel 2.0.0
+</span>
+
+<p>Existen dos sentencias para controlar el flujo de un ciclo desde su interior, estas son la sentencia <span class="text-primary-emphasis">continue</span> y <span class="text-primary-emphasis">break</span>.</p>
+
+<p>Debido a que estas sentencias controlan el flujo del ciclo en el que estén, solo pueden ser usadas desde el interior de un ciclo. Si se intentan utilizar afuera de algún ciclo, dará error de compilación. Se pueden usar en ambos ciclo, <a href="sentencia_iterate.html">iterate</a> y <a href="sentencia_while.html">while</a>.</p>
+
+<div class="position-relative visually-hidden">
+    <a href="#" tabindex="-1" class="visually-hidden" id="continue" data-toc="Continue" data-toc-depth="1"></a>
+</div>
+<h2>Continue</h2>
+<p>Esta sentencia permite saltarse directamente al inicio de la siguiente iteración del ciclo.</p>
+
+<p>Veamos un ejemplo, el siguiente código avanza y recoge los zumbadores hasta llegar a una pared</p>
 
 
-<p><b>ReKarel Java</b> es un lenguaje de programación utilizado para controlar a Karel el Robot. La sintaxis del lenguaje se basa en Java.</p>
+<code class="text-body">
+<pre class="border p-2">
+<span class="text-danger-emphasis">class</span> program {    
+    <span class="text-primary-emphasis">program</span> () {
+        <span class="text-primary-emphasis">while</span> (<span class="text-warning-emphasis">frontIsClear</span>) {
+            <span class="text-primary-emphasis">if</span> (<span class="text-warning-emphasis">nextToABeeper</span>) {
+                <span class="text-info-emphasis">pickbeeper</span>();
+                <span class="text-primary-emphasis">continue</span>;
+            }
+            <span class="text-info-emphasis">move</span>();
+        }
+    }
+}
+</pre>
+</code>
+
+<div class="text-center mb-3">
+    <img src="../../img/docs/ciclos/continue.png" alt="Quita todos los zumbadores hasta la pared" class="img-thumbnail">
+</div>
 
 
 <div class="position-relative visually-hidden">
-    <a href="#" tabindex="-1" class="visually-hidden" id="version" data-toc="Versión" data-toc-depth="1"></a>
+    <a href="#" tabindex="-1" class="visually-hidden" id="break" data-toc="Break" data-toc-depth="1"></a>
 </div>
-<h2>Versión</h2>
+<h2>Break</h2>
+<p>Esta sentencia termina el ciclo que se esta ejecutando. Una vez se ejecuta, ya no habrá más iteraciones del ciclo</p>
 
-<p>Esta documentación explica la version de <b>ReKarel Java 2</b>, que agrega características nuevas a comparación de Karel Java, puedes leer más <a href="../java/cambios.html">aquí</a>.</p> 
-
-<p>Mientras que la mayoría de códigos de Karel Java compilan en ReKarel-Java-2, no todos lo hacen por nuevas palabras clave.</p>
+<p>Veamos un ejemplo, el siguiente código avanza hasta que llegue a la pared o hasta que llegue a un zumbador</p>
 
 
-<div class="position-relative visually-hidden">
-    <a href="#" tabindex="-1" class="visually-hidden" id="tutorial" data-toc="Tutorial" data-toc-depth="1"></a>
+<code class="text-body">
+<pre class="border p-2">
+<span class="text-danger-emphasis">class</span> program {    
+    <span class="text-primary-emphasis">program</span> () {
+        <span class="text-primary-emphasis">while</span> (<span class="text-warning-emphasis">frontIsClear</span>) {
+            <span class="text-primary-emphasis">if</span> (<span class="text-warning-emphasis">nextToABeeper</span>) {
+                <span class="text-primary-emphasis">break</span>;
+            }
+            <span class="text-info-emphasis">move</span>();
+        }
+    }
+}
+</pre>
+</code>
+
+
+<div class="text-center mb-3">
+    <img src="../../img/docs/ciclos/break1.png" alt="No hay zumbadores, avanza hasta la pared" class="img-thumbnail">
 </div>
-<h2>Tutorial</h2>
-<p>Esta documentación no esta diseñada con el propósito explicito de enseñar a usar Karel o ReKarel Java, sino que está diseñada para aclarar dudas del lenguaje y usarlo como una referencia para consultas breves. Aunque es cierto que se puede utilizar con este propósito, recomendamos utilizar un tutorial o curso propio.</p>
 
-<p>Puedes ver un tutorial <a href="../java_tutorial" class="p-0 ps-1 pe-1">aquí</a></p>
-
-<div class="position-relative visually-hidden">
-    <a href="#" tabindex="-1" class="visually-hidden" id="explora" data-toc="Explora" data-toc-depth="1"></a>
+<div class="text-center mb-3">
+    <img src="../../img/docs/ciclos/break2.png" alt="Se detiene en un zumbador antes de la pared" class="img-thumbnail">
 </div>
-<h2>Explora</h2>
-
-<p>Recuerda que puedes navegar usando la barra latera derecha, accesible desde el menú en la barra de navegación superior.</p>
-
-<table class="table toc-container">
-    <tbody>
-        <tr><td>
-            <a href="instrucciones.html">Instrucciones</a>
-        </td></tr>
-        <tr><td>
-            <a href="sentencia_if.html">Condicionales: Sentencia if</a>
-        </td></tr>
-        <tr><td>
-            <a href="condiciones.html">Condiciones que Karel puede detectar</a>
-        </td></tr>
-        <tr><td>
-            <a href="operador_logico.html">Operadores lógicos</a>
-        </td></tr>
-        <tr><td>
-            <a href="jerarquia.html">Jerarquía de operaciones</a>
-        </td></tr>
-        <tr><td>
-            <a href="operador_comparativo.html">Operadores comparativos</a>
-        </td></tr>
-        <tr><td>
-            <a href="sentencia_iterate.html">Ciclo: Sentencia iterate</a>
-        </td></tr>
-        <tr><td>
-            <a href="sentencia_while.html">Ciclo: Sentencia while</a>
-        </td></tr>
-        <tr><td>
-            <a href="continue_y_break.html">Sentencia continue y break</a>
-        </td></tr>
-        <tr><td>
-            <a href="funciones.html">Funciones</a>
-        </td></tr>
-        <tr><td>
-            <a href="succ_y_pred.html">Succ y pred</a>
-        </td></tr>
-        <tr><td>
-            <a href="import.html">Imports</a>
-        </td></tr>
-        <tr><td>
-            <a href="globales.html">Globales</a>
-        </td></tr>
-    </tbody>
-</table>
 
                 
                     <hr class="mt-4 mb-2">
