@@ -207,11 +207,12 @@
 
 <p>Por ejemplo, el siguiente código deja 5 zumbadores, porque 4 + 1 = 5</p>
 
-<div class="border p-2">
-    <span class="text-primary-emphasis">iterate</span> (succ(<span class="text-warning-emphasis">4</span>)) <br>
-        
-        <pre style="display: inline;">    </pre><span class="text-info-emphasis">putbeeper</span>();
-</div>
+<code class="text-body">
+<pre class="border p-2">
+<span class="text-primary-emphasis">iterate</span> (succ(<span class="text-warning-emphasis">4</span>)) 
+    <span class="text-info-emphasis">putbeeper</span>();
+</pre>
+</code>
 
 
 <p>También se puede cambiar con parámetros. Una cosa importante a notar, el operador <b>nunca</b> modifica el valor de un parámetro. </p>
@@ -222,27 +223,29 @@
     <img src="../../img/help_sucede.png" alt="" class="img-thumbnail">
 </div>
 
-<div class="border p-2">
-    <span class="text-danger-emphasis">class program</span><span class="text-danger-emphasis"> {</span> <br>
-    <pre style="display: inline;">    </pre><span class="text-primary-emphasis">define</span> deja(<span class="text-warning-emphasis">n</span>) <span class="text-danger-emphasis"> {</span><br>
-    <pre style="display: inline;">        </pre><span class="text-primary-emphasis">iterate</span> (<span class="text-warning-emphasis">n</span>) <br>
-    <pre style="display: inline;">            </pre>putbeeper();<br>
-    <pre style="display: inline;">    </pre><span class="text-danger-emphasis">}</span><br>
-    <br>
-    <pre style="display: inline;">    </pre><span class="text-primary-emphasis">define</span> funcion(<span class="text-warning-emphasis">n</span>) <span class="text-danger-emphasis"> {</span><br>
-    <pre style="display: inline;">        </pre>deja(<span class="text-warning-emphasis">n</span>);<br>
-    <pre style="display: inline;">        </pre>move();<br>
-    <pre style="display: inline;">        </pre>deja(succ(<span class="text-warning-emphasis">n</span>));<br>
-    <pre style="display: inline;">        </pre>move();<br>
-    <pre style="display: inline;">        </pre>deja(<span class="text-warning-emphasis">n</span>);<br>
-    <pre style="display: inline;">    </pre><span class="text-danger-emphasis">}</span><br>
-    <br>
-    <pre style="display: inline;">    </pre><span class="text-danger-emphasis">program ()</span> <span class="text-danger-emphasis"> {</span><br>
-    <pre style="display: inline;">        </pre>funcion(<span class="text-warning-emphasis">5</span>);<br>
-    <pre style="display: inline;">        </pre>turnoff();<br>
-    <pre style="display: inline;">    </pre><span class="text-danger-emphasis">}</span><br>
+<code class="text-body">
+<pre class="border p-2">
+<span class="text-danger-emphasis">class program</span><span class="text-danger-emphasis"> {</span> 
+    <span class="text-primary-emphasis">define</span> deja(<span class="text-warning-emphasis">n</span>) <span class="text-danger-emphasis"> {</span>
+        <span class="text-primary-emphasis">iterate</span> (<span class="text-warning-emphasis">n</span>) 
+<pre style="display: inline;">            </pre>putbeeper();
     <span class="text-danger-emphasis">}</span>
-</div>
+
+    <span class="text-primary-emphasis">define</span> funcion(<span class="text-warning-emphasis">n</span>) <span class="text-danger-emphasis"> {</span>
+        deja(<span class="text-warning-emphasis">n</span>);
+        move();
+        deja(succ(<span class="text-warning-emphasis">n</span>));
+        move();
+        deja(<span class="text-warning-emphasis">n</span>);
+    <span class="text-danger-emphasis">}</span>
+
+    <span class="text-danger-emphasis">program ()</span> <span class="text-danger-emphasis"> {</span>
+        funcion(<span class="text-warning-emphasis">5</span>);
+        turnoff();
+    <span class="text-danger-emphasis">}</span>
+<span class="text-danger-emphasis">}</span>
+</pre>
+</code>
 
 <div class="position-relative visually-hidden">
     <a href="#" tabindex="-1" class="visually-hidden" id="precede" data-toc="Precede (Pred)" data-toc-depth="1"></a>
@@ -258,27 +261,29 @@
     <img src="../../img/help_precede.png" alt="" class="img-thumbnail">
 </div>
 
-<div class="border p-2">
-    <span class="text-danger-emphasis">class program</span><span class="text-danger-emphasis"> {</span> <br>
-    <pre style="display: inline;">    </pre><span class="text-primary-emphasis">define</span> deja(<span class="text-warning-emphasis">n</span>) <span class="text-danger-emphasis"> {</span><br>
-        <pre style="display: inline;">        </pre><span class="text-primary-emphasis">iterate</span> (<span class="text-warning-emphasis">n</span>) <br>
-        <pre style="display: inline;">            </pre>putbeeper();<br>
-        <pre style="display: inline;">    </pre><span class="text-danger-emphasis">}</span><br>
-    <br>
-    <pre style="display: inline;">    </pre><span class="text-primary-emphasis">define</span> funcion(<span class="text-warning-emphasis">n</span>) <span class="text-danger-emphasis"> {</span><br>
-    <pre style="display: inline;">        </pre>deja(<span class="text-warning-emphasis">n</span>);<br>
-    <pre style="display: inline;">        </pre>move();<br>
-    <pre style="display: inline;">        </pre>deja(pred(pred(<span class="text-warning-emphasis">n</span>)));<br>
-    <pre style="display: inline;">        </pre>move();<br>
-    <pre style="display: inline;">        </pre>deja(pred(<span class="text-warning-emphasis">n</span>));<br>
-    <pre style="display: inline;">    </pre><span class="text-danger-emphasis">}</span><br>
-    <br>
-    <pre style="display: inline;">    </pre><span class="text-danger-emphasis">program()</span><span class="text-danger-emphasis"> {</span><br>
-    <pre style="display: inline;">        </pre>funcion(<span class="text-warning-emphasis">5</span>);<br>
-    <pre style="display: inline;">        </pre>turnoff();<br>
-    <pre style="display: inline;">    </pre><span class="text-danger-emphasis">}</span><br>
+<code class="text-body">
+<pre class="border p-2">
+<span class="text-danger-emphasis">class program</span><span class="text-danger-emphasis"> {</span> 
+    <span class="text-primary-emphasis">define</span> deja(<span class="text-warning-emphasis">n</span>) <span class="text-danger-emphasis"> {</span>
+        <span class="text-primary-emphasis">iterate</span> (<span class="text-warning-emphasis">n</span>) 
+<pre style="display: inline;">            </pre>putbeeper();
     <span class="text-danger-emphasis">}</span>
-</div>
+
+    <span class="text-primary-emphasis">define</span> funcion(<span class="text-warning-emphasis">n</span>) <span class="text-danger-emphasis"> {</span>
+        deja(<span class="text-warning-emphasis">n</span>);
+        move();
+        deja(pred(pred(<span class="text-warning-emphasis">n</span>)));
+        move();
+        deja(pred(<span class="text-warning-emphasis">n</span>));
+    <span class="text-danger-emphasis">}</span>
+
+    <span class="text-danger-emphasis">program()</span><span class="text-danger-emphasis"> {</span>
+        funcion(<span class="text-warning-emphasis">5</span>);
+        turnoff();
+    <span class="text-danger-emphasis">}</span>
+<span class="text-danger-emphasis">}</span>
+</pre>
+</code>
 
 
 

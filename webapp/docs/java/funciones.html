@@ -207,36 +207,44 @@
 
 <p>Tienen la siguiente estructura</p>
 
-<div class="border p-2">
-    <span class="text-primary-emphasis">define </span> NOMBRE <span class="text-primary-emphasis"> () </span> <span class="text-danger-emphasis"> {</span> <br>
 
-    <pre style="display: inline;">  </pre><span class="text-info-emphasis">INSTRUCCION;</span><br>
-    <span class="text-danger-emphasis"> }</span>
-</div>    
+<code class="text-body">
+<pre class="border p-2">
+<span class="text-primary-emphasis">define </span> NOMBRE <span class="text-primary-emphasis"> () </span> <span class="text-danger-emphasis"> {</span>
+    <span class="text-secondary-emphasis">INSTRUCCIONES</span>
+<span class="text-danger-emphasis"> }</span>
+</pre>    
+</code>
+
 <p>A continuación se muestra un ejemplo de una función que gira a la derecha</p>
 
-<div class="border p-2">
-    <span class="text-danger-emphasis"> class program </span>{<br>
-    <pre style="display: inline;">  </pre><span class="text-primary-emphasis">define </span> giraDerecha () <span class="text-danger-emphasis"> {</span> <br>
-    <pre style="display: inline;">    </pre><span class="text-info-emphasis">turnleft</span>(); <br>
-    <pre style="display: inline;">    </pre><span class="text-info-emphasis">turnleft</span>(); <br>
-    <pre style="display: inline;">    </pre><span class="text-info-emphasis">turnleft</span>(); <br>
-    <pre style="display: inline;">  </pre><span class="text-danger-emphasis">}</span> <br>
-    <br>
-    <pre style="display: inline;">  </pre><span class="text-danger-emphasis">program ()</span><span class="text-danger-emphasis"> {</span> <br>
-    <pre style="display: inline;">    </pre>giraDerecha(); <br>
-    <pre style="display: inline;">    </pre><span class="text-info-emphasis">turnoff</span>() <br>
-    <pre style="display: inline;">  </pre><span class="text-danger-emphasis">} </span><br>
-    <span class="text-danger-emphasis">}</span> <br>
-</div>
+
+<code class="text-body">
+<pre class="border p-2">
+<span class="text-danger-emphasis"> class program </span>{
+    <span class="text-primary-emphasis">define </span> giraDerecha () <span class="text-danger-emphasis"> {</span> 
+        <span class="text-info-emphasis">turnleft</span>(); 
+        <span class="text-info-emphasis">turnleft</span>(); 
+        <span class="text-info-emphasis">turnleft</span>(); 
+    <span class="text-danger-emphasis">}</span> 
+
+    <span class="text-danger-emphasis">program ()</span><span class="text-danger-emphasis"> {</span> 
+        giraDerecha(); 
+        <span class="text-info-emphasis">turnoff</span>() 
+    <span class="text-danger-emphasis">} </span>
+<span class="text-danger-emphasis">}</span> 
+</pre>
+</code>
 
 <p>Alternativamente, se puede usar la palabra clave <span class="text-primary-emphasis">void</span> en vez de <span class="text-primary-emphasis">define</span></span></p>
-<div class="border p-2">
-    <span class="text-primary-emphasis">void </span> NOMBRE <span class="text-primary-emphasis"> () </span> <span class="text-danger-emphasis"> {</span> <br>
 
-    <pre style="display: inline;">  </pre><span class="text-info-emphasis">INSTRUCCION;</span><br>
-    <span class="text-danger-emphasis"> }</span>
-</div>  
+<code class="text-body">
+<pre class="border p-2">
+<span class="text-primary-emphasis">void </span> NOMBRE <span class="text-primary-emphasis"> () </span> <span class="text-danger-emphasis"> {</span>
+    <span class="text-secondary-emphasis">INSTRUCCIONES</span>
+<span class="text-danger-emphasis"> }</span>
+</pre>
+</code>
 
 
 <div class="position-relative visually-hidden">
@@ -316,15 +324,15 @@
 </div>
 
 <div class="position-relative visually-hidden">
-    <a href="#" tabindex="-1" class="visually-hidden" id="regreso" data-toc="Valor de regreso" data-toc-depth="1"></a>
+    <a href="#" tabindex="-1" class="visually-hidden" id="retorno" data-toc="Valor de retorno" data-toc-depth="1"></a>
 </div>
-<h2>Valor de regreso</h2>
+<h2>Valor de retorno</h2>
 <span class="badge text-bg-info rounded-pill" title="Esta funcionalidad esta disponible desde ReKarel Java 2.0.0">
     Desde ReKarel 2.0.0
 </span>
-<p>Las funciones en Karel además pueden tener un valor de regreso, este puede ser una cantidad numérica, o una condición booleana.</p>
+<p>Las funciones en Karel además pueden tener un valor de retorno, este puede ser una cantidad numérica o una condición booleana.</p>
 
-<p>Para usar un valor de regreso necesitamos cambiar la definición de la instrucción para que incluya el tipo de dato a ser regresado por la función:</p>
+<p>Para usar un valor de retorno necesitamos cambiar la definición de la instrucción para que incluya el tipo de dato a ser retornado por la función:</p>
 
 
 <code class="text-body">
@@ -335,14 +343,14 @@
 </pre>
 </code>
 
-<p>Una vez se especifica el tipo, se regresa el valor usando la setencia <span class="bg-secondary-subtle border rounded ps-1 pe-1 text-nowrap"><span class="text-primary-emphasis">return</span> <span class="text-warning-emphasis">valor</span>;</span>. Todo los flujos de la función deben retornar un valor.</p>
+<p>Una vez se especifica el tipo, se retorna el valor usando la sentencia <span class="bg-secondary-subtle border rounded ps-1 pe-1 text-nowrap"><span class="text-primary-emphasis">return</span> <span class="text-warning-emphasis">valor</span>;</span>. Todo los flujos de la función deben retornar un valor.</p>
 
 <div class="position-relative visually-hidden">
     <a href="#" tabindex="-1" class="visually-hidden" id="entero" data-toc="Entero" data-toc-depth="2"></a>
 </div>
-<h3>Valor de regreso entero</h3>
+<h3>Valor de retorno entero</h3>
 
-<p>Para regresar un tipo entero basta con definir la instrucción de tipo <span class="text-primary-emphasis">int</span>.</p>
+<p>Para retornar un tipo entero basta con definir la instrucción de tipo <span class="text-primary-emphasis">int</span>.</p>
 
 <p>Veamos un ejemplo de un código que se orienta al norte.</p>
 
@@ -363,7 +371,7 @@
         <span class="text-primary-emphasis">return</span> <span class="text-warning-emphasis">3</span>;
     }
     <span class="text-primary-emphasis">program</span> () {
-        <span class="text-success-emphasis">// Usa la llamada como un número, gira tantas veces como regrese alNorte</span>
+        <span class="text-success-emphasis">// Usa la llamada como un número, gira tantas veces como retorne alNorte</span>
         <span class="text-primary-emphasis">iterate</span> (alNorte()) {
             <span class="text-info-emphasis">turnleft</span>();
         }
@@ -375,9 +383,9 @@
 <div class="position-relative visually-hidden">
     <a href="#" tabindex="-1" class="visually-hidden" id="bool" data-toc="Booleano" data-toc-depth="2"></a>
 </div>
-<h3>Valor de regreso booleano</h3>
+<h3>Valor de retorno booleano</h3>
 
-<p>Para regresar un tipo booleano, es decir, que sea verdadero o falso, se usa el tipo <span class="text-primary-emphasis">bool</span>.</p>
+<p>Para retornar un tipo booleano, es decir, que sea verdadero o falso, se usa el tipo <span class="text-primary-emphasis">bool</span>.</p>
 
 <p>Veamos un ejemplo de un código quita los zumbadores si estos son 1, 3 o 5.</p>
 
