@@ -6,6 +6,7 @@ import clean  from 'gulp-clean'
 import * as manifest from './package.json'  with { type: "json" }
 
 const mainPath = "html/index.html"
+const resourcesPath = "resources/"
 const mainPathDist = "webapp/"
 
 const docs = [
@@ -32,6 +33,12 @@ gulp.task('bundle-html', ()=> {
             }
         }))
     .pipe(gulp.dest(mainPathDist))
+    
+})
+
+gulp.task('bundle-resources', ()=> {
+    return gulp.src(docs, { base: 'resources' })
+        .pipe(gulp.dest(paths.build));
     
 })
 
@@ -145,5 +152,5 @@ gulp.task('copy-license', () => {
         .pipe(gulp.dest(`${paths.build}`));
 });
 
- gulp.task('default', gulp.series('bundle-html', 'clean-docs', 'bundle-docs'));
+ gulp.task('default', gulp.series('bundle-html', 'clean-docs', 'bundle-docs', 'bundle-resources'));
  gulp.task('build', gulp.series('clean', 'copy-html', 'copy-js', 'copy-img', 'copy-css','copy-license'));
