@@ -41,6 +41,9 @@
             <div id="Container" class="flex-grow-1 m-0 p-0">
                 <div class="h-100 w-100 d-flex flex-column">
                     @@include('./navbar.html')
+                    @@if (longVersion.includes('beta') || longVersion.includes('alpha')) {
+                    <div class="bg-danger text-center"><span class="h5">Versión experimental</span> @@longVersion</div>
+                    }
                     @@include('./desktop/app.html')
                     @@include('./phone/app.html')
                 </div>
