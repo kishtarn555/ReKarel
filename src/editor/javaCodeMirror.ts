@@ -41,7 +41,9 @@ let javaWithContext = javaparser.configure({
             Return: t.controlKeyword,
             Import: t.keyword,
             Globals: t.constant(t.variableName),
-            Modules: t.constant(t.variableName)
+            Modules: t.constant(t.variableName),
+            Annotation: t.constant(t.variableName),
+            Annotation2: t.constant(t.variableName),
 
         }),
         indentNodeProp.add({
