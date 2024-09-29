@@ -183,22 +183,22 @@ Ifzero {
  }
 DefineType { 
     @specialize<Identifier, "define-nueva-instruccion">
-    | @specialize<Identifier, "define-instruccion-entera">  
-    | @specialize<Identifier, "define-instruccion-booleana">  
     | @specialize<Identifier, "define-condicion">  
+    | @specialize<Identifier, "define-calculo">  
     | @specialize<Identifier, "define">  
 
-    | @specialize<Identifier, "define-nueva-instrucción">
-    | @specialize<Identifier, "define-instrucción-entera">  
-    | @specialize<Identifier, "define-instrucción-booleana">  
+    | @specialize<Identifier, "define-nueva-instrucción"> 
     | @specialize<Identifier, "define-condición">  
+    | @specialize<Identifier, "define-cálculo">  
 }
 PrototipoType { 
     @specialize<Identifier, "define-prototipo-instruccion"> 
-    | @specialize<Identifier, "define-prototipo-entero"> 
-    | @specialize<Identifier, "define-prototipo-booleano"> 
+    | @specialize<Identifier, "define-prototipo-calculo"> 
+    | @specialize<Identifier, "define-prototipo-condicion"> 
 
-    | @specialize<Identifier, "define-prototipo-instrucción"> 
+    | @specialize<Identifier, "define-prototipo-instrucción">  
+    | @specialize<Identifier, "define-prototipo-cálculo"> 
+    | @specialize<Identifier, "define-prototipo-condición">
 }
 
 And { 
