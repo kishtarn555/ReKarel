@@ -29475,6 +29475,9 @@ var karel = (function (exports, bootstrap) {
         }
     });
     function underlineError(view, line, from, to) {
+        if (from === to) {
+            return;
+        }
         let real_from = view.state.doc.line(line).from + from;
         let real_to = view.state.doc.line(line).from + to;
         let effects = [parseErrorState.of({ from: real_from, to: real_to })];
