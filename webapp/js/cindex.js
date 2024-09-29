@@ -31585,6 +31585,45 @@ var karel = (function (exports, bootstrap) {
         }
     }
 
+    class ToastController {
+        constructor(ui) {
+            this.compileSuccess = new bootstrap.Toast(ui.compileSuccess[0]);
+            this.compileError = new bootstrap.Toast(ui.compileError[0]);
+            this.breakpoint = new bootstrap.Toast(ui.breakpoint[0]);
+            this.runtimeError = new bootstrap.Toast(ui.runtimeError[0]);
+            this.runtimeSuccess = new bootstrap.Toast(ui.runtimeSuccess[0]);
+            KarelController.GetInstance().RegisterCompileObserver((_, success, __) => {
+                try {
+                    if (success) {
+                        this.compileSuccess.show();
+                    }
+                    else {
+                        this.compileError.show();
+                    }
+                }
+                catch (e) {
+                    console.log(e);
+                }
+            });
+            KarelController.GetInstance().RegisterStateChangeObserver((_, state) => {
+                try {
+                    if (state !== "finished") {
+                        return;
+                    }
+                    if (KarelController.GetInstance().EndedOnError()) {
+                        this.runtimeError.show();
+                    }
+                    else {
+                        this.runtimeSuccess.show();
+                    }
+                }
+                catch (e) {
+                    console.log(e);
+                }
+            });
+        }
+    }
+
     class DesktopController {
         constructor(elements, karelController) {
             this.editor = elements.desktopEditor;
@@ -31610,6 +31649,7 @@ var karel = (function (exports, bootstrap) {
             this.isControlInPlayMode = false;
             this.callStack = new CallStack(elements.callStack);
             this.controlbar = new ControlBar(elements.controlBar, this.worldController);
+            this.toasts = new ToastController(elements.toast);
             DesktopController._instance = this;
         }
         static GetInstance() {
@@ -33142,6 +33182,13 @@ var karel = (function (exports, bootstrap) {
             panel: $("#stackPanel"),
             lastReturn: $("#lastReturn")
         },
+        toast: {
+            breakpoint: $("#toast-breakpoint"),
+            compileError: $("#toast-compile-error"),
+            compileSuccess: $("#toast-compile-success"),
+            runtimeError: $("#toast-runtime-error"),
+            runtimeSuccess: $("#toast-runtime-success"),
+        }
     }, karelController);
     new MobileUI({
         controls: {

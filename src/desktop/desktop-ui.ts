@@ -15,6 +15,7 @@ import { GetCurrentSetting } from '../settings';
 import { FocusBar, FocusToolbar } from './focusBar';
 import { WorldBar, WorldToolbarData } from './worldToolbar';
 import { EvaluateToolbar } from './evaluate';
+import { ToastController, ToastUI } from './toast';
 
 
 type InputModeToolbar = {
@@ -22,10 +23,6 @@ type InputModeToolbar = {
     alternate:JQuery,
     drag:JQuery
 }
-
-
-
-
 
 interface DesktopElements {
     desktopEditor: EditorView
@@ -42,7 +39,8 @@ interface DesktopElements {
     evaluate: EvaluateToolbar,
     context: ContextMenuData,
     console: ConsoleTab,
-    callStack: CallStackUI
+    callStack: CallStackUI,
+    toast: ToastUI
 };
 
 class DesktopController {
@@ -77,6 +75,8 @@ class DesktopController {
 
     console:KarelConsole
     callStack: CallStack
+
+    toasts: ToastController
 
     private isControlInPlayMode: boolean
     private static _instance: DesktopController
@@ -124,6 +124,7 @@ class DesktopController {
         this.isControlInPlayMode = false;
         this.callStack = new CallStack(elements.callStack);
         this.controlbar = new ControlBar(elements.controlBar, this.worldController);
+        this.toasts = new ToastController(elements.toast)
 
         DesktopController._instance = this;
 

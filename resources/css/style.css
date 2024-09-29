@@ -299,3 +299,21 @@ pre.error-popup {
         display: none;
     }
 }
+
+
+
+.toast-danger {
+    color: #fff!important;
+    background-color: RGBA(var(--bs-danger-rgb), 0.8)!important;
+}
+
+.toast-success {
+    color: #fff!important;
+    background-color: RGBA(var(--bs-success-rgb), 0.8)!important;
+}
+
+.toast-primary {
+    color: #fff!important;
+    background-color: RGBA(var(--bs-primary-rgb), 0.85)!important;
+}
+

@@ -217,6 +217,13 @@ let DesktopUI = new DesktopController(
             panel : $("#stackPanel"),
             lastReturn: $("#lastReturn")
         },
+        toast: {
+            breakpoint: $("#toast-breakpoint"),
+            compileError: $("#toast-compile-error"),
+            compileSuccess: $("#toast-compile-success"),
+            runtimeError: $("#toast-runtime-error"),
+            runtimeSuccess: $("#toast-runtime-success"),
+        }
     },
     karelController
 );
