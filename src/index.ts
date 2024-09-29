@@ -12,7 +12,6 @@ import { HookSession, RestoreSession } from "./session";
 import { RegisterHighlightListeners } from "./editor/editor.listeners";
 import { editorJava2pascal, editorPascal2Java } from "./editor/transpiler";
 import { MobileUI } from "./mobile/mobile";
-import bootstrap from "bootstrap";
 
 
 let KarelWorld: World = new World(100, 100);
@@ -218,6 +217,13 @@ let DesktopUI = new DesktopController(
             panel : $("#stackPanel"),
             lastReturn: $("#lastReturn")
         },
+        toast: {
+            breakpoint: $("#toast-breakpoint"),
+            compileError: $("#toast-compile-error"),
+            compileSuccess: $("#toast-compile-success"),
+            runtimeError: $("#toast-runtime-error"),
+            runtimeSuccess: $("#toast-runtime-success"),
+        }
     },
     karelController
 );
@@ -446,9 +452,6 @@ $(document).ready(() => {
     DesktopUI.Init();
     StartSettings(DesktopUI);
     RestoreSession();
-    $(".toast").each(function( index ) {
-      bootstrap.Toast.getOrCreateInstance($(this)[0]).show()
-    });
 })
 
 export const GetKarelController = KarelController.GetInstance;
