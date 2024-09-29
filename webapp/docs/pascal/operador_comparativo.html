@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Documentación</title>
+    <link rel="shortcut icon" href="../../img/karel-up.svg" type="image/x-icon">
+    <link rel="stylesheet" href="../../css/docsStyle.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <!-- TODO: Move this into a stylesheet -->
+</head>
+
+<body data-bs-theme="light" data-root="..">
+    <div class="sticky-top shadow-sm bg-body-tertiary">
+        <nav class="navbar">
+            <div class="container-md">
+                <a class="navbar-brand" href="..">Documentación ReKarel</a>
+                <div class="d-inline ms-auto me-2 form-check form-switch">
+                    <label class="form-check-label" for="dayLightSet">
+                        <i class="bi bi-brightness-high-fill" id="dayLightIcon"></i>
+                        <span class="visually-hidden">Modo claro o oscuro</span>
+                    </label>
+                    <input class="form-check-input" type="checkbox" role="switch" id="dayLightSet" title="Intercambiar el modo oscuro y claro">
+                </div>
+                <button class="navbar-toggler" type="button" data-bs-toggle="offcanvas"
+                    data-bs-target="#offcanvasNavbar" aria-controls="offcanvasNavbar" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasNavbar"
+                    aria-labelledby="offcanvasNavbarLabel">
+                    <div class="offcanvas-header">
+                        <h5 class="offcanvas-title" id="offcanvasNavbarLabel">Navegación</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+                    </div>
+                    <div class="offcanvas-body ps-0 pe-0" id="nav_list">
+                        <ul class="navbar-nav justify-content-end flex-grow-1">
+                            <li class="nav-item" id="intro_nav">
+                                <a class="nav-link active ps-3 pe-3" aria-current="page"
+                                    href="../">Introducción</a>
+                            </li>
+                            <!-- #region rekarel-->
+                            <li class="nav-item" data-end-crumb="rekarel">
+                                <a class="nav-link active ps-3 pe-3" aria-current="page"
+                                    href="../rekarel/">ReKarel</a>
+                            </li>
+                            <li class="nav-item">
+                                <div class="collapse bg-secondary-subtle" data-crumb="rekarel">
+                                    <ul class="dropdown-menu d-block bg-secondary-subtle border-0 rounded-0">
+                                        <li data-end-crumb="atajos"><a class="dropdown-item ps-3 pe-3"
+                                                href="../rekarel/atajos.html">Atajos de teclado</a></li>
+                                        <li>
+                                            <hr class="dropdown-divider">
+                                        </li>
+                                        <li data-end-crumb="migrar">
+                                            <a class="dropdown-item ps-3 pe-3"
+                                                href="../rekarel/migrar.html">Migrar desde Karel.js</a>
+                                        </li>
+                                        <li data-end-crumb="comparativa">
+                                            <a class="dropdown-item ps-3 pe-3"
+                                                href="../rekarel/comparativa.html">Comparativa con
+                                                Karel.js</a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </li>
+                            <!-- #endregion -->
+                            <!-- #region Java-->
+                            <li class="nav-item" data-end-crumb="java">
+                                <a class="nav-link active ps-3 pe-3" aria-current="page"
+                                    href="../java/">Java</a>
+                            </li>
+                            <li class="nav-item">
+                                <div class="collapse bg-secondary-subtle" data-crumb="java">
+                                    <ul class="dropdown-menu d-block bg-secondary-subtle border-0 rounded-0">
+                                        <li data-end-crumb="instrucciones"><a class="dropdown-item ps-3 pe-3"
+                                                href="../java/instrucciones.html">Instrucciones</a>
+                                        </li>
+                                        <li data-end-crumb="sentencia_if"><a class="dropdown-item ps-3 pe-3"
+                                                href="../java/sentencia_if.html">Sentencia if</a>
+                                        </li>
+                                        <li data-end-crumb="condiciones"><a class="dropdown-item ps-3 pe-3"
+                                                href="../java/condiciones.html">Condiciones</a>
+                                        </li>
+                                        <li data-end-crumb="operador_logico"><a class="dropdown-item ps-3 pe-3"
+                                                href="../java/operador_logico.html">Operador lógico</a>
+                                        </li>
+                                        <li data-end-crumb="operador_comparativo"><a class="dropdown-item ps-3 pe-3"
+                                                href="../java/operador_comparativo.html">Operador
+                                                comparativo</a>
+                                        </li>
+                                        <li data-end-crumb="jerarquia"><a class="dropdown-item ps-3 pe-3"
+                                                href="../java/jerarquia.html">Jerarquía de operaciones</a>
+                                        </li>
+                                        <li data-end-crumb="sentencia_iterate"><a class="dropdown-item ps-3 pe-3"
+                                                href="../java/sentencia_iterate.html">Sentencia iterate</a>
+                                        </li>
+                                        <li data-end-crumb="sentencia_while"><a class="dropdown-item ps-3 pe-3"
+                                                href="../java/sentencia_while.html">Sentencia while</a>
+                                        </li>
+                                        <li data-end-crumb="continue_y_break"><a class="dropdown-item ps-3 pe-3"
+                                                href="../java/continue_y_break.html">Sentencia continue y break</a>
+                                        </li>
+                                        <li data-end-crumb="funciones"><a class="dropdown-item ps-3 pe-3"
+                                                href="../java/funciones.html">Funciones</a>
+                                        </li>
+                                        <li data-end-crumb="succ_y_pred"><a class="dropdown-item ps-3 pe-3"
+                                                href="../java/succ_y_pred.html">Succ y pred</a>
+                                        </li>                                        
+                                        <li data-end-crumb="import"><a class="dropdown-item ps-3 pe-3"
+                                                href="../java/import.html">Import</a>
+                                        </li>
+                                        <li data-end-crumb="globales"><a class="dropdown-item ps-3 pe-3"
+                                                href="../java/globales.html">Globales</a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </li>
+                            <!-- #endregion -->
+                             <!-- #region Pascal-->
+                            <li class="nav-item" data-end-crumb="pascal">
+                                <a class="nav-link active ps-3 pe-3" aria-current="page"
+                                    href="../pascal/">Pascal</a>
+                            </li>
+                            <li class="nav-item">
+                                <div class="collapse bg-secondary-subtle" data-crumb="pascal">
+                                    <ul class="dropdown-menu d-block bg-secondary-subtle border-0 rounded-0">
+                                        <li data-end-crumb="instrucciones"><a class="dropdown-item ps-3 pe-3"
+                                                href="../pascal/instrucciones.html">Instrucciones</a>
+                                        </li>
+                                        <li data-end-crumb="sentencia_si"><a class="dropdown-item ps-3 pe-3"
+                                                href="../pascal/sentencia_si.html">Sentencia si</a>
+                                        </li>
+                                        <li data-end-crumb="condiciones"><a class="dropdown-item ps-3 pe-3"
+                                                href="../pascal/condiciones.html">Condiciones</a>
+                                        </li>
+                                        <li data-end-crumb="operador_logico"><a class="dropdown-item ps-3 pe-3"
+                                                href="../pascal/operador_logico.html">Operador lógico</a>
+                                        </li>
+                                        <li data-end-crumb="operador_comparativo"><a class="dropdown-item ps-3 pe-3"
+                                                href="../pascal/operador_comparativo.html">Operador
+                                                comparativo</a>
+                                        </li>
+                                        <li data-end-crumb="jerarquia"><a class="dropdown-item ps-3 pe-3"
+                                                href="../pascal/jerarquia.html">Jerarquía de operaciones</a>
+                                        </li>
+                                        <li data-end-crumb="sentencia_repetir"><a class="dropdown-item ps-3 pe-3"
+                                                href="../pascal/sentencia_repetir.html">Sentencia repetir</a>
+                                        </li>
+                                        <li data-end-crumb="sentencia_mientras"><a class="dropdown-item ps-3 pe-3"
+                                                href="../pascal/sentencia_mientras.html">Sentencia mientras</a>
+                                        </li>
+                                        <li data-end-crumb="funciones"><a class="dropdown-item ps-3 pe-3"
+                                                href="../pascal/funciones.html">Funciones</a>
+                                        </li>
+                                        <li data-end-crumb="parametros"><a class="dropdown-item ps-3 pe-3"
+                                                href="../pascal/parametros.html">Parámetros</a>
+                                        </li>
+                                        <li data-end-crumb="sucede_y_precede"><a class="dropdown-item ps-3 pe-3"
+                                                href="../pascal/sucede_y_precede.html">Sucede y precede</a>
+                                        </li>
+                                        <li data-end-crumb="globales"><a class="dropdown-item ps-3 pe-3"
+                                                href="../pascal/globales.html">Globales</a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </li>
+                            <!-- #endregion -->
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </nav>
+        <nav aria-label="breadcrumb" class="bg-body-secondary">
+            <div class="container-md">
+                <ol class="breadcrumb breadcrumb-chevron p-2 pb-1 pt-1" id="breadcrumb">
+                    <li class="breadcrumb-item">
+                        <a href="../" class="link-body-emphasis text-decoration-none"><i
+                                class="bi bi-house-door-fill"></i></a>
+                    </li>
+                </ol>
+            </div>
+        </nav>
+    </div>
+
+    <div class="container-xl pt-4">
+        <div class="row">
+            <div class="col-12 col-lg-2 ">
+                <div class="position-sticky bottom-0 toc-container">
+                    <span class="h4">Contenido</span>
+                    <nav>
+                        <ul id="toc"></ul>
+                    </nav>
+                </div>
+            </div>
+            <div class="col-12 col-lg-9 col-xl-10">
+
+<div class="position-relative visually-hidden">
+    <a href="#" tabindex="-1" class="visually-hidden" id="inicio" data-toc="Inicio" data-toc-depth="1"></a>
+</div>
+<h1>Operadores de comparación</h1>
+<span class="badge text-bg-info rounded-pill" title="Esta funcionalidad esta disponible desde ReKarel Pascal 2.0.0">
+    Desde ReKarel 2.0.0
+</span>
+
+<p>Karel cuenta con tres operadores de comparaciones que le permite comparar valores en condicionales.</p>
+
+<div class="position-relative visually-hidden">
+    <a href="#" tabindex="-1" class="visually-hidden" id="menor_que" data-toc="Menor que (&lt;)" data-toc-depth="1"></a>
+</div>
+<h2>Menor que (&lt;)</h2>
+
+<p>El operador menor que <span class="text-bg-secondary border rounded ps-1 pe-1 text-nowrap">&lt;</span> permite comparar dos cantidades numéricas. Obtiene cierto si la primera cantidad es menor que la segunda.</p>
+
+<p>Veamos unos ejemplos</p>
+
+<code class="text-body" >
+<pre class="border p-2">
+<span class="text-success-emphasis">{ Verdadero, ejecuta el avanza }</span>
+<span class="text-primary-emphasis">si</span> <span class="text-warning-emphasis">3</span> <span style="color:#77a1d5">&lt;</span> <span class="text-warning-emphasis">5</span> <span class="text-primary-emphasis">entonces</span>
+    <span class="text-info-emphasis">avanza</span>;
+
+<span class="text-success-emphasis">{ Falso, no ejecuta el avanza }</span>
+<span class="text-primary-emphasis">si</span> <span class="text-warning-emphasis">6</span> <span style="color:#77a1d5">&lt;</span> <span class="text-warning-emphasis">2</span> <span class="text-primary-emphasis">entonces</span>
+    <span class="text-info-emphasis">avanza</span>;
+
+<span class="text-success-emphasis">{ Falso, no ejecuta el avanza }</span>
+<span class="text-primary-emphasis">si</span> <span class="text-warning-emphasis">4</span> <span style="color:#77a1d5">&lt;</span> <span class="text-warning-emphasis">4</span> <span class="text-primary-emphasis">entonces</span>
+    <span class="text-info-emphasis">avanza</span>;
+
+<span class="text-success-emphasis">{ Se pueden usar valores numericos mas complejos }</span>
+<span class="text-success-emphasis">{ Revisa que la cantidad de zumbadores en el suelo sea menor que el parametro n + 4 }</span>
+<span class="text-primary-emphasis">si</span> <span class="text-warning-emphasis">zumbadores-del-piso</span> <span style="color:#77a1d5">&lt;</span> sucede(<span class="text-warning-emphasis">n</span>, <span class="text-warning-emphasis">4</span>) <span class="text-primary-emphasis">entonces</span>
+    <span class="text-info-emphasis">avanza</span>;
+
+</pre>
+</code>
+
+
+<div class="position-relative visually-hidden">
+    <a href="#" tabindex="-1" class="visually-hidden" id="menor_igual_que" data-toc="Menor o igual que (&lt;=)" data-toc-depth="1"></a>
+</div>
+<h2>Menor o igual que (&lt;=)</h2>
+
+<p>El operador menor o igual que que <span class="text-bg-secondary border rounded ps-1 pe-1 text-nowrap">&lt;=</span> permite comparar dos cantidades numéricas. Obtiene cierto si la primera cantidad es menor que la segunda o también si tienen el mismo valor.</p>
+
+<p>Veamos unos ejemplos</p>
+
+<code class="text-body" >
+<pre class="border p-2">
+<span class="text-success-emphasis">{ Verdadero, ejecuta el avanza }</span>
+<span class="text-primary-emphasis">si</span> <span class="text-warning-emphasis">3</span> <span style="color:#77a1d5">&lt;=</span> <span class="text-warning-emphasis">5</span> <span class="text-primary-emphasis">entonces</span>
+    <span class="text-info-emphasis">avanza</span>;
+
+<span class="text-success-emphasis">{ Falso, no ejecuta el avanza }</span>
+<span class="text-primary-emphasis">si</span> <span class="text-warning-emphasis">6</span> <span style="color:#77a1d5">&lt;=</span> <span class="text-warning-emphasis">2</span> <span class="text-primary-emphasis">entonces</span>
+    <span class="text-info-emphasis">avanza</span>;
+
+<span class="text-success-emphasis">{ Verdadero, ejecuta el avanza }</span>
+<span class="text-primary-emphasis">si</span> <span class="text-warning-emphasis">4</span> <span style="color:#77a1d5">&lt;=</span> <span class="text-warning-emphasis">4</span> <span class="text-primary-emphasis">entonces</span>
+    <span class="text-info-emphasis">avanza</span>;
+
+<span class="text-success-emphasis">{ Se pueden usar valores numericos mas complejos }</span>
+<span class="text-success-emphasis">{ Revisa que la cantidad de zumbadores en el suelo sea menor o igual que el parametro n + 4 }</span>
+<span class="text-primary-emphasis">si</span> <span class="text-warning-emphasis">zumbadores-del-piso</span> <span style="color:#77a1d5">&lt;=</span> sucede(<span class="text-warning-emphasis">n</span>, <span class="text-warning-emphasis">4</span>) <span class="text-primary-emphasis">entonces</span>
+    <span class="text-info-emphasis">avanza</span>;
+
+</pre>
+</code>
+
+
+<div class="position-relative visually-hidden">
+    <a href="#" tabindex="-1" class="visually-hidden" id="igual_que" data-toc="Igual que (==)" data-toc-depth="1"></a>
+</div>
+<h2>Igual que (==)</h2>
+<div class="alert alert-info">
+    El operador igual que también funciona con condiciones, si estás buscando información de esto puedes leer más <a href="operador_logico.html#igualdad">aquí</a>.
+</div>
+
+<p>El operador igual que que <span class="text-bg-secondary border rounded ps-1 pe-1 text-nowrap">==</span> permite comparar dos valores. Obtiene cierto si el primer valor es igual que el segundo valor.</p>
+
+<p>Al igual que los otros dos operadores de comparación, este puede comparar cantidades contra cantidades, pero también condiciones contra condiciones. Los dos valores deben ser del mismo tipo, no puede comparar cantidades contra condiciones</p>
+
+<p>Veamos unos ejemplos numéricos:</p>
+
+<code class="text-body" >
+<pre class="border p-2">
+<span class="text-success-emphasis">{ Verdadero, ejecuta el avanza }</span>
+<span class="text-primary-emphasis">si</span> <span class="text-warning-emphasis">3</span> <span style="color:#77a1d5">==</span> <span class="text-warning-emphasis">3</span> <span class="text-primary-emphasis">entonces</span>
+    <span class="text-info-emphasis">avanza</span>;
+
+
+<span class="text-success-emphasis">{ Falso, no ejecuta el avanza }</span>
+<span class="text-primary-emphasis">si</span> <span class="text-warning-emphasis">6</span> <span style="color:#77a1d5">==</span> <span class="text-warning-emphasis">2</span> <span class="text-primary-emphasis">entonces</span>
+    <span class="text-info-emphasis">avanza</span>;
+
+<span class="text-success-emphasis">{ Se pueden usar valores numéricos mas complejos }</span>
+<span class="text-success-emphasis">{ Revisa que la cantidad de zumbadores en el suelo sea igual que el parametro n + 4 }</span>
+<span class="text-primary-emphasis">si</span> <span class="text-warning-emphasis">zumbadores-del-piso</span> <span style="color:#77a1d5">==</span> sucede(<span class="text-warning-emphasis">n</span>, <span class="text-warning-emphasis">4</span>) <span class="text-primary-emphasis">entonces</span>
+    <span class="text-info-emphasis">avanza</span>;
+
+</pre>
+</code>
+
+
+                
+                    <hr class="mt-4 mb-2">
+                    <div class="row mb-4">
+                        <div class="col text-center"><a href="../.." class="h5">Ir al IDE</a></div>
+                        <div class="col text-center"><a href="https://github.com/kishtarn555/ReKarel" class="h5"><i class="bi bi-github"></i>Repositorio</a></div>
+                    </div>
+                </div>                
+            </div>
+        </div>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+        <script src="../../js/docs.js?v=1"></script>
+    </body>
+</html>
