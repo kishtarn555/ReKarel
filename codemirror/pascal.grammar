@@ -193,10 +193,12 @@ DefineType {
 }
 PrototipoType { 
     @specialize<Identifier, "define-prototipo-instruccion"> 
-    | @specialize<Identifier, "define-prototipo-entero"> 
-    | @specialize<Identifier, "define-prototipo-booleano"> 
+    | @specialize<Identifier, "define-prototipo-calculo"> 
+    | @specialize<Identifier, "define-prototipo-condicion"> 
 
-    | @specialize<Identifier, "define-prototipo-instrucción"> 
+    | @specialize<Identifier, "define-prototipo-instrucción">  
+    | @specialize<Identifier, "define-prototipo-cálculo"> 
+    | @specialize<Identifier, "define-prototipo-condición">
 }
 
 And { 
