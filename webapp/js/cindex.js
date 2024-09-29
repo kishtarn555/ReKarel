@@ -33352,6 +33352,9 @@ var karel = (function (exports, bootstrap) {
         DesktopUI.Init();
         StartSettings(DesktopUI);
         RestoreSession();
+        $(".toast").each(function (index) {
+            bootstrap.Toast.getOrCreateInstance($(this)[0]).show();
+        });
     });
     const GetKarelController = KarelController.GetInstance;
     function MoveEditorCursorToLine(line, column = 0) {
