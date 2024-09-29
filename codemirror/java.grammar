@@ -197,7 +197,6 @@ Modules {
 
 @tokens {
   space { @whitespace+ }
-  Comment { "//" ![\n]* }
   Class { "class" }
   program { "program" }
   Identifier { $[a-zA-Z]$[a-zA-Z0-9_]*}
@@ -220,12 +219,21 @@ Modules {
 
 @skip { space | Comment | BlockComment }
 @skip { } {
-  BlockComment { "/*" (blockCommentContent | blockCommentNewline)* blockCommentEnd }
+  BlockComment { "/*" (Annotation | blockCommentContent | blockCommentNewline)* blockCommentEnd }
 }
 
 @local tokens {
   blockCommentEnd { "*/" }
   blockCommentNewline { "\n" }
+  Annotation { "@" @asciiLetter* }
   @else blockCommentContent
 }
+ @skip {} {
+    Comment { "//" (Annotation2 | commentContent)* commentEnd}
+ }
 
+ @local tokens {
+    commentEnd { "\n" }
+    Annotation2 { "@" @asciiLetter* }
+    @else commentContent
+  }
