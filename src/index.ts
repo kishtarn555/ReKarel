@@ -414,12 +414,13 @@ HookUpCommonUI(
 
         },
         wordSaveModal: {
+            modal: "#downloadWorldModal",
             inputBtn:"#downloadWorldIn",
-            outputBtn:"#downloadWorldOut",
-            confirmBtn:"#saveWorldBtn",
-            inputField:"#worldName",
-            worldData:"#worldData",
-            wrongWorldWaring:"#wrongWorldName",
+            outputBtn:"#downloadWorldOut",            
+            nameField:"#worldName",
+            worldDataIn:"#worldDataIn",
+            worldDataOut:"#worldDataOut",
+            wrongNameWaring:"#wrongWorldName",
         },
         navbar: {
             openCode: "#openCodeBtn",
