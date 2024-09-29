@@ -248,22 +248,24 @@ Modules {
 @skip {space | BlockComment | BlockComment2 }
 
 @skip { } {
-  BlockComment { "{" (blockCommentContent | blockCommentNewline)* blockCommentEnd }
+  BlockComment { "{" (Annotation | blockCommentContent | blockCommentNewline)* blockCommentEnd }
 }
 
 @local tokens {
   blockCommentEnd { "}" }
   blockCommentNewline { "\n" }
+  Annotation { "@" @asciiLetter* }
   @else blockCommentContent
 }
 
 
 @skip { } {
-  BlockComment2 { "(*" (blockCommentContent2 | blockCommentNewline2)* blockCommentEnd2 }
+  BlockComment2 { "(*" (Annotation2 | blockCommentContent2 | blockCommentNewline2)* blockCommentEnd2 }
 }
 
 @local tokens {
   blockCommentEnd2 { "*)" }
   blockCommentNewline2 { "\n" }
+  Annotation2 { "@" @asciiLetter* }
   @else blockCommentContent2
 }
