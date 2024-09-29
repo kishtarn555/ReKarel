@@ -23970,7 +23970,7 @@ var karel = (function (exports, bootstrap) {
     case 60: return 12; 
     }
     },
-    rules: [/^(?:\s+)/,/^(?:\/\/[^\n]*)/,/^(?:\/\*(?:[^*]|\*(?!\/))*\*\/)/,/^(?:class\b)/,/^(?:program\b)/,/^(?:define\b)/,/^(?:import\b)/,/^(?:void\b)/,/^(?:int\b)/,/^(?:bool\b)/,/^(?:return\b)/,/^(?:turnoff\b)/,/^(?:turnleft\b)/,/^(?:move\b)/,/^(?:pickbeeper\b)/,/^(?:putbeeper\b)/,/^(?:continue\b)/,/^(?:break\b)/,/^(?:while\b)/,/^(?:iterate\b)/,/^(?:pred\b)/,/^(?:succ\b)/,/^(?:iszero\b)/,/^(?:frontIsClear\b)/,/^(?:frontIsBlocked\b)/,/^(?:leftIsClear\b)/,/^(?:leftIsBlocked\b)/,/^(?:rightIsClear\b)/,/^(?:rightIsBlocked\b)/,/^(?:nextToABeeper\b)/,/^(?:notNextToABeeper\b)/,/^(?:anyBeepersInBeeperBag\b)/,/^(?:noBeepersInBeeperBag\b)/,/^(?:facingNorth\b)/,/^(?:facingSouth\b)/,/^(?:facingEast\b)/,/^(?:facingWest\b)/,/^(?:notFacingNorth\b)/,/^(?:notFacingSouth\b)/,/^(?:notFacingEast\b)/,/^(?:notFacingWest\b)/,/^(?:else\b)/,/^(?:if\b)/,/^(?:!)/,/^(?:\|\|)/,/^(?:&&)/,/^(?:&)/,/^(?:\()/,/^(?:\))/,/^(?:\{)/,/^(?:\})/,/^(?:;)/,/^(?:\.)/,/^(?:\*)/,/^(?:,)/,/^(?:==)/,/^(?:<=)/,/^(?:<)/,/^(?:[0-9]+)/,/^(?:[a-zA-Z][a-zA-Z0-9_]*)/,/^(?:$)/],
+    rules: [/^(?:\s+)/,/^(?:\/\/[^\n]*)/,/^(?:\/\*(?:[^*]|\*(?!\/))*\*\/)/,/^(?:class\b)/,/^(?:program\b)/,/^(?:define\b)/,/^(?:import\b)/,/^(?:void\b)/,/^(?:int\b)/,/^(?:bool\b)/,/^(?:return\b)/,/^(?:turnoff\b)/,/^(?:turnleft\b)/,/^(?:move\b)/,/^(?:pickbeeper\b)/,/^(?:putbeeper\b)/,/^(?:continue\b)/,/^(?:break\b)/,/^(?:while\b)/,/^(?:iterate\b)/,/^(?:pred\b)/,/^(?:succ\b)/,/^(?:iszero\b)/,/^(?:frontIsClear\b)/,/^(?:frontIsBlocked\b)/,/^(?:leftIsClear\b)/,/^(?:leftIsBlocked\b)/,/^(?:rightIsClear\b)/,/^(?:rightIsBlocked\b)/,/^(?:nextToABeeper\b)/,/^(?:notNextToABeeper\b)/,/^(?:anyBeepersInBeeperBag\b)/,/^(?:noBeepersInBeeperBag\b)/,/^(?:facingNorth\b)/,/^(?:facingSouth\b)/,/^(?:facingEast\b)/,/^(?:facingWest\b)/,/^(?:notFacingNorth\b)/,/^(?:notFacingSouth\b)/,/^(?:notFacingEast\b)/,/^(?:notFacingWest\b)/,/^(?:else\b)/,/^(?:if\b)/,/^(?:!)/,/^(?:\|\|)/,/^(?:&&)/,/^(?:&)/,/^(?:\()/,/^(?:\))/,/^(?:\{)/,/^(?:\})/,/^(?:;)/,/^(?:\.)/,/^(?:\*)/,/^(?:,)/,/^(?:==)/,/^(?:<=)/,/^(?:<)/,/^(?:[0-9]+)/,/^(?:[A-Za-zÀ-ÖØ-öø-ÿ_][A-Za-zÀ-ÖØ-öø-ÿ0-9_-]*)/,/^(?:$)/],
     conditions: {"INITIAL":{"rules":[0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60],"inclusive":true}}
     });
     return lexer;
@@ -25152,11 +25152,11 @@ var karel = (function (exports, bootstrap) {
     case 13: return 35; 
     case 14: return 35; 
     case 15: return 33; 
-    case 16: return 30; 
+    case 16: return 33; 
     case 17: return 30; 
-    case 18: return 34; 
-    case 19: return 31; 
-    case 20: return 31; 
+    case 18: return 30; 
+    case 19: return 34; 
+    case 20: return 34; 
     case 21: return 31; 
     case 22: return 31; 
     case 23: return 51; 
@@ -25227,7 +25227,7 @@ var karel = (function (exports, bootstrap) {
     break;
     }
     },
-    rules: [/^(?:\s+)/,/^(?:\{[^}]*\})/,/^(?:\(\*(?:[^*]|\*(?!\)))*\*\))/,/^(?:iniciar-programa)/,/^(?:inicia-ejecucion)/,/^(?:inicia-ejecución)/,/^(?:termina-ejecucion)/,/^(?:termina-ejecución)/,/^(?:finalizar-programa)/,/^(?:define-nueva-instruccion)/,/^(?:define-nueva-instrucción)/,/^(?:define)/,/^(?:usa)/,/^(?:define-prototipo-instruccion)/,/^(?:define-prototipo-instrucción)/,/^(?:define-prototipo-entero)/,/^(?:define-instrucción-entera)/,/^(?:define-instruccion-entera)/,/^(?:define-prototipo-booleano)/,/^(?:define-instrucción-booleana)/,/^(?:define-instruccion-booleana)/,/^(?:define-condicion)/,/^(?:define-condición)/,/^(?:sal-de-instruccion)/,/^(?:sal-de-instrucción)/,/^(?:regresa)/,/^(?:como)/,/^(?:apagate)/,/^(?:apágate)/,/^(?:gira-izquierda)/,/^(?:avanza)/,/^(?:coge-zumbador)/,/^(?:deja-zumbador)/,/^(?:continua)/,/^(?:continúa)/,/^(?:rompe)/,/^(?:inicio)/,/^(?:fin)/,/^(?:entonces)/,/^(?:mientras)/,/^(?:hacer)/,/^(?:repetir)/,/^(?:veces)/,/^(?:precede)/,/^(?:sucede)/,/^(?:si-es-cero)/,/^(?:es-cero)/,/^(?:frente-libre)/,/^(?:frente-bloqueado)/,/^(?:izquierda-libre)/,/^(?:izquierda-bloqueada)/,/^(?:derecha-libre)/,/^(?:derecha-bloqueada)/,/^(?:junto-a-zumbador)/,/^(?:no-junto-a-zumbador)/,/^(?:algun-zumbador-en-la-mochila)/,/^(?:algún-zumbador-en-la-mochila)/,/^(?:ningun-zumbador-en-la-mochila)/,/^(?:ningún-zumbador-en-la-mochila)/,/^(?:orientado-al-norte)/,/^(?:orientado-al-sur)/,/^(?:orientado-al-este)/,/^(?:orientado-al-oeste)/,/^(?:no-orientado-al-norte)/,/^(?:no-orientado-al-sur)/,/^(?:no-orientado-al-este)/,/^(?:no-orientado-al-oeste)/,/^(?:sino)/,/^(?:si-no)/,/^(?:si)/,/^(?:no)/,/^(?:o)/,/^(?:u)/,/^(?:y)/,/^(?:e)/,/^(?:\()/,/^(?:\))/,/^(?:;)/,/^(?:\.)/,/^(?:,)/,/^(?:\*)/,/^(?:==)/,/^(?:<=)/,/^(?:<)/,/^(?:[0-9]+)/,/^(?:[A-Za-zÀ-ÖØ-öø-ÿ_][A-Za-zÀ-ÖØ-öø-ÿ0-9_-]*)/,/^(?:$)/,/^(?:.)/],
+    rules: [/^(?:\s+)/,/^(?:\{[^}]*\})/,/^(?:\(\*(?:[^*]|\*(?!\)))*\*\))/,/^(?:iniciar-programa)/,/^(?:inicia-ejecucion)/,/^(?:inicia-ejecución)/,/^(?:termina-ejecucion)/,/^(?:termina-ejecución)/,/^(?:finalizar-programa)/,/^(?:define-nueva-instruccion)/,/^(?:define-nueva-instrucción)/,/^(?:define)/,/^(?:usa)/,/^(?:define-prototipo-instruccion)/,/^(?:define-prototipo-instrucción)/,/^(?:define-prototipo-calculo)/,/^(?:define-prototipo-cálculo)/,/^(?:define-calculo)/,/^(?:define-cálculo)/,/^(?:define-prototipo-condicion)/,/^(?:define-prototipo-condición)/,/^(?:define-condicion)/,/^(?:define-condición)/,/^(?:sal-de-instruccion)/,/^(?:sal-de-instrucción)/,/^(?:regresa)/,/^(?:como)/,/^(?:apagate)/,/^(?:apágate)/,/^(?:gira-izquierda)/,/^(?:avanza)/,/^(?:coge-zumbador)/,/^(?:deja-zumbador)/,/^(?:continua)/,/^(?:continúa)/,/^(?:rompe)/,/^(?:inicio)/,/^(?:fin)/,/^(?:entonces)/,/^(?:mientras)/,/^(?:hacer)/,/^(?:repetir)/,/^(?:veces)/,/^(?:precede)/,/^(?:sucede)/,/^(?:si-es-cero)/,/^(?:es-cero)/,/^(?:frente-libre)/,/^(?:frente-bloqueado)/,/^(?:izquierda-libre)/,/^(?:izquierda-bloqueada)/,/^(?:derecha-libre)/,/^(?:derecha-bloqueada)/,/^(?:junto-a-zumbador)/,/^(?:no-junto-a-zumbador)/,/^(?:algun-zumbador-en-la-mochila)/,/^(?:algún-zumbador-en-la-mochila)/,/^(?:ningun-zumbador-en-la-mochila)/,/^(?:ningún-zumbador-en-la-mochila)/,/^(?:orientado-al-norte)/,/^(?:orientado-al-sur)/,/^(?:orientado-al-este)/,/^(?:orientado-al-oeste)/,/^(?:no-orientado-al-norte)/,/^(?:no-orientado-al-sur)/,/^(?:no-orientado-al-este)/,/^(?:no-orientado-al-oeste)/,/^(?:sino)/,/^(?:si-no)/,/^(?:si)/,/^(?:no)/,/^(?:o)/,/^(?:u)/,/^(?:y)/,/^(?:e)/,/^(?:\()/,/^(?:\))/,/^(?:;)/,/^(?:\.)/,/^(?:,)/,/^(?:\*)/,/^(?:==)/,/^(?:<=)/,/^(?:<)/,/^(?:[0-9]+)/,/^(?:[A-Za-zÀ-ÖØ-öø-ÿ_][A-Za-zÀ-ÖØ-öø-ÿ0-9_-]*)/,/^(?:$)/,/^(?:.)/],
     conditions: {"INITIAL":{"rules":[0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,67,68,69,70,71,72,73,74,75,76,77,78,79,80,81,82,83,84,85,86,87],"inclusive":true}}
     });
     return lexer;
@@ -25366,8 +25366,9 @@ var karel = (function (exports, bootstrap) {
             Errors[Errors["UNARY_OPERATOR_TYPE_ERROR"] = 19] = "UNARY_OPERATOR_TYPE_ERROR";
             Errors[Errors["UNKNOWN_MODULE"] = 20] = "UNKNOWN_MODULE";
             Errors[Errors["UNKNOWN_PACKAGE"] = 21] = "UNKNOWN_PACKAGE";
-            Errors[Errors["UNKNOWN_VARIABLE"] = 22] = "UNKNOWN_VARIABLE";
-            Errors[Errors["VOID_COMPARISON"] = 23] = "VOID_COMPARISON";
+            Errors[Errors["UNKNOWN_SYNTAX"] = 22] = "UNKNOWN_SYNTAX";
+            Errors[Errors["UNKNOWN_VARIABLE"] = 23] = "UNKNOWN_VARIABLE";
+            Errors[Errors["VOID_COMPARISON"] = 24] = "VOID_COMPARISON";
         })(CompilationError.Errors || (CompilationError.Errors = {}));
     })(CompilationError || (CompilationError = {}));
 
@@ -26138,7 +26139,17 @@ var karel = (function (exports, bootstrap) {
                 compiler = pascalCompiler;
                 break;
             default:
-                return null;
+                let errorStatus = {
+                    error: CompilationError.Errors.UNKNOWN_SYNTAX,
+                    line: 0,
+                    loc: {
+                        first_column: 0, first_line: 1, last_column: 0, last_line: 1
+                    }
+                };
+                let error = new Error("Unknown syntax, the start of the file must be either 'class' or 'iniciar-programa'");
+                // @ts-ignore Adding extra error data
+                error.hash = errorStatus;
+                throw error;
         }
         const result = compiler(code, exportDebug);
         return result;
@@ -29464,6 +29475,9 @@ var karel = (function (exports, bootstrap) {
         }
     });
     function underlineError(view, line, from, to) {
+        if (from === to) {
+            return;
+        }
         let real_from = view.state.doc.line(line).from + from;
         let real_to = view.state.doc.line(line).from + to;
         let effects = [parseErrorState.of({ from: real_from, to: real_to })];
@@ -29769,6 +29783,9 @@ var karel = (function (exports, bootstrap) {
         }
         if (status.error === CompilationError.Errors.VOID_COMPARISON) {
             return `No se pueden comparar dos expresiones de tipo VOID.`;
+        }
+        if (status.error === CompilationError.Errors.UNKNOWN_SYNTAX) {
+            return "Error de compilación, no se puede reconocer el lenguaje";
         }
         return `Error de compilación desconocido:  ${JSON.stringify(status)}`;
     }

@@ -209,6 +209,9 @@ function decodeKnownError(status:CompilationError.ErrorStatus, lan : "java"|"pas
     if (status.error === CompilationError.Errors.VOID_COMPARISON) {
         return `No se pueden comparar dos expresiones de tipo VOID.`;
     }
+    if (status.error === CompilationError.Errors.UNKNOWN_SYNTAX) {
+        return "Error de compilación, no se puede reconocer el lenguaje";
+    }
     return `Error de compilación desconocido:  ${JSON.stringify(status)}`;
 
 }

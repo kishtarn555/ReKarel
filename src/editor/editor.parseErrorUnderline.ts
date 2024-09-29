@@ -40,6 +40,9 @@ const parseErrorState = StateEffect.define<{from: number, to: number}>({
   
   
   export function underlineError(view: EditorView, line:number, from:number, to:number) {
+    if (from === to) {
+      return;
+    }
     let real_from = view.state.doc.line(line).from + from;
     let real_to = view.state.doc.line(line).from + to;
     let effects:StateEffect<unknown>[] =  [parseErrorState.of({from:real_from, to:real_to})]
