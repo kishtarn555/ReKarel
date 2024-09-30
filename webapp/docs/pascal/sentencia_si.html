@@ -152,14 +152,17 @@
                                         <li data-end-crumb="sentencia_mientras"><a class="dropdown-item ps-3 pe-3"
                                                 href="../pascal/sentencia_mientras.html">Sentencia mientras</a>
                                         </li>
+                                        <li data-end-crumb="continua_y_rompe"><a class="dropdown-item ps-3 pe-3"
+                                                href="../pascal/continua_y_rompe.html">Sentencia continua y rompe</a>
+                                        </li>
                                         <li data-end-crumb="funciones"><a class="dropdown-item ps-3 pe-3"
                                                 href="../pascal/funciones.html">Funciones</a>
                                         </li>
-                                        <li data-end-crumb="parametros"><a class="dropdown-item ps-3 pe-3"
-                                                href="../pascal/parametros.html">Parámetros</a>
-                                        </li>
                                         <li data-end-crumb="sucede_y_precede"><a class="dropdown-item ps-3 pe-3"
                                                 href="../pascal/sucede_y_precede.html">Sucede y precede</a>
+                                        </li>
+                                        <li data-end-crumb="usa"><a class="dropdown-item ps-3 pe-3"
+                                                href="../pascal/usa.html">Usa</a>
                                         </li>
                                         <li data-end-crumb="globales"><a class="dropdown-item ps-3 pe-3"
                                                 href="../pascal/globales.html">Globales</a>
@@ -196,6 +199,9 @@
                 </div>
             </div>
             <div class="col-12 col-lg-9 col-xl-10">
+<div class="position-relative visually-hidden"></div>
+    <a href="#" tabindex="-1" class="visually-hidden" id="inicio" data-toc="Inicio" data-toc-depth="1"></a>
+</div>
 <h1>Sentencia si</h1>
 <p>Las condicionales permiten a Karel ejecutar cierto código dependiendo de una condición.</p>
 
@@ -222,6 +228,9 @@
 <p>Puedes revisar la lista completa de condiciones completa <a class="text-info" href="#"
         onclick="showNav('v-pills-conditions')">aquí</a></p>
 
+<div class="position-relative visually-hidden">
+    <a href="#" tabindex="-1" class="visually-hidden" id="sino" data-toc="Si-no" data-toc-depth="1"></a>
+</div>
 <h2>Si-no</h2>
 <p>Podemos hacer que la sentencia ejecute una instrucción si se cumple la condicion y si no, que
     ejecute otra. Esto lo hacemo usando el sino</p>
@@ -254,6 +263,8 @@
     <br>
     <span class="text-danger-emphasis">fin;</span>
 </div>
+
+<p>Puedes usar <span class="text-primary-emphasis">sino</span> o <span class="text-primary-emphasis">si-no</span>, ambos son aceptados.</p>
 <div class="alert alert-warning mt-2" role="alert">
     ¡Cuidado! La instrucción antes del sino <b>no</b> debe llevar punto y coma <b>;</b>
     De lo contrario, tendremos un error de compilación

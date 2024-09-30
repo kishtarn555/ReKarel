@@ -203,80 +203,110 @@
 <div class="position-relative visually-hidden">
     <a href="#" tabindex="-1" class="visually-hidden" id="inicio" data-toc="Inicio" data-toc-depth="1"></a>
 </div>
-<h1>Documentación de ReKarel Pascal</h1>
+<h1>Operadores de comparación</h1>
+<span class="badge text-bg-info rounded-pill" title="Esta funcionalidad esta disponible desde ReKarel Pascal 2.0.0">
+    Desde ReKarel 2.0.0
+</span>
 
+<p>Karel cuenta con tres operadores de comparaciones que le permite comparar valores en condicionales.</p>
 
-<p><b>ReKarel Pascal</b> es un lenguaje de programación utilizado para controlar a Karel el Robot. La sintaxis del lenguaje se basa en Pascal.</p>
+<div class="position-relative visually-hidden">
+    <a href="#" tabindex="-1" class="visually-hidden" id="menor_que" data-toc="Menor que (&lt;)" data-toc-depth="1"></a>
+</div>
+<h2>Menor que (&lt;)</h2>
+
+<p>El operador menor que <span class="text-bg-secondary border rounded ps-1 pe-1 text-nowrap">&lt;</span> permite comparar dos cantidades numéricas. Obtiene cierto si la primera cantidad es menor que la segunda.</p>
+
+<p>Veamos unos ejemplos</p>
+
+<code class="text-body" >
+<pre class="border p-2">
+<span class="text-success-emphasis">{ Verdadero, ejecuta el avanza }</span>
+<span class="text-primary-emphasis">si</span> <span class="text-warning-emphasis">3</span> <span style="color:#77a1d5">&lt;</span> <span class="text-warning-emphasis">5</span> <span class="text-primary-emphasis">entonces</span>
+    <span class="text-info-emphasis">avanza</span>;
+
+<span class="text-success-emphasis">{ Falso, no ejecuta el avanza }</span>
+<span class="text-primary-emphasis">si</span> <span class="text-warning-emphasis">6</span> <span style="color:#77a1d5">&lt;</span> <span class="text-warning-emphasis">2</span> <span class="text-primary-emphasis">entonces</span>
+    <span class="text-info-emphasis">avanza</span>;
+
+<span class="text-success-emphasis">{ Falso, no ejecuta el avanza }</span>
+<span class="text-primary-emphasis">si</span> <span class="text-warning-emphasis">4</span> <span style="color:#77a1d5">&lt;</span> <span class="text-warning-emphasis">4</span> <span class="text-primary-emphasis">entonces</span>
+    <span class="text-info-emphasis">avanza</span>;
+
+<span class="text-success-emphasis">{ Se pueden usar valores numericos mas complejos }</span>
+<span class="text-success-emphasis">{ Revisa que la cantidad de zumbadores en el suelo sea menor que el parametro n + 4 }</span>
+<span class="text-primary-emphasis">si</span> <span class="text-warning-emphasis">zumbadores-del-piso</span> <span style="color:#77a1d5">&lt;</span> sucede(<span class="text-warning-emphasis">n</span>, <span class="text-warning-emphasis">4</span>) <span class="text-primary-emphasis">entonces</span>
+    <span class="text-info-emphasis">avanza</span>;
+
+</pre>
+</code>
 
 
 <div class="position-relative visually-hidden">
-    <a href="#" tabindex="-1" class="visually-hidden" id="version" data-toc="Versión" data-toc-depth="1"></a>
+    <a href="#" tabindex="-1" class="visually-hidden" id="menor_igual_que" data-toc="Menor o igual que (&lt;=)" data-toc-depth="1"></a>
 </div>
-<h2>Versión</h2>
+<h2>Menor o igual que (&lt;=)</h2>
 
-<p>Esta documentación explica la version de <b>ReKarel Pascal 2</b>, que agrega características nuevas a comparación de Karel Pascal, puedes leer más <a href="../pascal/cambios.html">aquí</a>.</p> 
+<p>El operador menor o igual que que <span class="text-bg-secondary border rounded ps-1 pe-1 text-nowrap">&lt;=</span> permite comparar dos cantidades numéricas. Obtiene cierto si la primera cantidad es menor que la segunda o también si tienen el mismo valor.</p>
 
-<p>Mientras que la mayoría de códigos de Karel Pascal compilan en ReKarel-Pascal-2, no todos lo hacen por nuevas palabras clave.</p>
+<p>Veamos unos ejemplos</p>
+
+<code class="text-body" >
+<pre class="border p-2">
+<span class="text-success-emphasis">{ Verdadero, ejecuta el avanza }</span>
+<span class="text-primary-emphasis">si</span> <span class="text-warning-emphasis">3</span> <span style="color:#77a1d5">&lt;=</span> <span class="text-warning-emphasis">5</span> <span class="text-primary-emphasis">entonces</span>
+    <span class="text-info-emphasis">avanza</span>;
+
+<span class="text-success-emphasis">{ Falso, no ejecuta el avanza }</span>
+<span class="text-primary-emphasis">si</span> <span class="text-warning-emphasis">6</span> <span style="color:#77a1d5">&lt;=</span> <span class="text-warning-emphasis">2</span> <span class="text-primary-emphasis">entonces</span>
+    <span class="text-info-emphasis">avanza</span>;
+
+<span class="text-success-emphasis">{ Verdadero, ejecuta el avanza }</span>
+<span class="text-primary-emphasis">si</span> <span class="text-warning-emphasis">4</span> <span style="color:#77a1d5">&lt;=</span> <span class="text-warning-emphasis">4</span> <span class="text-primary-emphasis">entonces</span>
+    <span class="text-info-emphasis">avanza</span>;
+
+<span class="text-success-emphasis">{ Se pueden usar valores numericos mas complejos }</span>
+<span class="text-success-emphasis">{ Revisa que la cantidad de zumbadores en el suelo sea menor o igual que el parametro n + 4 }</span>
+<span class="text-primary-emphasis">si</span> <span class="text-warning-emphasis">zumbadores-del-piso</span> <span style="color:#77a1d5">&lt;=</span> sucede(<span class="text-warning-emphasis">n</span>, <span class="text-warning-emphasis">4</span>) <span class="text-primary-emphasis">entonces</span>
+    <span class="text-info-emphasis">avanza</span>;
+
+</pre>
+</code>
 
 
 <div class="position-relative visually-hidden">
-    <a href="#" tabindex="-1" class="visually-hidden" id="tutorial" data-toc="Tutorial" data-toc-depth="1"></a>
+    <a href="#" tabindex="-1" class="visually-hidden" id="igual_que" data-toc="Igual que (==)" data-toc-depth="1"></a>
 </div>
-<h2>Tutorial</h2>
-<p>Esta documentación no esta diseñada con el propósito explicito de enseñar a usar Karel o ReKarel Pascal, sino que está diseñada para aclarar dudas del lenguaje y usarlo como una referencia para consultas breves. Aunque es cierto que se puede utilizar con este propósito, recomendamos utilizar un tutorial o curso propio.</p>
-
-<p>Puedes ver un tutorial <a href="../pascal_tutorial" class="p-0 ps-1 pe-1">aquí</a></p>
-
-<div class="position-relative visually-hidden">
-    <a href="#" tabindex="-1" class="visually-hidden" id="explora" data-toc="Explora" data-toc-depth="1"></a>
+<h2>Igual que (==)</h2>
+<div class="alert alert-info">
+    El operador igual que también funciona con condiciones, si estás buscando información de esto puedes leer más <a href="operador_logico.html#igualdad">aquí</a>.
 </div>
-<h2>Explora</h2>
 
-<p>Recuerda que puedes navegar usando la barra latera derecha, accesible desde el menú en la barra de navegación superior.</p>
+<p>El operador igual que que <span class="text-bg-secondary border rounded ps-1 pe-1 text-nowrap">==</span> permite comparar dos valores. Obtiene cierto si el primer valor es igual que el segundo valor.</p>
 
-<table class="table toc-container">
-    <tbody>
-        <tr><td>
-            <a href="instrucciones.html">Instrucciones</a>
-        </td></tr>
-        <tr><td>
-            <a href="sentencia_si.html">Condicionales: Sentencia si</a>
-        </td></tr>
-        <tr><td>
-            <a href="condiciones.html">Condiciones que Karel puede detectar</a>
-        </td></tr>
-        <tr><td>
-            <a href="operador_logico.html">Operadores lógicos</a>
-        </td></tr>
-        <tr><td>
-            <a href="operador_comparativo.html">Operadores comparativos</a>
-        </td></tr>
-        <tr><td>
-            <a href="jerarquia.html">Jerarquía de operaciones</a>
-        </td></tr>
-        <tr><td>
-            <a href="sentencia_repetir.html">Ciclo: Sentencia repetir</a>
-        </td></tr>
-        <tr><td>
-            <a href="sentencia_mientras.html">Ciclo: Sentencia mientras</a>
-        </td></tr>
-        <tr><td>
-            <a href="continua_y_rompe.html">Sentencia continua y rompe</a>
-        </td></tr>
-        <tr><td>
-            <a href="funciones.html">Funciones</a>
-        </td></tr>
-        <tr><td>
-            <a href="sucede_y_precede.html">Sucede y precede</a>
-        </td></tr>
-        <tr><td>
-            <a href="usa.html">Usa</a>
-        </td></tr>
-        <tr><td>
-            <a href="globales.html">Globales</a>
-        </td></tr>
-    </tbody>
-</table>
+<p>Al igual que los otros dos operadores de comparación, este puede comparar cantidades contra cantidades, pero también condiciones contra condiciones. Los dos valores deben ser del mismo tipo, no puede comparar cantidades contra condiciones</p>
+
+<p>Veamos unos ejemplos numéricos:</p>
+
+<code class="text-body" >
+<pre class="border p-2">
+<span class="text-success-emphasis">{ Verdadero, ejecuta el avanza }</span>
+<span class="text-primary-emphasis">si</span> <span class="text-warning-emphasis">3</span> <span style="color:#77a1d5">==</span> <span class="text-warning-emphasis">3</span> <span class="text-primary-emphasis">entonces</span>
+    <span class="text-info-emphasis">avanza</span>;
+
+
+<span class="text-success-emphasis">{ Falso, no ejecuta el avanza }</span>
+<span class="text-primary-emphasis">si</span> <span class="text-warning-emphasis">6</span> <span style="color:#77a1d5">==</span> <span class="text-warning-emphasis">2</span> <span class="text-primary-emphasis">entonces</span>
+    <span class="text-info-emphasis">avanza</span>;
+
+<span class="text-success-emphasis">{ Se pueden usar valores numéricos mas complejos }</span>
+<span class="text-success-emphasis">{ Revisa que la cantidad de zumbadores en el suelo sea igual que el parametro n + 4 }</span>
+<span class="text-primary-emphasis">si</span> <span class="text-warning-emphasis">zumbadores-del-piso</span> <span style="color:#77a1d5">==</span> sucede(<span class="text-warning-emphasis">n</span>, <span class="text-warning-emphasis">4</span>) <span class="text-primary-emphasis">entonces</span>
+    <span class="text-info-emphasis">avanza</span>;
+
+</pre>
+</code>
+
 
                 
                     <hr class="mt-4 mb-2">

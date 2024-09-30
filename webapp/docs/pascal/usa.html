@@ -203,80 +203,35 @@
 <div class="position-relative visually-hidden">
     <a href="#" tabindex="-1" class="visually-hidden" id="inicio" data-toc="Inicio" data-toc-depth="1"></a>
 </div>
-<h1>Documentación de ReKarel Pascal</h1>
+<h1>Usa</h1>
+<span class="badge text-bg-info rounded-pill" title="Esta funcionalidad esta disponible desde ReKarel Pascal 2.0.0">
+    Desde ReKarel 2.0.0
+</span>
+
+<p>ReKarel es capar de importar librerías internas para incrementar las funciones que Karel puede realizar.</p>
+
+<p>Para importar una librería, en la parte más superior del código se debe escribir <code>usa</code> seguido del nombre de la librería, el cual tiene un formato de <code>namespace</code>.<code>paquete</code></p>
+
+<p>Veamos un ejemplo:</p>
 
 
-<p><b>ReKarel Pascal</b> es un lenguaje de programación utilizado para controlar a Karel el Robot. La sintaxis del lenguaje se basa en Pascal.</p>
-
+<code class="text-body" >
+<pre class="border p-2">
+<span class="text-danger-emphasis">usa</span> <span class="text-warning-emphasis">rekarel</span>.<span class="text-warning-emphasis">globales</span>;
+<span class="text-danger-emphasis">iniciar-programa</span>
+    <span class="text-danger-emphasis">inicia-ejecucion</span>
+        <span class="text-info-emphasis">apagate</span>;
+    <span class="text-danger-emphasis">termina-ejecucion</span>
+<span class="text-danger-emphasis">finalizar-programa</span>
+</pre>
+</code>
 
 <div class="position-relative visually-hidden">
-    <a href="#" tabindex="-1" class="visually-hidden" id="version" data-toc="Versión" data-toc-depth="1"></a>
+    <a href="#" tabindex="-1" class="visually-hidden" id="disponibles" data-toc="Librerías disponibles" data-toc-depth="1"></a>
 </div>
-<h2>Versión</h2>
+<h2>Librerías disponibles</h2>
 
-<p>Esta documentación explica la version de <b>ReKarel Pascal 2</b>, que agrega características nuevas a comparación de Karel Pascal, puedes leer más <a href="../pascal/cambios.html">aquí</a>.</p> 
-
-<p>Mientras que la mayoría de códigos de Karel Pascal compilan en ReKarel-Pascal-2, no todos lo hacen por nuevas palabras clave.</p>
-
-
-<div class="position-relative visually-hidden">
-    <a href="#" tabindex="-1" class="visually-hidden" id="tutorial" data-toc="Tutorial" data-toc-depth="1"></a>
-</div>
-<h2>Tutorial</h2>
-<p>Esta documentación no esta diseñada con el propósito explicito de enseñar a usar Karel o ReKarel Pascal, sino que está diseñada para aclarar dudas del lenguaje y usarlo como una referencia para consultas breves. Aunque es cierto que se puede utilizar con este propósito, recomendamos utilizar un tutorial o curso propio.</p>
-
-<p>Puedes ver un tutorial <a href="../pascal_tutorial" class="p-0 ps-1 pe-1">aquí</a></p>
-
-<div class="position-relative visually-hidden">
-    <a href="#" tabindex="-1" class="visually-hidden" id="explora" data-toc="Explora" data-toc-depth="1"></a>
-</div>
-<h2>Explora</h2>
-
-<p>Recuerda que puedes navegar usando la barra latera derecha, accesible desde el menú en la barra de navegación superior.</p>
-
-<table class="table toc-container">
-    <tbody>
-        <tr><td>
-            <a href="instrucciones.html">Instrucciones</a>
-        </td></tr>
-        <tr><td>
-            <a href="sentencia_si.html">Condicionales: Sentencia si</a>
-        </td></tr>
-        <tr><td>
-            <a href="condiciones.html">Condiciones que Karel puede detectar</a>
-        </td></tr>
-        <tr><td>
-            <a href="operador_logico.html">Operadores lógicos</a>
-        </td></tr>
-        <tr><td>
-            <a href="operador_comparativo.html">Operadores comparativos</a>
-        </td></tr>
-        <tr><td>
-            <a href="jerarquia.html">Jerarquía de operaciones</a>
-        </td></tr>
-        <tr><td>
-            <a href="sentencia_repetir.html">Ciclo: Sentencia repetir</a>
-        </td></tr>
-        <tr><td>
-            <a href="sentencia_mientras.html">Ciclo: Sentencia mientras</a>
-        </td></tr>
-        <tr><td>
-            <a href="continua_y_rompe.html">Sentencia continua y rompe</a>
-        </td></tr>
-        <tr><td>
-            <a href="funciones.html">Funciones</a>
-        </td></tr>
-        <tr><td>
-            <a href="sucede_y_precede.html">Sucede y precede</a>
-        </td></tr>
-        <tr><td>
-            <a href="usa.html">Usa</a>
-        </td></tr>
-        <tr><td>
-            <a href="globales.html">Globales</a>
-        </td></tr>
-    </tbody>
-</table>
+<p>Actualmente la única librería disponible es <a href="globales.html">rekarel.globales</a></p>
 
                 
                     <hr class="mt-4 mb-2">
