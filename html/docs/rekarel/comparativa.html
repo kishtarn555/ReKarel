@@ -1,7 +1,7 @@
 @@include("../header.html")
 <h1>Comparación contra Karel.js</h1>
 
-<p class="text-secondary"><b>Última actualización</b> 21 Ago 2024 <br> (Karel 1.2.8 vs ReKarel Alpha 1.14.2) </p>
+<p class="text-secondary"><b>Última actualización</b> 29 Sep 2024 <br> (Karel 1.2.8 vs ReKarel 1.0.0-beta.2.1) </p>
 
 <p>A continuación se muestra una lista de comparativa contra Karel.js. A diferencia de la guía de migración, aquí no se
     entra en mucho detalle en como trabajar al rededor de estas diferencias, pero se muestran más de estas.</p>
@@ -20,7 +20,19 @@
         </tr>
     </thead>
     <tbody>
-        
+        <tr class="table-danger">
+            <th colspan="3">
+                <div class="position-relative visually-hidden">
+                    <a href="#" tabindex="-1" class="visually-hidden" id="lenguaje" data-toc="Lenguaje" data-toc-depth="1"></a>
+                </div>
+                Lenguaje (<i class="bi bi-exclamation-circle-fill"></i> Breaking change)
+            </th>
+        </tr>
+        <tr>
+            <td>Karel.js usa Karel Java 1 y Karel Pascal 1</td>
+            <td>ReKarel utiliza ReKarel Java 2.0.0 y ReKarel Pascal 2.0.0</td>
+            <td>Pueden ver los cambios de java <a href="@@webRoot/java/cambios.html">aquí</a><br>Los de pascal <a href="@@webRoot/pascal/cambios.html">aquí</a></td>
+        </tr>
         <tr class="table-primary">
             <th colspan="3">
                 <div class="position-relative visually-hidden">
@@ -272,7 +284,7 @@
         </tr>
         <tr>
             <td>Karel.js no tiene este error</td>
-            <td>ReKarel tiene algunos problemas de syntax highlight </td>
+            <td class="text-decoration-line-through">ReKarel tiene algunos problemas de syntax highlight </td>
             <td> Ver <a href="https://github.com/kishtarn555/ReKarel/issues/25">issue</a> en github </td>
         </tr>
         
