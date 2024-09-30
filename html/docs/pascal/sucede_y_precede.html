@@ -1,4 +1,8 @@
 @@include("../header.html")
+
+<div class="position-relative visually-hidden">
+    <a href="#" tabindex="-1" class="visually-hidden" id="sucede" data-toc="Sucede" data-toc-depth="1"></a>
+</div>
 <h1>Sucede</h1>
 
 
@@ -6,16 +10,16 @@
 
 <p>Por ejemplo, el siguiente código deja 5 zumbadores, porque 4 + 1 = 5</p>
 
-<div class="border p-2">
-    <span class="text-primary-emphasis">repetir</span> sucede(<span class="text-warning-emphasis">4</span>) <span
-        class="text-primary-emphasis">veces</span>
-        <br>
-        <span class="text-danger-emphasis">inicio</span>
-        <br>
-        <pre style="display: inline;">    </pre><span class="text-info-emphasis">deja-zumbador;</span>
-        <br>
-        <span class="text-danger-emphasis">fin;</span>
-</div>
+
+<code class="text-body">
+<pre class="border p-2">
+<span class="text-primary-emphasis">repetir</span> sucede(<span class="text-warning-emphasis">4</span>) <span
+    class="text-primary-emphasis">veces</span>
+<span class="text-danger-emphasis">inicio</span>
+    <span class="text-info-emphasis">deja-zumbador;</span>
+<span class="text-danger-emphasis">fin;</span>
+</pre>
+</code>
 
 
 <p>También se puede cambiar con parámetros. Una cosa importante a notar, el operador <b>nunca</b> modifica el valor de un parámetro. </p>
@@ -23,32 +27,34 @@
 <p>Por ejemplo, el código de abajo produce la siguiente imagen:</p>
 
 <div class="text-center mb-3">
-    <img src="./img/help_sucede.png" alt="" class="img-thumbnail">
+    <img src="@@webRoot/../img/help_sucede.png" alt="[5, 6, 5] zumbadores" class="img-thumbnail">
 </div>
 
-<div class="border p-2">
-    <span class="text-danger-emphasis">iniciar-programa</span><br>
-    <pre style="display: inline;">    </pre><span class="text-primary-emphasis">define-nueva-instruccion</span> deja(<span class="text-warning-emphasis">n</span>) <span class="text-primary-emphasis">como</span><br>
-    <pre style="display: inline;">    </pre><span class="text-danger-emphasis">inicio</span><br>
-    <pre style="display: inline;">        </pre><span class="text-primary-emphasis">repetir</span> <span class="text-warning-emphasis">n</span> <span class="text-primary-emphasis">veces</span><br>
-    <pre style="display: inline;">            </pre>deja-zumbador;<br>
-    <pre style="display: inline;">    </pre><span class="text-danger-emphasis">fin</span>;<br>
-    <br>
-    <pre style="display: inline;">    </pre><span class="text-primary-emphasis">define-nueva-instruccion</span> funcion(<span class="text-warning-emphasis">n</span>) <span class="text-primary-emphasis">como</span><br>
-    <pre style="display: inline;">    </pre><span class="text-danger-emphasis">inicio</span><br>
-    <pre style="display: inline;">        </pre>deja(<span class="text-warning-emphasis">n</span>);<br>
-    <pre style="display: inline;">        </pre>avanza;<br>
-    <pre style="display: inline;">        </pre>deja(sucede(<span class="text-warning-emphasis">n</span>));<br>
-    <pre style="display: inline;">        </pre>avanza;<br>
-    <pre style="display: inline;">        </pre>deja(<span class="text-warning-emphasis">n</span>);<br>
-    <pre style="display: inline;">    </pre><span class="text-danger-emphasis">fin</span>;<br>
-    <br>
-    <pre style="display: inline;">    </pre><span class="text-danger-emphasis">inicia-ejecucion</span><br>
-    <pre style="display: inline;">        </pre>funcion(<span class="text-warning-emphasis">5</span>);<br>
-    <pre style="display: inline;">        </pre>apagate;<br>
-    <pre style="display: inline;">    </pre><span class="text-danger-emphasis">termina-ejecucion</span><br>
-    <span class="text-danger-emphasis">finalizar-programa</span>
-</div>
+<code class="text-body">
+<pre class="border p-2">
+<span class="text-danger-emphasis">iniciar-programa</span>
+    <span class="text-primary-emphasis">define-nueva-instruccion</span> deja(<span class="text-warning-emphasis">n</span>) <span class="text-primary-emphasis">como</span>
+    <span class="text-danger-emphasis">inicio</span>
+        <span class="text-primary-emphasis">repetir</span> <span class="text-warning-emphasis">n</span> <span class="text-primary-emphasis">veces</span>
+            <span class="text-info-emphasis">deja-zumbador</span>;
+    <span class="text-danger-emphasis">fin</span>;
+
+    <span class="text-primary-emphasis">define-nueva-instruccion</span> funcion(<span class="text-warning-emphasis">n</span>) <span class="text-primary-emphasis">como</span>
+    <span class="text-danger-emphasis">inicio</span>
+        deja(<span class="text-warning-emphasis">n</span>);
+        <span class="text-info-emphasis">avanza</span>;
+        deja(sucede(<span class="text-warning-emphasis">n</span>));
+        <span class="text-info-emphasis">avanza</span>;
+        deja(<span class="text-warning-emphasis">n</span>);
+    <span class="text-danger-emphasis">fin</span>;
+
+    <span class="text-danger-emphasis">inicia-ejecucion</span>
+        funcion(<span class="text-warning-emphasis">5</span>);
+        <span class="text-info-emphasis">apagate</span>;
+    <span class="text-danger-emphasis">termina-ejecucion</span>
+<span class="text-danger-emphasis">finalizar-programa</span>
+</pre>
+</code>
 
 <h1>Precede</h1>
 
@@ -58,30 +64,56 @@
 
 
 <div class="text-center mb-3">
-    <img src="./img/help_precede.png" alt="" class="img-thumbnail">
+    <img src="@@webRoot/../img/help_precede.png" alt="" class="img-thumbnail">
 </div>
 
-<div class="border p-2">
-    <span class="text-danger-emphasis">iniciar-programa</span><br>
-    <pre style="display: inline;">    </pre><span class="text-primary-emphasis">define-nueva-instruccion</span> deja(<span class="text-warning-emphasis">n</span>) <span class="text-primary-emphasis">como</span><br>
-    <pre style="display: inline;">    </pre><span class="text-danger-emphasis">inicio</span><br>
-    <pre style="display: inline;">        </pre><span class="text-primary-emphasis">repetir</span> <span class="text-warning-emphasis">n</span> <span class="text-primary-emphasis">veces</span><br>
-    <pre style="display: inline;">            </pre>deja-zumbador;<br>
-    <pre style="display: inline;">    </pre><span class="text-danger-emphasis">fin</span>;<br>
-    <br>
-    <pre style="display: inline;">    </pre><span class="text-primary-emphasis">define-nueva-instruccion</span> funcion(<span class="text-warning-emphasis">n</span>) <span class="text-primary-emphasis">como</span><br>
-    <pre style="display: inline;">    </pre><span class="text-danger-emphasis">inicio</span><br>
-    <pre style="display: inline;">        </pre>deja(<span class="text-warning-emphasis">n</span>);<br>
-    <pre style="display: inline;">        </pre>avanza;<br>
-    <pre style="display: inline;">        </pre>deja(precede(precede(<span class="text-warning-emphasis">n</span>)));<br>
-    <pre style="display: inline;">        </pre>avanza;<br>
-    <pre style="display: inline;">        </pre>deja(precede(<span class="text-warning-emphasis">n</span>));<br>
-    <pre style="display: inline;">    </pre><span class="text-danger-emphasis">fin</span>;<br>
-    <br>
-    <pre style="display: inline;">    </pre><span class="text-danger-emphasis">inicia-ejecucion</span><br>
-    <pre style="display: inline;">        </pre>funcion(<span class="text-warning-emphasis">5</span>);<br>
-    <pre style="display: inline;">        </pre>apagate;<br>
-    <pre style="display: inline;">    </pre><span class="text-danger-emphasis">termina-ejecucion</span><br>
-    <span class="text-danger-emphasis">finalizar-programa</span>
+<code class="text-body">
+<pre class="border p-2">
+<span class="text-danger-emphasis">iniciar-programa</span>
+    <span class="text-primary-emphasis">define-nueva-instruccion</span> deja(<span class="text-warning-emphasis">n</span>) <span class="text-primary-emphasis">como</span>
+    <span class="text-danger-emphasis">inicio</span>
+        <span class="text-primary-emphasis">repetir</span> <span class="text-warning-emphasis">n</span> <span class="text-primary-emphasis">veces</span>
+<pre style="display: inline;">            </pre>deja-zumbador;
+    <span class="text-danger-emphasis">fin</span>;
+
+    <span class="text-primary-emphasis">define-nueva-instruccion</span> funcion(<span class="text-warning-emphasis">n</span>) <span class="text-primary-emphasis">como</span>
+    <span class="text-danger-emphasis">inicio</span>
+        deja(<span class="text-warning-emphasis">n</span>);
+        <span class="text-info-emphasis">avanza</span>;
+        deja(precede(precede(<span class="text-warning-emphasis">n</span>)));
+        <span class="text-info-emphasis">avanza</span>;
+        deja(precede(<span class="text-warning-emphasis">n</span>));
+    <span class="text-danger-emphasis">fin</span>;
+
+    <span class="text-danger-emphasis">inicia-ejecucion</span>
+        funcion(<span class="text-warning-emphasis">5</span>);
+        <span class="text-info-emphasis">apagate</span>;
+    <span class="text-danger-emphasis">termina-ejecucion</span>
+<span class="text-danger-emphasis">finalizar-programa</span>
+</pre>
+</code>
+
+<div class="position-relative visually-hidden">
+    <a href="#" tabindex="-1" class="visually-hidden" id="literal" data-toc="Segundo parámetro" data-toc-depth="1"></a>
 </div>
+<h1>Segundo parámetro</h1>
+
+<span class="badge text-bg-info rounded-pill" title="Esta funcionalidad esta disponible desde ReKarel Pascal 2.0.0">
+    Desde ReKarel 2.0.0
+</span>
+<p>Ambos, sucede y precede pueden recibir un segundo parámetro para especificar cuanto tienen que sumar o restar.</p>
+
+<p>Veamos dos ejemplos válidos:</p>
+<ul>
+    <li>sucede(<span class="text-warning-emphasis">n</span>, <span class="text-warning-emphasis">3</span>) Calcula n + 3</li>
+    <li>precede(<span class="text-warning-emphasis">4</span>, <span class="text-warning-emphasis">8</span>) Calcula 4 - 8</li>
+</ul>
+
+<p>Este segundo parámetro debe ser un número, no puede ser una variable, parámetro, etc. Por lo tanto, los siguientes ejemplos no són validos:</p>
+<ul></ul>
+    <li>sucede(<span class="text-warning-emphasis">n</span>, <span class="text-warning-emphasis">n</span>) <i class="bi bi-x text-danger h5"></i></li>
+    <li>precede(<span class="text-warning-emphasis">4</span>, <span class="text-warning-emphasis">zumbadores-del-piso</span>) <i class="bi bi-x text-danger h5"></i></li>
+    <li>precede(<span class="text-warning-emphasis">4</span>, sucede(<span class="text-warning-emphasis">3</span>)) <i class="bi bi-x text-danger h5"></i></li>
+</ul>
+
 @@include("../footer.html")
