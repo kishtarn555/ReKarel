@@ -213,105 +213,87 @@
             </div>
             <div class="col-12 col-lg-9 col-xl-10">
 
-<h1>Registro de cambios</h1>
+<div class="position-relative visually-hidden">
+    <a href="#" tabindex="-1" class="visually-hidden" id="inicio" data-toc="Inicio" data-toc-depth="1"></a>
+</div>
+<h1>Selección</h1>
+
+<p>La selección es una región rectangular de casillas en el mundo, la puedes distinguir por el borde azul y sus coordenadas marcadas en las barras laterales</p>
+
+<div class="figure">
+    <img src="../../img/docs/selection/elements.png" alt="" class="figure-img img-fluid rounded">
+</div>
+
+<p>Las operaciones que Karel puede realizar son ejecutadas en esta selección.</p>
 
 <div class="position-relative visually-hidden">
-    <a href="#" tabindex="-1" class="visually-hidden" id="version2" data-toc="Versión 2.0.0" data-toc-depth="1"></a>
+    <a href="#" tabindex="-1" class="visually-hidden" id="principal_secundaria" data-toc="Esquina principal y secundaria" data-toc-depth="1"></a>
 </div>
-<h2>ReKarel Java 2.0.0</h2>
-<p>Esta versión fue publicada en Octubre del 2024, incluye multiples cambios</p>
+<h2>Esquina principal y secundaria</h2>
+
+<p>La selección se determina a través de dos casillas, la esquina principal y la opuesta a esta, la esquina secundaria.</p>
+
+<p>Podemos distinguir la esquina principal porque tiene un punto en el borde.</p>
+
+<div class="figure">
+    <img src="../../img/docs/selection/principal.png" alt="" class="figure-img img-fluid rounded">
+</div>
+
+<p>Esta esquina es en la que se colocará Karel cuando se efectúe una operación que lo mueva.</p>
+
+<p>La esquina secundaria es la esquina opuesta a la principal.</p>
+
+<div class="figure">
+    <img src="../../img/docs/selection/secondary.png" alt="" class="figure-img img-fluid rounded">
+</div>
 
 <div class="position-relative visually-hidden">
-    <a href="#" tabindex="-1" class="visually-hidden" id="funciones2" data-toc="Funciones" data-toc-depth="2"></a>
+    <a href="#" tabindex="-1" class="visually-hidden" id="modos_seleccion" data-toc="Modos de selección" data-toc-depth="1"></a>
 </div>
-<h3>Funciones</h3>
-<ul>
-    <li>Las funciones ahora aceptan más de un parámetro.</li>
-    <li>Las funciones ahora pueden ser de tipo <span class="text-primary-emphasis">void</span>, <span class="text-primary-emphasis">bool</span> o <span class="text-primary-emphasis">int</span>. Estas pueden calcular un valor de este tipo y retornarlo.</li>    
-    <li><span class="text-bg-secondary border rounded ps-1 pe-1 text-nowrap">bool</span> ahora es una palabra registrada. </li>
-    <li><span class="text-bg-secondary border rounded ps-1 pe-1 text-nowrap">int</span> ahora es una palabra registrada. </li>
-</ul>
+<h2>Modo de selección</h2>
 
-<p><a href="funciones.html">Más información</a></p>
-
-<div class="position-relative visually-hidden">
-    <a href="#" tabindex="-1" class="visually-hidden" id="import2" data-toc="Import" data-toc-depth="2"></a>
-</div>
-<h3>Import</h3>
-<ul>
-    <li><span class="text-bg-secondary border rounded ps-1 pe-1 text-nowrap">import</span> ahora es una palabra registrada. </li>
-    <li>Puedes importar módulos. <a href="import.html">Más información</a></li>
-    <li>Se agrego el módulo <span class="text-bg-secondary border rounded ps-1 pe-1 text-nowrap">rekarel.globals</span> que da acceso a las globales.</li>    
-</ul>
-
-<div class="position-relative visually-hidden">
-    <a href="#" tabindex="-1" class="visually-hidden" id="globales2" data-toc="Globales" data-toc-depth="2"></a>
-</div>
-<h3>Globales</h3>
-<ul>
-    <li><span class="text-bg-secondary border rounded ps-1 pe-1 text-nowrap">floorBeepers</span>, igual a la cantidad de zumbadores en la casilla donde se encuentra Karel.</li>
-    <li><span class="text-bg-secondary border rounded ps-1 pe-1 text-nowrap">beeperBag</span>, igual a la cantidad de zumbadores en la mochila de Karel.</li>
-</ul>
-
-<div class="position-relative visually-hidden">
-    <a href="#" tabindex="-1" class="visually-hidden" id="comparativos2" data-toc="Operadores comparativos" data-toc-depth="2"></a>
-</div>
-<h3>Operadores comparativos</h3>
-<p>Se agregaron operadores de comparación de cantidades</p>
-<ul>
-    <li><span class="text-bg-secondary border rounded ps-1 pe-1 text-nowrap">&lt;</span>, menor que. <a href="operador_comparativo.html#menor_que">Más información</a>.</li>
-    <li><span class="text-bg-secondary border rounded ps-1 pe-1 text-nowrap">&lt;=</span>, menor o igual que. <a href="operador_comparativo.html#menor_igual_que">Más información</a>.</li>
-    <li><span class="text-bg-secondary border rounded ps-1 pe-1 text-nowrap">==</span>, igual que. <a href="operador_comparativo.html#igual_que">Más información.</a>.</li>
-</ul>
-
-<div class="position-relative visually-hidden">
-    <a href="#" tabindex="-1" class="visually-hidden" id="logicos2" data-toc="Operadores lógicos" data-toc-depth="2"></a>
-</div>
-<h3>Operadores lógicos</h3>
-<ul>
- <li><span class="text-bg-secondary border rounded ps-1 pe-1 text-nowrap">&&</span> ahora usa cortocircuito. <a href="operador_logico.html#and_shortcircuit">Más información</a>. </li>
- <li><span class="text-bg-secondary border rounded ps-1 pe-1 text-nowrap">||</span> ahora usa cortocircuito. <a href="operador_logico.html#or_shortcircuit">Más información</a>. </li>
- <li><span class="text-bg-secondary border rounded ps-1 pe-1 text-nowrap">==</span> puede comparar valores lógicos. <a href="operador_logico.html#igualdad">Más información</a>. </li>
-</ul>
-
-<div class="position-relative visually-hidden">
-    <a href="#" tabindex="-1" class="visually-hidden" id="succypred" data-toc="Sucede y precede" data-toc-depth="2"></a>
-</div>
-<h3>Sucede y precede</h3>
-<ul>
-    <li><span class="text-bg-secondary border rounded ps-1 pe-1 text-nowrap">succ</span> y <span class="text-bg-secondary border rounded ps-1 pe-1 text-nowrap">pred</span> ahora aceptan un <a href="succ_y_pred.html#literal">segundo parámetro</a> opcional, indica cuanto se suma o resta al primer parámetro. Este debe ser literal, no puede ser una variable, función, etc.</li>
-</ul>
+<p>ReKarel ofrece dos modos de selección para ajustarse a los diferentes dispositivos de entrada.</p>
 
 
 <div class="position-relative visually-hidden">
-    <a href="#" tabindex="-1" class="visually-hidden" id="ciclos2" data-toc="Ciclos" data-toc-depth="2"></a>
+    <a href="#" tabindex="-1" class="visually-hidden" id="arrastrar" data-toc="Arrastrar" data-toc-depth="2"></a>
 </div>
-<h3>Ciclos</h3>
-<ul>
-    <li><span class="text-bg-secondary border rounded ps-1 pe-1 text-nowrap">continue;</span> se puede usar para saltar a la siguiente iteración del ciclo actual.</li>
-    <li><span class="text-bg-secondary border rounded ps-1 pe-1 text-nowrap">break;</span> se puede usar para terminar el ciclo actual.</li>
-</ul>
+<h3>Modo arrastrar</h3>
+
+<div class="alert alert-info">Este es el modo por defecto. Recomendado para usuarios que usen <b>ratón</b></div>
+
+<p>Al pulsar el clic se coloca la esquina principal en la casilla donde este el cursor y al soltar el clic la esquina secundaria se coloca donde este el cursor; permitiendo efectivamente hacer una selección con clic y arrastre del ratón.</p>
+
+<div class="figure">
+    <img src="../../img/click-arrastra.png" alt="" class="figure-img img-fluid rounded">
+    <figcaption class="figure-caption">1- Presionar Clic<br>2- Arrastra<br>3- Soltar clic</figcaption>
+</div>
+
 
 <div class="position-relative visually-hidden">
-    <a href="#" tabindex="-1" class="visually-hidden" id="mundo2" data-toc="Cambios al mundo" data-toc-depth="2"></a>
+    <a href="#" tabindex="-1" class="visually-hidden" id="alternar" data-toc="Alternar" data-toc-depth="2"></a>
 </div>
-<h3>Cambios al mundo</h3>
-<ul>
-    <li>Nuevo limite <b>memoriaStack</b>, que establece cuanta memoria hay en el stack. <a href="">Mas información.</a> </li>
-    <li>Nuevo limite <b>llamadaMaxima</b>, que establece cuantos parámetros puede haber en una llamada. <a href="">Mas información.</a> </li>
-</ul>
+<h3>Modo Alternar</h3>
+<div class="alert alert-info">Modo recomendado para entradas <b>táctiles</b>. Se cambia automáticamente a este modo dependiendo de la <a href="configuracion.html#seleccion">configuración</a>.</div>
+
+<p>Para hacer una selección en este modo, primero se da clic en la casilla que se desee que sea la esquina secundaria y luego en la esquina principal</p>
+
+<p>Concretamente, en este modo, al dar clic en una casilla está se convierte en la esquina principal. La casilla que antes era la esquina principal se convierte en la secundaria.</p>
+
+
+<div class="figure">
+    <img src="../../img/docs/selection/alternate.png" alt="" class="figure-img img-fluid rounded">
+    <figcaption class="figure-caption">1- Clic (tap)<br>2- Clic (tap)</figcaption>
+</div>
 
 <div class="position-relative visually-hidden">
-    <a href="#" tabindex="-1" class="visually-hidden" id="miscelaneo2" data-toc="Miscelaneo" data-toc-depth="2"></a>
+    <a href="#" tabindex="-1" class="visually-hidden" id="uso_teclado" data-toc="Uso con teclado" data-toc-depth="1"></a>
 </div>
-<h3>Miscelaneo</h3>
-<ul>
-    <li>Ahora se aceptan bloques de código vacíos <span class="text-bg-secondary border rounded ps-1 pe-1 text-nowrap">{ }</span> </li>
-    <li> <span class="text-bg-secondary border rounded ps-1 pe-1 text-nowrap">return;</span> se puede usar en vez de <span class="text-bg-secondary border rounded ps-1 pe-1 text-nowrap">return();</span> </li>
-    <li>Los nombres de funciones, parámetros etc ahora soportan los mismos caracteres que Pascal. Estos incluyen: acentos, guión (-), guion bajo al inicio, etc.</li>
-    <li> El lenguaje ahora reporta la línea y columna de ejecución, usado por el IDE. </li>
-    <li> El compilador de Java y Pascal ahora usan el mismo procesador de gramática, por lo que deberían tener una experiencia más similar. </li>
-</ul>
+<h2>Uso con teclado</h2>
+
+<p>Independiente a los modos de selección, se pueden usar diferentes atajos de teclado: Las flechas del teclado, las flechas y la tecla shift al mismo tiempo, shift y clic.</p>
+
+<p>Lee más <a href="atajos.html#seleccion">aquí</a>.</p>
 
                 
                     <hr class="mt-4 mb-2">
