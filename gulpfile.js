@@ -4,6 +4,7 @@ import replace from 'gulp-replace'
 import insert  from 'gulp-insert'
 import clean  from 'gulp-clean'
 import * as manifest from './package.json'  with { type: "json" }
+import htmlmin from 'gulp-html-minifier-terser'
 
 const mainPath = "html/index.html"
 const mainPathDist = "webapp/"
@@ -31,6 +32,10 @@ gulp.task('bundle-html', ()=> {
                 coreVersion: manifest.default.dependencies["@rekarel/core"].replace(/^\^/, "")
             }
         }))
+    .pipe(htmlmin({
+        collapseWhitespace:true,
+        removeComments:true
+    }))
     .pipe(gulp.dest(mainPathDist))
     
 })
@@ -62,7 +67,11 @@ gulp.task('bundle-docs', ()=> {
         fileInclude({
             prefix: '@@',
             basepath: '@file'
-        }))
+        }))        
+    .pipe(htmlmin({
+        collapseWhitespace:true,
+        removeComments:true
+    }))
     .pipe(gulp.dest(docsDist))
     
 })
