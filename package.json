@@ -18,6 +18,7 @@
     "@lezer/generator": "^1.2.2",
     "@rollup/plugin-commonjs": "^24.0.0",
     "@rollup/plugin-node-resolve": "^15.0.1",
+    "@rollup/plugin-terser": "^0.4.4",
     "@types/jquery": "^3.5.14",
     "gulp": "^5.0.0",
     "gulp-file-include": "^2.3.0",
@@ -36,6 +37,7 @@
     "@xmldom/xmldom": "^0.8.10",
     "codemirror": "^6.0.1",
     "gulp-clean": "^0.4.0",
+    "gulp-html-minifier-terser": "^7.1.0",
     "split.js": "^1.6.5"
   }
 }
