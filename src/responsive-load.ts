@@ -90,22 +90,10 @@ function checkVisibility() {
     }
 
 }
-function responsiveHack() {
-    
+function responsiveEvent() {
     $(window).on('resize', checkVisibility);
 
-    $("#phoneView").removeClass( "position-absolute" );
-    if (false) {
-        $("#phoneView").addClass( "d-lg-none" );
-        $("#desktopView").addClass( "d-none" );
-        $("#desktopView").addClass( "d-lg-block");
-        $("#phoneView").removeClass( "position-absolute" );
-    } else {
-        $("#phoneView").addClass( "d-none" );
-    }
-    
-    $("#loadingModal").remove();
     setTimeout(()=>checkVisibility());
 }
 
-export {responsiveHack, SetResponsiveness, SetDesktopView, SetPhoneView}
+export {responsiveEvent as responsiveHack, SetResponsiveness, SetDesktopView, SetPhoneView}
