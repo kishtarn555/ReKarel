@@ -10,7 +10,7 @@ import { InitSettings, StartSettings } from "./settingsLoader";
 import { getEditors } from "./editor/editorsInstances";
 import { HookSession, RestoreSession } from "./session";
 import { RegisterHighlightListeners } from "./editor/editor.listeners";
-import { editorJava2pascal, editorPascal2Java } from "./editor/transpiler";
+import { editorTranspile } from "./editor/transpiler";
 import { MobileUI } from "./mobile/mobile";
 
 
@@ -63,17 +63,17 @@ const newWorldConfirm = {
 };
 
 
-const java2pascalConfirm = {
+const code2pascalConfirm = {
     accept: () => {
-        editorJava2pascal()
+        editorTranspile("pascal");
     },
     message: "¿Quieres convertir tu código a Karel Pascal?",
     title: "Cambiar lenguaje",
     reject: () => { },
 };
-const pascal2javaConfirm = {
+const code2javaConfirm = {
     accept: () => {
-        editorPascal2Java()
+        editorTranspile("java")
     },
     message: "¿Quieres convertir tu código a Karel Java?",
     title: "Cambiar lenguaje",
@@ -407,11 +407,11 @@ HookUpCommonUI(
             },
             {
                 button: "#java2pascalBtn",
-                data: java2pascalConfirm
+                data: code2pascalConfirm
             },
             {
                 button: "#pascal2javaBtn",
-                data: pascal2javaConfirm
+                data: code2javaConfirm
             }
         ],
         amountModal: {
