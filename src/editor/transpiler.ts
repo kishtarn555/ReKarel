@@ -9,7 +9,7 @@ export function editorTranspile(target:"java"|"pascal") {
 
     const source = editor.state.doc.toString();
     try {
-        const response=transpileCode(source, "pascal")
+        const response=transpileCode(source, target)
         console.log(response)
         SetText(editor,`${response}`);
     } catch (e) {
