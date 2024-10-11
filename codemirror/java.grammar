@@ -187,6 +187,8 @@ Globals {
     | @specialize<Identifier, "false">
     | @specialize<Identifier, "floorBeepers">
     | @specialize<Identifier, "beeperBag">
+    | @specialize<Identifier, "row">
+    | @specialize<Identifier, "column">
 }
 
 Modules {    
