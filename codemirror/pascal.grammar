@@ -224,6 +224,8 @@ Globals {
     | @specialize<Identifier, "falso">
     | @specialize<Identifier, "zumbadores-del-piso">
     | @specialize<Identifier, "mochila">
+    | @specialize<Identifier, "fila">
+    | @specialize<Identifier, "columna">
 }
 
 Modules {
