@@ -24,7 +24,7 @@ let readOnly = new Compartment
 
 function createEditors() : Array<EditorView> {
   let startState = EditorState.create({
-    doc: "iniciar-programa\n\tinicia-ejecucion\n\t\t{ TODO poner codigo aqui }\n\t\tapagate;\n\ttermina-ejecucion\nfinalizar-programa",
+    doc: "usa rekarel.globales;\niniciar-programa\n\tinicia-ejecucion\n\t\t{ TODO poner codigo aqui }\n\t\tapagate;\n\ttermina-ejecucion\nfinalizar-programa",
     extensions: [
       language.of(kpascal()),
       theme.of(classicHighlight.extensions),
