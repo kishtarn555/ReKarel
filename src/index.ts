@@ -32,7 +32,7 @@ const pascalConfirm = {
     accept: () => {
         SetText(
             desktopEditor,
-            "iniciar-programa\n\tinicia-ejecucion\n\t\t{ TODO poner codigo aqui }\n\t\tapagate;\n\ttermina-ejecucion\nfinalizar-programa"
+            "usa rekarel.globales;\niniciar-programa\n\tinicia-ejecucion\n\t\t{ TODO poner codigo aqui }\n\t\tapagate;\n\ttermina-ejecucion\nfinalizar-programa"
         );
         setLanguage(desktopEditor, "pascal");
     },
@@ -44,7 +44,7 @@ const javaConfirm = {
     accept: () => {
         SetText(
             desktopEditor,
-            "class program {\n\tprogram () {\n\t\t// TODO poner codigo aqui \n\t\tturnoff();\n\t}\n}"
+            "import rekarel.globals;\nclass program {\n\tprogram () {\n\t\t// TODO poner codigo aqui \n\t\tturnoff();\n\t}\n}"
         );
         setLanguage(desktopEditor, "java");
     },
