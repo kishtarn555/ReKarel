@@ -185,10 +185,10 @@ Iterate { @specialize<Identifier, "iterate"> }
 Globals {
     @specialize<Identifier, "true">
     | @specialize<Identifier, "false">
-    | @specialize<Identifier, "floorBeepers">
-    | @specialize<Identifier, "beeperBag">
-    | @specialize<Identifier, "row">
-    | @specialize<Identifier, "column">
+    | @specialize<Identifier, "beepersOnFloor">
+    | @specialize<Identifier, "beepersInBag">
+    | @specialize<Identifier, "currentRow">
+    | @specialize<Identifier, "currentColumn">
 }
 
 Modules {    
