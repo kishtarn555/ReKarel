@@ -25,12 +25,12 @@
     </thead>
     <tbody>
         <tr>
-            <td>beeperBag</td>
+            <td>beepersInBag</td>
             <td>Numérica</td>
             <td>Igual a la cantidad de zumbadores en la mochila de Karel.</td>
         </tr>
         <tr>
-            <td>floorBeepers</td>
+            <td>beepersOnFloor</td>
             <td>Numérica</td>
             <td>Igual a la cantidad de zumbadores en la casilla donde se encuentra Karel.</td>
         </tr>
@@ -68,14 +68,14 @@
 <span class="text-danger-emphasis">class</span> program <span class="text-danger-emphasis">{</span>
     <span class="text-primary-emphasis">program</span> () <span class="text-danger-emphasis">{</span>
         <span class="text-success-emphasis">// Deja todos los zumbadores de la mochila</span>
-        <span class="text-primary-emphasis">iterate</span> (<span class="text-warning-emphasis">beeperBag</span>)
+        <span class="text-primary-emphasis">iterate</span> (<span class="text-warning-emphasis">beepersInBag</span>)
             <span class="text-info-emphasis">putbeeper</span>();
         <span class="text-success-emphasis">// Nunca se ejecuta, por lo que no hay un error de ejecución</span>
         <span class="text-primary-emphasis">if</span> (<span class="text-warning-emphasis">false</span>)
             <span class="text-info-emphasis">putbeeper</span>();
         <span class="text-info-emphasis">move</span>();
         <span class="text-success-emphasis">// Gira tantas veces como zumbadores en el piso</span>
-        <span class="text-primary-emphasis">iterate</span> (<span class="text-warning-emphasis">floorBeepers</span>)
+        <span class="text-primary-emphasis">iterate</span> (<span class="text-warning-emphasis">beepersOnFloor</span>)
             <span class="text-info-emphasis">turnleft</span>();
         <span class="text-info-emphasis">move</span>();
         <span class="text-success-emphasis">//Este ciclo se ejecuta siempre, hasta que no sea detenido desde adentro con un break o similar</span>
