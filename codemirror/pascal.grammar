@@ -223,7 +223,7 @@ Globals {
     @specialize<Identifier, "verdadero">
     | @specialize<Identifier, "falso">
     | @specialize<Identifier, "zumbadores-del-piso">
-    | @specialize<Identifier, "mochila">
+    | @specialize<Identifier, "zumbadores-en-la-mochila">
     | @specialize<Identifier, "fila-actual">
     | @specialize<Identifier, "columna-actual">
 }
