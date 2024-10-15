@@ -186,7 +186,7 @@ Globals {
     @specialize<Identifier, "true">
     | @specialize<Identifier, "false">
     | @specialize<Identifier, "beepersOnFloor">
-    | @specialize<Identifier, "beepersInBag">
+    | @specialize<Identifier, "beepersInBeeperBag">
     | @specialize<Identifier, "currentRow">
     | @specialize<Identifier, "currentColumn">
 }
