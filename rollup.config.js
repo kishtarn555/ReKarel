@@ -1,7 +1,9 @@
 import commonjs from '@rollup/plugin-commonjs';
 import nodeResolve from '@rollup/plugin-node-resolve';
+import terser from '@rollup/plugin-terser';
+
 export default {
-    input: 'dist/ts/index.js',
+    input: 'dist/index.js',
     external: ['bootstrap'],
     output: {
       file: 'webapp/js/cindex.js',
@@ -9,7 +11,13 @@ export default {
       globals: {
         "bootstrap":"bootstrap"
       },
-      name:"karel"
+      name:"karel",
+      plugins: [
+        terser({
+          mangle:false
+        })
+      ],
+      sourcemap:true
     },
     
     plugins: [

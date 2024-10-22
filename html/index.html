@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="es" data-bs-theme="light">
+<html lang="es" data-bs-theme="dark">
 
 <head>
     <meta charset="utf-8" />
@@ -31,16 +31,19 @@
         <br>
         <br>
     </div>
-    <div id="loadingModal" class="position-absolute w-100 h-100 bg-dark p-5" style="z-index: 4000;">
+    <!-- <div id="loadingModal" class="position-absolute w-100 h-100 bg-dark p-5" style="z-index: 4000;">
         <div class="text-center">
             <p class="h1 bg-light p-4">Cargando...</p>
         </div>
-    </div>
+    </div> -->
     <div class="container-fluid h-100 p-0">
         <div class="d-flex flex-column w-100 h-100 m-0 p-0">
             <div id="Container" class="flex-grow-1 m-0 p-0">
                 <div class="h-100 w-100 d-flex flex-column">
                     @@include('./navbar.html')
+                    @@if (longVersion.includes('-')) {
+                    <div class="bg-danger text-center"><span class="h5">Versión experimental</span> @@longVersion</div>
+                    }
                     @@include('./desktop/app.html')
                     @@include('./phone/app.html')
                 </div>
@@ -57,7 +60,6 @@
     @@include('./modals/settings.html')
     @@include('./modals/about.html')
     @@include('./modals/beeperAmmount.html')
-    @@include('./modals/saveWorld.html')
     @@include('./modals/karelStyle.html')
     @@include('./modals/evaluator.html')
     @@include('./modals/randomBeepers.html')
@@ -69,7 +71,7 @@
 
 
     <!-- <script src="https://code.jquery.com/ui/1.13.2/jquery-ui.min.js" integrity="sha256-lSjKY0/srUM9BE3dPm+c4fBo1dky2v27Gdjm2uoZaL0=" crossorigin="anonymous"></script> -->
-    <script src="js/cindex.js"></script>
+    <script src="js/cindex.js?v=@@shortVersion"></script>
     <!-- <script src="js/editor.bundle.js"></script> -->
 
 </body>

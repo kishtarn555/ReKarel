@@ -3,59 +3,84 @@ import fileInclude from "gulp-file-include"
 import replace from 'gulp-replace'
 import insert  from 'gulp-insert'
 import clean  from 'gulp-clean'
+import * as manifest from './package.json'  with { type: "json" }
+import htmlmin from 'gulp-html-minifier-terser'
 
 const mainPath = "html/index.html"
-const pascalPath = "html/docs/pascal/ayuda-pascal.html"
-const javaPath = "html/docs/java/ayuda-java.html"
-const rekarelDocsPath = "html/docs/rekarel/ayuda-rekarel.html"
 const mainPathDist = "webapp/"
+
+const docs = [
+    "html/docs/index.html",
+    "html/docs/java/*.html",
+    "html/docs/pascal/*.html",
+    "html/docs/rekarel/*.html",
+    "html/docs/java_tutorial/*.html",
+    "html/docs/pascal_tutorial/*.html",
+];
+
+const docsDist = "webapp/docs"
 
 gulp.task('bundle-html', ()=> {
     return gulp.src([mainPath])
     .pipe(
         fileInclude({
             prefix: '@@',
-            basepath: '@file'
+            basepath: '@file',
+            context: {
+                shortVersion: manifest.default.version.replace(/[\.\-]/g,"_"),
+                longVersion: manifest.default.version,
+                coreVersion: manifest.default.dependencies["@rekarel/core"].replace(/^\^/, "")
+            }
         }))
+    .pipe(htmlmin({
+        collapseWhitespace:true,
+        removeComments:true
+    }))
     .pipe(gulp.dest(mainPathDist))
     
 })
+// Task to copy images
+gulp.task('bundle-images', function () {
+    return gulp.src('resources/img/**/*', {encoding:false})
+      .pipe(gulp.dest('webapp/img'));
+  });
+  
+  // Task to copy CSS
+  gulp.task('bundle-css', function () {
+    return gulp.src('resources/css/**/*')
+      .pipe(gulp.dest('webapp/css'));
+  });
+  
+  // Task to copy JavaScript
+  gulp.task('bundle-js', function () {
+    return gulp.src('resources/js/**/*')
+      .pipe(gulp.dest('webapp/js'));
+  });
+  
+  // Default task to run all copy tasks
+  gulp.task('bundle-resources', gulp.parallel('bundle-images', 'bundle-css', 'bundle-js'));
 
 
-gulp.task('bundle-pascal', ()=> {
-    return gulp.src([pascalPath])
+gulp.task('bundle-docs', ()=> {
+    return gulp.src(docs, { base: 'html/docs' })
     .pipe(
         fileInclude({
             prefix: '@@',
             basepath: '@file'
-        }))
-    .pipe(gulp.dest(mainPathDist))
+        }))        
+    .pipe(htmlmin({
+        collapseWhitespace:true,
+        removeComments:true
+    }))
+    .pipe(gulp.dest(docsDist))
+    
+})
+gulp.task('clean-docs', ()=> {
+    return gulp.src(docsDist, {allowEmpty: true})    
+        .pipe(clean());
     
 })
 
-
-gulp.task('bundle-java', ()=> {
-    return gulp.src([javaPath])
-    .pipe(
-        fileInclude({
-            prefix: '@@',
-            basepath: '@file'
-        }))
-    .pipe(gulp.dest(mainPathDist))
-    
-})
-
-
-gulp.task('bundle-rekarel', ()=> {
-    return gulp.src([rekarelDocsPath])
-    .pipe(
-        fileInclude({
-            prefix: '@@',
-            basepath: '@file'
-        }))
-    .pipe(gulp.dest(mainPathDist))
-    
-})
 
 
 gulp.task('process-jison-java', ()=> {
@@ -149,5 +174,5 @@ gulp.task('copy-license', () => {
         .pipe(gulp.dest(`${paths.build}`));
 });
 
- gulp.task('default', gulp.series('bundle-html', 'bundle-pascal', 'bundle-java', 'bundle-rekarel'));
+ gulp.task('default', gulp.series('bundle-html', 'clean-docs', 'bundle-docs', 'bundle-resources'));
  gulp.task('build', gulp.series('clean', 'copy-html', 'copy-js', 'copy-img', 'copy-css','copy-license'));

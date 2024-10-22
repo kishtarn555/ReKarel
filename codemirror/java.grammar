@@ -1,7 +1,16 @@
 @top Script  {
-    Class ProgramClass ScriptBlock
+   ImportList? Class ProgramClass ScriptBlock
 }
 
+
+ImportList {
+    ImportList ImportStatement 
+    | ImportStatement
+}
+
+ImportStatement {
+    Import (Identifier | Modules) "." (Identifier | Modules) ";"
+}
 
 ScriptBlock {
     Start inner End
@@ -12,7 +21,12 @@ inner {
 }
 
 Function {
-    Define Identifier "("Identifier?")" Block 
+    DefineType Identifier "("FunctionParams?")" Block 
+}
+
+FunctionParams {
+    FunctionParams comma Identifier
+    | Identifier
 }
 
 main {
@@ -29,13 +43,25 @@ InnerBlock {
 }
 
 expression {
-    call | Block | WhileStatement | IterateStatement | IfStatement
+    call ";" 
+    | Block 
+    | WhileStatement 
+    | IterateStatement 
+    | IfStatement 
+    | Continue ";"
+    | Break  ";"
+    | ReturnStatement ";"
+    |  ";"
 }
 
 call {
-    (BuiltIn | Identifier) "("numberStatement?")"
+    (BuiltIn | Identifier) "("CallParams?")"
 }
 
+CallParams {
+    CallParams comma NumericTerm
+    | NumericTerm
+}
 
 BuiltIn {
     @specialize<Identifier, "move"> |
@@ -46,15 +72,22 @@ BuiltIn {
 }
 
 BooleanHeader {
-     "(" booleanStatement ")"
+     "(" BooleanTerm ")"
 }
 WhileStatement {
     While BooleanHeader expression
 }
 
 IterateStatement {
-    Iterate "(" numberStatement ")" expression
+    Iterate "(" NumericTerm ")" expression
 }
+
+ReturnStatement {
+    Return ( "(" ")" )?
+    | Return term
+}
+
+Return { @specialize<Identifier, "return"> }
 
 @precedence {
     binaryLogic @left,
@@ -76,19 +109,36 @@ elseStatement {
 
 
 
-booleanStatement {
-    clause |  booleanStatement !binaryLogic binaryOperator booleanStatement  | Not booleanStatement 
+term {
+    term !binaryLogic binaryOperator term
+    | Not term
+    | "(" term ")"
+    | clause 
 }
 
 binaryOperator {
-    Or | And
+    Or | And | LT | LTE | COMP
 }
 
-Or { "||" }
-And { "&&" }
-Not { "!" }
 
-clause { IFZ | BoolFunc ("(" ")")? | Identifier | "(" booleanStatement ")"}
+clause { IFZ | BoolFunc ("(" ")")? | (Identifier | Globals) | numeric | call }
+
+
+numeric {
+    Number | numberFunction
+}
+
+BooleanTerm { term }
+NumericTerm { term }
+
+numberFunction {(Succ | Pred)"(" NumericTerm ( comma Number )? ")" }
+
+Succ { @specialize<Identifier, "succ"> }
+Pred { @specialize<Identifier, "pred"> }
+
+
+Continue { @specialize<Identifier, "continue"> }
+Break { @specialize<Identifier, "break"> }
 
 BoolFunc {
     @specialize<Identifier, "nextToABeeper"> |
@@ -112,18 +162,8 @@ BoolFunc {
 }
 
 IFZ {
-    Ifzero { @specialize<Identifier, "iszero">  } "(" numberStatement ")"
+    Ifzero { @specialize<Identifier, "iszero">  } "(" NumericTerm ")"
 }
-
-numberStatement {
-    Number | Identifier | numberFunction
-}
-
-
-numberFunction {(Succ | Pred)"(" numberStatement ")" }
-
-Succ { @specialize<Identifier, "succ"> }
-Pred { @specialize<Identifier, "pred"> }
 
 Start[closedBy="End"] {
     start
@@ -142,28 +182,60 @@ If { @specialize<Identifier, "if"> }
 Else { @specialize<Identifier, "else"> }
 Iterate { @specialize<Identifier, "iterate"> }
 
+Globals {
+    @specialize<Identifier, "true">
+    | @specialize<Identifier, "false">
+    | @specialize<Identifier, "beepersOnFloor">
+    | @specialize<Identifier, "beepersInBeeperBag">
+    | @specialize<Identifier, "currentRow">
+    | @specialize<Identifier, "currentColumn">
+}
+
+Modules {    
+    @specialize<Identifier, "rekarel">
+    | @specialize<Identifier, "globals">
+}
+
+
 @tokens {
   space { @whitespace+ }
-  Comment { "//" ![\n]* }
   Class { "class" }
   program { "program" }
   Identifier { $[a-zA-Z]$[a-zA-Z0-9_]*}
   Number { $[0-9]+ }
-  Define { "define"|"void" }
+  DefineType { "define"|"void"|"int"|"bool" }
+  Or { "||" }
+  And { "&&" }
+  Not { "!" }
+  LT { "<" }
+  LTE { "<=" }
+  COMP { "==" }
+  Import { "import" }
+  comma { "," }
   start { "{" }
   end { "}" }
+  
 
 
 }
 
 @skip { space | Comment | BlockComment }
 @skip { } {
-  BlockComment { "/*" (blockCommentContent | blockCommentNewline)* blockCommentEnd }
+  BlockComment { "/*" (Annotation | blockCommentContent | blockCommentNewline)* blockCommentEnd }
 }
 
 @local tokens {
   blockCommentEnd { "*/" }
   blockCommentNewline { "\n" }
+  Annotation { "@" @asciiLetter* }
   @else blockCommentContent
 }
+ @skip {} {
+    Comment { "//" (Annotation2 | commentContent)* commentEnd}
+ }
 
+ @local tokens {
+    commentEnd { "\n" }
+    Annotation2 { "@" @asciiLetter* }
+    @else commentContent
+  }

@@ -1,16 +1,13 @@
 {
-  "name": "rekarel",
-  "version": "1.0.0",
+  "name": "@rekarel/ide",
+  "version": "1.1.0",
   "description": "Rework of omegaup's [Karel.js](https://github.com/omegaup/karel.js).",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "npx tsc && rollup --config",
-    "lezer_java": "npx lezer-generator .\\webapp\\codemirror\\java.grammar -o .\\webapp\\js\\lezer_java.js ",
-    "lezer_pascal": "npx lezer-generator .\\webapp\\codemirror\\pascal.grammar -o .\\webapp\\js\\lezer_pascal.js ",
-    "jison_java": "npx jison .\\gramaticas\\kareljava.jison -o .\\js\\kareljava.js  && npx gulp process-jison-java",
-    "jison_java2pascal": "npx jison .\\gramaticas\\java2pascal.jison -o .\\js\\java2pascal.js  && npx gulp process-jison-java2pascal",
-    "jison_pascal2java": "npx jison .\\gramaticas\\pascal2java.jison -o .\\js\\pascal2java.js && npx gulp process-jison-pascal2java"
+    "lezer_java": "npx lezer-generator .\\codemirror\\java.grammar -o .\\src\\js\\lezer_java.js ",
+    "lezer_pascal": "npx lezer-generator .\\codemirror\\pascal.grammar -o .\\src\\js\\lezer_pascal.js "
   },
   "type": "module",
   "keywords": [],
@@ -21,6 +18,7 @@
     "@lezer/generator": "^1.2.2",
     "@rollup/plugin-commonjs": "^24.0.0",
     "@rollup/plugin-node-resolve": "^15.0.1",
+    "@rollup/plugin-terser": "^0.4.4",
     "@types/jquery": "^3.5.14",
     "gulp": "^5.0.0",
     "gulp-file-include": "^2.3.0",
@@ -34,10 +32,12 @@
     "@codemirror/history": "^0.19.2",
     "@codemirror/lang-javascript": "^6.1.7",
     "@lezer/highlight": "^1.1.4",
+    "@rekarel/core": "^2.1.0",
     "@types/bootstrap": "^5.2.6",
     "@xmldom/xmldom": "^0.8.10",
     "codemirror": "^6.0.1",
     "gulp-clean": "^0.4.0",
+    "gulp-html-minifier-terser": "^7.1.0",
     "split.js": "^1.6.5"
   }
 }
