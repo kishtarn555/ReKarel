@@ -8,14 +8,32 @@ export const ERRORCODES = {
 };
 
 interface executionLimits {
-    maxInstructions: number
+    maxInstructions: {
+        general: number,
+        left: number
+        forward: number,
+        pick: number,
+        leave: number
+    }
     stackSize: number
     callMaxParam: number
     stackMemory: number
 }
 export function decodeRuntimeError(error: string, limits:executionLimits):string {
     if (error === "INSTRUCTION") {
-        return `Karel ha superado el límite de ${limits.maxInstructions.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")} instrucciones!`
+        return `Karel ha superado el límite de ${limits.maxInstructions.general.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")} instrucciones!`;
+    }
+    if (error === "INSTRUCTION_LEFT") {
+        return `Karel ha superado el límite de ${limits.maxInstructions.left.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")} gira izquierda (turnleft)!`;
+    }
+    if (error === "INSTRUCTION_FORWARD") {
+        return `Karel ha superado el límite de ${limits.maxInstructions.forward.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")} avanza (move)!`;
+    }
+    if (error === "INSTRUCTION_PICKBUZZER") {
+        return `Karel ha superado el límite de ${limits.maxInstructions.pick.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")} coge-zumbador (pickbeeper)!`;    
+    }
+    if (error === "INSTRUCTION_LEAVEBUZZER") {
+        return `Karel ha superado el límite de ${limits.maxInstructions.leave.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")} deja-zumbador (putbeeper)!`;
     }
     if (error === "STACK") {
         return `La pila de karel se ha desbordado! El tamaño de la pila es de ${limits.stackSize.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}`
