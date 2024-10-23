@@ -12,7 +12,6 @@ export function HookRandomBeepersModal() {
         e.preventDefault();
         const minValue = parseInt(`${ $("#minimumRandomBeepers").val()}`);
         const maxValue =  parseInt(`${ $("#maximumRandomBeepers").val()}`);
-        console.log(minValue, maxValue)
         if (!isNaN(minValue)) {
             AppVars.randomBeeperMinimum =  Number(minValue);
         }

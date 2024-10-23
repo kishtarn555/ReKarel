@@ -17,7 +17,6 @@ export class KarelConsole {
         this.consoleTab.clear.on("click", ()=> this.ClearConsole());
         this.unreadMessages = 0;
         this.consoleTab.tab.on("show.bs.tab", ()=> {
-            console.log("???");
             this.unreadMessages = 0;
             this.UpdateUnreadPill();
         })
