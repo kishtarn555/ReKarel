@@ -442,7 +442,13 @@ class KarelController {
             this.SendMessage(
                 decodeRuntimeError(
                     state.error, {
-                        maxInstructions:this.world.maxInstructions, 
+                        maxInstructions:{
+                            general: this.world.maxInstructions,
+                            left: this.world.maxTurnLeft,
+                            forward: this.world.maxMove,
+                            pick: this.world.maxPickBuzzer,
+                            leave: this.world.maxLeaveBuzzer,
+                        }, 
                         stackSize: this.world.maxStackSize,
                         callMaxParam: this.world.maxCallSize,
                         stackMemory: this.world.maxStackMemory
