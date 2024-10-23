@@ -221,9 +221,9 @@ export function decodeError(e, lan : "java"|"pascal"|"ruby"|"none") : string {
         return "Error de compilación, no se puede reconocer el lenguaje";
     }
     let status = e.hash;
-    console.log(JSON.stringify(e))
-    console.log(e)
     if (status == null) {
+        console.log(JSON.stringify(e))
+        console.log(e)
         return "Error de compilación";
     }
     const errorString = `${e}`;
@@ -237,6 +237,9 @@ export function decodeError(e, lan : "java"|"pascal"|"ruby"|"none") : string {
         message += "Se encontró un token ilegal";
     } else {        
         message += "Error desconocido"
+        
+        console.log(JSON.stringify(e))
+        console.log(e)
     }
     message+="</div></div>"
     return message;
