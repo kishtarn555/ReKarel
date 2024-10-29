@@ -115,7 +115,7 @@ function SetEditorTheme (extension:Extension, editor:EditorView) {
     effects:theme.reconfigure(extension)
   });
   } catch {
-    console.log("ERROR loading extension");
+    console.error("ERROR loading theme extension");
   }
   
 }

@@ -10,7 +10,6 @@ export function editorTranspile(target:"java"|"pascal") {
     const source = editor.state.doc.toString();
     try {
         const response=transpileCode(source, target)
-        console.log(response)
         SetText(editor,`${response}`);
     } catch (e) {
         KarelConsole.GetInstance().SendMessageToConsole("Para cambiar el lenguaje, el código debe compilar", "danger")

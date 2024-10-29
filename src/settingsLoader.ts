@@ -81,7 +81,6 @@ function setSettings(event:  JQuery.SubmitEvent<HTMLElement, undefined, HTMLElem
     appSettings.editorTheme = style;
     appSettings.autoInputMode = autoInput;
 
-    console.log(appSettings);
     applySettings(appSettings, desktopUI);
 
 

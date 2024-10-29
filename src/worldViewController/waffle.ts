@@ -65,9 +65,6 @@ export class SelectionWaffle {
         } else {
             this.box.cursor.style.top = `${hh-2.75}px`;
         }
-        // console.log(CellSize);
-        
-        // console.log('scale',renderer.scale);
         this.box.top.style.maxWidth = width;
         this.box.top.style.minWidth = width;
 

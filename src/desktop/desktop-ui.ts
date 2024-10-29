@@ -295,6 +295,7 @@ class DesktopController {
         const ctrl:hotkeyMod = {shift:"no", ctrl:"yes", alt:"no"};
         const shift:hotkeyMod = {shift:"yes", ctrl:"no", alt:"no"};
         const altBasic:hotkeyMod = {shift:"optional", ctrl:"no", alt:"yes"};
+        const alt:hotkeyMod = {shift:"no", ctrl:"no", alt:"yes"};
         const beeper:hotkeyMod = {shift:"optional", ctrl:"no", alt:"optional"};
 
         let placeBeepers = (n: number) => {
@@ -308,12 +309,10 @@ class DesktopController {
         let hotkeys = new Map<number, [hotkeyMod,()=>void][]>([
             [71,[[basic, ()=>{this.worldController.ToggleKarelPosition(true);}]]],
             [80,[[basic,()=>{this.worldController.ToggleKarelPosition(false);}]]],
-            [82,[[basic,()=>{
-                if (e.altKey)                    
-                    (bootstrap.Modal.getOrCreateInstance("#randomBeepersModal")).show()
-                else
-                    this.worldController.SetRandomBeepers(AppVars.randomBeeperMinimum,AppVars.randomBeeperMaximum);                
-                }]]
+            [82,[
+                    [basic,()=>{this.worldController.SetRandomBeepers(AppVars.randomBeeperMinimum,AppVars.randomBeeperMaximum);}],
+                    [alt,()=>{(bootstrap.Modal.getOrCreateInstance("#randomBeepersModal")).show()}],
+                ]
             ],
             [81, [[basic,()=>{this.worldController.ChangeBeepers(-1);}]]],
             [69, [[basic, ()=>{this.worldController.ChangeBeepers(1);}]]],
