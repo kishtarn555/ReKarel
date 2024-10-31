@@ -91,14 +91,24 @@ function setSettings(event:  JQuery.SubmitEvent<HTMLElement, undefined, HTMLElem
 function loadSettingsFromMemory() {
     const jsonString = localStorage?.getItem(APP_SETTING);
     if (jsonString) {
-        const memorySettings = JSON.parse(jsonString);
+        let memorySettings:AppSettings = JSON.parse(jsonString);
         if (memorySettings.version == null) return;
-        if (memorySettings.version !== SETTINGS_VERSION) {
-            localStorage.removeItem(memorySettings);
-            return;
-        }
+        memorySettings = fixSettings(memorySettings);
         SetSettings(memorySettings);
     } 
+}
+
+function fixSettings(previousSettings:AppSettings): AppSettings {
+    const defaultSettings = GetCurrentSetting();
+    const updatedSettings: AppSettings = { ... defaultSettings };
+
+    for (const key in defaultSettings) {
+        updatedSettings[key] = previousSettings.hasOwnProperty(key)
+            ? previousSettings[key]
+            : defaultSettings[key];
+    }
+    updatedSettings.version = defaultSettings.version;
+    return updatedSettings;    
 }
 
 function loadSettingsToModal() {
