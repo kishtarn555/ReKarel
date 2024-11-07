@@ -15,7 +15,7 @@ import { decodeError } from "./compilationError";
 
 type messageType = "info"|"success"|"error"|"raw"|"warning";
 type MessageCallback = (message:string, type:messageType)=>void;
-type ControllerState = "unstarted"| "running" | "finished" | "paused";
+type ControllerState = "unstarted"| "running" | "finished" | "paused" | "autoStepping" | "fastStepping";
 type StateChangeCallback = (caller:KarelController, newState:ControllerState)=>void;
 type StepCallback = (caller:KarelController, newState:ControllerState)=>void;
 type ResetCallback = (caller:KarelController)=>void;
@@ -42,7 +42,7 @@ class KarelController {
     private autoStepInterval:number;
     private drawFrameRequest : number;
     private autoStepping: boolean;
-    private futureStepping:boolean; 
+    private fastStepping:boolean; 
     private history: KarelHistory;
     private debugData: DebugData 
 
@@ -60,7 +60,7 @@ class KarelController {
         this.endedOnError = false;
         this.autoStepInterval = 0;
         this.autoStepping = false;
-        this.futureStepping = false;
+        this.fastStepping = false;
 
         KarelController.instance = this;
         this.history = new KarelHistory();
@@ -223,7 +223,7 @@ class KarelController {
             this.RunTillEnd();
             return;
         }
-        this.futureStepping = true;
+        this.fastStepping = true;
         throbber.performTask(
             function * () {
                 while (this.PerformFastStep() && runtime.state.stackSize >= startWStackSize) yield;
@@ -253,8 +253,8 @@ class KarelController {
                     this.StopAutoStep();
                     return;
                 }
-                if (this.futureStepping) {
-                    //Is futureStepping, wait for it to end.
+                if (this.fastStepping) {
+                    //Is fastStepping, wait for it to end.
                     return;
                 }
                 this.Step();
@@ -293,14 +293,14 @@ class KarelController {
                 return;
             }
         }
-        this.futureStepping = true;
+        this.fastStepping = true;
         let runtime = this.GetRuntime();
         // runtime.disableStackEvents= false; // FIXME: This should only be done when no breakpoints
         // runtime.disableStackEvents= true; // FIXME: This should only be done when no breakpoints
         await throbber.performTask(function * () {
             while (this.PerformFastStep(ignoreBreakpoints)) yield;
         }.bind(this)).then(()=> {
-            this.futureStepping = false;
+            this.fastStepping = false;
             if (!runtime.state.running) {
                 this.EndMessage();
                 this.ChangeState("finished");
