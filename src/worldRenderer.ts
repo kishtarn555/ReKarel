@@ -1,4 +1,4 @@
-import { World } from "@rekarel/core";
+import { KarelNumbers, World } from "@rekarel/core";
 import { CellPair } from "./cellPair";
 import { CellSelection } from "./worldViewController/selection";
 
@@ -375,8 +375,8 @@ class WorldRenderer {
         let h = this.GetHeight();
         let x = c*this.CellSize+this.GutterSize;
         let y = h-((r+1)*this.CellSize+this.GutterSize);
-        let text = amount !==-1?String(amount): '∞';
-        this.SetBeeperFont(amount !==-1? 1: 1.5);
+        let text = KarelNumbers.isInfinite(amount) ? '∞' : String(amount);
+        this.SetBeeperFont(KarelNumbers.isInfinite(amount) ? 1.5 : 1);
         let measure = this.canvasContext.measureText(text);
         let textH = measure.actualBoundingBoxAscent+4;
         let textW = Math.min(measure.width+4, this.CellSize-5);
