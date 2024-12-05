@@ -369,14 +369,14 @@ class WorldRenderer {
     }
 
     private DrawBeeperSquare(
-        { r, c, ammount, background, color }: 
-        { r: number; c: number; ammount: number; background: string; color: string; }
+        { r, c, amount: amount, background, color }: 
+        { r: number; c: number; amount: number; background: string; color: string; }
     ) {
         let h = this.GetHeight();
         let x = c*this.CellSize+this.GutterSize;
         let y = h-((r+1)*this.CellSize+this.GutterSize);
-        let text = ammount !==-1?String(ammount): '∞';
-        this.SetBeeperFont(ammount !==-1? 1: 1.5);
+        let text = amount !==-1?String(amount): '∞';
+        this.SetBeeperFont(amount !==-1? 1: 1.5);
         let measure = this.canvasContext.measureText(text);
         let textH = measure.actualBoundingBoxAscent+4;
         let textW = Math.min(measure.width+4, this.CellSize-5);
@@ -450,7 +450,7 @@ class WorldRenderer {
                     this.DrawBeeperSquare({
                         r:i,
                         c:j, 
-                        ammount:buzzers, 
+                        amount:buzzers, 
                         background:this.style.beeperBackgroundColor, 
                         color:this.style.beeperColor
                     });
