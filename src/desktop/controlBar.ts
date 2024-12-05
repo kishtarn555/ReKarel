@@ -2,6 +2,7 @@ import bootstrap from "bootstrap";
 import { ControllerState, KarelController } from "../KarelController";
 import { WorldViewController } from "../worldViewController/worldViewController";
 import { AppVars } from "../volatileMemo";
+import { KarelNumbers } from "@rekarel/core";
 
 type ExecutionToolbar = {
     reset: JQuery,
@@ -129,9 +130,9 @@ export class ControlBar  {
     }
 
     private ToggleInfiniteBeepers() {
-        if (this.worldController.GetBeepersInBag() !== -1) {
+        if (!KarelNumbers.isInfinite(this.worldController.GetBeepersInBag())) {
             this.ActivateInfiniteBeepers();
-            this.worldController.SetBeepersInBag(-1);
+            this.worldController.SetBeepersInBag(KarelNumbers.a_infinite);
         } else {
             this.DeactivateInfiniteBeepers();
             this.worldController.SetBeepersInBag(0);
@@ -144,7 +145,7 @@ export class ControlBar  {
         const amount = this.worldController.GetBeepersInBag()
         
         this.ui.beeperInput.val(amount);
-        if (amount === -1) {
+        if (KarelNumbers.isInfinite(amount)) {
             this.ActivateInfiniteBeepers();
         } else {
             this.DeactivateInfiniteBeepers();
