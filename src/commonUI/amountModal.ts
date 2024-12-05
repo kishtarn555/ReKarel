@@ -16,7 +16,7 @@ export function HookAmountModal(modal: AmountModal, worldController:WorldViewCon
             return;
         }
         const amount = parseFloat(inputValue as string);
-        if (amount < -1) {
+        if (amount < 0) {
             return;
         }
         worldController.SetBeepers(amount);
