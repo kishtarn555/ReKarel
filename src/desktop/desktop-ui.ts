@@ -16,6 +16,7 @@ import { FocusBar, FocusToolbar } from './focusBar';
 import { WorldBar, WorldToolbarData } from './worldToolbar';
 import { EvaluateToolbar } from './evaluate';
 import { ToastController, ToastUI } from './toast';
+import { KarelNumbers } from '@rekarel/core';
 
 
 type InputModeToolbar = {
@@ -346,7 +347,7 @@ class DesktopController {
             [38, [[basic, ()=>{this.worldController.MoveSelection(1, 0, e.shiftKey);}]]],
             [39, [[basic, ()=>{this.worldController.MoveSelection(0, 1, e.shiftKey);}]]],
             [40, [[basic, ()=>{this.worldController.MoveSelection(-1, 0, e.shiftKey);}]]],
-            [84, [[basic, ()=>{this.worldController.SetBeepers(-1);}]]],
+            [84, [[basic, ()=>{this.worldController.SetBeepers(KarelNumbers.a_infinite);}]]],
             [86, [[basic, ()=>{this.worldController.SetCellEvaluation(false);}]]],
             [8,  [
                     [basic, ()=>{this.worldController.RemoveEverything();}],
