@@ -225,9 +225,9 @@ class KarelController {
         }
         this.fastStepping = true;
         throbber.performTask(
-            function * () {
+            function * (this:KarelController) {
                 while (this.PerformFastStep() && runtime.state.stackSize >= startWStackSize) yield;
-                this.futureStepping = false;
+                this.fastStepping = false;
             }.bind(this)
         ).then(_=>this.EndStep());
     }
