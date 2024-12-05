@@ -1,3 +1,4 @@
+import { KarelNumbers } from "@rekarel/core";
 
 export const ERRORCODES = {
     WALL: 'Karel ha chocado con un muro!',
@@ -19,33 +20,47 @@ interface executionLimits {
     callMaxParam: number
     stackMemory: number
 }
+
+function formatNumber(n:number):string {
+    return n.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+}
+
 export function decodeRuntimeError(error: string, limits:executionLimits):string {
     if (error === "INSTRUCTION") {
-        return `Karel ha superado el límite de ${limits.maxInstructions.general.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")} instrucciones!`;
+        return `Karel ha superado el límite de ${formatNumber(limits.maxInstructions.general)} instrucciones!`;
     }
     if (error === "INSTRUCTION_LEFT") {
-        return `Karel ha superado el límite de ${limits.maxInstructions.left.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")} gira izquierda (turnleft)!`;
+        return `Karel ha superado el límite de ${formatNumber(limits.maxInstructions.left)} gira izquierda (turnleft)!`;
     }
     if (error === "INSTRUCTION_FORWARD") {
-        return `Karel ha superado el límite de ${limits.maxInstructions.forward.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")} avanza (move)!`;
+        return `Karel ha superado el límite de ${formatNumber(limits.maxInstructions.forward)} avanza (move)!`;
     }
     if (error === "INSTRUCTION_PICKBUZZER") {
-        return `Karel ha superado el límite de ${limits.maxInstructions.pick.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")} coge-zumbador (pickbeeper)!`;    
+        return `Karel ha superado el límite de ${formatNumber(limits.maxInstructions.pick)} coge-zumbador (pickbeeper)!`;    
     }
     if (error === "INSTRUCTION_LEAVEBUZZER") {
-        return `Karel ha superado el límite de ${limits.maxInstructions.leave.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")} deja-zumbador (putbeeper)!`;
+        return `Karel ha superado el límite de ${formatNumber(limits.maxInstructions.leave)} deja-zumbador (putbeeper)!`;
     }
     if (error === "STACK") {
-        return `La pila de karel se ha desbordado! El tamaño de la pila es de ${limits.stackSize.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}`
+        return `La pila de karel se ha desbordado! El tamaño de la pila es de ${formatNumber(limits.stackSize)}`
     }
     if (error === "CALLMEMORY") {
         return `Límite de parámetros superados.`
-        +`<br>Solo puedes llamar con a lo más ${limits.callMaxParam.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}`;
+        +`<br>Solo puedes llamar con a lo más ${formatNumber(limits.callMaxParam)}`;
     }
     if (error === "STACKMEMORY") {
         return `El límite de memoria del stack a sido superado.`
-        +`<br>Limite de memoria: ${limits.stackMemory.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}`
+        +`<br>Limite de memoria: ${formatNumber(limits.stackMemory)}`
         +`<br>El costo de una función es igual al mayor entre uno y la cantidad de parámetros que usa.`;
+    }
+    if (error === "INTEGEROVERFLOW") {
+        return `Se superó el límite superior numérico de ${formatNumber(KarelNumbers.maximum)}.`;
+    }
+    if (error === "INTEGERUNDERFLOW") {
+        return `Se superó el límite inferior numérico de ${formatNumber(KarelNumbers.minimum)}.`;
+    }
+    if (error === "WORLDOVERFLOW") {
+        return `Se superó el límite de zumbadores en una casilla, no debe haber más de ${formatNumber(KarelNumbers.maximum)} zumbadores.`;
     }
     if (error in ERRORCODES) {
         return ERRORCODES[error];
