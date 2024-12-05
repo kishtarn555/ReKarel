@@ -25,6 +25,7 @@ let javaWithContext = javaparser.configure({
             Iterate: t.controlKeyword,
             BoolFunc: t.atom,
             Ifzero: t.atom,
+            Ifinfinite: t.atom,
             And: t.operator,
             Or: t.operator,
             Not: t.operator,

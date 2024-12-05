@@ -98,6 +98,9 @@ Pred { @specialize<Identifier, "precede"> }
 IFZ {
     Ifzero "(" NumericTerm ")"
 }
+IFINF {
+    Ifinfinite "(" NumericTerm ")"
+}
 
 BuiltIn {
     @specialize<Identifier, "avanza"> |
@@ -138,7 +141,7 @@ term {
     | clause 
 }
 
-clause { IFZ | BoolFunc | (Identifier | Globals) | numeric | parameteredCall }
+clause { IFZ | IFINF | BoolFunc | (Identifier | Globals) | numeric | parameteredCall }
 
 
 numeric {
@@ -180,6 +183,10 @@ EndExecution {
 Ifzero { 
     @specialize<Identifier, "si-es-cero">
     |  @specialize<Identifier, "es-cero">
+ }
+ 
+Ifinfinite { 
+    @specialize<Identifier, "es-infinito">
  }
 DefineType { 
     @specialize<Identifier, "define-nueva-instruccion">

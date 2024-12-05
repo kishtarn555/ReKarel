@@ -121,7 +121,7 @@ binaryOperator {
 }
 
 
-clause { IFZ | BoolFunc ("(" ")")? | (Identifier | Globals) | numeric | call }
+clause { IFZ | IFINF | BoolFunc ("(" ")")? | (Identifier | Globals) | numeric | call }
 
 
 numeric {
@@ -163,6 +163,9 @@ BoolFunc {
 
 IFZ {
     Ifzero { @specialize<Identifier, "iszero">  } "(" NumericTerm ")"
+}
+IFINF {
+    Ifinfinite { @specialize<Identifier, "isinfinite">  } "(" NumericTerm ")"
 }
 
 Start[closedBy="End"] {
