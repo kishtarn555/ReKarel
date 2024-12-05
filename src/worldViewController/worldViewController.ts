@@ -488,6 +488,9 @@ class WorldViewController {
 
     SetBeepers(amount: number) {
         if (this.lock) return;
+        if (amount < 0) {
+            throw {message:`Cannot set to a negative amount of beepers, (${amount})`};
+        }
         const history = KarelController.GetInstance().GetHistory();
         const op = history.StartOperation();
         let rmin = Math.min(this.selection.r, this.selection.r + (this.selection.rows - 1)*this.selection.dr);
