@@ -1,3 +1,4 @@
+import { KarelNumbers } from "@rekarel/core";
 import { KarelController } from "../KarelController";
 
 
@@ -35,6 +36,13 @@ export class CallStack {
       return msg
     }
 
+    private toKarelString(value:number) :string{
+      if (KarelNumbers.isInfinite(value)) {
+        return '∞'
+      }
+      return `${value}`;
+    }
+
     private getCallInfo(evt) {
       const karelController = KarelController.GetInstance();
 
@@ -45,9 +53,9 @@ export class CallStack {
       let params = "";
       if (evt.details.params.length > 0) {
         const len = evt.details.params.length;
-        params+= `${evt.details.params[0]}`;
+        params+= this.toKarelString(evt.details.params[0]);
         for (let i =  1; i < len; i++) {
-          params += `, ${evt.details.params[i]}`;
+          params += `, ${this.toKarelString(evt.details.params[i])}`;
         }
       }
       return `<span class="text-info">${runtime.state.stackSize}</span> - ` +
