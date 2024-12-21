@@ -116,4 +116,22 @@
     <li>precede(<span class="text-warning-emphasis">4</span>, sucede(<span class="text-warning-emphasis">3</span>)) <i class="bi bi-x text-danger h5"></i></li>
 </ul>
 
+
+<div class="position-relative visually-hidden">
+    <a href="#" tabindex="-1" class="visually-hidden" id="limites" data-toc="Límites" data-toc-depth="1"></a>
+</div>
+<h1>Límites</h1>
+
+<p>El valor de un parámetro va del rango de -999,999,999 a 999,999,999 inclusivo. En caso de que sucede o precede superen el límite inferior o superior se levantará un error.</p>
+<ul></ul>
+    <li>sucede(<span class="text-warning-emphasis">999999999</span>, <span class="text-warning-emphasis">100</span>) <span class="text-danger"><i class="bi bi-x h5"></i> Error de ejecución</span></li>
+    <li>precede(precede(<span class="text-warning-emphasis">0</span>, <span class="text-warning-emphasis">100</span>), <span class="text-warning-emphasis">999999999</span>) <span class="text-danger"><i class="bi bi-x h5"></i> Error de ejecución</span></li>
+</ul>
+
+<div class="position-relative visually-hidden">
+    <a href="#" tabindex="-1" class="visually-hidden" id="infinito" data-toc="Infinito" data-toc-depth="1"></a>
+</div>
+<h1>Infinito</h1>
+
+<p>En caso de que se opere el valor de infinito(∞), sucede y precede no lo modifican</p>
 @@include("../footer.html")
