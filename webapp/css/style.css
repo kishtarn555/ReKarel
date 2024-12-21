@@ -319,5 +319,4 @@ pre.error-popup {
 
 #desktopConsole > :first-child {
     font-weight: bold;
-    background: var(--bs-warning-bg-subtle);
 }
