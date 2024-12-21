@@ -159,6 +159,9 @@ function decodeKnownError(status:CompilationError.ErrorStatus, lan : "java"|"pas
     if (status.error === CompilationError.Errors.NO_EXPLICIT_RETURN) {
         return `La función ${status.functionName} es de tipo ${status.returnType}, pero no siempre retorna un valor`;
     }
+    if (status.error === CompilationError.Errors.NUMBER_TOO_LARGE) {
+        return `El número excede el límite de 999,999,999`;
+    }
     if (status.error === CompilationError.Errors.PARAMETER_ILLEGAL_NAME) {
         return `No se puede llamar a un parámetro <b>${status.parameterName}</b> porque ya esta siendo usado por otra función o variable global`;
     }
