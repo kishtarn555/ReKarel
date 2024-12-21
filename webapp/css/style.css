@@ -317,3 +317,7 @@ pre.error-popup {
     background-color: RGBA(var(--bs-primary-rgb), 0.85)!important;
 }
 
+#desktopConsole > :first-child {
+    font-weight: bold;
+    background: var(--bs-warning-bg-subtle);
+}
