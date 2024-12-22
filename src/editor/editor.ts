@@ -18,7 +18,7 @@ import {searchKeymap, highlightSelectionMatches} from "@codemirror/search"
 let language = new Compartment, tabSize = new Compartment
 let theme = new Compartment
 let readOnly = new Compartment
-
+let autoCloseBrackets = new Compartment
 
 
 
@@ -41,7 +41,7 @@ function createEditors() : Array<EditorView> {
       // autocompletion(),
       rectangularSelection(),
       crosshairCursor(),
-      closeBrackets(),
+      autoCloseBrackets.of(closeBrackets()),
       indentOnInput(),
       highlightSelectionMatches(),
       indentUnit.of("\t"),
@@ -121,6 +121,17 @@ function SetEditorTheme (extension:Extension, editor:EditorView) {
 }
 
 
+function SetAutoCloseBracket(closesBrackets:boolean, editor:EditorView) {
+  try {
+    editor.dispatch({
+      effects:autoCloseBrackets.reconfigure(closesBrackets?closeBrackets():[])
+    });
+    } catch {
+      console.error("ERROR loading theme extension");
+    }
+}
+
+
 function SelectLine(editor:EditorView, line:number, column:number=0, shouldFocus:boolean=true) {
   const docLine = editor.state.doc.line(line);
   const jumpTo = docLine.from +column;
@@ -140,4 +151,4 @@ function SelectLine(editor:EditorView, line:number, column:number=0, shouldFocus
 
 }
 
-export {createEditors, freezeEditors, unfreezeEditors, setLanguage, SetText, SetEditorTheme, SelectLine}
+export {createEditors, freezeEditors, unfreezeEditors, setLanguage, SetText, SetEditorTheme, SelectLine, SetAutoCloseBracket}
