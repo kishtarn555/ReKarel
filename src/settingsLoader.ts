@@ -70,6 +70,7 @@ function setSettings(event:  JQuery.SubmitEvent<HTMLElement, undefined, HTMLElem
     let theme = <string>$("#settingsForm select[name=theme]").val();
     let style = <string>$("#settingsForm select[name=editorStyle]").val();
     let autoInput =<boolean>($("#settingsAutoInputMode").prop("checked") ?? true);
+    let autoCloseBracket =<boolean>($("#settingsAutoCloseBracket").prop("checked") ?? true);
     if (isResponsiveInterfaces(interfaceType)) {
         appSettings.interface = interfaceType;
     }
@@ -82,7 +83,7 @@ function setSettings(event:  JQuery.SubmitEvent<HTMLElement, undefined, HTMLElem
     appSettings.slowExecutionLimit = slowModeLimit;
     appSettings.editorTheme = style;
     appSettings.autoInputMode = autoInput;
-
+    appSettings.editorCloseBrackets = autoCloseBracket;
     applySettings(appSettings, desktopUI);
 
 
@@ -121,6 +122,7 @@ function loadSettingsToModal() {
     $("#settingsStyle").val(appSettings.editorTheme);
     $("#settingsSlowModeLimit").val(appSettings.slowExecutionLimit);
     $("#settingsAutoInputMode").prop("checked",appSettings.autoInputMode);
+    $("#settingsAutoCloseBracket").prop("checked",appSettings.editorCloseBrackets);
     showOrHideSlowExecutionLimit();
 }
 
