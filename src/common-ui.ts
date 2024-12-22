@@ -11,6 +11,7 @@ import { HookNavbar, NavbarData } from './commonUI/navbar'
 import { HookStyleModal } from './commonUI/karelStyleModal'
 import { EvaluatorData, HookEvaluatorModal } from './commonUI/evaluatorModal'
 import { HookRandomBeepersModal } from './commonUI/randomBeepersModal'
+import { hookOpenWorldModel, OpenWorldModal } from './commonUI/openWorldModal'
 
 
 
@@ -20,6 +21,7 @@ interface UiData {
     resizeModal:ResizeModal,
     confirmModal: ConfirmModal,
     wordSaveModal:WorldSaveModal,
+    openWorldModal: OpenWorldModal,
     amountModal: AmountModal,
     evaluatorModal:EvaluatorData
     confirmCallers: Array<ConfirmModalBtn>,
@@ -32,7 +34,7 @@ interface UiData {
 
 
 function HookUpCommonUI(uiData: UiData) {
-    
+    hookOpenWorldModel(uiData.openWorldModal, uiData.karelController);
     hookDownloadModel(uiData.downloadCodeModal, uiData.editor);
     HookAmountModal(uiData.amountModal, uiData.worldController);
     HookWorldSaveModal(uiData.wordSaveModal, uiData.karelController);
