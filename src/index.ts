@@ -429,6 +429,12 @@ HookUpCommonUI(
             worldDataOut:"#worldDataOut",
             wrongNameWaring:"#wrongWorldName",
         },
+        openWorldModal: {
+            modal:"#openWorldModal",
+            fileBtn: "#openWorldFileBtn",
+            useTextBtn: "#openWorldTextBtn",
+            worldText: "#inputWorldField",
+        },
         navbar: {
             openCode: "#openCodeBtn",
             openWorldIn: "#openWorldInBtn"
