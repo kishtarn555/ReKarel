@@ -36,6 +36,7 @@ let pascalWithContext = pascalparser.configure({
             End: t.brace,
             BoolFunc: t.atom,
             Ifzero: t.atom,
+            Ifinfinite: t.atom,
             And : t.operator,
             Not : t.operator,
             Or : t.operator,

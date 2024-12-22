@@ -1,3 +1,4 @@
+import { KarelNumbers } from "@rekarel/core"
 import { AppVars } from "../volatileMemo"
 import { WorldViewController } from "../worldViewController/worldViewController"
 
@@ -44,7 +45,7 @@ export class WorldBar {
         const worldController = WorldViewController.GetInstance();
         this.data.beepers.addOne.on("click", ()=>worldController.ChangeBeepers(1));
         this.data.beepers.removeOne.on("click", ()=>worldController.ChangeBeepers(-1));        
-        this.data.beepers.infinite.on("click", ()=>worldController.SetBeepers(-1));
+        this.data.beepers.infinite.on("click", ()=>worldController.SetBeepers(KarelNumbers.a_infinite));
         this.data.beepers.clear.on("click", ()=>worldController.SetBeepers(0));
         this.data.beepers.random.on("click", ()=>worldController.SetRandomBeepers(AppVars.randomBeeperMinimum, AppVars.randomBeeperMaximum));
 

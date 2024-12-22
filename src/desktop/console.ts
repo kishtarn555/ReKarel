@@ -42,12 +42,12 @@ export class KarelConsole {
             
             const html = `<div style="text-wrap: wrap;"><span class="text-${style}">[${hour}:${minute}:${second} ${amOrPm}]</span> ${message}</div>`;
             this.consoleTab.console.prepend(html);
-            this.ScrollToBottom();
+            this.ScrollToTop();
             return;
         }
         const html = `<div>${message}</div>`;
         this.consoleTab.console.prepend(html);
-        this.ScrollToBottom();
+        this.ScrollToTop();
         
     }
 
@@ -65,11 +65,9 @@ export class KarelConsole {
     private IsShown() {
         return this.consoleTab.console.is(":hidden") === false;
     }
-    private ScrollToBottom() {
+    private ScrollToTop() {
         if (this.IsShown()) {
-            this.consoleTab.parent.scrollTop(
-                this.consoleTab.parent.prop("scrollHeight")
-            );
+            this.consoleTab.parent.scrollTop(0);
         }
     }
 

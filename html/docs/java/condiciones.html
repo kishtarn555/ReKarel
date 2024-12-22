@@ -43,6 +43,14 @@
         <td>Verdadero si en la casilla donde Karel no hay ningún zumbador</td>
     </tr>
     <tr>
+        <td>anyBeepersInBeeperBag</td>
+        <td>Verdadero si la mochila de Karel tiene uno o más zumbadores</td>
+    </tr>
+    <tr>
+        <td>noBeepersInBeeperBag</td>
+        <td>Verdadero si la mochila de Karel tiene cero zumbadores</td>
+    </tr>
+    <tr>
         <td>facingNorth</td>
         <td>Verdadero si Karel esta orientado al norte (arriba).</td>
     </tr>
@@ -75,6 +83,29 @@
         <td>Verdadero si Karel esta orientado en cualquier dirección <b>excepto</b> el oeste.</td>
     </tr>
 </table>
+
+
+<div class="position-relative visually-hidden">
+    <a href="#" tabindex="-1" class="visually-hidden" id="es_infinito" data-toc="Si es infinito (isinfinite)" data-toc-depth="1"></a>
+</div>
+
+<h2>Si es infinito (isinfinite)</h2>
+<p>Otra condición que podemos revisar es: <b>isinfinite</b>, esta recibe un parámetro numérico. La condición
+    se verdadera cuando el valor que recibe es infinito.</p>
+
+<h5>Ejemplo 1</h5>
+<a class="badge text-bg-secondary rounded-pill text-decoration-none" title="Requiere importar rekarel.globals" href="import.html">
+    import rekarel.globals
+</a>
+
+<p>Este código solo se avanza si Karel tiene infinitos zumbadores.</p>
+<code class="text-body">
+<pre class="border p-2">
+<span class="text-primary-emphasis">if</span> (<span class="text-warning-emphasis">isinfinite</span>(<span class="text-info-emphasis">beepersInBeeperBag</span>))
+    <span class="text-info-emphasis">move</span>();
+</pre>
+</code>
+
 
 <div class="position-relative visually-hidden">
     <a href="#" tabindex="-1" class="visually-hidden" id="es_cero" data-toc="Si es cero (iszero)" data-toc-depth="1"></a>

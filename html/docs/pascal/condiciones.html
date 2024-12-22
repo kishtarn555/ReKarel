@@ -43,6 +43,14 @@
         <td>Verdadero si en la casilla donde Karel no hay ningún zumbador</td>
     </tr>
     <tr>
+        <td>algun-zumbador-en-la-mochila</td>
+        <td>Verdadero si la mochila de Karel tiene uno o más zumbadores</td>
+    </tr>
+    <tr>
+        <td>ningun-zumbador-en-la-mochila</td>
+        <td>Verdadero si la mochila de Karel tiene cero zumbadores</td>
+    </tr>
+    <tr>
         <td>orientado-al-norte</td>
         <td>Verdadero si Karel esta orientado al norte (arriba).</td>
     </tr>
@@ -75,6 +83,28 @@
         <td>Verdadero si Karel esta orientado en cualquier dirección <b>excepto</b> el oeste.</td>
     </tr>
 </table>
+
+<div class="position-relative visually-hidden">
+    <a href="#" tabindex="-1" class="visually-hidden" id="es_infinito" data-toc="Si es infinito (isinfinite)" data-toc-depth="1"></a>
+</div>
+<h2>Si es infinito (es-infinito)</h2>
+<p>Otra condición que podemos revisar es: <b>es-infinito</b>, esta recibe un parámetro numérico. La condición
+    se verdadera cuando el valor que recibe es infinito.</p>
+
+<h5>Ejemplo 1</h5>
+<a class="badge text-bg-secondary rounded-pill text-decoration-none" title="Requiere importar rekarel.globals"
+    href="usa.html">
+    usa rekarel.globals
+</a>
+
+<p>Este código solo se avanza si Karel tiene infinitos zumbadores.</p>
+<code class="text-body">
+<pre class="border p-2">
+<span class="text-primary-emphasis">si</span> <span class="text-warning-emphasis">es-infinito</span>(<span class="text-info-emphasis">zumbadores-en-la-mochila</span>) <span class="text-primary-emphasis">entonces</span>
+    <span class="text-info-emphasis">avanza</span>;
+</pre>
+</code>
+
 
 <div class="position-relative visually-hidden">
     <a href="#" tabindex="-1" class="visually-hidden" id="es_cero" data-toc="Es cero" data-toc-depth="1"></a>
