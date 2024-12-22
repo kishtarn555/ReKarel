@@ -282,13 +282,13 @@ class DesktopController {
         this.console.SendMessageToConsole(message, style);
     }
 
-    
-
     private HotKeys(e: JQuery.KeyDownEvent) {
         let tag = e.target.tagName.toLowerCase();
-        if (document.activeElement.getAttribute("role")=="textbox" || tag=="input") {
+        let role = document.activeElement.getAttribute("role");
+        if (role=="textbox" || tag=="input" || role === "dialog" ) {
             return;
         }
+       
         const overrideShift = new Set<number>([37, 38, 39, 40]);
         type keyMod = "yes" | "no" | "optional";
         type hotkeyMod = {shift:keyMod, ctrl: keyMod, alt: keyMod};
