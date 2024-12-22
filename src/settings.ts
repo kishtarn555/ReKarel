@@ -20,22 +20,38 @@ export type AppSettings = {
     theme: themeSettings
     editorTheme:string
     editorFontSize: fontSizes,
+    /**
+     * Sets if the brackets are automatically closed when typed
+     */
+    editorCloseBrackets:boolean,
     worldRendererStyle: WRStyle,
-    slowExecutionLimit:number
+    slowExecutionLimit:number,
     
 }
 
-let appSettings: AppSettings = {
+export const defaultSettings: AppSettings = {
     version:SETTINGS_VERSION,
     interface: "desktop",
     autoInputMode: true,
     editorTheme: "classic",
     editorFontSize: 12,
+    editorCloseBrackets:true,
     theme: "system",
     worldRendererStyle: DefaultWRStyle,
     slowExecutionLimit:200000
 }
+let appSettings: AppSettings = {...defaultSettings}
 
+/**
+ * Upgrades old settings to the current format, adding new settings
+ * @param oldSettings 
+ */
+export function upgradeSettings(oldSettings:Partial<AppSettings>):AppSettings {
+    return {
+        ...defaultSettings,
+        ...oldSettings,
+    };
+}
 
 export function SetSettings(settings:AppSettings) {
     appSettings = settings;

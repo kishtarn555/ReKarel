@@ -1,8 +1,9 @@
 import { SetDarkTheme, SetLightTheme, SetSystemTheme } from "./appTheme";
 import { DesktopController } from "./desktop/desktop-ui";
+import { SetAutoCloseBracket } from "./editor/editor";
 import { DarkEditorThemes } from "./editor/themes/themeManager";
 import { SetDesktopView, SetPhoneView, SetResponsiveness } from "./responsive-load";
-import { APP_SETTING, AppSettings, fontSizes, GetCurrentSetting, responsiveInterfaces, SetSettings, SETTINGS_VERSION, themeSettings } from "./settings";
+import { APP_SETTING, AppSettings, fontSizes, GetCurrentSetting, responsiveInterfaces, SetSettings, SETTINGS_VERSION, themeSettings, upgradeSettings } from "./settings";
 import { WRStyle } from "./worldRenderer";
 
 function isFontSize(str: number): str is fontSizes {
@@ -54,6 +55,7 @@ function applySettings(settings: AppSettings, desktopUI:DesktopController) {
         desktopUI.ResizeCanvas();
     desktopUI.worldController.renderer.style = settings.worldRendererStyle;
     desktopUI.worldController.Update();
+    SetAutoCloseBracket(settings.editorCloseBrackets, desktopUI.editor);
     if (localStorage)
         localStorage.setItem(APP_SETTING, JSON.stringify(settings))
 
@@ -92,7 +94,7 @@ function loadSettingsFromMemory() {
     const jsonString = localStorage?.getItem(APP_SETTING);
     if (jsonString) {
         let memorySettings:AppSettings = JSON.parse(jsonString);
-        if (memorySettings.version == null) return;
+        memorySettings = upgradeSettings(memorySettings);
         memorySettings = fixSettings(memorySettings);
         SetSettings(memorySettings);
     } 
