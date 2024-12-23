@@ -1,7 +1,7 @@
 import bootstrap from "bootstrap";
 
 
-const FRAME_RATE = 5;
+const FRAME_RATE = 24;
 const FRAME_LENGTH = 1000/ FRAME_RATE ;
 class Throbber {
     modal:bootstrap.Modal
