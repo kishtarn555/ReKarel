@@ -204,7 +204,7 @@ class KarelController {
         runtime.step();
         if (runtime.state.stackSize > startWStackSize) {
             throbber.performTask(
-                function  * () {
+                function * (this:KarelController) {
                     while (this.PerformFastStep() && runtime.state.stackSize > startWStackSize) yield;
                     runtime.step();
                 }.bind(this)
@@ -297,9 +297,11 @@ class KarelController {
         let runtime = this.GetRuntime();
         // runtime.disableStackEvents= false; // FIXME: This should only be done when no breakpoints
         // runtime.disableStackEvents= true; // FIXME: This should only be done when no breakpoints
-        await throbber.performTask(function * () {
-            while (this.PerformFastStep(ignoreBreakpoints)) yield;
-        }.bind(this)).then(()=> {
+        await throbber.performTask(
+            function * (this:KarelController) {
+                while (this.PerformFastStep(ignoreBreakpoints)) yield;
+            }.bind(this)
+        ).then(()=> {
             this.fastStepping = false;
             if (!runtime.state.running) {
                 this.EndMessage();
