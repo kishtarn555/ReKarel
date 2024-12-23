@@ -1,15 +1,16 @@
+import bootstrap from "bootstrap";
 
 
-const FRAME_RATE = 5;
+const FRAME_RATE = 24;
 const FRAME_LENGTH = 1000/ FRAME_RATE ;
 class Throbber {
-    element:JQuery
+    modal:bootstrap.Modal
     interrupter: JQuery
     shouldBeVisible:boolean;
     visible:boolean;
     private interrupted:boolean;
     constructor(element:JQuery, interrupter:JQuery) {
-        this.element = element;
+        this.modal = bootstrap.Modal.getOrCreateInstance(element[0]);
         this.shouldBeVisible = false;
         this.visible= false;
         this.interrupted = false;
@@ -19,13 +20,13 @@ class Throbber {
     }
     
     show() {
-        this.element.show();        
+        this.modal.show();
         this.visible = true;
     }
     hide() {
         this.shouldBeVisible=false;
         this.visible= false;
-        this.element.hide();
+        this.modal.hide();
     }
 
     showInSeconds(seconds:number) {
