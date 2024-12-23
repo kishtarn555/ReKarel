@@ -228,7 +228,11 @@ class KarelController {
             function * (this:KarelController) {
                 while (this.PerformFastStep() && runtime.state.stackSize >= startWStackSize) yield;
                 this.fastStepping = false;
-            }.bind(this)
+            }.bind(this),
+            ()=> {
+                this.fastStepping = false;
+                this.Pause();
+            }
         ).then(_=>this.EndStep());
     }
 
@@ -377,7 +381,7 @@ class KarelController {
     }
 
     private EndStep() {
-        
+        this.fastStepping = false;
         if (!this.GetRuntime().state.running) {            
             this.EndMessage();
             this.ChangeState("finished");

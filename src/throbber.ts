@@ -39,7 +39,6 @@ class Throbber {
 
     Interrupt() {
         this.interrupted = true;
-        console.log("Interrupted")
     }
 
 
