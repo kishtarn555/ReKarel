@@ -4,13 +4,15 @@ import { WorldBar, WorldToolbarData } from "../desktop/worldToolbar"
 import { getEditors } from "../editor/editorsInstances"
 import { KarelController } from "../KarelController"
 import { WorldViewController } from "../worldViewController/worldViewController"
+import { ZoomControl, ZoomControlData } from "./zoomControl"
 
 type MobileUIData = {
     controls:ControlBarData
     focus: FocusToolbar
     startExec: JQuery,
     worldBar: WorldToolbarData,
-    previousOpBtn:JQuery
+    previousOpBtn:JQuery,
+    zoomControl:ZoomControlData,
 }
 
 
@@ -24,6 +26,7 @@ export class MobileUI {
     private startExec: JQuery
     private previousOpBtn: JQuery
     private state: MobileState
+    private zoomControl:ZoomControl
     private static _instance:MobileUI
 
     constructor(data:MobileUIData) {
@@ -67,6 +70,8 @@ export class MobileUI {
                 this.SetState("world");
             }
         })
+
+        this.zoomControl = new ZoomControl(data.zoomControl);
     }
 
     static GetInstance() {

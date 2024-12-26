@@ -276,6 +276,10 @@ const MobileUIC = new MobileUI ({
     },
     startExec: $("#phoneExecMode"),
     previousOpBtn: $("#phoneRepeat"),
+    zoomControl: {
+        zoomCollapsable: $("#phoneZoomDropdown"),
+        zoomSlider: $("#phoneZoom")
+    }
 });
 
 let PhoneUI = GetPhoneUIHelper({
