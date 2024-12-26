@@ -4,6 +4,8 @@ import { WorldViewController } from "../worldViewController/worldViewController"
 import { AppVars } from "../volatileMemo";
 import { KarelNumbers } from "@rekarel/core";
 
+const MAX_DELAY = 3000;
+
 type ExecutionToolbar = {
     reset: JQuery,
     compile: JQuery,
@@ -41,7 +43,7 @@ export class ControlBar  {
         WorldViewController.GetInstance().RegisterBeeperBagListener(()=>{
             this.UpdateBeeperBag();
         });
-        AppVars.registerDelayChangeListener((amount)=>this.ui.delayInput.val(amount));
+        AppVars.registerDelayChangeListener(this.OnDelayChange.bind(this));
 
         this.ConnectExecutionButtonGroup();
 
@@ -64,6 +66,9 @@ export class ControlBar  {
         });
         this.ui.delayInput.on("change", () => {
             let delay:number = parseInt(this.ui.delayInput.val() as string);
+            if (delay >= MAX_DELAY) {
+                delay = MAX_DELAY;
+            }
             AppVars.setDelay(delay);
             KarelController.GetInstance().ChangeAutoStepDelay(delay);
         });
@@ -240,6 +245,20 @@ export class ControlBar  {
             this.UpdateBeeperBag();
         } else if (state === "paused") {
             this.SetPauseMode();
+        }
+    }
+
+    private OnDelayChange(delay:number) {
+        this.ui.delayInput.val(delay);
+        if (delay >= MAX_DELAY) {
+            this.ui.delayAdd.attr("disabled","");
+            this.ui.delayRemove.removeAttr("disabled");
+        } else if (delay === 0) {
+            this.ui.delayAdd.removeAttr("disabled");
+            this.ui.delayRemove.attr("disabled","");
+        } else {
+            this.ui.delayAdd.removeAttr("disabled");
+            this.ui.delayRemove.removeAttr("disabled");
         }
     }
 
