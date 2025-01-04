@@ -439,6 +439,13 @@ HookUpCommonUI(
             useTextBtn: "#openWorldTextBtn",
             worldText: "#inputWorldField",
         },
+        worldShareModal: {
+            modal: "#shareWorldModal",
+            field: "#shareWorldTxt",
+            toClipboard: "#shareWorldClipboardBtn",
+            clipboardNotice: "#shareWorldClipboardNotice",
+            tooLarge: "#shareWorldTooLarge"
+        },
         navbar: {
             openCode: "#openCodeBtn",
             openWorldIn: "#openWorldInBtn"

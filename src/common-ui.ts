@@ -12,6 +12,7 @@ import { HookStyleModal } from './commonUI/karelStyleModal'
 import { EvaluatorData, HookEvaluatorModal } from './commonUI/evaluatorModal'
 import { HookRandomBeepersModal } from './commonUI/randomBeepersModal'
 import { hookOpenWorldModel, OpenWorldModal } from './commonUI/openWorldModal'
+import { HookShareWorldModal, ShareWorldModal } from './commonUI/shareWorldModal'
 
 
 
@@ -27,6 +28,7 @@ interface UiData {
     confirmCallers: Array<ConfirmModalBtn>,
     karelController:KarelController,
     worldController: WorldViewController,
+    worldShareModal: ShareWorldModal
     navbar:NavbarData
     
 }
@@ -64,6 +66,7 @@ function HookUpCommonUI(uiData: UiData) {
     });
 
     HookResizeModal(uiData.resizeModal, uiData.karelController);
+    HookShareWorldModal(uiData.worldShareModal, uiData.karelController)
 }
 
 
