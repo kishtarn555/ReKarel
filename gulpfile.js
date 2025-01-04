@@ -4,6 +4,7 @@ import replace from 'gulp-replace'
 import insert  from 'gulp-insert'
 import clean  from 'gulp-clean'
 import * as manifest from './package.json'  with { type: "json" }
+import * as coreManifest from './node_modules/@rekarel/core/package.json'  with { type: "json" }
 import htmlmin from 'gulp-html-minifier-terser'
 
 const mainPath = "html/index.html"
@@ -29,7 +30,8 @@ gulp.task('bundle-html', ()=> {
             context: {
                 shortVersion: manifest.default.version.replace(/[\.\-]/g,"_"),
                 longVersion: manifest.default.version,
-                coreVersion: manifest.default.dependencies["@rekarel/core"].replace(/^\^/, "")
+                coreVersion: manifest.default.dependencies["@rekarel/core"].replace(/^\^/, ""),
+                languageVersion: coreManifest.default.rekarel.language
             }
         }))
     .pipe(htmlmin({
