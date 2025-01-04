@@ -6,7 +6,8 @@ let mode:"mobile"|"desktop"|"responsive"="responsive";
 
 function clearAllDisplayClasses(element: string) {    
     $(element).removeClass( "d-none" );
-    $(element).removeClass( "d-lg-block");    
+    $(element).removeClass( "d-lg-block");
+    $(element).removeClass( "d-lg-flex");
     $(element).removeClass( "d-lg-none");
 }
 function hideElement(element: string) {    
