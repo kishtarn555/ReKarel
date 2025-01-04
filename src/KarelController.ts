@@ -152,9 +152,6 @@ class KarelController {
         let runtime = this.GetRuntime();        
         runtime.load(compiled);
         runtime.disableStackEvents = false;
-        // FIXME: We skip validators, they seem useless, but I'm unsure
-        
-        runtime.start();
         this.running = true;
         this.ChangeState("running");
         return true;        
