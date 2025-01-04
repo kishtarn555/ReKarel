@@ -12,6 +12,8 @@ import { HookSession, RestoreSession } from "./session";
 import { RegisterHighlightListeners } from "./editor/editor.listeners";
 import { editorTranspile } from "./editor/transpiler";
 import { MobileUI } from "./mobile/mobile";
+import { deserializeKarelBinary } from "@rekarel/binary";
+import { base64ToBuffer } from "./base64";
 
 
 let KarelWorld: World = new World(100, 100);
@@ -469,6 +471,10 @@ $(document).ready(() => {
     DesktopUI.Init();
     StartSettings(DesktopUI);
     RestoreSession();
+    if (window.location.hash.startsWith("#w=")) {
+        const base64 = window.location.hash.substring(3);
+        deserializeKarelBinary(base64ToBuffer(base64), karelController.world);
+    }
 })
 
 export const GetKarelController = KarelController.GetInstance;
