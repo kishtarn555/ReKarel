@@ -563,6 +563,7 @@ class WorldViewController {
     }
 
     SetCellEvaluation(state:boolean) {
+        if (this.lock) return;
         const world = this.karelController.world;
         let rmin = Math.min(this.selection.r, this.selection.r + (this.selection.rows - 1)*this.selection.dr);
         let rmax = Math.max(this.selection.r, this.selection.r + (this.selection.rows - 1)*this.selection.dr);
