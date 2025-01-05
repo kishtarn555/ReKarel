@@ -452,7 +452,9 @@ HookUpCommonUI(
             modal: "#mdoModal",
             importBtn: "#importMdoBtn",
             kecFile: "#kecFile",
-            mdoFile: "#mdoFile"
+            mdoFile: "#mdoFile",
+            mdoError: "#mdoError",
+            mdoMissing: "#mdoMissing"
         },
         navbar: {
             openCode: "#openCodeBtn",

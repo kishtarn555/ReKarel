@@ -7,13 +7,15 @@
             </div>
             <div class="modal-body">
                 <div class="mb-2">
-                    <label for="mdoFile" class="form-label">MDO</label>
+                    <label for="mdoFile" class="form-label">MDO</label> 
+                    <span class="text-danger" id="mdoMissing" hidden><i class="bi bi-exclamation-diamond-fill"></i> El archivo MDO es necesario</span>
                     <input type="file" name="mdoFile" id="mdoFile" class="form-control">
                 </div>
                 <div class="mb-2">
-                    <label for="kecFile" class="form-label">KEC</label>
+                    <label for="kecFile" class="form-label">KEC (Opcional)</label>
                     <input type="file" name="kecFile" id="kecFile" class="form-control">
                 </div>
+                <p class="text-danger mt-2" id="mdoError" hidden><i class="bi bi-exclamation-diamond-fill"></i> Error leyendo los archivos, asegúrate de que sean válidos.</p>
             </div>
             <div class="modal-footer">
                 <a href="#" class="btn btn-primary" id="importMdoBtn">Importar</a>
