@@ -448,6 +448,12 @@ HookUpCommonUI(
             clipboardNotice: "#shareWorldClipboardNotice",
             tooLarge: "#shareWorldTooLarge"
         },
+        mdoModal: {
+            modal: "#mdoModal",
+            importBtn: "#importMdoBtn",
+            kecFile: "#kecFile",
+            mdoFile: "#mdoFile"
+        },
         navbar: {
             openCode: "#openCodeBtn",
             openWorldIn: "#openWorldInBtn"
