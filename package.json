@@ -33,7 +33,7 @@
     "@codemirror/history": "^0.19.2",
     "@codemirror/lang-javascript": "^6.1.7",
     "@lezer/highlight": "^1.1.4",
-    "@rekarel/binary": "^1.0.0-beta.1",
+    "@rekarel/binary": "^1.0.0-beta.2",
     "@rekarel/core": "^3.0.0-beta.1",
     "@types/bootstrap": "^5.2.6",
     "@xmldom/xmldom": "^0.8.10",

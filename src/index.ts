@@ -473,7 +473,7 @@ $(document).ready(() => {
     RestoreSession();
     if (window.location.hash.startsWith("#w=")) {
         const base64 = window.location.hash.substring(3);
-        deserializeKarelBinary(base64ToBuffer(base64), karelController.world);
+        deserializeKarelBinary(karelController.world, base64ToBuffer(base64));
     }
 })
 
