@@ -17,6 +17,7 @@ class Throbber {
         this.hide();
         this.interrupter = interrupter;
         interrupter.on("click",()=>this.Interrupt());
+        element.on("hide.bs.modal", ()=>this.Interrupt());
     }
     
     show() {
