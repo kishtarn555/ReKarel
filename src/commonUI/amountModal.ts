@@ -11,7 +11,9 @@ export type AmountModal = {
 
 export function HookAmountModal(modal: AmountModal, worldController:WorldViewController) {
     $(modal.modal).on("shown.bs.modal", () => {
-        $(modal.inputField).trigger("focus");
+        $(modal.inputField)
+            .trigger("focus")
+            .val("");
     })
     $(modal.inputField).on("keydown", (event) => {
         if (event.key === "Enter") {
