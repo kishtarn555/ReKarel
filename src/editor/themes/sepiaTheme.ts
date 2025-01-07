@@ -24,8 +24,12 @@ export const SepiaTheme: EditorTheme = {
       ])),
       EditorView.theme({
         '&.cm-focused .cm-selectionBackground, ::selection' : {
-          backgroundColor: "#b3c6c7"
+          backgroundColor: "#53d49180"
+        },
+        '&.cm-focused .cm-selectionMatch': {
+          backgroundColor: "#b3c6c750"
         }
+        
       })
     ]
   };

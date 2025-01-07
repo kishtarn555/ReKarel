@@ -24,7 +24,10 @@ export const OMIHighlight: EditorTheme = {
       ])),
       EditorView.theme({
         '&.cm-focused .cm-selectionBackground, ::selection' : {
-          backgroundColor: "#0000FF"
+          backgroundColor: "#0000ff"
+        },
+        '&.cm-focused .cm-selectionMatch': {
+          backgroundColor: "#6b248080"
         }
       })
     ]
