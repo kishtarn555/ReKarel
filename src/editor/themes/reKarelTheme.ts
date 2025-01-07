@@ -30,7 +30,10 @@ export const ReKarelHighlight: EditorTheme = {
         },
         '&.cm-focused .cm-selectionMatch': {
           backgroundColor: "#343A40"
-        }
+        },
+        "&.cm-focused .cm-cursor": {
+          borderLeftColor: "var(--bs-body-color)"
+        },
       })
     ]
   };

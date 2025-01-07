@@ -28,7 +28,10 @@ export const OMIHighlight: EditorTheme = {
         },
         '&.cm-focused .cm-selectionMatch': {
           backgroundColor: "#6b248080"
-        }
+        },
+        "&.cm-focused .cm-cursor": {
+          borderLeftColor: "#FFFF00"
+        },
       })
     ]
   };
