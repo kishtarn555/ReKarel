@@ -61,7 +61,10 @@ export const DarkCodeTheme: EditorTheme = {
       ])),
       EditorView.theme({
         '&.cm-focused .cm-selectionBackground, ::selection' : {
-          backgroundColor: "#b3c6c7"
+          backgroundColor: "#ADD6FFA0"
+        },
+        '&.cm-focused .cm-selectionMatch': {
+          backgroundColor: "#E5EBF1"
         }
       })
     ]

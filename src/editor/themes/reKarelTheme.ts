@@ -58,6 +58,14 @@ export const LightReKarelHighlight: EditorTheme = {
         { tag: tags.function(tags.variableName), color: "#24a7db" },
         { tag: tags.constant(tags.variableName), color: "#ff9c07" },
       ])),
+      EditorView.theme({
+        '&.cm-focused .cm-selectionBackground, ::selection' : {
+          backgroundColor: "#ADD6FFA0"
+        },
+        '&.cm-focused .cm-selectionMatch': {
+          backgroundColor: "#E5EBF1"
+        }
+      })
       
     ]
   };
