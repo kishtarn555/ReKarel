@@ -10,6 +10,9 @@ export type AmountModal = {
 
 
 export function HookAmountModal(modal: AmountModal, worldController:WorldViewController) {
+    $(modal.modal).on("shown.bs.modal", () => {
+        $(modal.inputField).trigger("focus");
+    })
     $(modal.confirmBtn).on("click", ()=> {
         const inputValue = $(modal.inputField).val();
         if (inputValue === "") {
