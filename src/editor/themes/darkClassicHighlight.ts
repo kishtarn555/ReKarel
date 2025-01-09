@@ -24,6 +24,12 @@ export const darkClassicHighlight: EditorTheme = {
       { tag: tags.constant(tags.variableName), color: "#80e9ed" },
     ])),
     EditorView.theme({
+      ".cm-selectionBackground": {
+        backgroundColor: "#264F7880"
+      },
+      '.cm-selectionMatch': {
+        backgroundColor: "#343A4080"
+      },
       '&.cm-focused .cm-selectionBackground, ::selection' : {
         backgroundColor: "#264F78"
       },

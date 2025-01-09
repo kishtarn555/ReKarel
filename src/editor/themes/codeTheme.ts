@@ -27,6 +27,12 @@ export const DarkCodeTheme: EditorTheme = {
         { tag: tags.constant(tags.variableName), color: "#52C8FF" },
       ])),
       EditorView.theme({
+        ".cm-selectionBackground": {
+          backgroundColor: "#264F7880"
+        },
+        '.cm-selectionMatch': {
+          backgroundColor: "#343A4080"
+        },
         '&.cm-focused .cm-selectionBackground, ::selection' : {
           backgroundColor: "#264F78"
         },
