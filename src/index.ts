@@ -382,6 +382,7 @@ HookUpCommonUI(
             maxTurnLeft:$("#maxTurnLeft"),
             maxPickBuzzer:$("#maxPickBuzzer"),
             maxLeaveBuzzer:$("#maxLeaveBuzzer"),
+            targetVersion: $("#targetVersionEval")
         },
         confirmModal: {
             modal: "#confirmModal",
