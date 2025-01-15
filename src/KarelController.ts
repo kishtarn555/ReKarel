@@ -152,9 +152,6 @@ class KarelController {
         let runtime = this.GetRuntime();        
         runtime.load(compiled);
         runtime.disableStackEvents = false;
-        // FIXME: We skip validators, they seem useless, but I'm unsure
-        
-        runtime.start();
         this.running = true;
         this.ChangeState("running");
         return true;        
@@ -204,7 +201,7 @@ class KarelController {
         runtime.step();
         if (runtime.state.stackSize > startWStackSize) {
             throbber.performTask(
-                function  * () {
+                function * (this:KarelController) {
                     while (this.PerformFastStep() && runtime.state.stackSize > startWStackSize) yield;
                     runtime.step();
                 }.bind(this)
@@ -228,7 +225,11 @@ class KarelController {
             function * (this:KarelController) {
                 while (this.PerformFastStep() && runtime.state.stackSize >= startWStackSize) yield;
                 this.fastStepping = false;
-            }.bind(this)
+            }.bind(this),
+            ()=> {
+                this.fastStepping = false;
+                this.Pause();
+            }
         ).then(_=>this.EndStep());
     }
 
@@ -297,9 +298,11 @@ class KarelController {
         let runtime = this.GetRuntime();
         // runtime.disableStackEvents= false; // FIXME: This should only be done when no breakpoints
         // runtime.disableStackEvents= true; // FIXME: This should only be done when no breakpoints
-        await throbber.performTask(function * () {
-            while (this.PerformFastStep(ignoreBreakpoints)) yield;
-        }.bind(this)).then(()=> {
+        await throbber.performTask(
+            function * (this:KarelController) {
+                while (this.PerformFastStep(ignoreBreakpoints)) yield;
+            }.bind(this)
+        ).then(()=> {
             this.fastStepping = false;
             if (!runtime.state.running) {
                 this.EndMessage();
@@ -375,7 +378,7 @@ class KarelController {
     }
 
     private EndStep() {
-        
+        this.fastStepping = false;
         if (!this.GetRuntime().state.running) {            
             this.EndMessage();
             this.ChangeState("finished");

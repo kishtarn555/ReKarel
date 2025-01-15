@@ -12,6 +12,8 @@ import { HookSession, RestoreSession } from "./session";
 import { RegisterHighlightListeners } from "./editor/editor.listeners";
 import { editorTranspile } from "./editor/transpiler";
 import { MobileUI } from "./mobile/mobile";
+import { deserializeKarelBinary } from "@rekarel/binary";
+import { base64ToBuffer } from "./base64";
 
 
 let KarelWorld: World = new World(100, 100);
@@ -276,6 +278,10 @@ const MobileUIC = new MobileUI ({
     },
     startExec: $("#phoneExecMode"),
     previousOpBtn: $("#phoneRepeat"),
+    zoomControl: {
+        zoomCollapsable: $("#phoneZoomDropdown"),
+        zoomSlider: $("#phoneZoom")
+    }
 });
 
 let PhoneUI = GetPhoneUIHelper({
@@ -376,6 +382,7 @@ HookUpCommonUI(
             maxTurnLeft:$("#maxTurnLeft"),
             maxPickBuzzer:$("#maxPickBuzzer"),
             maxLeaveBuzzer:$("#maxLeaveBuzzer"),
+            targetVersion: $("#targetVersionEval")
         },
         confirmModal: {
             modal: "#confirmModal",
@@ -429,6 +436,27 @@ HookUpCommonUI(
             worldDataOut:"#worldDataOut",
             wrongNameWaring:"#wrongWorldName",
         },
+        openWorldModal: {
+            modal:"#openWorldModal",
+            fileBtn: "#openWorldFileBtn",
+            useTextBtn: "#openWorldTextBtn",
+            worldText: "#inputWorldField",
+        },
+        worldShareModal: {
+            modal: "#shareWorldModal",
+            field: "#shareWorldTxt",
+            toClipboard: "#shareWorldClipboardBtn",
+            clipboardNotice: "#shareWorldClipboardNotice",
+            tooLarge: "#shareWorldTooLarge"
+        },
+        mdoModal: {
+            modal: "#mdoModal",
+            importBtn: "#importMdoBtn",
+            kecFile: "#kecFile",
+            mdoFile: "#mdoFile",
+            mdoError: "#mdoError",
+            mdoMissing: "#mdoMissing"
+        },
         navbar: {
             openCode: "#openCodeBtn",
             openWorldIn: "#openWorldInBtn"
@@ -452,6 +480,10 @@ $(document).ready(() => {
     DesktopUI.Init();
     StartSettings(DesktopUI);
     RestoreSession();
+    if (window.location.hash.startsWith("#w=")) {
+        const base64 = window.location.hash.substring(3);
+        deserializeKarelBinary(karelController.world, base64ToBuffer(base64));
+    }
 })
 
 export const GetKarelController = KarelController.GetInstance;

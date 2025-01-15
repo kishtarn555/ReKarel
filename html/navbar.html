@@ -24,13 +24,14 @@
                                 Cambiar tamaño del mundo
                             </button>
                         </li>
-                        <li><a class="dropdown-item" id="openWorldInBtn" href="#"><i
+                        <li><a class="dropdown-item" id="openWorldInBtn" data-bs-toggle="modal" 
+                            data-bs-target="#openWorldModal" href="#"><i
                                     class="bi bi-file-earmark-image"></i> Abrir
                                 mundo.in</a></li>
-                        <li><a class="dropdown-item disabled" href="#" aria-disabled="true"><i
+                        <li><a class="dropdown-item" data-bs-toggle="modal" 
+                            data-bs-target="#mdoModal" href="#"><i
                                     class="bi bi-file-earmark-arrow-down"></i>
-                                Importar MDO/KEC 
-                                (Próximamente)
+                                Importar MDO/KEC
                             </a></li>
                         <li>
                             <hr class="dropdown-divider">
@@ -40,6 +41,13 @@
                                 data-bs-target="#downloadWorldModal">
                                 <i class="bi bi-box-arrow-down"></i>
                                 Descargar mundo
+                            </button>
+                        </li>
+                        <li>
+                            <button class="dropdown-item" data-bs-toggle="modal"
+                                data-bs-target="#shareWorldModal">
+                                <i class="bi bi-link-45deg"></i>
+                                Compartir mundo
                             </button>
                         </li>
                     </ul>

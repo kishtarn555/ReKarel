@@ -24,9 +24,21 @@ export const darkClassicHighlight: EditorTheme = {
       { tag: tags.constant(tags.variableName), color: "#80e9ed" },
     ])),
     EditorView.theme({
+      ".cm-selectionBackground": {
+        backgroundColor: "#264F7880"
+      },
+      '.cm-selectionMatch': {
+        backgroundColor: "#343A4080"
+      },
       '&.cm-focused .cm-selectionBackground, ::selection' : {
-        backgroundColor: "#4e4d48"
-      }
+        backgroundColor: "#264F78"
+      },
+      '&.cm-focused .cm-selectionMatch': {
+        backgroundColor: "#343A40"
+      },
+      "&.cm-focused .cm-cursor": {
+        borderLeftColor: "var(--bs-body-color)"
+      },
     })
   ]
 };

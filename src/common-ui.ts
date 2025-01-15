@@ -11,6 +11,9 @@ import { HookNavbar, NavbarData } from './commonUI/navbar'
 import { HookStyleModal } from './commonUI/karelStyleModal'
 import { EvaluatorData, HookEvaluatorModal } from './commonUI/evaluatorModal'
 import { HookRandomBeepersModal } from './commonUI/randomBeepersModal'
+import { hookOpenWorldModel, OpenWorldModal } from './commonUI/openWorldModal'
+import { HookShareWorldModal, ShareWorldModal } from './commonUI/shareWorldModal'
+import { HookMdoModal, MdoModal } from './commonUI/mdoModal'
 
 
 
@@ -20,11 +23,14 @@ interface UiData {
     resizeModal:ResizeModal,
     confirmModal: ConfirmModal,
     wordSaveModal:WorldSaveModal,
+    openWorldModal: OpenWorldModal,
     amountModal: AmountModal,
     evaluatorModal:EvaluatorData
     confirmCallers: Array<ConfirmModalBtn>,
     karelController:KarelController,
     worldController: WorldViewController,
+    worldShareModal: ShareWorldModal,
+    mdoModal: MdoModal,
     navbar:NavbarData
     
 }
@@ -32,7 +38,7 @@ interface UiData {
 
 
 function HookUpCommonUI(uiData: UiData) {
-    
+    hookOpenWorldModel(uiData.openWorldModal, uiData.karelController);
     hookDownloadModel(uiData.downloadCodeModal, uiData.editor);
     HookAmountModal(uiData.amountModal, uiData.worldController);
     HookWorldSaveModal(uiData.wordSaveModal, uiData.karelController);
@@ -62,6 +68,8 @@ function HookUpCommonUI(uiData: UiData) {
     });
 
     HookResizeModal(uiData.resizeModal, uiData.karelController);
+    HookShareWorldModal(uiData.worldShareModal, uiData.karelController)
+    HookMdoModal(uiData.mdoModal, uiData.karelController);
 }
 
 

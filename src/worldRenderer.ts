@@ -424,7 +424,11 @@ class WorldRenderer {
 
     private DrawWalls() {        
         for (let i =0; i < this.GetRowCount(); i++) {
+            if (i+this.origin.r > this.world.h) 
+                break;
             for (let j =0; j < this.GetColCount(); j++) {
+                if (j+this.origin.c > this.world.w) 
+                    break;
                 let r = i + Math.floor(this.origin.r);
                 let c =  j + Math.floor(this.origin.c);
                 let walls = this.world.walls(r,c);
@@ -442,7 +446,11 @@ class WorldRenderer {
         this.ResetTransform();
         this.TranslateOffset(true, true);
         for (let i =0; i < this.GetRowCount(); i++) {
+            if (i+this.origin.r > this.world.h) 
+                break;
             for (let j =0; j < this.GetColCount(); j++) {
+                if (j+this.origin.c > this.world.w) 
+                    break;
                 let r = i + Math.floor(this.origin.r);
                 let c =  j + Math.floor(this.origin.c);
                 let buzzers: number = this.world.buzzers(r, c);
@@ -461,13 +469,18 @@ class WorldRenderer {
 
     private DrawDumpCells() {
         for (let i =0; i < this.GetRowCount(); i++) {
+            if (i+this.origin.r > this.world.h) 
+                break;
             for (let j =0; j < this.GetColCount(); j++) {
+                if (j+this.origin.c > this.world.w) 
+                    break;                
                 let r = i + Math.floor(this.origin.r);
                 let c = j + Math.floor(this.origin.c);
                 if (this.world.getDumpCell(r,c)) {
                     this.ColorCell(i,j, this.style.exportCellBackground);
                 }
-            }
+            }            
+            
         }
     }
 

@@ -1,23 +1,33 @@
+import bootstrap from "bootstrap";
 
+
+const FRAME_RATE = 24;
+const FRAME_LENGTH = 1000/ FRAME_RATE ;
 class Throbber {
-    element:JQuery
+    modal:bootstrap.Modal
+    interrupter: JQuery
     shouldBeVisible:boolean;
     visible:boolean;
-    constructor(element:JQuery) {
-        this.element = element;
+    private interrupted:boolean;
+    constructor(element:JQuery, interrupter:JQuery) {
+        this.modal = bootstrap.Modal.getOrCreateInstance(element[0]);
         this.shouldBeVisible = false;
         this.visible= false;
+        this.interrupted = false;
         this.hide();
+        this.interrupter = interrupter;
+        interrupter.on("click",()=>this.Interrupt());
+        element.on("hide.bs.modal", ()=>this.Interrupt());
     }
     
     show() {
-        this.element.show();        
+        this.modal.show();
         this.visible = true;
     }
     hide() {
         this.shouldBeVisible=false;
         this.visible= false;
-        this.element.hide();
+        this.modal.hide();
     }
 
     showInSeconds(seconds:number) {
@@ -29,12 +39,17 @@ class Throbber {
         },seconds*1000);
     }
 
+    Interrupt() {
+        this.interrupted = true;
+    }
 
-    async performTask<T>(task:()=>Generator<T>) {
+
+    async performTask<T>(task:()=>Generator<T>, interrupt?:()=>T) {
+        this.interrupted = false;
         const iter = task();
         let curr = iter.next();
         let last = curr.value;
-        const startTime = Date.now();
+        let startTime = Date.now();
 
         while (!curr.done && (Date.now() - startTime) < 1000) {
             last = curr.value;
@@ -48,12 +63,26 @@ class Throbber {
 
             (resolve,reject)=> setTimeout(
                 ()=> {                    
-                    while (!curr.done) {
-                        last = curr.value;
-                        curr = iter.next();
+                    const _step = () => {
+                        if (curr.done) {                            
+                            this.hide();
+                            resolve(last)
+                            return;
+                        }
+                        if (this.interrupted) {
+                            this.hide();
+                            resolve(interrupt?.() ?? last);
+                            return;
+                        }
+                        startTime = Date.now();
+                        while (!curr.done && Date.now() - startTime < FRAME_LENGTH) {
+                            last = curr.value;
+                            curr = iter.next();
+                            
+                        }
+                        setTimeout(_step);
                     }
-                    this.hide();
-                    resolve(last)
+                    _step();
                 }
             )            
         );        
@@ -63,4 +92,4 @@ class Throbber {
 
 
 
-export const throbber = new Throbber($("#throbber"));
+export const throbber = new Throbber($("#throbber"), $("#throbberInterrupt"));

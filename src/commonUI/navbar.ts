@@ -84,7 +84,7 @@ function getWorldIn(karelController:KarelController) {
 
 export function HookNavbar(navbar:NavbarData ,editor:EditorView, karelController:KarelController) {
    $(navbar.openCode).on("click", ()=>getCode(editor));
-   $(navbar.openWorldIn).on("click", ()=>getWorldIn(karelController));
+  //  $(navbar.openWorldIn).on("click", ()=>getWorldIn(karelController));
 
 }
 

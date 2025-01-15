@@ -25,9 +25,21 @@ export const ReKarelHighlight: EditorTheme = {
         { tag: tags.constant(tags.variableName), color: "#ffda6a" },
       ])),
       EditorView.theme({
+        ".cm-selectionBackground": {
+          backgroundColor: "#264F7880"
+        },
+        '.cm-selectionMatch': {
+          backgroundColor: "#343A4080"
+        },
         '&.cm-focused .cm-selectionBackground, ::selection' : {
-          backgroundColor: "#4e4d48"
-        }
+          backgroundColor: "#264F78"
+        },
+        '&.cm-focused .cm-selectionMatch': {
+          backgroundColor: "#343A40"
+        },
+        "&.cm-focused .cm-cursor": {
+          borderLeftColor: "var(--bs-body-color)"
+        },
       })
     ]
   };
@@ -55,6 +67,14 @@ export const LightReKarelHighlight: EditorTheme = {
         { tag: tags.function(tags.variableName), color: "#24a7db" },
         { tag: tags.constant(tags.variableName), color: "#ff9c07" },
       ])),
+      EditorView.theme({
+        '&.cm-focused .cm-selectionBackground, ::selection' : {
+          backgroundColor: "#ADD6FFA0"
+        },
+        '&.cm-focused .cm-selectionMatch': {
+          backgroundColor: "#E5EBF1"
+        }
+      })
       
     ]
   };
