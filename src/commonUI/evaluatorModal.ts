@@ -25,6 +25,8 @@ export type EvaluatorData = {
     maxPickBuzzer:JQuery,
     maxLeaveBuzzer:JQuery,
 
+    targetVersion: JQuery
+
 }
 
 
@@ -50,8 +52,7 @@ function getData(ui:EvaluatorData) {
     ui.maxPickBuzzer.val(kcInstance.world.maxPickBuzzer);
     ui.maxLeaveBuzzer.val(kcInstance.world.maxLeaveBuzzer);
 
-
-    
+    ui.targetVersion.val(kcInstance.world.targetVersion);    
 }
 
 function setData(ui: EvaluatorData) {
@@ -96,6 +97,8 @@ function setData(ui: EvaluatorData) {
         kcInstance.world.maxPickBuzzer = maxPickBuzzer as number;    
     if (validateMax(maxLeaveBuzzer,-1))
         kcInstance.world.maxLeaveBuzzer = maxLeaveBuzzer as number;
+    console.log(ui.targetVersion.val())
+    kcInstance.world.targetVersion = ui.targetVersion.val() as "1.0"|"1.1";
 }
 
 
