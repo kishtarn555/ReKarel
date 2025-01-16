@@ -163,12 +163,12 @@ class KarelController {
         this.ChangeState("paused")
     }
 
-    CheckForBreakPointOnCurrentLine():boolean {
+    CheckForBreakPointOnCurrentLine(notifyOnTrue:boolean = true):boolean {
         let runtime= this.GetRuntime();
         if (runtime.state.line >= 0) {            
             const mainEditor = getEditors()[0];
             let hasBreakpoint = CheckForBreakPointOnLine(mainEditor, runtime.state.line+1)       
-            if (hasBreakpoint) {                    
+            if (hasBreakpoint && notifyOnTrue) {                    
                 this.BreakPointMessage(runtime.state.line +1);
             }
             return hasBreakpoint;
@@ -203,7 +203,8 @@ class KarelController {
             throbber.performTask(
                 function * (this:KarelController) {
                     while (this.PerformFastStep() && runtime.state.stackSize > startWStackSize) yield;
-                    runtime.step();
+                    if (!this.CheckForBreakPointOnCurrentLine(false))
+                        runtime.step();
                 }.bind(this)
             )
             .then(()=> this.EndStep())
@@ -230,7 +231,7 @@ class KarelController {
                 this.fastStepping = false;
                 this.Pause();
             }
-        ).then(_=>this.EndStep());
+        ).then(_ => this.EndStep());
     }
 
     StartAutoStep(delay:number) {        
@@ -303,15 +304,7 @@ class KarelController {
                 while (this.PerformFastStep(ignoreBreakpoints)) yield;
             }.bind(this)
         ).then(()=> {
-            this.fastStepping = false;
-            if (!runtime.state.running) {
-                this.EndMessage();
-                this.ChangeState("finished");
-            } else {
-                this.Pause();
-            }
-
-            this.NotifyStep();
+            this.EndStep()
         });
     }
 
@@ -403,7 +396,7 @@ class KarelController {
         }
         
         
-        return result && (ignoreBreakpoints || !this.CheckForBreakPointOnCurrentLine());
+        return result && (ignoreBreakpoints || !this.CheckForBreakPointOnCurrentLine(false));
     }
 
     private SendMessage(message: string, type: messageType) {
