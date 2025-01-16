@@ -31,14 +31,14 @@ The new version includes:
 * [x] Removed Karel Ruby as it didn't work and it seemed to be in route of deprecation.
 ## Mobile
 * [x] Supports touch control on both views.
-* [ ] UI changes to one better suited for small screens, similar to "Karel blue", aka Karel.exe.
+* [x] UI changes to one better suited for small screens
 * CodeEditor maybe edited without writing.
 
 ## Quality of live
 * Settings that allow to set:
     * [ ] ~Prefered programming language (the default is Karel.js).~ 
         * ~If set, syntax higlighting and compile will always try that language.~
-    * [ ] The view (force one view independent of screen size).
+    * [x] The view (force one view independent of screen size).
     * [x] Code Font size.
 * Hotkeys
     * [x] `Ctrl+K` Decreases editor's font.
