@@ -362,6 +362,7 @@ HookUpCommonUI(
             confirmBtn: "#resizeBtn",
             rowField: "#rowField",
             columnField: "#columnField",
+            errorField: "#resizeError",
         },
         evaluatorModal: {
             modal:$("#evaluatorModal"),
