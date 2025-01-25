@@ -13,6 +13,6 @@ test/results/
 test/**/*.png
 cpp/sol.kx
 cpp/karel
-build/*
-webapp/*
+build
+webapp
 cindex.js.map
