@@ -6,7 +6,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "build:source": "npx tsc && rollup --config",
-    "build": "npm run build:source && npx gulp",
+    "build": "npx gulp clean-webapp && npm run build:source && npx gulp",
     "lezer_java": "npx lezer-generator .\\codemirror\\java.grammar -o .\\src\\js\\lezer_java.js ",
     "lezer_pascal": "npx lezer-generator .\\codemirror\\pascal.grammar -o .\\src\\js\\lezer_pascal.js "
   },

@@ -147,6 +147,10 @@ const paths = {
     license: './LICENSE',
     build: './build'
 };
+gulp.task('clean-webapp', ()=> {
+    return gulp.src('./webapp', {allowEmpty: true, read: false})
+    .pipe(clean());
+})
 gulp.task('clean', ()=> {
     return gulp.src(paths.build, {allowEmpty: true, read: false})
     .pipe(clean());
