@@ -1,5 +1,5 @@
 import { AppVars } from "../volatileMemo"
-import { KarelProject } from "./project";
+import { CreateDefaultProject, KarelProject } from "./project";
 
 type ProjectChangeObserver = (project: KarelProject | null) => void;
 export class ProjectController {
@@ -27,7 +27,7 @@ export class ProjectController {
      */
     RefreshProject() {
         //TODO: IMPLEMENT ME
-        this._project = {}
+        this._project = CreateDefaultProject("dummy")
     }
 
     /**

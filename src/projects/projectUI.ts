@@ -1,10 +1,12 @@
+import { NewProjectModalUI, CreateNewProjectModal } from "../commonUI/newProjectModal";
 import { AppVars } from "../volatileMemo";
 import { ProjectController } from "./projectController";
 
 interface ProjectUIData {
     navbar: string
     open: string
-    close: string
+    close: string,
+    newProject: NewProjectModalUI
 }
 export class ProjectUI {
     data: ProjectUIData
@@ -59,6 +61,7 @@ export class ProjectUI {
                 this.SetActiveProjectMode();
             }
         })
+        CreateNewProjectModal(this.data.newProject, (dir)=>this.projectController.SetProject(dir));
     }
     private _OpenProject() {
         let filePromise = window.showDirectoryPicker({
