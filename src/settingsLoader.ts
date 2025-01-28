@@ -4,6 +4,7 @@ import { SetAutoCloseBracket } from "./editor/editor";
 import { DarkEditorThemes } from "./editor/themes/themeManager";
 import { SetDesktopView, SetPhoneView, SetResponsiveness } from "./responsive-load";
 import { APP_SETTING, AppSettings, fontSizes, GetCurrentSetting, responsiveInterfaces, SetSettings, SETTINGS_VERSION, themeSettings, upgradeSettings } from "./settings";
+import { AppVars } from "./volatileMemo";
 import { WRStyle } from "./worldRenderer";
 
 function isFontSize(str: number): str is fontSizes {
@@ -56,8 +57,10 @@ function applySettings(settings: AppSettings, desktopUI:DesktopController) {
     desktopUI.worldController.renderer.style = settings.worldRendererStyle;
     desktopUI.worldController.Update();
     SetAutoCloseBracket(settings.editorCloseBrackets, desktopUI.editor);
+    AppVars.setProjectsEnable(settings.enableProjects);
     if (localStorage)
         localStorage.setItem(APP_SETTING, JSON.stringify(settings))
+    
 
     
 }
@@ -71,6 +74,7 @@ function setSettings(event:  JQuery.SubmitEvent<HTMLElement, undefined, HTMLElem
     let style = <string>$("#settingsForm select[name=editorStyle]").val();
     let autoInput =<boolean>($("#settingsAutoInputMode").prop("checked") ?? true);
     let autoCloseBracket =<boolean>($("#settingsAutoCloseBracket").prop("checked") ?? true);
+    let enableProjects =<boolean>($("#settingsEnableProjects").prop("checked") ?? true);
     if (isResponsiveInterfaces(interfaceType)) {
         appSettings.interface = interfaceType;
     }
@@ -84,6 +88,7 @@ function setSettings(event:  JQuery.SubmitEvent<HTMLElement, undefined, HTMLElem
     appSettings.editorTheme = style;
     appSettings.autoInputMode = autoInput;
     appSettings.editorCloseBrackets = autoCloseBracket;
+    appSettings.enableProjects = enableProjects;
     applySettings(appSettings, desktopUI);
 
 
@@ -118,6 +123,7 @@ function loadSettingsToModal() {
     const appSettings = GetCurrentSetting();
     $("#settingsInterface").val(appSettings.interface );
     $("#settingsFontSize").val(appSettings.editorFontSize);
+    $("#settingsEnableProjects").prop("checked",appSettings.enableProjects);
     $("#settingsTheme").val(appSettings.theme);
     $("#settingsStyle").val(appSettings.editorTheme);
     $("#settingsSlowModeLimit").val(appSettings.slowExecutionLimit);
@@ -126,11 +132,26 @@ function loadSettingsToModal() {
     showOrHideSlowExecutionLimit();
 }
 
+function checkEnableSettings() {
+    if (!("showDirectoryPicker" in window)) {
+        $("#settingsEnableProjects")
+            .prop("checked", false)
+            .attr("disabled", "")
+            .attr("hidden", "")
+            .attr("title", "Tu navegador no es compatible con proyectos");
+
+        $("#settingsEnableProjectsLabel").addClass("text-secondary");
+
+        $("#settingsEnableProjectsWarn").removeAttr("hidden");
+    }
+}
+
 export function InitSettings(desktopUI:DesktopController) {    
     DesktopUI = desktopUI;
     loadSettingsFromMemory();
     $("#settingsModal").on("show.bs.modal", (e)=> {
         loadSettingsToModal();
+        checkEnableSettings();
     });
 
     $("#settingsForm").on("submit", (e)=> {
