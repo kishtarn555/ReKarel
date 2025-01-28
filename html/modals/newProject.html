@@ -1,0 +1,77 @@
+<div
+  id="newProjectModal"
+  class="modal fade"
+  tabindex="-1"
+  aria-labelledby="newProjectModal"
+  aria-hidden="true"
+>
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Nuevo proyecto</h5>
+        <button
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="modal"
+          aria-label="Close"
+        ></button>
+      </div>
+      <div class="modal-body">
+        <label for="#selectNewProjectDirBtn" class="form-label"
+          >Ubicación donde crear el proyecto</label
+        >
+        <div class="mb-3">
+            <div class="input-group" role="group" aria-label="Basic example">
+            <div
+                class="input-group-text bg-body border-secondary ps-2 pe-2 flex-grow-1"
+                title="Zumbadores en Karel"
+            >
+                <small id="newProjectDirLabel">
+                No se ha seleccionado ningún directorio</small
+                >
+            </div>
+            <button
+                type="button"
+                class="btn btn-body p-1 ps-3 pe-3 border-secondary"
+                id="selectNewProjectDirBtn"
+            >
+                Seleccionar
+            </button>
+            </div>
+        </div>
+        <div class="mb-3">
+            <label for="newProjectNameInput" class="form-label"
+            >Nombre del proyecto</label
+            >
+            <input
+            type="text"
+            class="form-control"
+            id="newProjectNameInput"
+            placeholder="Nombre del proyecto"
+            />
+            <p id="wrongNewProjectName" class="text-danger" hidden><i class="bi bi-exclamation-diamond-fill"></i> El
+                nombre del proyecto no es válido</p>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button
+          id="confirmModalNo"
+          type="button"
+          class="btn btn-secondary"
+          data-bs-dismiss="modal"
+          data-bs-dialog="none"
+        >
+          Cancelar
+        </button>
+        <button
+          id="createNewProjectBtn"
+          class="btn btn-primary"
+          data-bs-dismiss="modal"
+          data-bs-dialog="none"
+        >
+          Crear
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

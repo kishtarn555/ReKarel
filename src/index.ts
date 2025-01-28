@@ -474,7 +474,15 @@ let projectUI = new ProjectUI(
     {
         navbar: "#projectsNavItem",
         open: "#openProjectBtn",
-        close : "#closeProjectBtn"
+        close : "#closeProjectBtn",
+        newProject: {
+            modal: "#newProjectModal",
+            selectedDirLabel: "#newProjectDirLabel",
+            projectNameInput: "#newProjectNameInput",
+            selectDirBtn: "#selectNewProjectDirBtn",
+            createBtn: "#createNewProjectBtn",
+            projectNameWarning: "#wrongNewProjectName",
+        },
     },
     projectController
 );
