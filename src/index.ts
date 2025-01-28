@@ -14,6 +14,7 @@ import { editorTranspile } from "./editor/transpiler";
 import { MobileUI } from "./mobile/mobile";
 import { deserializeKarelBinary } from "@rekarel/binary";
 import { base64ToBuffer } from "./base64";
+import { ProjectController } from "./projects/projectController";
 
 
 let KarelWorld: World = new World(100, 100);
@@ -466,6 +467,10 @@ HookUpCommonUI(
         worldController: DesktopUI.worldController
     }
 )
+
+export let projectController = new ProjectController({
+    navbar: "#projectsNavItem"
+})
 
 splitPanels(DesktopUI.ResizeCanvas.bind(DesktopUI));
 
