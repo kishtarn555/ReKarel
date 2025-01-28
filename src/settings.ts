@@ -16,6 +16,7 @@ export type themeSettings = "system" | "light" | "dark";
 export type AppSettings = {
     version:string,
     interface: responsiveInterfaces,
+    enableProjects: boolean
     autoInputMode: boolean
     theme: themeSettings
     editorTheme:string
@@ -31,6 +32,7 @@ export type AppSettings = {
 
 export const defaultSettings: AppSettings = {
     version:SETTINGS_VERSION,
+    enableProjects: false,
     interface: "desktop",
     autoInputMode: true,
     editorTheme: "classic",
