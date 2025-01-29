@@ -86,7 +86,7 @@ async function createProjectStructure(dirHandle, projectName) {
         // Create `project.rkpj` file
         const projectFile = await dirHandle.getFileHandle("project.rkpj", { create: true });
         const writable = await projectFile.createWritable();
-        await writable.write(JSON.stringify({ projectName, createdAt: new Date().toISOString() }, null, 2));
+        await writable.write(JSON.stringify(CreateDefaultProject(projectName), null, 2));
         await writable.close();
 
         // Create `solution.kj` file
