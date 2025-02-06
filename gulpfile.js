@@ -68,7 +68,10 @@ gulp.task('bundle-docs', ()=> {
     .pipe(
         fileInclude({
             prefix: '@@',
-            basepath: '@file'
+            basepath: '@file',
+            context: {
+                languageVersion: coreManifest.default.rekarel.language
+            }
         }))        
     .pipe(htmlmin({
         collapseWhitespace:true,
