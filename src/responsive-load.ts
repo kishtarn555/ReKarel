@@ -62,7 +62,9 @@ function MovePanels(target:"mobile"|"desktop") {
     } else {
         $("#splitter-left-top-pane").append(dom);
         $("#splitter-left-bottom-pane").append(statePanel);
-        $("#desktopWorldSlot").prepend(worldPane);
+        const container = $("#desktopWorldSlot")
+        const firstChild = container.children().eq(0);
+        firstChild.after(worldPane);
     }
     DesktopController.GetInstance().ResizeCanvas();
     DesktopController.GetInstance().worldController.FocusKarel();

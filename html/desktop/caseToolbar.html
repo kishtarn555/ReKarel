@@ -1,0 +1,37 @@
+<div class="bg-body btn-toolbar d-flex p-2 gap-2 border-bottom flex-shrink-0">
+  <div class="input-group" role="group" aria-label="Basic example">
+    <div
+      class="input-group-text bg-body border-secondary ps-2 pe-2"
+      title="Nombre del caso abierto actualmente"
+    >
+      <small>Nombre del caso</small>
+      <i class="bi bi-backpack-fill d-block d-md-none"></i>
+    </div>
+    <button
+      class="btn btn-body border-secondary dropdown-toggle"
+      type="button"
+      data-bs-toggle="dropdown"
+      aria-expanded="false"
+    >
+      Opciones
+    </button>
+    <ul class="dropdown-menu dropdown-menu-end">
+      <li><a class="dropdown-item" href="#">Guardar entrada</a></li>
+      <li><a class="dropdown-item" href="#">Guardar salida</a></li>
+      <li><a class="dropdown-item" href="#">Guardar como nuevo caso</a></li>
+      <li><hr class="dropdown-divider" /></li>
+      <li><a class="dropdown-item" href="#">Administrar casos</a></li>
+    </ul>
+  </div>
+
+  <div class="btn-group" role="group" aria-label="Basic radio toggle button group">
+    <input type="radio" class="btn-check" name="btnradio" id="btnradio1" autocomplete="off" checked>
+    <label class="btn btn-outline-secondary text-body" for="btnradio1">Entrada</label>
+  
+    <input type="radio" class="btn-check" name="btnradio" id="btnradio2" autocomplete="off">
+    <label class="btn btn-outline-secondary text-body" for="btnradio2">Salida</label>
+  
+    <input type="radio" class="btn-check" name="btnradio" id="btnradio3" autocomplete="off">
+    <label class="btn btn-outline-secondary text-body" for="btnradio3">Comparar</label>
+  </div>
+</div>
