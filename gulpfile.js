@@ -68,7 +68,10 @@ gulp.task('bundle-docs', ()=> {
     .pipe(
         fileInclude({
             prefix: '@@',
-            basepath: '@file'
+            basepath: '@file',
+            context: {
+                languageVersion: coreManifest.default.rekarel.language
+            }
         }))        
     .pipe(htmlmin({
         collapseWhitespace:true,
@@ -147,6 +150,10 @@ const paths = {
     license: './LICENSE',
     build: './build'
 };
+gulp.task('clean-webapp', ()=> {
+    return gulp.src('./webapp', {allowEmpty: true, read: false})
+    .pipe(clean());
+})
 gulp.task('clean', ()=> {
     return gulp.src(paths.build, {allowEmpty: true, read: false})
     .pipe(clean());

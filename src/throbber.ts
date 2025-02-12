@@ -18,6 +18,7 @@ class Throbber {
         this.interrupter = interrupter;
         interrupter.on("click",()=>this.Interrupt());
         element.on("hide.bs.modal", ()=>this.Interrupt());
+        element.on("shown.bs.modal", ()=>this._HideIfNeeded());
     }
     
     show() {
@@ -46,6 +47,7 @@ class Throbber {
 
     async performTask<T>(task:()=>Generator<T>, interrupt?:()=>T) {
         this.interrupted = false;
+        this.shouldBeVisible = true;
         const iter = task();
         let curr = iter.next();
         let last = curr.value;
@@ -87,6 +89,12 @@ class Throbber {
             )            
         );        
         return promise;
+    }
+
+    private _HideIfNeeded() {        
+        if (!this.shouldBeVisible) {
+            this.hide();
+        }
     }
 }
 
