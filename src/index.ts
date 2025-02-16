@@ -484,6 +484,7 @@ $(document).ready(() => {
     if (window.location.hash.startsWith("#w=")) {
         const base64 = window.location.hash.substring(3);
         deserializeKarelBinary(karelController.world, base64ToBuffer(base64));
+        karelController.Reset();
     }
 })
 
