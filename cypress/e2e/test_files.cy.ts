@@ -68,5 +68,35 @@ describe('Test world file format', () => {
     cy.get('#countPicks').should('have.value', 'on');
     cy.get('#countPuts').should('have.value', 'on');    
   });
+
+  /* ==== Test Created with Cypress Studio ==== */
+  it('Test open from URI one', function() {
+    /* ==== Generated with Cypress Studio ==== */
+    cy.visit('http://127.0.0.1:5500/webapp/#w=S1cAGoCWmADo/QAA6P0AAAUAAAD/////////////////////Y2MAAAASAAIACgQAAQwAGWgAAm8AAswAAtMAAzABCjIBCTQBATYBApgBApoBAvwBCv4BAmECEsUCGioDBAAAAA4AAAAOAA==');
+    cy.get('#beeperBag').should('have.value', '14');
+    cy.get('#evaluatorBtnDesktop').click();
+    cy.get('#evaluateUniverse').should('have.value', 'on');
+    cy.get('#evaluateUniverse').should('be.checked');
+    cy.get('#evaluateBag').should('not.be.checked');
+    cy.get('#evaluateOrientation').should('not.be.checked');
+    cy.get('#evaluatePosition').should('not.be.checked');
+    cy.get('#countMoves').should('not.be.checked');
+    cy.get('#countTurns').should('not.be.checked');
+    cy.get('#countPicks').should('not.be.checked');
+    cy.get('#countPuts').should('not.be.checked');
+    cy.get('#evaluatorForm > .modal-dialog > .modal-content > .modal-header > .btn-close').click();
+    cy.get('#infiniteBeepersBtn').should('have.class', 'btn-body');
+    cy.get('#beeperBag').should('be.visible');
+    /* ==== End Cypress Studio ==== */
+  });
+
+  /* ==== Test Created with Cypress Studio ==== */
+  it('World from URI infinite bag', function() {
+    /* ==== Generated with Cypress Studio ==== */
+    cy.visit('http://127.0.0.1:5500/webapp/#w=S1cBKoCWmADo/QAA6P0AAAUAAAD/////////////////////Y2MAAAAAAAD/////AQA=');
+    cy.get('#infiniteBeepersBtn').should('have.class', 'btn-info');
+    cy.get('#beeperBag').should('not.be.visible');
+    /* ==== End Cypress Studio ==== */
+  });
 });
   
