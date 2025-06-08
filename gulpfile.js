@@ -3,9 +3,13 @@ import fileInclude from "gulp-file-include"
 import replace from 'gulp-replace'
 import insert  from 'gulp-insert'
 import clean  from 'gulp-clean'
-import * as manifest from './package.json'  with { type: "json" }
-import * as coreManifest from './node_modules/@rekarel/core/package.json'  with { type: "json" }
 import htmlmin from 'gulp-html-minifier-terser'
+import { createRequire } from 'module'
+
+const require = createRequire(import.meta.url);
+
+const manifest = require('./package.json');
+const coreManifest = require('./node_modules/@rekarel/core/package.json');
 
 const mainPath = "html/index.html"
 const mainPathDist = "webapp/"
@@ -28,10 +32,10 @@ gulp.task('bundle-html', ()=> {
             prefix: '@@',
             basepath: '@file',
             context: {
-                shortVersion: manifest.default.version.replace(/[\.\-]/g,"_"),
-                longVersion: manifest.default.version,
-                coreVersion: manifest.default.dependencies["@rekarel/core"].replace(/^\^/, ""),
-                languageVersion: coreManifest.default.rekarel.language
+                shortVersion: manifest.version.replace(/[\.\-]/g,"_"),
+                longVersion: manifest.version,
+                coreVersion: manifest.dependencies["@rekarel/core"].replace(/^\^/, ""),
+                languageVersion: coreManifest.rekarel.language
             }
         }))
     .pipe(htmlmin({
@@ -70,7 +74,7 @@ gulp.task('bundle-docs', ()=> {
             prefix: '@@',
             basepath: '@file',
             context: {
-                languageVersion: coreManifest.default.rekarel.language
+                languageVersion: coreManifest.rekarel.language
             }
         }))        
     .pipe(htmlmin({
