@@ -10,7 +10,7 @@ import { kpascal } from "./pascalCodeMirror"
 import {defaultHighlightStyle, syntaxHighlighting, foldGutter, bracketMatching, indentUnit, indentOnInput} from "@codemirror/language"
 import { closeBrackets } from "@codemirror/autocomplete"
 import { classicHighlight } from "./themes/classicHighlight"
-import { highlightKarelActiveInstruction } from "./editor.highlightLine"
+import { highlightKarelActiveInstruction, HighlightKarelInstruction } from "./editor.highlightLine"
 import { breakpointGutter } from "./editor.breakpoint"
 import {searchKeymap, highlightSelectionMatches} from "@codemirror/search"
 
@@ -95,6 +95,7 @@ export function RegisterEditorTextSetListener(callback: ()=>void) {
 }
 
 function SetText(editor: EditorView, message:string) {
+  HighlightKarelInstruction(editor, -1, -1);
   let transaction = editor.state.update({
       changes: {
           from: 0,
