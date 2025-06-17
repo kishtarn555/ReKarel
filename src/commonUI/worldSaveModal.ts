@@ -35,7 +35,7 @@ function setWorldData(data:string, textBox:string, btn: string, success:boolean)
 }
 
 function setInputWorld(modal:WorldSaveModal, karelController: KarelController) {
-    const input = karelController.world.save("start");
+    const input = karelController.world.save("current");
     setWorldData(input, modal.worldDataIn, modal.inputBtn, true);
 }
 
