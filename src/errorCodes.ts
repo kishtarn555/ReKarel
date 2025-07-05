@@ -44,7 +44,7 @@ export function decodeRuntimeError(error: string, limits:executionLimits):string
     if (error === "STACK") {
         return `La pila de karel se ha desbordado! El tamaño de la pila es de ${formatNumber(limits.stackSize)}`
     }
-    if (error === "CALLMEMORY") {
+    if (error === "CALLSIZE") {
         return `Límite de parámetros superados.`
         +`<br>Solo puedes llamar con a lo más ${formatNumber(limits.callMaxParam)}`;
     }
