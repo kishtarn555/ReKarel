@@ -4,12 +4,14 @@ import { World } from "@rekarel/core";
 import { SelectionBox, SelectionWaffle } from "./waffle";
 import { CellSelection, SelectionState } from "./selection";
 import { CellPair } from "../cellPair";
+import { WorldStatsElements, WorldStats } from "./stats";
 
 
 type Gizmos = {
     selectionBox: SelectionBox,
     HorizontalScrollElement: JQuery,
     VerticalScrollElement: JQuery,
+    stats: WorldStatsElements
 }
 
 type MouseState = {
@@ -41,6 +43,7 @@ class WorldViewController {
     private lock: boolean;
     private karelController : KarelController;
     private waffle: SelectionWaffle
+    private stats: WorldStats
     private clickMode: ClickMode
     private pinch: PinchData
     private followScroll:boolean
@@ -77,6 +80,7 @@ class WorldViewController {
         this.karelController.RegisterStepController(this.onStep.bind(this));
 
         this.waffle = new SelectionWaffle(gizmos.selectionBox);
+        this.stats = new WorldStats(gizmos.stats);
         this.clickMode = "normal";
         this.pinch = {
             pointers: [],
@@ -162,6 +166,7 @@ class WorldViewController {
         });
         this.UpdateGutter();
         this.UpdateWaffle();
+        this.UpdateStats();
     }
     
     GetCoords2() {
@@ -199,6 +204,9 @@ class WorldViewController {
     
     UpdateWaffle() {
         this.waffle.UpdateWaffle(this.selection, this.renderer);
+    }
+    UpdateStats() {
+        this.stats.UpdateStats(this.selection, this.karelController);
     }
     
     SetScale(scale: number, updateScroll:boolean=true) {
@@ -1049,20 +1057,23 @@ class WorldViewController {
     }
 
     private onStep(caller:KarelController, state) {
-        this.TrackFocusToKarel();
+        this.TrackFocusToKarel();        
         this.Update();
+        this.UpdateStats();
     }
 
     private OnReset(caller: KarelController) {
         this.Update();
         this.TrackFocusToKarel();
+        this.UpdateStats();
     }
 
     private OnNewWorld(caller: KarelController, world:World) {
         this.Select(1,1,1,1); 
         this.Update();
-        this.FocusKarel();
+        this.FocusKarel();        
         this.UpdateScrollElements();
+        this.UpdateStats();
 
     }
 

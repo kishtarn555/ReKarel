@@ -26,6 +26,14 @@
                         <i class="bi bi-stack"></i> Pila
                     </button>
                 </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="statsTab-tab" data-bs-toggle="tab"
+                        data-bs-target="#statsTab" type="button" role="tab"
+                        aria-controls="statsTab" aria-selected="false"
+                        title="Revisa las estadísticas">
+                        <i class="bi bi-bar-chart"></i> Estadísticas
+                    </button>
+                </li>
                 <li class="nav-item ms-auto p-2">
                     <button class="btn p-1 btn-danger"
                         title="Quitar todos los mensajes de la consola"
@@ -50,6 +58,27 @@
                     aria-labelledby="pilaTab-tab">
                     <div id="lastReturn" class="bg-secondary-subtle p-2"></div>
                     <div id="stackPanel" class="flex-grow-1  p-2 "></div>
+                </div>
+
+                <div class="tab-pane fade flex-column p-2" id="statsTab" role="tabpanel"
+                    aria-labelledby="statsTab-tab">
+                    <b>Selección</b><br>
+                    <div class="ps-3">
+                        Coordenadas: <span id="stat-selection"></span><br>
+                        Dimensiones: <span id="stat-dimension"></span><br>
+                    </div>
+                    <b>Ejecución</b><br>
+                    <div class="ps-3">
+                        Instrucciones: <span id="stat-instruction"></span><br>
+                        Avanza: <span id="stat-move"></span><br>
+                        Gira izquierda: <span id="stat-turnleft"></span><br>
+                        Deja zumbador: <span id="stat-putbeeper"></span><br>
+                        Coge zumbador: <span id="stat-pickbeeper"></span><br>
+                        Tamaño del stack: <span id="stat-stack"></span><br>
+                        Memoria del stack: <span id="stat-memo"></span>
+                    </div>
+
+
                 </div>
             </div>
         </div>
