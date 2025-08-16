@@ -48,19 +48,28 @@ export function isWRStyle(obj: any): obj is WRStyle {
 
     return true;
 }
+
+type CellGizmo = {
+    color?: string
+    text?: string   
+}
+interface DrawOptions {
+    cellGizmos: Map<string, CellGizmo>
+}
 // FIXME: Change f coords to r (so it's all in english)
 class WorldRenderer {
     GutterSize: number;
     canvasContext: CanvasRenderingContext2D;
     CellSize: number;
     margin: number;
-    style: WRStyle;
+    style: WRStyle; 
     scale: number;
     scroller: HTMLElement;
     private origin: CellPair;
     private world: World;
     private mode: "normal" | "error";
     private snapped: boolean
+    private drawOptions: DrawOptions | null;
 
     constructor(canvasContext: CanvasRenderingContext2D, style: WRStyle, scale: number) {
         this.canvasContext = canvasContext;
@@ -484,14 +493,40 @@ class WorldRenderer {
         }
     }
 
-    Draw(world: World, selection: CellSelection | null = null) {        
+    private DrawGizmo() {
+        if (!this.drawOptions || !this.drawOptions.cellGizmos) {
+            return;
+        }
+
+        for (let i =0; i < this.GetRowCount(); i++) {
+            if (i+this.origin.r > this.world.h) 
+                break;
+            for (let j =0; j < this.GetColCount(); j++) {
+                if (j+this.origin.c > this.world.w) 
+                    break;                
+                let r = i + Math.floor(this.origin.r);
+                let c = j + Math.floor(this.origin.c);
+                if (this.drawOptions.cellGizmos.has(`${r},${c}`)) {
+                    const gizmo = this.drawOptions.cellGizmos.get(`${r},${c}`);
+                    if (gizmo?.color) {
+                        this.ColorCell(i,j, gizmo.color);
+                    }
+                }
+            }           
+            
+        }
+    }
+
+    Draw(world: World, selection: CellSelection | null = null, options: DrawOptions | null = null) {        
         this.world= world;
+        this.drawOptions = options;
         this.ResetTransform();
         let h = this.GetHeight();
         let w = this.GetWidth();
         this.canvasContext.clearRect(0, 0, w, h);
         this.DrawBackground();
         this.DrawDumpCells();
+        this.DrawGizmo();
         this.DrawGrid();        
         this.DrawKarel(
             world.i, 
@@ -575,4 +610,4 @@ class WorldRenderer {
 
 }
 
-export { WorldRenderer, WRStyle};
+export { WorldRenderer, WRStyle, CellGizmo, DrawOptions};

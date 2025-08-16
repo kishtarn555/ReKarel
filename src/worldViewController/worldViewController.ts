@@ -1,4 +1,4 @@
-import { WorldRenderer } from "../worldRenderer";
+import { CellGizmo, WorldRenderer } from "../worldRenderer";
 import { KarelController } from "../KarelController";
 import { World } from "@rekarel/core";
 import { SelectionBox, SelectionWaffle } from "./waffle";
@@ -40,6 +40,7 @@ class WorldViewController {
     scale: number;
     state: MouseState
     selection: CellSelection;
+    private cellGizmos: Map<string, CellGizmo>;
     private lock: boolean;
     private karelController : KarelController;
     private waffle: SelectionWaffle
@@ -57,6 +58,7 @@ class WorldViewController {
         this.lock = false;
         this.karelController = karelController;
         this.selection = new CellSelection()
+        this.cellGizmos = new Map<string, CellGizmo>();
         this.selection.SetData({
             r: 1,
             c: 1,
@@ -111,7 +113,14 @@ class WorldViewController {
         this.lock = false;
     }
     
-    
+    SetGizmo(r: number, c: number, gizmo: CellGizmo | null) {
+        if (gizmo === null) {
+            this.cellGizmos.delete(`${r},${c}`);
+        } else {
+            this.cellGizmos.set(`${r},${c}`, gizmo);
+        }
+        this.Update();
+    }
     
     
     GetBeepersInBag(): number {
