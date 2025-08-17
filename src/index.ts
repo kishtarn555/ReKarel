@@ -160,7 +160,8 @@ let DesktopUI = new DesktopController(
             redo:$("#desktopRedo"),
         },
         annotationToolbar: {
-            defaultColorGrid: $("#defaultColorGrid")
+            defaultColorGrid: $("#defaultColorGrid"),
+            clearColorButton: $("#desktopClearColorCell"),
         },
         evaluate: {
             evaluate: $("#desktopEvaluateCell"),

@@ -21,6 +21,7 @@ const DEFAULT_COLORS = [
 
 export type AnnotationToolbarData = {
     defaultColorGrid: JQuery
+    clearColorButton: JQuery
 };
 
 export class AnnotationToolbar {
@@ -54,6 +55,9 @@ export class AnnotationToolbar {
             const target = $(ev.currentTarget);
             const color = target.data("color") as string;
             worldController.SetGizmo({ color: color });
+        });
+        this.ui.clearColorButton.on("click", (ev) => {
+            worldController.SetGizmo(null);
         });
         
     }
