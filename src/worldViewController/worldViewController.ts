@@ -113,12 +113,14 @@ class WorldViewController {
         this.lock = false;
     }
     
-    SetGizmo(r: number, c: number, gizmo: CellGizmo | null) {
-        if (gizmo === null) {
-            this.cellGizmos.delete(`${r},${c}`);
-        } else {
-            this.cellGizmos.set(`${r},${c}`, gizmo);
-        }
+    SetGizmo(gizmo: CellGizmo | null) {
+        this.selection.forEach((r, c) => {
+            if (gizmo === null) {
+                this.cellGizmos.delete(`${r},${c}`);
+            } else {
+                this.cellGizmos.set(`${r},${c}`, gizmo);
+            }
+        });
         this.Update();
     }
     
@@ -1048,7 +1050,13 @@ class WorldViewController {
 
     Update() {
         this.karelController.world.dirty=false;
-        this.renderer.Draw(this.karelController.world, this.selection);
+        this.renderer.Draw(
+            this.karelController.world,
+            this.selection,
+            {
+                cellGizmos: this.cellGizmos
+            }
+        );
     }
 
     UpdateGutter() {
@@ -1078,6 +1086,7 @@ class WorldViewController {
     }
 
     private OnNewWorld(caller: KarelController, world:World) {
+        this.cellGizmos.clear();
         this.Select(1,1,1,1); 
         this.Update();
         this.FocusKarel();        

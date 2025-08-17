@@ -17,6 +17,7 @@ import { WorldBar, WorldToolbarData } from './worldToolbar';
 import { EvaluateToolbar } from './evaluate';
 import { ToastController, ToastUI } from './toast';
 import { KarelNumbers } from '@rekarel/core';
+import { AnnotationToolbar, AnnotationToolbarData  } from '../commonUI/annotationToolbar';
 
 
 type InputModeToolbar = {
@@ -41,7 +42,8 @@ interface DesktopElements {
     context: ContextMenuData,
     console: ConsoleTab,
     callStack: CallStackUI,
-    toast: ToastUI
+    toast: ToastUI,
+    annotationToolbar: AnnotationToolbarData
 };
 
 class DesktopController {
@@ -81,7 +83,8 @@ class DesktopController {
 
     private isControlInPlayMode: boolean
     private static _instance: DesktopController
-    
+    private	 annotationToolbar: AnnotationToolbar;
+
     constructor (elements: DesktopElements, karelController: KarelController) {
         this.editor = elements.desktopEditor;
         this.worldContainer = elements.worldContainer;
@@ -102,6 +105,8 @@ class DesktopController {
 
         this.focusControlBar = new FocusBar(elements.focus);
         this.historyToolbar = elements.history;
+
+        this.annotationToolbar = new AnnotationToolbar(elements.annotationToolbar);
 
         
         
@@ -241,6 +246,10 @@ class DesktopController {
         
         this.historyToolbar.undo.on("click", ()=>this.worldController.Undo());
         this.historyToolbar.redo.on("click", ()=>this.worldController.Redo());
+
+
+        this.annotationToolbar.Build();
+        this.annotationToolbar.Connect();
     }
 
     private SetAlternativeInput() {
