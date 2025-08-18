@@ -18,6 +18,7 @@ type WRStyle = {
     waffleColor:string,
     gutterSelectionColor:string,
     gutterSelectionBackgroundColor:string
+    cellColorStroke: number
 }
 
 
@@ -354,6 +355,25 @@ class WorldRenderer {
         this.canvasContext.fillStyle= color;
         this.canvasContext.fillRect(x, y, this.CellSize, this.CellSize);
     }
+    private ColorCellBorder(r: number, c: number, color:string, stroke: number) : void {        
+        this.ResetTransform();
+        this.TranslateOffset(true, true);
+        let h = this.GetHeight();
+        let x = c*this.CellSize+this.GutterSize;
+        let y = h-((r+1)*this.CellSize+this.GutterSize);
+        let lineOr = this.canvasContext.lineWidth;
+        this.canvasContext.lineWidth = stroke;
+        this.canvasContext.strokeStyle = color;
+        this.canvasContext.fillStyle= color;
+        this.canvasContext.strokeRect(
+            x+stroke/2,
+            y+stroke,
+            this.CellSize-stroke*1.5,
+            this.CellSize-stroke*1.5
+        );
+        this.canvasContext.lineWidth = lineOr;
+    }
+
 
     private DrawTextVerticallyAlign(text:string, x: number, y:number, maxWidth: number) {
         this.canvasContext.textAlign = "center";
@@ -506,11 +526,13 @@ class WorldRenderer {
                     break;                
                 let r = i + Math.floor(this.origin.r);
                 let c = j + Math.floor(this.origin.c);
-                if (this.drawOptions.cellGizmos.has(`${r},${c}`)) {
-                    const gizmo = this.drawOptions.cellGizmos.get(`${r},${c}`);
-                    if (gizmo?.color) {
-                        this.ColorCell(i,j, gizmo.color);
-                    }
+                if (!this.drawOptions.cellGizmos.has(`${r},${c}`)) {
+                    continue;
+                }
+
+                const gizmo = this.drawOptions.cellGizmos.get(`${r},${c}`);
+                if (gizmo?.color) {
+                    this.ColorCellBorder(i,j, gizmo.color, this.style.cellColorStroke || 3);                
                 }
             }           
             

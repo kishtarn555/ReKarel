@@ -20,7 +20,8 @@ function parseFormData(): WRStyle {
         wallColor: $('#wallColor').val() as string,
         waffleColor: $('#waffleColor').val() as string,
         gutterSelectionBackgroundColor: $('#gutterSelectionBackgroundColor').val() as string,
-        gutterSelectionColor: $('#gutterSelectionColor').val() as string,
+        gutterSelectionColor: $('#gutterSelectionColor').val() as string,        
+        cellColorStroke: 3, // TODO: Make this configurable in the UI
     };
 }
 

@@ -47,10 +47,23 @@ let appSettings: AppSettings = {...defaultSettings}
  * @param oldSettings 
  */
 export function upgradeSettings(oldSettings:Partial<AppSettings>):AppSettings {
-    return {
+    const newSettings: AppSettings = {
         ...defaultSettings,
         ...oldSettings,
     };
+    for (const key in newSettings) {
+        if (
+            typeof newSettings[key] === "object" &&
+            newSettings[key] !== null &&
+            !Array.isArray(newSettings[key])
+        ) {
+            newSettings[key] = {
+                ...defaultSettings[key as keyof AppSettings] as object,
+                ...oldSettings[key as keyof AppSettings] as object,
+            };
+        }
+    }
+    return newSettings;
 }
 
 export function SetSettings(settings:AppSettings) {

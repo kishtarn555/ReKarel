@@ -16,6 +16,7 @@ export const DefaultWRStyle: WRStyle = {
     waffleColor: "#0d6dfd",
     gutterSelectionBackgroundColor: "#86afd5",
     gutterSelectionColor: "#000000",
+    cellColorStroke: 3,
 }
 export const WR_CLEAN : WRStyle = {
     disabled: '#4f4f4f',
@@ -33,6 +34,7 @@ export const WR_CLEAN : WRStyle = {
     waffleColor: "#0d6dfd",
     gutterSelectionBackgroundColor: "#86afd5",
     gutterSelectionColor: "#000000",
+    cellColorStroke: 3,
 }
 
 export const WR_DARK : WRStyle = {
@@ -51,6 +53,7 @@ export const WR_DARK : WRStyle = {
     waffleColor:"#82e8ff",
     gutterSelectionBackgroundColor: "#352f7f",
     gutterSelectionColor: "#FCFCFC",
+    cellColorStroke: 3,
 }
 
 
@@ -71,4 +74,5 @@ export const WR_CONTRAST : WRStyle = {
     waffleColor:"#ff0000",
     gutterSelectionBackgroundColor: "#000000",
     gutterSelectionColor: "#ffffff",
+    cellColorStroke: 3,
 }
