@@ -187,5 +187,7 @@ gulp.task('copy-license', () => {
         .pipe(gulp.dest(`${paths.build}`));
 });
 
- gulp.task('default', gulp.series('bundle-html', 'clean-docs', 'bundle-docs', 'bundle-resources'));
+ gulp.task('default', gulp.series('bundle-html', 'bundle-docs', 'bundle-resources'));
  gulp.task('build', gulp.series('clean', 'copy-html', 'copy-js', 'copy-img', 'copy-css','copy-license'));
+
+ gulp.task('watch', () => gulp.watch(["html", "resources"], gulp.series('default')));

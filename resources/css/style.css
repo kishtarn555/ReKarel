@@ -320,6 +320,29 @@ pre.error-popup {
 #desktopConsole > :first-child {
     font-weight: bold;
 }
+.custom-bi {
+    vertical-align: -0.125em;
+}
+
+.custom-bi.up {
+    transform: rotate(0deg);
+}
+
+.custom-bi.right {
+    transform: rotate(90deg);
+}
+
+.custom-bi.down {
+    transform: rotate(180deg);
+}
+
+.custom-bi.left {
+    transform: rotate(270deg);
+}
+
+.custom-bi.right {
+    transform: rotate(90deg);
+}
 
 .color-input-grid .btn-color  {
     width: 32px;
