@@ -3,7 +3,7 @@
    width="16"
    height="16"
    fill="currentColor"
-   class="bi bi-arrow-up"
+   class="custom-bi"
    viewBox="0 0 16 16"
    version="1.1"
    id="svg1"
@@ -25,11 +25,11 @@
      inkscape:pagecheckerboard="0"
      inkscape:deskcolor="#d1d1d1"
      inkscape:zoom="12.703125"
-     inkscape:cx="-16.649446"
+     inkscape:cx="-16.570726"
      inkscape:cy="10.587946"
      inkscape:window-width="1920"
      inkscape:window-height="1009"
-     inkscape:window-x="-8"
+     inkscape:window-x="1912"
      inkscape:window-y="-8"
      inkscape:window-maximized="1"
      inkscape:current-layer="svg1"
@@ -37,7 +37,7 @@
   <ellipse
      id="path1"
      cx="8"
-     cy="13.402349"
+     cy="14.202529"
      style="stroke-width:0.143906"
      rx="1.7346686"
      ry="1.8133893" />
@@ -56,12 +56,12 @@
      inkscape:randomized="0"
      d="m 58.342835,55.488132 -8.464594,-14.661105 16.929187,-1e-6 z"
      inkscape:transform-center-y="0.90658753"
-     transform="matrix(0.45367044,0,0,0.37101759,-18.468419,-10.447965)" />
+     transform="matrix(0.45367044,0,0,0.37101759,-18.468419,-9.647788)" />
   <rect
      style="fill-opacity:1;stroke-width:1.78885"
      id="rect1"
      width="2.8339484"
      height="4.9446492"
      x="6.5830259"
-     y="0.28782281" />
+     y="1.0880001" />
 </svg>
