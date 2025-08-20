@@ -17,7 +17,7 @@ import { WorldBar, WorldToolbarData } from './worldToolbar';
 import { EvaluateToolbar } from './evaluate';
 import { ToastController, ToastUI } from './toast';
 import { KarelNumbers } from '@rekarel/core';
-import { AnnotationToolbar, AnnotationToolbarData  } from '../commonUI/annotationToolbar';
+import { AnnotationToolbar, AnnotationToolbarData, DEFAULT_COLORS  } from '../commonUI/annotationToolbar';
 
 
 type InputModeToolbar = {
@@ -366,9 +366,11 @@ class DesktopController {
             [46, [[basic, ()=>{this.worldController.RemoveEverything();}]]],
             [89, [[ctrl, ()=>{this.worldController.Redo();}]]],
             [90, [
-                    [ctrl, ()=>{this.worldController.Undo();}],
-                    [basic, ()=>{this.worldController.SetCellEvaluation(true);}]
+                [ctrl, ()=>{this.worldController.Undo();}],
+                [basic, ()=>{this.worldController.SetCellEvaluation(true);}]
             ]],
+            [77, [[basic, ()=>{this.worldController.SetGizmo(DEFAULT_COLORS[Math.floor(Math.random() * DEFAULT_COLORS.length)] );}]]],
+            [78, [[basic, ()=>{this.worldController.SetGizmo(null);}]]],
             
         ]);
         if (hotkeys.has(e.which) === false) {
