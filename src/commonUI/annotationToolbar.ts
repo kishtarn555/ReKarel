@@ -1,22 +1,16 @@
 import { WorldViewController } from "../worldViewController/worldViewController";
 
-const DEFAULT_COLORS = [
-    { color: "#ff0000", aria: "Red" },         // Red
-    { color: "#00ff00", aria: "Green" },       // Green
-    { color: "#0000ff", aria: "Blue" },        // Blue
-    { color: "#ffff00", aria: "Yellow" },      // Yellow
-    { color: "#ff00ff", aria: "Magenta" },     // Magenta
-    { color: "#00ffff", aria: "Cyan" },        // Cyan
-    { color: "#ffffff", aria: "White" },       // White
-    { color: "#000000", aria: "Black" },       // Black
-    { color: "#ffa500", aria: "Orange" },      // Orange
-    { color: "#800080", aria: "Purple" },      // Purple
-    { color: "#808000", aria: "Olive" },       // Olive
-    { color: "#008080", aria: "Teal" },        // Teal
-    { color: "#c0c0c0", aria: "Silver" },      // Silver
-    { color: "#808080", aria: "Gray" },        // Gray
-    { color: "#a52a2a", aria: "Brown" },       // Brown
-    { color: "#ffd700", aria: "Gold" },        // Gold
+export const DEFAULT_COLORS = [
+    { color: "#ff0000", aria: "Rojo" },      
+    { color: "#2e8f43", aria: "Verde" },    
+    { color: "#0000ff", aria: "Azul" },     
+    { color: "#ffacea", aria: "Rosa" },    
+    { color: "#00ffff", aria: "Cian" },     
+    { color: "#43230a", aria: "Tostado" },    
+    { color: "#ff7f00", aria: "Naranja" },   
+    { color: "#800080", aria: "Morado" },   
+    { color: "#008080", aria: "Verde azulado" },     
+    { color: "#808080", aria: "Gris" },     
 ];
 
 export type AnnotationToolbarData = {
