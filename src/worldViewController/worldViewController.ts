@@ -80,6 +80,7 @@ class WorldViewController {
         this.karelController.RegisterResetObserver(this.OnReset.bind(this));
         this.karelController.RegisterNewWorldObserver(this.OnNewWorld.bind(this));
         this.karelController.RegisterStepController(this.onStep.bind(this));
+        window.addEventListener("focus", () => this.Update());
 
         this.waffle = new SelectionWaffle(gizmos.selectionBox);
         this.stats = new WorldStats(gizmos.stats);
