@@ -10,6 +10,7 @@ const require = createRequire(import.meta.url);
 
 const manifest = require('./package.json');
 const coreManifest = require('./node_modules/@rekarel/core/package.json');
+import { exec } from 'child_process';
 
 const mainPath = "html/index.html"
 const mainPathDist = "webapp/"
@@ -187,7 +188,17 @@ gulp.task('copy-license', () => {
         .pipe(gulp.dest(`${paths.build}`));
 });
 
- gulp.task('default', gulp.series('bundle-html', 'bundle-docs', 'bundle-resources'));
- gulp.task('build', gulp.series('clean', 'copy-html', 'copy-js', 'copy-img', 'copy-css','copy-license'));
+gulp.task('default', gulp.series('bundle-html', 'bundle-docs', 'bundle-resources'));
+gulp.task('build', gulp.series('clean', 'copy-html', 'copy-js', 'copy-img', 'copy-css','copy-license'));
+gulp.task('buildsource', (done) => {
+    exec('npm run build:source', (err, stdout, stderr) => {
+        if (stdout) process.stdout.write(stdout);
+        if (stderr) process.stderr.write(stderr);
+        done(err);
+    });
+});
 
- gulp.task('watch', () => gulp.watch(["html", "resources"], gulp.series('default')));
+gulp.task('watch', () => {
+    gulp.watch(['html/**/*', 'resources/**/*'], gulp.series('default'));
+    gulp.watch(['src/**/*'], gulp.series('buildsource'));
+});

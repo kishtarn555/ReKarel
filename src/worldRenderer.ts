@@ -355,22 +355,57 @@ class WorldRenderer {
         this.canvasContext.fillStyle= color;
         this.canvasContext.fillRect(x, y, this.CellSize, this.CellSize);
     }
-    private ColorCellBorder(r: number, c: number, color:string, stroke: number) : void {        
+    private ColorCellBorder(
+        r: number, 
+        c: number, 
+        color: string, 
+        stroke: number, 
+        borders: { north?: boolean, west?: boolean, south?: boolean, east?: boolean } = { north: true, west: true, south: true, east: true }
+    ): void {        
         this.ResetTransform();
         this.TranslateOffset(true, true);
         let h = this.GetHeight();
-        let x = c*this.CellSize+this.GutterSize;
-        let y = h-((r+1)*this.CellSize+this.GutterSize);
+        let x = c * this.CellSize + this.GutterSize;
+        let y = h - ((r + 1) * this.CellSize + this.GutterSize);
         let lineOr = this.canvasContext.lineWidth;
         this.canvasContext.lineWidth = stroke;
         this.canvasContext.strokeStyle = color;
-        this.canvasContext.fillStyle= color;
-        this.canvasContext.strokeRect(
-            x+stroke/2,
-            y+stroke,
-            this.CellSize-stroke*1.5,
-            this.CellSize-stroke*1.5
-        );
+        this.canvasContext.beginPath();
+
+        const upperY = borders.north === false ? 
+            y - stroke 
+            : y;
+        const lowerY = borders.south === false ?
+            y + this.CellSize + stroke 
+            : y + this.CellSize;
+
+        const leftX = borders.west === false ? 
+            x - stroke 
+            : x;
+        const rightX = borders.east === false ?
+            x + this.CellSize + stroke 
+            : x + this.CellSize;
+        // North border
+        if (borders?.north !== false) {
+            this.canvasContext.moveTo(leftX, y + stroke / 2);
+            this.canvasContext.lineTo(rightX , y + stroke / 2);
+        }
+        // West border
+        if (borders.west !== false) {
+            this.canvasContext.moveTo(x + stroke / 2, upperY);
+            this.canvasContext.lineTo(x + stroke / 2, lowerY );
+        }
+        // South border
+        if (borders.south !== false) {
+            this.canvasContext.moveTo(leftX, y + this.CellSize - stroke / 2);
+            this.canvasContext.lineTo(rightX, y + this.CellSize - stroke / 2);
+        }
+        // East border
+        if (borders.east !== false) {
+            this.canvasContext.moveTo(x + this.CellSize - stroke / 2, upperY );
+            this.canvasContext.lineTo(x + this.CellSize - stroke / 2, lowerY );
+        }
+        this.canvasContext.stroke();
         this.canvasContext.lineWidth = lineOr;
     }
 
@@ -532,7 +567,19 @@ class WorldRenderer {
 
                 const gizmo = this.drawOptions.cellGizmos.get(`${r},${c}`);
                 if (gizmo?.color) {
-                    this.ColorCellBorder(i,j, gizmo.color, this.style.cellColorStroke || 3);                
+                    this.ColorCell(i,j, `${gizmo.color}27`);                
+                    this.ColorCellBorder(
+                        i,
+                        j,
+                        gizmo.color,
+                        this.style.cellColorStroke || 3,
+                        {
+                            north: this.drawOptions.cellGizmos.get(`${r+1},${c}`)?.color !== gizmo.color,
+                            west: this.drawOptions.cellGizmos.get(`${r},${c-1}`)?.color !== gizmo.color,
+                            south: this.drawOptions.cellGizmos.get(`${r-1},${c}`)?.color !== gizmo.color,
+                            east: this.drawOptions.cellGizmos.get(`${r},${c+1}`)?.color !== gizmo.color
+                        }
+                    );                
                 }
             }           
             
