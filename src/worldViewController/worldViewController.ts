@@ -1,4 +1,4 @@
-import { WorldRenderer } from "../worldRenderer";
+import { CellGizmo, WorldRenderer } from "../worldRenderer";
 import { KarelController } from "../KarelController";
 import { World } from "@rekarel/core";
 import { SelectionBox, SelectionWaffle } from "./waffle";
@@ -40,6 +40,7 @@ class WorldViewController {
     scale: number;
     state: MouseState
     selection: CellSelection;
+    private cellGizmos: Map<string, CellGizmo>;
     private lock: boolean;
     private karelController : KarelController;
     private waffle: SelectionWaffle
@@ -57,6 +58,7 @@ class WorldViewController {
         this.lock = false;
         this.karelController = karelController;
         this.selection = new CellSelection()
+        this.cellGizmos = new Map<string, CellGizmo>();
         this.selection.SetData({
             r: 1,
             c: 1,
@@ -111,7 +113,16 @@ class WorldViewController {
         this.lock = false;
     }
     
-    
+    SetGizmo(gizmo: CellGizmo | null) {
+        this.selection.forEach((r, c) => {
+            if (gizmo === null) {
+                this.cellGizmos.delete(`${r},${c}`);
+            } else {
+                this.cellGizmos.set(`${r},${c}`, gizmo);
+            }
+        });
+        this.Update();
+    }
     
     
     GetBeepersInBag(): number {
@@ -926,6 +937,16 @@ class WorldViewController {
                             world.setWallMask(i, j, oriWalls)                            
                     })
                 }
+                if (this.cellGizmos.has(`${i},${j}`)) {
+                    let gizmoClone = {...this.cellGizmos.get(`${i},${j}`)};
+                    this.cellGizmos.delete(`${i},${j}`);
+                    op.addCommit({
+                        forward:()=>
+                            this.cellGizmos.delete(`${i},${j}`),
+                        backward:()=> 
+                            this.cellGizmos.set(`${i},${j}`, gizmoClone)
+                    });
+                }
 
             }
         }
@@ -1039,7 +1060,13 @@ class WorldViewController {
 
     Update() {
         this.karelController.world.dirty=false;
-        this.renderer.Draw(this.karelController.world, this.selection);
+        this.renderer.Draw(
+            this.karelController.world,
+            this.selection,
+            {
+                cellGizmos: this.cellGizmos
+            }
+        );
     }
 
     UpdateGutter() {
@@ -1069,6 +1096,7 @@ class WorldViewController {
     }
 
     private OnNewWorld(caller: KarelController, world:World) {
+        this.cellGizmos.clear();
         this.Select(1,1,1,1); 
         this.Update();
         this.FocusKarel();        

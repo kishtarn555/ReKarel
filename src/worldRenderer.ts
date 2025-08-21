@@ -18,6 +18,7 @@ type WRStyle = {
     waffleColor:string,
     gutterSelectionColor:string,
     gutterSelectionBackgroundColor:string
+    cellColorStroke: number
 }
 
 
@@ -48,19 +49,28 @@ export function isWRStyle(obj: any): obj is WRStyle {
 
     return true;
 }
+
+type CellGizmo = {
+    color?: string
+    text?: string   
+}
+interface DrawOptions {
+    cellGizmos: Map<string, CellGizmo>
+}
 // FIXME: Change f coords to r (so it's all in english)
 class WorldRenderer {
     GutterSize: number;
     canvasContext: CanvasRenderingContext2D;
     CellSize: number;
     margin: number;
-    style: WRStyle;
+    style: WRStyle; 
     scale: number;
     scroller: HTMLElement;
     private origin: CellPair;
     private world: World;
     private mode: "normal" | "error";
     private snapped: boolean
+    private drawOptions: DrawOptions | null;
 
     constructor(canvasContext: CanvasRenderingContext2D, style: WRStyle, scale: number) {
         this.canvasContext = canvasContext;
@@ -345,6 +355,60 @@ class WorldRenderer {
         this.canvasContext.fillStyle= color;
         this.canvasContext.fillRect(x, y, this.CellSize, this.CellSize);
     }
+    private ColorCellBorder(
+        r: number, 
+        c: number, 
+        color: string, 
+        stroke: number, 
+        borders: { north?: boolean, west?: boolean, south?: boolean, east?: boolean } = { north: true, west: true, south: true, east: true }
+    ): void {        
+        this.ResetTransform();
+        this.TranslateOffset(true, true);
+        let h = this.GetHeight();
+        let x = c * this.CellSize + this.GutterSize;
+        let y = h - ((r + 1) * this.CellSize + this.GutterSize);
+        let lineOr = this.canvasContext.lineWidth;
+        this.canvasContext.lineWidth = stroke;
+        this.canvasContext.strokeStyle = color;
+        this.canvasContext.beginPath();
+
+        const upperY = borders.north === false ? 
+            y - stroke 
+            : y;
+        const lowerY = borders.south === false ?
+            y + this.CellSize + stroke 
+            : y + this.CellSize;
+
+        const leftX = borders.west === false ? 
+            x - stroke 
+            : x;
+        const rightX = borders.east === false ?
+            x + this.CellSize + stroke 
+            : x + this.CellSize;
+        // North border
+        if (borders?.north !== false) {
+            this.canvasContext.moveTo(leftX, y + stroke / 2);
+            this.canvasContext.lineTo(rightX , y + stroke / 2);
+        }
+        // West border
+        if (borders.west !== false) {
+            this.canvasContext.moveTo(x + stroke / 2, upperY);
+            this.canvasContext.lineTo(x + stroke / 2, lowerY );
+        }
+        // South border
+        if (borders.south !== false) {
+            this.canvasContext.moveTo(leftX, y + this.CellSize - stroke / 2);
+            this.canvasContext.lineTo(rightX, y + this.CellSize - stroke / 2);
+        }
+        // East border
+        if (borders.east !== false) {
+            this.canvasContext.moveTo(x + this.CellSize - stroke / 2, upperY );
+            this.canvasContext.lineTo(x + this.CellSize - stroke / 2, lowerY );
+        }
+        this.canvasContext.stroke();
+        this.canvasContext.lineWidth = lineOr;
+    }
+
 
     private DrawTextVerticallyAlign(text:string, x: number, y:number, maxWidth: number) {
         this.canvasContext.textAlign = "center";
@@ -484,14 +548,54 @@ class WorldRenderer {
         }
     }
 
-    Draw(world: World, selection: CellSelection | null = null) {        
+    private DrawGizmo() {
+        if (!this.drawOptions || !this.drawOptions.cellGizmos) {
+            return;
+        }
+
+        for (let i =0; i < this.GetRowCount(); i++) {
+            if (i+this.origin.r > this.world.h) 
+                break;
+            for (let j =0; j < this.GetColCount(); j++) {
+                if (j+this.origin.c > this.world.w) 
+                    break;                
+                let r = i + Math.floor(this.origin.r);
+                let c = j + Math.floor(this.origin.c);
+                if (!this.drawOptions.cellGizmos.has(`${r},${c}`)) {
+                    continue;
+                }
+
+                const gizmo = this.drawOptions.cellGizmos.get(`${r},${c}`);
+                if (gizmo?.color) {
+                    this.ColorCell(i,j, `${gizmo.color}27`);                
+                    this.ColorCellBorder(
+                        i,
+                        j,
+                        gizmo.color,
+                        this.style.cellColorStroke || 3,
+                        {
+                            north: this.drawOptions.cellGizmos.get(`${r+1},${c}`)?.color !== gizmo.color,
+                            west: this.drawOptions.cellGizmos.get(`${r},${c-1}`)?.color !== gizmo.color,
+                            south: this.drawOptions.cellGizmos.get(`${r-1},${c}`)?.color !== gizmo.color,
+                            east: this.drawOptions.cellGizmos.get(`${r},${c+1}`)?.color !== gizmo.color
+                        }
+                    );                
+                }
+            }           
+            
+        }
+    }
+
+    Draw(world: World, selection: CellSelection | null = null, options: DrawOptions | null = null) {        
         this.world= world;
+        this.drawOptions = options;
         this.ResetTransform();
         let h = this.GetHeight();
         let w = this.GetWidth();
         this.canvasContext.clearRect(0, 0, w, h);
         this.DrawBackground();
         this.DrawDumpCells();
+        this.DrawGizmo();
         this.DrawGrid();        
         this.DrawKarel(
             world.i, 
@@ -575,4 +679,4 @@ class WorldRenderer {
 
 }
 
-export { WorldRenderer, WRStyle};
+export { WorldRenderer, WRStyle, CellGizmo, DrawOptions};

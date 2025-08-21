@@ -159,6 +159,10 @@ let DesktopUI = new DesktopController(
             undo:$("#desktopUndo"),
             redo:$("#desktopRedo"),
         },
+        annotationToolbar: {
+            defaultColorGrid: $("#defaultColorGrid"),
+            clearColorButton: $("#desktopClearColorCell"),
+        },
         evaluate: {
             evaluate: $("#desktopEvaluateCell"),
             ignore: $("#desktopIgnoreCell"),
