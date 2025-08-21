@@ -937,6 +937,16 @@ class WorldViewController {
                             world.setWallMask(i, j, oriWalls)                            
                     })
                 }
+                if (this.cellGizmos.has(`${i},${j}`)) {
+                    let gizmoClone = {...this.cellGizmos.get(`${i},${j}`)};
+                    this.cellGizmos.delete(`${i},${j}`);
+                    op.addCommit({
+                        forward:()=>
+                            this.cellGizmos.delete(`${i},${j}`),
+                        backward:()=> 
+                            this.cellGizmos.set(`${i},${j}`, gizmoClone)
+                    });
+                }
 
             }
         }
