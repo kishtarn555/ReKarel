@@ -591,9 +591,6 @@ class WorldRenderer {
         this.world= world;
         this.drawOptions = options;
         this.ResetTransform();
-        let h = this.GetHeight();
-        let w = this.GetWidth();
-        this.canvasContext.clearRect(0, 0, w, h);
         this.DrawBackground();
         this.DrawDumpCells();
         this.DrawGizmo();
