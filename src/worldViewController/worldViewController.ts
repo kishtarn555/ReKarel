@@ -5,6 +5,7 @@ import { SelectionBox, SelectionWaffle } from "./waffle";
 import { CellSelection, SelectionState } from "./selection";
 import { CellPair } from "../cellPair";
 import { WorldStatsElements, WorldStats } from "./stats";
+import { MAX_LEN } from "../consts";
 
 
 type Gizmos = {
@@ -40,7 +41,7 @@ class WorldViewController {
     scale: number;
     state: MouseState
     selection: CellSelection;
-    private cellGizmos: Map<string, CellGizmo>;
+    private cellGizmos: Map<number, CellGizmo>;
     private lock: boolean;
     private karelController : KarelController;
     private waffle: SelectionWaffle
@@ -58,7 +59,7 @@ class WorldViewController {
         this.lock = false;
         this.karelController = karelController;
         this.selection = new CellSelection()
-        this.cellGizmos = new Map<string, CellGizmo>();
+        this.cellGizmos = new Map<number, CellGizmo>();
         this.selection.SetData({
             r: 1,
             c: 1,
@@ -117,9 +118,9 @@ class WorldViewController {
     SetGizmo(gizmo: CellGizmo | null) {
         this.selection.forEach((r, c) => {
             if (gizmo === null) {
-                this.cellGizmos.delete(`${r},${c}`);
+                this.cellGizmos.delete(r * MAX_LEN + c);
             } else {
-                this.cellGizmos.set(`${r},${c}`, gizmo);
+                this.cellGizmos.set(r * MAX_LEN + c, gizmo);
             }
         });
         this.Update();
@@ -938,14 +939,14 @@ class WorldViewController {
                             world.setWallMask(i, j, oriWalls)                            
                     })
                 }
-                if (this.cellGizmos.has(`${i},${j}`)) {
-                    let gizmoClone = {...this.cellGizmos.get(`${i},${j}`)};
-                    this.cellGizmos.delete(`${i},${j}`);
+                if (this.cellGizmos.has(i* MAX_LEN + j)) {
+                    let gizmoClone = {...this.cellGizmos.get(i* MAX_LEN + j)};
+                    this.cellGizmos.delete(i* MAX_LEN + j);
                     op.addCommit({
                         forward:()=>
-                            this.cellGizmos.delete(`${i},${j}`),
+                            this.cellGizmos.delete(i* MAX_LEN + j),
                         backward:()=> 
-                            this.cellGizmos.set(`${i},${j}`, gizmoClone)
+                            this.cellGizmos.set(i* MAX_LEN + j, gizmoClone)
                     });
                 }
 
@@ -1086,7 +1087,7 @@ class WorldViewController {
 
     private onStep(caller:KarelController, state) {
         this.TrackFocusToKarel();        
-        this.Update();
+        this.CheckUpdate();
         this.UpdateStats();
     }
 

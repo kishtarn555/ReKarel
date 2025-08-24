@@ -1,6 +1,7 @@
 import { KarelNumbers, World } from "@rekarel/core";
 import { CellPair } from "./cellPair";
 import { CellSelection } from "./worldViewController/selection";
+import { MAX_LEN } from "./consts";
 
 type WRStyle = {
     beeperBackgroundColor: string,
@@ -55,7 +56,7 @@ type CellGizmo = {
     text?: string   
 }
 interface DrawOptions {
-    cellGizmos: Map<string, CellGizmo>
+    cellGizmos: Map<number, CellGizmo>
 }
 // FIXME: Change f coords to r (so it's all in english)
 class WorldRenderer {
@@ -561,11 +562,11 @@ class WorldRenderer {
                     break;                
                 let r = i + Math.floor(this.origin.r);
                 let c = j + Math.floor(this.origin.c);
-                if (!this.drawOptions.cellGizmos.has(`${r},${c}`)) {
+                if (!this.drawOptions.cellGizmos.has(r*MAX_LEN+c)) {
                     continue;
                 }
 
-                const gizmo = this.drawOptions.cellGizmos.get(`${r},${c}`);
+                const gizmo = this.drawOptions.cellGizmos.get(r*MAX_LEN+c);
                 if (gizmo?.color) {
                     this.ColorCell(i,j, `${gizmo.color}27`);                
                     this.ColorCellBorder(
@@ -574,10 +575,10 @@ class WorldRenderer {
                         gizmo.color,
                         this.style.cellColorStroke || 3,
                         {
-                            north: this.drawOptions.cellGizmos.get(`${r+1},${c}`)?.color !== gizmo.color,
-                            west: this.drawOptions.cellGizmos.get(`${r},${c-1}`)?.color !== gizmo.color,
-                            south: this.drawOptions.cellGizmos.get(`${r-1},${c}`)?.color !== gizmo.color,
-                            east: this.drawOptions.cellGizmos.get(`${r},${c+1}`)?.color !== gizmo.color
+                            north: this.drawOptions.cellGizmos.get((r+1)*MAX_LEN+c)?.color !== gizmo.color,
+                            west: this.drawOptions.cellGizmos.get(r*MAX_LEN+(c-1))?.color !== gizmo.color,
+                            south: this.drawOptions.cellGizmos.get((r-1)*MAX_LEN+c)?.color !== gizmo.color,
+                            east: this.drawOptions.cellGizmos.get(r*MAX_LEN+(c+1))?.color !== gizmo.color
                         }
                     );                
                 }
@@ -676,6 +677,18 @@ class WorldRenderer {
         return (this.origin.r - Math.floor(this.origin.r)) * this.CellSize;
     }
     
+    /**
+     * This function is for debugging and it is used to show what is being drawn on the canvas.
+     */
+    _Clear () {
+        this.canvasContext.save();
+        this.ResetTransform();
+        let h = this.GetHeight();
+        let w = this.GetWidth();
+        this.canvasContext.fillStyle = "rgba(251, 17, 255, 0.1)";
+        this.canvasContext.fillRect(0, 0, w, h);
+        this.canvasContext.restore();
+    }
 
 }
 
