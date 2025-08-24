@@ -51,6 +51,7 @@ class WorldViewController {
     private followScroll:boolean
     private onBeepersChangeListeners;
     private static _instance:WorldViewController;
+    private autoUpdating: boolean;
 
     constructor(renderer: WorldRenderer, karelController: KarelController, container: HTMLElement,  gizmos: Gizmos) {
         WorldViewController._instance = this;
@@ -59,6 +60,7 @@ class WorldViewController {
         this.lock = false;
         this.karelController = karelController;
         this.selection = new CellSelection()
+        this.autoUpdating = false;
         this.cellGizmos = new Map<number, CellGizmo>();
         this.selection.SetData({
             r: 1,
@@ -81,6 +83,7 @@ class WorldViewController {
         this.karelController.RegisterResetObserver(this.OnReset.bind(this));
         this.karelController.RegisterNewWorldObserver(this.OnNewWorld.bind(this));
         this.karelController.RegisterStepController(this.onStep.bind(this));
+        this.karelController.RegisterStateChangeObserver(this.onStateChange.bind(this));
         window.addEventListener("focus", () => this.Update());
 
         this.waffle = new SelectionWaffle(gizmos.selectionBox);
@@ -1085,10 +1088,39 @@ class WorldViewController {
         
     }
 
+    StartAutoUpdate() {
+        if (this.autoUpdating || !requestAnimationFrame) return;
+        this.autoUpdating = true;
+        const update = () => {            
+            if (this.karelController.IsAutoStepping()) {
+                this.CheckUpdate();
+            }
+            if (this.autoUpdating) {
+                requestAnimationFrame(update);
+            }
+        };
+        requestAnimationFrame(update);
+    }
+
+    StopAutoUpdate() {
+        this.autoUpdating = false;
+    }   
+
     private onStep(caller:KarelController, state) {
         this.TrackFocusToKarel();        
-        this.CheckUpdate();
+        if (!this.karelController.IsAutoStepping() || !requestAnimationFrame) {
+            this.CheckUpdate();
+        }
         this.UpdateStats();
+    }
+
+    
+    private onStateChange(caller:KarelController, state) {
+        if (state === "running") {
+            this.StartAutoUpdate();
+        } else {
+            this.StopAutoUpdate();
+        }
     }
 
     private OnReset(caller: KarelController) {
