@@ -14,6 +14,7 @@ import { editorTranspile } from "./editor/transpiler";
 import { MobileUI } from "./mobile/mobile";
 import { deserializeKarelBinary } from "@rekarel/binary";
 import { base64ToBuffer } from "./base64";
+import { WorldViewController } from "./worldViewController/worldViewController";
 
 
 let KarelWorld: World = new World(100, 100);
@@ -504,6 +505,7 @@ $(document).ready(() => {
 })
 
 export const GetKarelController = KarelController.GetInstance;
+export const GetWorldViewController = WorldViewController.GetInstance;
 
 export function MoveEditorCursorToLine(line:number, column:number=0) {
     SelectLine(desktopEditor, line, column);
