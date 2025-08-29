@@ -56,7 +56,7 @@ export class WorldStats {
             `(${selection.r }, ${selection.c})`
         );
         this.elements.beeper.text(
-            `${KarelNumbers.isInfinite(controller.world.buzzers(selection.r, selection.c)) ? 'Infinito ∞' : controller.world.buzzers(selection.r, selection.c).toLocaleString()}@(${selection.dr*selection.rows }, ${selection.dc*selection.cols})`
+            `${KarelNumbers.isInfinite(controller.world.buzzers(selection.r, selection.c)) ? 'Infinito ∞' : controller.world.buzzers(selection.r, selection.c).toLocaleString()}`
         );
         this.elements.selection.text(`De (${selection.r}, ${selection.c}) - (${selection.GetSecondAnchor().r}, ${selection.GetSecondAnchor().c}) `);
         this.elements.dimension.text(`(${selection.dr*selection.rows } filas, ${selection.dc*selection.cols} columnas)`);
