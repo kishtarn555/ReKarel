@@ -479,6 +479,7 @@ class WorldViewController {
         }
         history.EndOperation();
         this.Update();
+        this.UpdateStats();
     }
 
     SetRandomBeepers(minimum: number, maximum: number) {
@@ -507,7 +508,8 @@ class WorldViewController {
             }
         }
         history.EndOperation();
-        this.Update();
+        this.Update();        
+        this.UpdateStats();
     }
 
     SetBeepers(amount: number) {
@@ -538,6 +540,7 @@ class WorldViewController {
         }
         history.EndOperation();
         this.Update();
+        this.UpdateStats();
     }
 
     AppendUnitToBeepers(amount: number) {
@@ -561,6 +564,7 @@ class WorldViewController {
         
         history.EndOperation();
         this.Update();
+        this.UpdateStats();
     }
 
     DivideBeepers(divider:number) {
@@ -584,6 +588,7 @@ class WorldViewController {
         
         history.EndOperation();
         this.Update();
+        this.UpdateStats();
     }
 
     SetCellEvaluation(state:boolean) {

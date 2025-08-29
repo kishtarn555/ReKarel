@@ -16,16 +16,42 @@ export type WorldStatsElements = {
     memo: JQuery<HTMLElement>
 }
 
+const FREQUENCY_UPDATE = 1000/15; // Update frequency in milliseconds
 export class WorldStats {
-    elements: WorldStatsElements
-
+    elements: WorldStatsElements;
+    private selectionPending: CellSelection = null;
+    private controller: KarelController = null;
+    private timer: number = null;
+    private lastUpdate: number = 0;
     constructor(elements: WorldStatsElements) {
         this.elements = elements;
     }
 
-
-
+    
     UpdateStats(selection: CellSelection, controller:KarelController) {
+        
+        if (this.timer == null && Date.now() - this.lastUpdate > FREQUENCY_UPDATE * 2) {
+            this.performImmediateUpdate(selection, controller);
+            return;
+        }
+        this.selectionPending = selection;
+        this.controller = controller;
+
+
+        if (this.timer == null) {
+            this.timer = setTimeout(() => {
+                requestAnimationFrame(() => {
+                    this.performImmediateUpdate(this.selectionPending, this.controller);
+                    this.timer = null;
+                });
+            }, FREQUENCY_UPDATE);
+        }
+    }
+
+
+
+    performImmediateUpdate(selection: CellSelection, controller:KarelController) {
+        this.lastUpdate = Date.now();
         this.elements.main.text(
             `(${selection.r }, ${selection.c})`
         );
@@ -59,8 +85,5 @@ export class WorldStats {
         this.elements.pickbeeper.text(formatStat(runtime.pickBuzzerCount, world.maxPickBuzzer));
         this.elements.stack.text(formatStat(runtime.stackSize, world.maxStackSize));
         this.elements.memo.text(formatStat(runtime.stackMemory, world.maxStackMemory));
-
-
-
     }
 }
