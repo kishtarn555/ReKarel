@@ -1,7 +1,8 @@
 import { KarelNumbers, World } from "@rekarel/core";
-import { CellPair } from "./cellPair";
-import { CellSelection } from "./worldViewController/selection";
-import { MAX_LEN } from "./consts";
+import { CellPair } from "../../cellPair";
+import { CellSelection } from "../selection";
+import { MAX_LEN } from "../../consts";
+import { BasicBeeperRenderer, BeeperRenderer, HorizontalFitterBeeperRenderer } from "./beeperRenderer";
 
 type WRStyle = {
     beeperBackgroundColor: string,
@@ -72,6 +73,7 @@ class WorldRenderer {
     private mode: "normal" | "error";
     private snapped: boolean
     private drawOptions: DrawOptions | null;
+    private beeperRenderer: BeeperRenderer;
 
     constructor(canvasContext: CanvasRenderingContext2D, style: WRStyle, scale: number) {
         this.canvasContext = canvasContext;
@@ -84,6 +86,7 @@ class WorldRenderer {
         this.scale=scale;
         this.mode = "normal";
         this.snapped = true;
+        this.beeperRenderer = new HorizontalFitterBeeperRenderer(this.canvasContext);
     }
 
     GetOrigin() {
@@ -127,6 +130,11 @@ class WorldRenderer {
 
     NormalMode() {
         this.mode = "normal";
+    }
+
+    
+    SetBeeperRenderer(renderer: BeeperRenderer) {
+        this.beeperRenderer = renderer;
     }
 
     private GetWorldRowCount(): number {
@@ -414,46 +422,26 @@ class WorldRenderer {
     private DrawTextVerticallyAlign(text:string, x: number, y:number, maxWidth: number) {
         this.canvasContext.textAlign = "center";
         this.canvasContext.textBaseline = "alphabetic";
-
-        let hs = this.canvasContext.measureText(text).actualBoundingBoxAscent-this.canvasContext.measureText(text).actualBoundingBoxDescent;
-        // this.canvasContext.strokeText(text, x, y+hs/2, maxWidth);
-        this.canvasContext.fillText(text, x, y+hs/2, maxWidth);
-
-    }
-
-    private SetBeeperFont(scale: number) {
-        this.canvasContext.textBaseline = "alphabetic";
-        this.canvasContext.font = `${scale * this.CellSize/2}px monospace`
-    }
-
-    private DrawTextCell(r: number, c: number, text: string) {
-        let h = this.GetHeight();
-        let x = c*this.CellSize+this.GutterSize+this.CellSize/2;
-        let y = h-((r+0.5)*this.CellSize+this.GutterSize);
-        this.DrawTextVerticallyAlign(text, x, y, this.CellSize*2);
-    }
-
-    private DrawBeeperSquare(
-        { r, c, amount: amount, background, color }: 
-        { r: number; c: number; amount: number; background: string; color: string; }
-    ) {
-        let h = this.GetHeight();
-        let x = c*this.CellSize+this.GutterSize;
-        let y = h-((r+1)*this.CellSize+this.GutterSize);
-        let text = KarelNumbers.isInfinite(amount) ? '∞' : String(amount);
-        this.SetBeeperFont(KarelNumbers.isInfinite(amount) ? 1.5 : 1);
         let measure = this.canvasContext.measureText(text);
-        let textH = measure.actualBoundingBoxAscent+4;
-        let textW = Math.min(measure.width+4, this.CellSize-5);
-        this.canvasContext.fillStyle = background;
-        this.canvasContext.fillRect(
-            x+this.CellSize/2-(textW/2), 
-            y+this.CellSize/2-(textH/2),             
-            textW, 
-            textH
-        );               
-        this.canvasContext.fillStyle= color;        
-        this.DrawTextCell(r, c, text);
+        let hs = measure.actualBoundingBoxAscent - measure.actualBoundingBoxDescent;        
+        this.canvasContext.fillText(text, x, y + hs / 2, maxWidth);
+    }
+
+    private SetBeeperFont(amount: number) {
+        this.canvasContext.textBaseline = "alphabetic";
+        if (KarelNumbers.isInfinite(amount)) {
+            this.canvasContext.font = `100 ${this.CellSize * 0.85}px monospace `
+        } else if ( amount < 10) {
+            this.canvasContext.font = `500 ${this.CellSize * 0.65}px monospace`
+        } else if (amount < 100) {
+            this.canvasContext.font = `450 ${this.CellSize * 0.6}px monospace`
+        } else if (amount < 1000){
+            this.canvasContext.font = `400 ${this.CellSize * 0.48}px monospace`
+        } else if (amount < 1_000_000) {
+            this.canvasContext.font = `400 ${this.CellSize * 0.4}px 'Arial Narrow', Arial, sans-serif`
+        } else {
+            this.canvasContext.font = `400 ${this.CellSize * 0.35}px 'Arial Narrow', Arial, sans-serif`
+        }
     }
 
     private DrawWall(r: number, c: number, type: "north"| "east" | "west" | "south") {
@@ -520,12 +508,14 @@ class WorldRenderer {
                 let c =  j + Math.floor(this.origin.c);
                 let buzzers: number = this.world.buzzers(r, c);
                 if (buzzers!==0) {
-                    this.DrawBeeperSquare({
-                        r:i,
-                        c:j, 
-                        amount:buzzers, 
-                        background:this.style.beeperBackgroundColor, 
-                        color:this.style.beeperColor
+                    this.beeperRenderer.DrawBeeperSquare({
+                        cellX: j * this.CellSize + this.GutterSize,
+                        cellY: this.GetHeight() - ((i + 1) * this.CellSize + this.GutterSize),
+                        cellWidth: this.CellSize,
+                        cellHeight: this.CellSize,
+                        amount: buzzers,
+                        background: this.style.beeperBackgroundColor,
+                        color: this.style.beeperColor
                     });
                 }
             }

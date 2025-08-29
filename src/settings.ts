@@ -2,7 +2,7 @@ import { DefaultWRStyle } from "./KarelStyles";
 import { DesktopController } from "./desktop/desktop-ui";
 import { responsiveHack, SetResponsiveness, SetDesktopView, SetPhoneView } from "./responsive-load";
 import { SetDarkTheme, SetLightTheme, SetSystemTheme } from "./appTheme";
-import {  WRStyle } from "./worldRenderer";
+import {  WRStyle } from "./worldViewController/worldrenderer/worldRenderer";
 import { DarkEditorThemes } from "./editor/themes/themeManager";
 import { KarelController } from "./KarelController";
 
