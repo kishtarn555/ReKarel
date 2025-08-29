@@ -1,4 +1,4 @@
-import { WorldRenderer } from "../worldRenderer";
+import { WorldRenderer } from "./worldrenderer/worldRenderer";
 import { CellSelection } from "./selection";
 
 export type SelectionBox = {

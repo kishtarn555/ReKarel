@@ -209,6 +209,8 @@ let DesktopUI = new DesktopController(
                 cursor: $("#desktopBoxSelect [name='cursor']")[0],
             },
             stats: {
+                main: $("#stat-main"),
+                beeper: $("#stat-beeper"),
                 selection: $("#stat-selection"),
                 dimension: $("#stat-dimension"),
                 move: $("#stat-move"),

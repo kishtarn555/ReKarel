@@ -1,7 +1,10 @@
 import { CellSelection } from "./selection";
 import { KarelController } from "../KarelController";
+import { KarelNumbers } from "@rekarel/core";
 
 export type WorldStatsElements = {
+    main: JQuery<HTMLElement>,
+    beeper: JQuery<HTMLElement>,
     selection: JQuery<HTMLElement>,
     dimension: JQuery<HTMLElement>,
     instruction: JQuery<HTMLElement>,
@@ -23,8 +26,14 @@ export class WorldStats {
 
 
     UpdateStats(selection: CellSelection, controller:KarelController) {
+        this.elements.main.text(
+            `(${selection.r }, ${selection.c})`
+        );
+        this.elements.beeper.text(
+            `${KarelNumbers.isInfinite(controller.world.buzzers(selection.r, selection.c)) ? 'Infinito ∞' : controller.world.buzzers(selection.r, selection.c).toLocaleString()}@(${selection.dr*selection.rows }, ${selection.dc*selection.cols})`
+        );
         this.elements.selection.text(`De (${selection.r}, ${selection.c}) - (${selection.GetSecondAnchor().r}, ${selection.GetSecondAnchor().c}) `);
-        this.elements.dimension.text(`(${selection.dr*selection.rows } filas, ${selection.dc*selection.cols} columna)`);
+        this.elements.dimension.text(`(${selection.dr*selection.rows } filas, ${selection.dc*selection.cols} columnas)`);
         
         const runtime = controller.GetRuntime().state;
         const world = controller.world;

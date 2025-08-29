@@ -1,6 +1,6 @@
 import { EditorView } from 'codemirror'
 import bootstrap from 'bootstrap';
-import { WorldRenderer, WRStyle } from '../worldRenderer';
+import { WorldRenderer, WRStyle } from '../worldViewController/worldrenderer/worldRenderer';
 import { WorldViewController, Gizmos } from "../worldViewController/worldViewController";
 import { ControllerState, KarelController } from '../KarelController';
 import { freezeEditors, RegisterEditorTextSetListener, unfreezeEditors } from '../editor/editor';

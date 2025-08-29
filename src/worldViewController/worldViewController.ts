@@ -1,4 +1,4 @@
-import { CellGizmo, WorldRenderer } from "../worldRenderer";
+import { CellGizmo, WorldRenderer } from "./worldrenderer/worldRenderer";
 import { KarelController } from "../KarelController";
 import { World } from "@rekarel/core";
 import { SelectionBox, SelectionWaffle } from "./waffle";

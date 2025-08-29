@@ -4,7 +4,7 @@ import { SetAutoCloseBracket } from "./editor/editor";
 import { DarkEditorThemes } from "./editor/themes/themeManager";
 import { SetDesktopView, SetPhoneView, SetResponsiveness } from "./responsive-load";
 import { APP_SETTING, AppSettings, fontSizes, GetCurrentSetting, responsiveInterfaces, SetSettings, SETTINGS_VERSION, themeSettings, upgradeSettings } from "./settings";
-import { WRStyle } from "./worldRenderer";
+import { WRStyle } from "./worldViewController/worldrenderer/worldRenderer";
 
 function isFontSize(str: number): str is fontSizes {
     return 6 < str && str < 31;

@@ -1,4 +1,4 @@
-import { WRStyle } from "./worldRenderer";
+import { WRStyle } from "./worldViewController/worldrenderer/worldRenderer";
 
 export const DefaultWRStyle: WRStyle = {
     disabled: '#4f4f4f',
