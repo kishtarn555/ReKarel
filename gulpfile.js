@@ -79,7 +79,7 @@ gulp.task('bundle-images', function () {
   // Default task to run all copy tasks
   gulp.task('bundle-resources', gulp.parallel('bundle-images', 'bundle-css', 'bundle-js'));
 
-const useTemplate = (template, contentPath, destPath, outFile, webRoot) => (
+const useTemplate = (template, contentPath, destPath, outFile, webRoot, extra) => (
     () => {
         const substancePath = Array.isArray(contentPath) ? contentPath : [[contentPath,{}]];
         const substance = substancePath.map(([p,c]) => {
@@ -94,7 +94,8 @@ const useTemplate = (template, contentPath, destPath, outFile, webRoot) => (
                 context: {
                     languageVersion: coreManifest.rekarel.language,
                     substance: substance,
-                    webRoot: webRoot
+                    webRoot: webRoot,
+                    extra: extra ?? {}
                 }
             }))
             .pipe(htmlmin({
@@ -128,21 +129,35 @@ const bundleDocsTasks = () => {
 
 
 const bundlePrintableDocsTasks = () => {
-    const tasks = printSubDocs.map(subDoc => {
-        const files =  fs.readdirSync(subDoc)
-            .filter(file => file.endsWith(".html") && file !== "index.html");
-        const paths = files.map(file => [subDoc + file, {showH1: true}]);
+    const tasks = subDocs.map(subDoc => {
+        const pageDataPath =  path.join( subDoc,'.pageData.json')
+        if (!fs.existsSync(pageDataPath)) {
+            return;
+        }
+        const pageDataFile = fs.readFileSync(pageDataPath);
+        const pageData = JSON.parse(pageDataFile);
+        const paths =  pageData.content.filter((c)=>c.showOnSingle).map(
+            (c, idx)=>[
+                subDoc+c.file,
+                {
+                    title:`${c.title}`,
+                    number: idx
+                }
+            ]
+        )
         const destPath = printDocsDist + "/" + subDoc.replace("html/docs/", "");
         const template = "html/docs/print.template";
         const out = "index.html";
-        const bundleOneDoc = useTemplate(template, paths, destPath, out, '/docs');
+        const bundleOneDoc = useTemplate(template, paths, destPath, out, '/docs',
+            pageData
+        );
         bundleOneDoc.displayName = `printable:${subDoc}`;
 
         return bundleOneDoc;
         ;
     });
 
-    return gulp.parallel(...tasks);
+    return gulp.parallel(...(tasks.filter(task=>task)));
 };
 
 gulp.task("bundle-docs", bundleDocsTasks());
