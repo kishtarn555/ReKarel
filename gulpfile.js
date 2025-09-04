@@ -116,7 +116,12 @@ const bundleDocsTasks = () => {
                 const destPath = docsDist + "/" + subDoc.replace("html/docs/", "");
                 const template = "html/docs/prettyBase.template";
                 const out = file === 'index.html' ? file: `${file.replace(".html", "")}/index.html` ;
-                const bundleOneDoc = useTemplate(template, path, destPath, out, '../../..');
+                const count = (subDoc.match(/\//g) || []).length; // counts slashes safely
+                let root = ".";
+                for (let i = 1; i < count; i++) {
+                    root += "/..";
+                }
+                const bundleOneDoc = useTemplate(template, path, destPath, out, root);
                 bundleOneDoc.displayName = `docs:${path}`;
 
                 return bundleOneDoc;
