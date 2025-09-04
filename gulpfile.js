@@ -6,6 +6,7 @@ import clean  from 'gulp-clean'
 import htmlmin from 'gulp-html-minifier-terser'
 import rename  from "gulp-rename"
 import fs from 'fs'
+import path from 'path'
 import { createRequire } from 'module'
 
 const require = createRequire(import.meta.url);
@@ -21,17 +22,21 @@ const docs = [
     "html/docs/index.html",
 ];
 
-const subDocs= [
-    
-    "html/docs/",
+const printSubDocs = [
     "html/docs/java/",
     "html/docs/pascal/",
     "html/docs/rekarel/",
+];
+
+const subDocs= [    
+    ...printSubDocs,
+    "html/docs/",
     "html/docs/java_tutorial/",
     "html/docs/pascal_tutorial/",
 ]
 
 const docsDist = "webapp/docs"
+const printDocsDist = "webapp/docs/print"
 
 gulp.task('bundle-html', ()=> {
     return gulp.src([mainPath])
@@ -76,6 +81,11 @@ gulp.task('bundle-images', function () {
 
 const useTemplate = (template, contentPath, destPath, outFile, webRoot) => (
     () => {
+        const substancePath = Array.isArray(contentPath) ? contentPath : [[contentPath,{}]];
+        const substance = substancePath.map(([p,c]) => {
+            const header = path.basename(p, path.extname(p));
+            return `@@include('${p}', ${JSON.stringify({header ,...c})} )`
+        }).join('\n');
         return gulp.src(template, {encoding: false})
             .pipe(fileInclude({
                 prefix: "@@",
@@ -83,7 +93,7 @@ const useTemplate = (template, contentPath, destPath, outFile, webRoot) => (
                 
                 context: {
                     languageVersion: coreManifest.rekarel.language,
-                    substance: contentPath,
+                    substance: substance,
                     webRoot: webRoot
                 }
             }))
@@ -115,7 +125,28 @@ const bundleDocsTasks = () => {
     return gulp.parallel(...tasks);
 };
 
+
+
+const bundlePrintableDocsTasks = () => {
+    const tasks = printSubDocs.map(subDoc => {
+        const files =  fs.readdirSync(subDoc)
+            .filter(file => file.endsWith(".html") && file !== "index.html");
+        const paths = files.map(file => [subDoc + file, {showH1: true}]);
+        const destPath = printDocsDist + "/" + subDoc.replace("html/docs/", "");
+        const template = "html/docs/print.template";
+        const out = "index.html";
+        const bundleOneDoc = useTemplate(template, paths, destPath, out, '/docs');
+        bundleOneDoc.displayName = `printable:${subDoc}`;
+
+        return bundleOneDoc;
+        ;
+    });
+
+    return gulp.parallel(...tasks);
+};
+
 gulp.task("bundle-docs", bundleDocsTasks());
+gulp.task("bundle-printable-docs", bundlePrintableDocsTasks());
 
 gulp.task('clean-docs', ()=> {
     return gulp.src(docsDist, {allowEmpty: true})    
@@ -220,7 +251,7 @@ gulp.task('copy-license', () => {
         .pipe(gulp.dest(`${paths.build}`));
 });
 
-gulp.task('default', gulp.series('bundle-html', 'bundle-docs', 'bundle-resources'));
+gulp.task('default', gulp.series('bundle-html', 'bundle-docs', 'bundle-printable-docs', 'bundle-resources'));
 gulp.task('build', gulp.series('clean', 'copy-html', 'copy-js', 'copy-img', 'copy-css','copy-license'));
 gulp.task('buildsource', (done) => {
     exec('npm run build:source', (err, stdout, stderr) => {

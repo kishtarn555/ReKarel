@@ -140,7 +140,12 @@ function buildTableOfContents() {
     const uls = [table]
     anchors.each(function() {
         const target = $(this);
-        if (target.attr("data-toc-depth") > uls.length) {
+        const depth = Number(target.attr("data-toc-depth")) + (
+            window.useAlternativeTOC
+            ? (target.attr("data-toc-unique") ? 0 : 1)  
+            : 0
+        );
+        if (depth> uls.length) {
             //Generate a nested ul
             const li_ul = $("<li>");
             const ul = $("<ul>");
@@ -148,14 +153,16 @@ function buildTableOfContents() {
             uls[uls.length - 1].append(li_ul);
             uls.push(ul);
         }
-        while (target.attr("data-toc-depth") < uls.length) {
+        while (depth < uls.length) {
             uls.pop();
         }
         const li = $("<li>");
 
         const a = $("<a>")
             .attr("href", "#"+target.attr("id"))
-            .text(target.attr("data-toc"));
+            .text(window.useAlternativeTOC ? 
+                target.attr("data-toc-unique") ?? target.attr("data-toc") :
+                target.attr("data-toc"));
         li.append(a);
         uls[uls.length - 1].append(li)
     })
