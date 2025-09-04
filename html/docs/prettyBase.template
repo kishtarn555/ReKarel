@@ -83,7 +83,7 @@
                   <a
                     class="nav-link active ps-3 pe-3"
                     aria-current="page"
-                    href="@@webRoot/rekarel/"
+                    href="@@webRoot/../"
                     >ReKarel</a
                   >
                 </li>
