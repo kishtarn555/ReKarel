@@ -1,6 +1,6 @@
 {
   "name": "@rekarel/ide",
-  "version": "1.4.0-beta.1",
+  "version": "1.4.0-beta.2",
   "description": "Rework of omegaup's [Karel.js](https://github.com/omegaup/karel.js).",
   "main": "index.js",
   "scripts": {
