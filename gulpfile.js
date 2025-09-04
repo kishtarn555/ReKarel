@@ -116,7 +116,7 @@ const bundleDocsTasks = () => {
                 const destPath = docsDist + "/" + subDoc.replace("html/docs/", "");
                 const template = "html/docs/prettyBase.template";
                 const out = file === 'index.html' ? file: `${file.replace(".html", "")}/index.html` ;
-                const bundleOneDoc = useTemplate(template, path, destPath, out, '/docs');
+                const bundleOneDoc = useTemplate(template, path, destPath, out, '../../..');
                 bundleOneDoc.displayName = `docs:${path}`;
 
                 return bundleOneDoc;
@@ -141,14 +141,14 @@ const bundlePrintableDocsTasks = () => {
                 subDoc+c.file,
                 {
                     title:`${c.title}`,
-                    number: idx
+                    number: idx + 1
                 }
             ]
         )
         const destPath = printDocsDist + "/" + subDoc.replace("html/docs/", "");
         const template = "html/docs/print.template";
         const out = "index.html";
-        const bundleOneDoc = useTemplate(template, paths, destPath, out, '/docs',
+        const bundleOneDoc = useTemplate(template, paths, destPath, out, '../..',
             pageData
         );
         bundleOneDoc.displayName = `printable:${subDoc}`;
