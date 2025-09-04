@@ -4,6 +4,8 @@ import replace from 'gulp-replace'
 import insert  from 'gulp-insert'
 import clean  from 'gulp-clean'
 import htmlmin from 'gulp-html-minifier-terser'
+import rename  from "gulp-rename"
+import fs from 'fs'
 import { createRequire } from 'module'
 
 const require = createRequire(import.meta.url);
@@ -17,12 +19,17 @@ const mainPathDist = "webapp/"
 
 const docs = [
     "html/docs/index.html",
-    "html/docs/java/*.html",
-    "html/docs/pascal/*.html",
-    "html/docs/rekarel/*.html",
-    "html/docs/java_tutorial/*.html",
-    "html/docs/pascal_tutorial/*.html",
 ];
+
+const subDocs= [
+    
+    "html/docs/",
+    "html/docs/java/",
+    "html/docs/pascal/",
+    "html/docs/rekarel/",
+    "html/docs/java_tutorial/",
+    "html/docs/pascal_tutorial/",
+]
 
 const docsDist = "webapp/docs"
 
@@ -67,24 +74,49 @@ gulp.task('bundle-images', function () {
   // Default task to run all copy tasks
   gulp.task('bundle-resources', gulp.parallel('bundle-images', 'bundle-css', 'bundle-js'));
 
+const useTemplate = (template, contentPath, destPath, outFile, webRoot) => (
+    () => {
+        return gulp.src(template, {encoding: false})
+            .pipe(fileInclude({
+                prefix: "@@",
+                basepath: "./",
+                
+                context: {
+                    languageVersion: coreManifest.rekarel.language,
+                    substance: contentPath,
+                    webRoot: webRoot
+                }
+            }))
+            .pipe(htmlmin({
+                collapseWhitespace: true,
+                removeComments: true
+            }))
+            .pipe(rename(outFile))
+            .pipe(gulp.dest(destPath));
+    }
+);
 
-gulp.task('bundle-docs', ()=> {
-    return gulp.src(docs, { base: 'html/docs' })
-    .pipe(
-        fileInclude({
-            prefix: '@@',
-            basepath: '@file',
-            context: {
-                languageVersion: coreManifest.rekarel.language
-            }
-        }))        
-    .pipe(htmlmin({
-        collapseWhitespace:true,
-        removeComments:true
-    }))
-    .pipe(gulp.dest(docsDist))
-    
-})
+const bundleDocsTasks = () => {
+    const tasks = subDocs.flatMap(subDoc => {
+        return fs.readdirSync(subDoc)
+            .filter(file => file.endsWith(".html"))
+            .map(file => {
+                const path = subDoc + file;
+                const destPath = docsDist + "/" + subDoc.replace("html/docs/", "");
+                const template = "html/docs/prettyBase.template";
+                const out = file === 'index.html' ? file: `${file.replace(".html", "")}/index.html` ;
+                const bundleOneDoc = useTemplate(template, path, destPath, out, '/docs');
+                bundleOneDoc.displayName = `docs:${path}`;
+
+                return bundleOneDoc;
+            });
+    });
+
+    return gulp.parallel(...tasks);
+};
+
+gulp.task("bundle-docs", bundleDocsTasks());
+
 gulp.task('clean-docs', ()=> {
     return gulp.src(docsDist, {allowEmpty: true})    
         .pipe(clean());
