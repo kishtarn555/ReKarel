@@ -25,7 +25,7 @@
 
   <body data-bs-theme="light" data-root="@@webRoot">
     <div class="m-4 bg-body position-sticky top-0 width-100 border-bottom">
-      <a href="/">Regresar a ReKarel</a>
+      <a href="@@webRoot/..">Regresar a ReKarel</a>
     </div>
     <h1 class="ms-4">
       @@if(context.extra.header) {
