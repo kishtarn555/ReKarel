@@ -1,0 +1,91 @@
+{
+    ".comment": "This is used for ordering the single page",
+    "printformat": true,
+    "header": "Documentación de Java",
+    "content": [
+        {
+            "title": "Instrucciones",
+            "file": "instrucciones.html",
+            "showOnNavbar": true,
+            "showOnSingle": true
+        },
+        {
+            "title": "Sentencia if",
+            "file": "sentencia_if.html",
+            "showOnNavbar": true,
+            "showOnSingle": true
+        },
+        {
+            "title": "Condiciones",
+            "file": "condiciones.html",
+            "showOnNavbar": true,
+            "showOnSingle": true
+        },
+        {
+            "title": "Operador lógico",
+            "file": "operador_logico.html",
+            "showOnNavbar": true,
+            "showOnSingle": true
+        },
+        {
+            "title": "Operador comparativo",
+            "file": "operador_comparativo.html",
+            "showOnNavbar": true,
+            "showOnSingle": true
+        },
+        {
+            "title": "Jerarquía de operaciones",
+                "file": "jerarquia.html",
+            "showOnNavbar": true,
+            "showOnSingle": true
+        },
+        {
+            "title": "Sentencia iterate",
+            "file": "sentencia_iterate.html",
+            "showOnNavbar": true,
+            "showOnSingle": true
+        },
+        {
+            "title": "Sentencia while",
+            "file": "sentencia_while.html",
+            "showOnNavbar": true,
+            "showOnSingle": true
+        },
+        {
+            "title": "Sentencia continue y break",
+            "file": "continue_y_break.html",
+            "showOnNavbar": true,
+            "showOnSingle": true
+        },
+        {
+            "title": "Funciones",
+            "file": "funciones.html",
+            "showOnNavbar": true,
+            "showOnSingle": true
+        },
+        {
+            "title": "Succ y pred",
+            "file": "succ_y_pred.html",
+            "showOnNavbar": true,
+            "showOnSingle": true
+        },
+        {
+            "title": "Import",
+            "file": "import.html",
+            "showOnNavbar": true,
+            "showOnSingle": true
+        },
+        {
+            "title": "Globales",
+            "file": "globales.html",
+            "showOnNavbar": true,
+            "showOnSingle": true
+        },
+        {
+            "file": "cambios.html",
+            "title": "Cambios",
+            "showOnSingle": false,
+            "showOnNavbar": false
+        }
+    ]
+}

@@ -1,0 +1,91 @@
+{
+    ".comment": "This is used for ordering the single page",
+    "printformat": true,
+    "header": "Documentación de Pascal",
+    "content": [
+        {
+            "title": "Instrucciones",
+            "file": "instrucciones.html",
+            "showOnNavbar": true,
+            "showOnSingle": true
+        },
+        {
+            "title": "Sentencia si",
+            "file": "sentencia_si.html",
+            "showOnNavbar": true,
+            "showOnSingle": true
+        },
+        {
+            "title": "Condiciones",
+            "file": "condiciones.html",
+            "showOnNavbar": true,
+            "showOnSingle": true
+        },
+        {
+            "title": "Operador lógico",
+            "file": "operador_logico.html",
+            "showOnNavbar": true,
+            "showOnSingle": true
+        },
+        {
+            "title": "Operador comparativo",
+            "file": "operador_comparativo.html",
+            "showOnNavbar": true,
+            "showOnSingle": true
+        },
+        {
+            "title": "Jerarquía de operaciones",
+                "file": "jerarquia.html",
+            "showOnNavbar": true,
+            "showOnSingle": true
+        },
+        {
+            "title": "Sentencia repetir",
+            "file": "sentencia_repetir.html",
+            "showOnNavbar": true,
+            "showOnSingle": true
+        },
+        {
+            "title": "Sentencia mientras",
+            "file": "sentencia_mientras.html",
+            "showOnNavbar": true,
+            "showOnSingle": true
+        },
+        {
+            "title": "Sentencia continua y rompe",
+            "file": "continua_y_rompe.html",
+            "showOnNavbar": true,
+            "showOnSingle": true
+        },
+        {
+            "title": "Funciones",
+            "file": "funciones.html",
+            "showOnNavbar": true,
+            "showOnSingle": true
+        },
+        {
+            "title": "Suecede y precede",
+            "file": "sucede_y_precede.html",
+            "showOnNavbar": true,
+            "showOnSingle": true
+        },
+        {
+            "title": "Usa",
+            "file": "usa.html",
+            "showOnNavbar": true,
+            "showOnSingle": true
+        },
+        {
+            "title": "Globales",
+            "file": "globales.html",
+            "showOnNavbar": true,
+            "showOnSingle": true
+        },
+        {
+            "file": "cambios.html",
+            "title": "Cambios",
+            "showOnSingle": false,
+            "showOnNavbar": false
+        }
+    ]
+}
