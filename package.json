@@ -1,6 +1,6 @@
 {
   "name": "@rekarel/ide",
-  "version": "1.4.0-beta.3",
+  "version": "1.4.0-beta.4",
   "description": "Rework of omegaup's [Karel.js](https://github.com/omegaup/karel.js).",
   "main": "index.js",
   "scripts": {
@@ -36,7 +36,7 @@
     "@codemirror/lang-javascript": "^6.1.7",
     "@lezer/highlight": "^1.1.4",
     "@rekarel/binary": "^1.0.1-beta.3",
-    "@rekarel/core": "^3.1.0-beta.5",
+    "@rekarel/core": "^3.1.0-beta.6",
     "@types/bootstrap": "^5.2.6",
     "@xmldom/xmldom": "^0.8.10",
     "codemirror": "^6.0.1",
