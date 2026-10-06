@@ -87,7 +87,7 @@ function setData(ui: EvaluatorData) {
         kcInstance.world.maxStackSize = maxStackSize as number;
     if (validateMax(stackMemory))
         kcInstance.world.maxStackMemory = stackMemory as number;    
-    if (validateMax(maxCallParam))
+    if (validateMax(maxCallParam, 0))
         kcInstance.world.maxCallSize = maxCallParam as number;
     if (validateMax(maxMove,-1))
         kcInstance.world.maxMove = maxMove as number;    
