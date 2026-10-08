@@ -2,15 +2,16 @@
 // so every resource of the app and the docs has to come from the same server.
 const LOCAL_URL = /^https?:\/\/(localhost|127\.0\.0\.1)(:\d+)?\//;
 
-const pages = [
-    'http://localhost:5500/webapp/',
-    'http://localhost:5500/webapp/docs/',
-    'http://localhost:5500/webapp/docs/java/',
-    'http://localhost:5500/webapp/docs/java/funciones/',
-    'http://localhost:5500/webapp/docs/print/java/',
-];
+const APP_URL = 'http://localhost:5500/webapp/';
+// Every built docs page, listed by setupNodeEvents in cypress.config.ts
+const docsPages: string[] = Cypress.expose('docsPages') ?? [];
+const pages = [APP_URL, ...docsPages.map((page) => APP_URL + page)];
 
 describe('Works without internet', () => {
+    it('finds the built docs pages', () => {
+        expect(docsPages, 'pages in webapp/docs/ (build before running Cypress)').to.not.be.empty;
+    });
+
     pages.forEach((page) => {
         it(`loads ${page} using only local resources`, () => {
             const externalRequests: string[] = [];
