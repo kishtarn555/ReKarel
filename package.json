@@ -19,15 +19,13 @@
     "@lezer/generator": "^1.2.2",
     "@rollup/plugin-commonjs": "^24.0.0",
     "@rollup/plugin-node-resolve": "^15.0.1",
-    "@rollup/plugin-terser": "^0.4.4",
-    "@types/jest": "^29.5.14",
+    "@rollup/plugin-terser": "^1.0.0",
     "@types/jquery": "^3.5.14",
-    "cypress": "^13.15.1",
+    "cypress": "^16.1.1",
     "gulp": "^5.0.0",
     "gulp-file-include": "^2.3.0",
     "gulp-insert": "^0.5.0",
     "gulp-replace": "^1.1.4",
-    "jison": "^0.4.17",
     "rollup": "^3.29.2",
     "typescript": "^4.9.4"
   },
@@ -38,11 +36,13 @@
     "@rekarel/binary": "^1.0.1-beta.3",
     "@rekarel/core": "^3.1.0-beta.7",
     "@types/bootstrap": "^5.2.6",
-    "@xmldom/xmldom": "^0.8.10",
+    "bootstrap": "^5.3.8",
+    "bootstrap-icons": "^1.13.1",
     "codemirror": "^6.0.1",
     "gulp-clean": "^0.4.0",
     "gulp-html-minifier-terser": "^7.1.0",
     "gulp-rename": "^2.1.0",
+    "jquery": "^4.0.0",
     "split.js": "^1.6.5"
   }
 }
