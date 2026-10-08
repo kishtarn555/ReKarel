@@ -76,8 +76,21 @@ gulp.task('bundle-images', function () {
       .pipe(gulp.dest('webapp/js'));
   });
   
+  // Task to copy third-party libraries, so the page works without internet.
+  // Keeps the node_modules layout because bootstrap-icons.min.css loads fonts/ relatively.
+  gulp.task('bundle-vendor', function () {
+    return gulp.src([
+        'node_modules/jquery/dist/jquery.min.js',
+        'node_modules/bootstrap/dist/css/bootstrap.min.css*',
+        'node_modules/bootstrap/dist/js/bootstrap.bundle.min.js*',
+        'node_modules/bootstrap-icons/font/bootstrap-icons.min.css',
+        'node_modules/bootstrap-icons/font/fonts/*',
+      ], {base: 'node_modules', encoding: false})
+      .pipe(gulp.dest('webapp/vendor'));
+  });
+  
   // Default task to run all copy tasks
-  gulp.task('bundle-resources', gulp.parallel('bundle-images', 'bundle-css', 'bundle-js'));
+  gulp.task('bundle-resources', gulp.parallel('bundle-images', 'bundle-css', 'bundle-js', 'bundle-vendor'));
 
 const useTemplate = (template, contentPath, destPath, outFile, webRoot, extra) => (
     () => {

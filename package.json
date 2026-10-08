@@ -36,10 +36,13 @@
     "@rekarel/binary": "^1.0.1-beta.3",
     "@rekarel/core": "^3.1.0-beta.7",
     "@types/bootstrap": "^5.2.6",
+    "bootstrap": "^5.3.8",
+    "bootstrap-icons": "^1.13.1",
     "codemirror": "^6.0.1",
     "gulp-clean": "^0.4.0",
     "gulp-html-minifier-terser": "^7.1.0",
     "gulp-rename": "^2.1.0",
+    "jquery": "^4.0.0",
     "split.js": "^1.6.5"
   }
 }
