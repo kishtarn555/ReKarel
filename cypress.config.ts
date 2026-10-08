@@ -1,7 +1,5 @@
 import { defineConfig } from "cypress";
 
 export default defineConfig({
-  e2e: {
-    experimentalStudio: true
-  },
+  e2e: {},
 });

@@ -76,8 +76,21 @@ gulp.task('bundle-images', function () {
       .pipe(gulp.dest('webapp/js'));
   });
   
+  // Task to copy third-party libraries, so the page works without internet.
+  // Keeps the node_modules layout because bootstrap-icons.min.css loads fonts/ relatively.
+  gulp.task('bundle-vendor', function () {
+    return gulp.src([
+        'node_modules/jquery/dist/jquery.min.js',
+        'node_modules/bootstrap/dist/css/bootstrap.min.css*',
+        'node_modules/bootstrap/dist/js/bootstrap.bundle.min.js*',
+        'node_modules/bootstrap-icons/font/bootstrap-icons.min.css',
+        'node_modules/bootstrap-icons/font/fonts/*',
+      ], {base: 'node_modules', encoding: false})
+      .pipe(gulp.dest('webapp/vendor'));
+  });
+  
   // Default task to run all copy tasks
-  gulp.task('bundle-resources', gulp.parallel('bundle-images', 'bundle-css', 'bundle-js'));
+  gulp.task('bundle-resources', gulp.parallel('bundle-images', 'bundle-css', 'bundle-js', 'bundle-vendor'));
 
 const useTemplate = (template, contentPath, destPath, outFile, webRoot, extra) => (
     () => {
@@ -117,8 +130,10 @@ const bundleDocsTasks = () => {
                 const template = "html/docs/prettyBase.template";
                 const out = file === 'index.html' ? file: `${file.replace(".html", "")}/index.html` ;
                 const count = (subDoc.match(/\//g) || []).length; // counts slashes safely
+                // A section's index.html is written one folder above its pages
+                const depth = file === 'index.html' ? count - 1 : count;
                 let root = ".";
-                for (let i = 1; i < count; i++) {
+                for (let i = 1; i < depth; i++) {
                     root += "/..";
                 }
                 const bundleOneDoc = useTemplate(template, path, destPath, out, root);
